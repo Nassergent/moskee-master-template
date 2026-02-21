@@ -22,7 +22,7 @@ const badges = homePage?.badges?.length ? homePage.badges : ['Allen Welkom', 'TÃ
 const toonActueel = homePage?.toonActueel ?? true;
 ---
 
-<BaseLayout title={settings.mosqueName} description={settings.description}>
+<BaseLayout title={settings.mosqueName} description={settings.description} ogImage={heroImageUrl || undefined}>
 
   <!-- Hero Section â€” Two Column: Text Left + Image Right (Flat Design) -->
   <section class="bg-primary-dark text-white">

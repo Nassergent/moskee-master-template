@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
-import { fetchNieuws } from '../../lib/sanity';
+import PortableText from '../../components/PortableText.astro';
+import { fetchNieuws, urlFor } from '../../lib/sanity';
 
 export async function getStaticPaths() {
   const nieuws = await fetchNieuws();
@@ -15,9 +16,10 @@ export const prerender = true;
 
 const { item } = Astro.props;
 const datum = new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric', month: 'long', day: 'numeric' });
+const ogImage = item.afbeelding ? urlFor(item.afbeelding).width(1200).height(630).fit('crop').url() : undefined;
 ---
 
-<BaseLayout title={item.titel} description={item.samenvatting}>
+<BaseLayout title={item.titel} description={item.samenvatting} ogImage={ogImage} ogType="article">
   <!-- Page Header — Dark -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6">
@@ -37,18 +39,8 @@ const datum = new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric'
     <div class="max-w-3xl mx-auto">
       <div class="prose prose-neutral prose-lg max-w-none">
         <p class="text-lg text-neutral-700 leading-relaxed font-medium">{item.samenvatting}</p>
-        {item.inhoud ? (
-          item.inhoud.map((block: any) => {
-            if (block._type === 'block') {
-              const text = block.children?.map((c: any) => c.text).join('') || '';
-              if (block.style === 'h2') return <h2>{text}</h2>;
-              if (block.style === 'h3') return <h3>{text}</h3>;
-              if (block.style === 'h4') return <h4>{text}</h4>;
-              if (block.style === 'blockquote') return <blockquote>{text}</blockquote>;
-              return <p>{text}</p>;
-            }
-            return null;
-          })
+        {item.inhoud && item.inhoud.length > 0 ? (
+          <PortableText value={item.inhoud} />
         ) : (
           <p>
             Heeft u vragen? Neem gerust <a href="/contact" class="text-primary hover:opacity-80">contact</a> met ons op.

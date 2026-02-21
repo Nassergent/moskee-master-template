@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { titel, beschrijving, doelbedrag, huidigBedrag, actief, afbeelding } = Astro.props;
-const percentage = Math.min(Math.round((huidigBedrag / doelbedrag) * 100), 100);
+const percentage = doelbedrag > 0 ? Math.min(Math.round((huidigBedrag / doelbedrag) * 100), 100) : 0;
 ---
 
 <!-- Flat Design Card: no rounded, no shadow, 3px left accent border -->

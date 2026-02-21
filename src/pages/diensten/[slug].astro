@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import GeoIcon from '../../components/GeoIcon.astro';
+import PortableText from '../../components/PortableText.astro';
 import { fetchDiensten } from '../../lib/sanity';
 
 export async function getStaticPaths() {
@@ -44,17 +45,7 @@ const { dienst } = Astro.props;
         <p class="text-lg text-neutral-700 leading-relaxed">{dienst.beschrijving}</p>
 
         {dienst.inhoud && dienst.inhoud.length > 0 && (
-          dienst.inhoud.map((block: any) => {
-            if (block._type === 'block') {
-              const text = block.children?.map((c: any) => c.text).join('') || '';
-              if (block.style === 'h2') return <h2>{text}</h2>;
-              if (block.style === 'h3') return <h3>{text}</h3>;
-              if (block.style === 'h4') return <h4>{text}</h4>;
-              if (block.style === 'blockquote') return <blockquote>{text}</blockquote>;
-              return <p>{text}</p>;
-            }
-            return null;
-          })
+          <PortableText value={dienst.inhoud} />
         )}
 
         <h2>Praktische Informatie</h2>

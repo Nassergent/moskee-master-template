@@ -1,0 +1,138 @@
+---
+/**
+ * Portable Text renderer voor Sanity rich text velden.
+ * Rendert blocks, marks (bold, italic, links), lijsten en inline afbeeldingen.
+ */
+import { urlFor } from '../lib/sanity';
+
+interface Props {
+  value: any[];
+  class?: string;
+}
+
+const { value, class: className = '' } = Astro.props;
+
+if (!value || !Array.isArray(value)) return;
+
+// Render inline marks (bold, italic, links, etc.)
+function renderChildren(children: any[]): string {
+  if (!children) return '';
+  return children.map((child: any) => {
+    let text = child.text || '';
+    // Escape HTML
+    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (!child.marks || child.marks.length === 0) return text;
+    // Apply marks
+    for (const mark of child.marks) {
+      if (mark === 'strong') text = `<strong>${text}</strong>`;
+      else if (mark === 'em') text = `<em>${text}</em>`;
+      else if (mark === 'underline') text = `<u>${text}</u>`;
+      else if (mark === 'strike-through') text = `<s>${text}</s>`;
+      else if (mark === 'code') text = `<code class="bg-neutral-100 px-1.5 py-0.5 text-sm">${text}</code>`;
+    }
+    return text;
+  }).join('');
+}
+
+// Resolve link marks from markDefs
+function renderChildrenWithLinks(block: any): string {
+  if (!block.children) return '';
+  const markDefs = block.markDefs || [];
+  return block.children.map((child: any) => {
+    let text = child.text || '';
+    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (!child.marks || child.marks.length === 0) return text;
+    for (const mark of child.marks) {
+      if (mark === 'strong') text = `<strong>${text}</strong>`;
+      else if (mark === 'em') text = `<em>${text}</em>`;
+      else if (mark === 'underline') text = `<u>${text}</u>`;
+      else if (mark === 'strike-through') text = `<s>${text}</s>`;
+      else if (mark === 'code') text = `<code class="bg-neutral-100 px-1.5 py-0.5 text-sm">${text}</code>`;
+      else {
+        // Check markDefs for links
+        const def = markDefs.find((d: any) => d._key === mark);
+        if (def && def._type === 'link') {
+          const href = def.href || '#';
+          const rel = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+          text = `<a href="${href}" class="text-primary hover:opacity-80 underline"${rel}>${text}</a>`;
+        }
+      }
+    }
+    return text;
+  }).join('');
+}
+
+// Group list items into <ul>/<ol>
+function groupBlocks(blocks: any[]): any[] {
+  const grouped: any[] = [];
+  let currentList: any = null;
+
+  for (const block of blocks) {
+    if (block._type === 'block' && block.listItem) {
+      const listType = block.listItem === 'number' ? 'ol' : 'ul';
+      if (!currentList || currentList.type !== listType) {
+        currentList = { type: listType, items: [] };
+        grouped.push(currentList);
+      }
+      currentList.items.push(block);
+    } else {
+      currentList = null;
+      grouped.push(block);
+    }
+  }
+  return grouped;
+}
+
+const grouped = groupBlocks(value);
+---
+
+<div class={`prose prose-neutral max-w-none ${className}`}>
+  {grouped.map((item: any) => {
+    // List group
+    if (item.type === 'ul') {
+      return (
+        <ul class="list-disc pl-6 space-y-1 text-neutral-600">
+          {item.items.map((li: any) => (
+            <li set:html={renderChildrenWithLinks(li)} />
+          ))}
+        </ul>
+      );
+    }
+    if (item.type === 'ol') {
+      return (
+        <ol class="list-decimal pl-6 space-y-1 text-neutral-600">
+          {item.items.map((li: any) => (
+            <li set:html={renderChildrenWithLinks(li)} />
+          ))}
+        </ol>
+      );
+    }
+
+    // Image block
+    if (item._type === 'image' && item.asset) {
+      const imgUrl = urlFor(item).width(800).format('webp').url();
+      return (
+        <figure class="my-8">
+          <img src={imgUrl} alt={item.alt || ''} class="w-full" loading="lazy" />
+          {item.alt && <figcaption class="text-sm text-neutral-400 mt-2 text-center">{item.alt}</figcaption>}
+        </figure>
+      );
+    }
+
+    // Text block
+    if (item._type === 'block') {
+      const html = renderChildrenWithLinks(item);
+      if (!html.trim()) return null;
+
+      if (item.style === 'h2') return <h2 set:html={html} />;
+      if (item.style === 'h3') return <h3 set:html={html} />;
+      if (item.style === 'h4') return <h4 set:html={html} />;
+      if (item.style === 'blockquote') return (
+        <blockquote class="border-l-3 border-l-accent pl-6 italic text-neutral-600" set:html={html} />
+      );
+      return <p class="text-neutral-600 leading-relaxed" set:html={html} />;
+    }
+
+    return null;
+  })}
+</div>

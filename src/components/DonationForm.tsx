@@ -2,16 +2,52 @@ import { useState } from 'react';
 
 const presetAmounts = [5, 10, 25, 50, 100];
 
-export default function DonationForm() {
+interface Props {
+  projectName?: string;
+}
+
+export default function DonationForm({ projectName }: Props) {
   const [frequency, setFrequency] = useState<'eenmalig' | 'maandelijks'>('maandelijks');
   const [amount, setAmount] = useState<number | 'custom'>(25);
   const [customAmount, setCustomAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 2000);
+
+    const finalAmount = amount === 'custom' ? parseFloat(customAmount) : amount;
+    if (!finalAmount || finalAmount < 1) {
+      setError('Vul een geldig bedrag in (minimaal €1).');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/donate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: finalAmount,
+          frequency,
+          project: projectName || null,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        setError(data.error || 'Er is een fout opgetreden.');
+        setIsSubmitting(false);
+      }
+    } catch {
+      setError('Kan geen verbinding maken. Probeer het later opnieuw.');
+      setIsSubmitting(false);
+    }
   };
 
   const displayAmount = amount === 'custom' ? customAmount || '0' : amount;
@@ -84,6 +120,7 @@ export default function DonationForm() {
             <input
               type="number"
               min="1"
+              max="10000"
               required
               value={customAmount}
               onChange={(e) => setCustomAmount(e.target.value)}
@@ -93,6 +130,11 @@ export default function DonationForm() {
           </div>
         )}
 
+        {/* Error */}
+        {error && (
+          <p className="text-sm text-red-600 bg-red-50 p-3 text-center">{error}</p>
+        )}
+
         {/* CTA Knop — Flat */}
         <button
           type="submit"
@@ -100,7 +142,7 @@ export default function DonationForm() {
           className="w-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white py-4 font-bold text-lg transition-all disabled:opacity-70"
         >
           {isSubmitting
-            ? 'Bezig met verwerken...'
+            ? 'Even geduld...'
             : `Doneer €${displayAmount}${frequencyLabel}`}
         </button>
 
@@ -109,7 +151,7 @@ export default function DonationForm() {
           <svg className="w-4 h-4 text-[var(--color-primary)]" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
           </svg>
-          Beveiligde betaling via Bancontact/iDEAL
+          Beveiligde betaling via Mollie (Bancontact, iDEAL, creditcard)
         </p>
       </form>
     </div>

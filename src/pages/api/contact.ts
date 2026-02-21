@@ -1,16 +1,54 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { sanityClient } from '../../lib/sanity';
+import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot } from '../../lib/security';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const data = await request.json();
-    const { naam, email, telefoon, onderwerp, bericht } = data;
+    // Rate limiting: max 3 berichten per IP per minuut
+    const ip = getClientIp(request);
+    if (!checkRateLimit(ip, 3, 60_000)) {
+      return new Response(JSON.stringify({ error: 'Te veel aanvragen. Probeer het over een minuut opnieuw.' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
-    if (!naam || !email || !bericht) {
-      return new Response(JSON.stringify({ error: 'Vul alle verplichte velden in.' }), {
+    const data = await request.json();
+
+    // Honeypot check
+    if (isBot(data)) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Input validatie & sanitization
+    const naam = sanitize(data.naam, 100);
+    const email = sanitize(data.email, 200);
+    const telefoon = sanitize(data.telefoon, 20);
+    const onderwerp = sanitize(data.onderwerp, 100);
+    const bericht = sanitize(data.bericht, 5000);
+
+    if (!naam || naam.length < 2) {
+      return new Response(JSON.stringify({ error: 'Vul een geldige naam in.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!email || !isValidEmail(email)) {
+      return new Response(JSON.stringify({ error: 'Vul een geldig e-mailadres in.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!bericht || bericht.length < 10) {
+      return new Response(JSON.stringify({ error: 'Vul een bericht in (min. 10 tekens).' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -19,7 +57,6 @@ export const POST: APIRoute = async ({ request }) => {
     const apiKey = import.meta.env.RESEND_API_KEY;
 
     if (apiKey && apiKey !== 're_xxxxxxxxxxxx') {
-      // Haal e-mail dynamisch op uit CMS settings
       const settings = await sanityClient.fetch(`*[_id == "settings"][0].email`);
       const contactEmail = settings || 'info@moskee.be';
 
@@ -40,7 +77,7 @@ export const POST: APIRoute = async ({ request }) => {
         `,
       });
     } else {
-      console.log('Contact form submission (no Resend API key configured):', { naam, email, onderwerp, bericht });
+      console.log('Contact form submission (no Resend API key):', { naam, email, onderwerp, bericht });
     }
 
     return new Response(JSON.stringify({ success: true }), {

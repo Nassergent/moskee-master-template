@@ -8,14 +8,22 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  ogType?: string;
 }
 
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
 const defaultDescription = settings?.description || 'Welkom bij onze moskee — een plek van gebed, gemeenschap en kennis.';
 
-const { title = mosqueName, description = defaultDescription } = Astro.props;
+const { title = mosqueName, description = defaultDescription, ogImage, ogType = 'website' } = Astro.props;
 const fullTitle = title === mosqueName ? title : `${title} | ${mosqueName}`;
+const canonicalUrl = Astro.url.href;
+
+// OG Image: prop > logo uit CMS > fallback
+const ogImageUrl = ogImage
+  || (settings?.logo ? urlFor(settings.logo).width(1200).height(630).fit('crop').url() : null)
+  || null;
 
 // 60-30-10 Color System from Sanity CMS
 const colors = settings?.theme || {
@@ -31,6 +39,30 @@ const colors = settings?.theme || {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    {/* OpenGraph — Facebook, WhatsApp, LinkedIn */}
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="nl_BE" />
+    <meta property="og:site_name" content={mosqueName} />
+    {ogImageUrl && (
+      <>
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={fullTitle} />
+      </>
+    )}
+
+    {/* Twitter Card */}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
     {settings?.favicon ? (
       <link rel="icon" type="image/png" href={urlFor(settings.favicon).width(64).height(64).fit('crop').url()} />
     ) : (
@@ -69,13 +101,15 @@ const colors = settings?.theme || {
       "@type": "Mosque",
       "name": mosqueName,
       "description": description,
+      "url": canonicalUrl,
       "address": settings?.address ? {
         "@type": "PostalAddress",
         "streetAddress": settings.address,
         "addressCountry": "BE"
       } : undefined,
       "telephone": settings?.phone || undefined,
-      "email": settings?.email || undefined
+      "email": settings?.email || undefined,
+      "image": ogImageUrl || undefined
     })} />
   </head>
   <body class="min-h-screen flex flex-col bg-base transition-colors relative">

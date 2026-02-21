@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import GeoIcon from '../components/GeoIcon.astro';
 import VolunteerForm from '../components/VolunteerForm.astro';
+import PortableText from '../components/PortableText.astro';
 import { fetchSettings, fetchAboutPage, urlFor, demoAboutPage } from '../lib/sanity';
 
 const settings = await fetchSettings();
@@ -38,13 +39,8 @@ const fallbackMissieText = [
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
       <div>
         <h2 class="text-3xl font-bold mb-6">{missieTitle}</h2>
-        {aboutPage.missieText ? (
-          aboutPage.missieText.map((block: any) => {
-            if (block._type === 'block') {
-              return <p class="text-neutral-600 leading-relaxed mb-4">{block.children?.map((c: any) => c.text).join('')}</p>;
-            }
-            return null;
-          })
+        {aboutPage.missieText && aboutPage.missieText.length > 0 ? (
+          <PortableText value={aboutPage.missieText} />
         ) : (
           fallbackMissieText.map((text) => (
             <p class="text-neutral-600 leading-relaxed mb-4">{text}</p>

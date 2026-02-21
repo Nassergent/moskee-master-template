@@ -80,7 +80,7 @@ const settings = await fetchSettings();
 
       <!-- Kolom 2: Navigatie -->
       <div>
-        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: #c9a983">Snelkoppelingen</h4>
+        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs text-accent">Snelkoppelingen</h4>
         <ul class="space-y-3 text-sm">
           <li><a href="/gebedstijden" class="text-white/80 hover:text-white transition-colors">Gebedstijden</a></li>
           <li><a href="/diensten" class="text-white/80 hover:text-white transition-colors">Onze Diensten</a></li>
@@ -94,7 +94,7 @@ const settings = await fetchSettings();
 
       <!-- Kolom 3: Contact & Bezoek -->
       <div>
-        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: #c9a983">Contact & Bezoek</h4>
+        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs text-accent">Contact & Bezoek</h4>
         <ul class="space-y-3 text-sm">
           {settings?.address && (
             <li class="flex items-start gap-3">
@@ -131,12 +131,12 @@ const settings = await fetchSettings();
 
       <!-- Kolom 4: Transparantie -->
       <div>
-        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: #c9a983">Transparantie</h4>
+        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs text-accent">Transparantie</h4>
         <p class="text-xs mb-4 text-white/60 leading-relaxed">
           Wij zijn een officiële non-profit organisatie. Uw donaties zijn in veilige handen.
         </p>
         <div class="bg-white/5 p-4 border border-white/10 mb-4">
-          <p class="text-[10px] uppercase mb-1 tracking-wider" style="color: #c9a983">IBAN Nummer</p>
+          <p class="text-[10px] uppercase mb-1 tracking-wider" class="text-accent">IBAN Nummer</p>
           <p class="text-sm font-mono text-white tracking-wider">{settings?.iban || 'Nog niet ingesteld'}</p>
         </div>
         <p class="text-[10px] text-white/40">
