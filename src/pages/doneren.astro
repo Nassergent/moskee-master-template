@@ -51,7 +51,7 @@ const projectOptions = projecten.map((p: any) => ({
       <div class="lg:col-span-3">
         <h2 class="text-2xl font-bold font-heading text-primary mb-8">Direct doneren</h2>
         <div class="bg-white border border-neutral-200 p-8">
-          <DonationForm client:load projects={projectOptions} />
+          <DonationForm client:load projects={JSON.stringify(projectOptions)} />
         </div>
       </div>
 

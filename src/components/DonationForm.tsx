@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const presetAmounts = [10, 25, 50, 100];
 
 interface Props {
-  projects?: Array<{ titel: string; slug: string }>;
+  projects?: string;
 }
 
-export default function DonationForm({ projects = [] }: Props) {
+export default function DonationForm({ projects: projectsJson = '[]' }: Props) {
+  const projectList: Array<{ titel: string; slug: string }> = JSON.parse(projectsJson || '[]');
+
   const [amount, setAmount] = useState<number | 'custom'>(25);
   const [customAmount, setCustomAmount] = useState('');
   const [selectedProject, setSelectedProject] = useState('algemeen');
@@ -52,6 +54,15 @@ export default function DonationForm({ projects = [] }: Props) {
 
   const displayAmount = amount === 'custom' ? customAmount || '0' : amount;
 
+  const amountBtnClass = (preset: number) =>
+    `py-5 text-2xl transition-all border ${
+      amount === preset
+        ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
+        : 'bg-transparent text-[var(--color-primary)] border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white'
+    }`;
+
+  const philosopherStyle = { fontFamily: "'Philosopher', serif", fontWeight: 700 as const };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
 
@@ -59,40 +70,18 @@ export default function DonationForm({ projects = [] }: Props) {
       <div>
         <label className="block text-sm font-medium text-slate-800 mb-3">Kies een bedrag</label>
         <div className="grid grid-cols-2 gap-3">
-          {presetAmounts.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              onClick={() => { setAmount(preset); setCustomAmount(''); }}
-              className={`py-5 text-2xl transition-all border ${
-                amount === preset
-                  ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
-                  : 'bg-transparent text-[var(--color-primary)] border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white'
-              }`}
-              style={{ fontFamily: "'Philosopher', serif", fontWeight: 700 }}
-            >
-              €{preset}
-            </button>
-          ))}
+          <button key={10} type="button" onClick={() => { setAmount(10); setCustomAmount(''); }} className={amountBtnClass(10)} style={philosopherStyle}>€10</button>
+          <button key={25} type="button" onClick={() => { setAmount(25); setCustomAmount(''); }} className={amountBtnClass(25)} style={philosopherStyle}>€25</button>
+          <button key={50} type="button" onClick={() => { setAmount(50); setCustomAmount(''); }} className={amountBtnClass(50)} style={philosopherStyle}>€50</button>
+          <button key={100} type="button" onClick={() => { setAmount(100); setCustomAmount(''); }} className={amountBtnClass(100)} style={philosopherStyle}>€100</button>
         </div>
       </div>
 
       {/* Eigen Bedrag */}
       <div>
         <label className="block text-sm font-medium text-slate-800 mb-3">Of vul een eigen bedrag in</label>
-        <div
-          className={`relative border-2 transition-all ${
-            amount === 'custom'
-              ? 'border-[var(--color-primary)]'
-              : 'border-neutral-200 hover:border-neutral-300'
-          }`}
-        >
-          <span
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-primary)]"
-            style={{ fontFamily: "'Philosopher', serif", fontWeight: 700, fontSize: '1.875rem' }}
-          >
-            €
-          </span>
+        <div className={`relative border-2 transition-all ${amount === 'custom' ? 'border-[var(--color-primary)]' : 'border-neutral-200 hover:border-neutral-300'}`}>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-primary)]" style={{ ...philosopherStyle, fontSize: '1.875rem' }}>€</span>
           <input
             type="number"
             min="1"
@@ -102,7 +91,7 @@ export default function DonationForm({ projects = [] }: Props) {
             onChange={(e) => { setAmount('custom'); setCustomAmount(e.target.value); }}
             placeholder="0"
             className="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none text-slate-800"
-            style={{ fontFamily: "'Philosopher', serif", fontWeight: 700, fontSize: '1.875rem' }}
+            style={{ ...philosopherStyle, fontSize: '1.875rem' }}
           />
         </div>
       </div>
@@ -116,7 +105,7 @@ export default function DonationForm({ projects = [] }: Props) {
           className="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-[var(--color-primary)] focus:outline-none transition-colors"
         >
           <option value="algemeen">Algemene Sadaqa</option>
-          {projects.map((p) => (
+          {projectList.map((p) => (
             <option key={p.slug} value={p.titel}>{p.titel}</option>
           ))}
         </select>
@@ -133,15 +122,13 @@ export default function DonationForm({ projects = [] }: Props) {
         disabled={isSubmitting}
         className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white py-4 font-bold text-lg transition-all disabled:opacity-70 flex items-center justify-center gap-2"
       >
-        {isSubmitting ? (
-          'Even geduld...'
-        ) : (
-          <>
+        {isSubmitting ? 'Even geduld...' : (
+          <span className="flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
             </svg>
             Donatie afronden via iDEAL / Bancontact
-          </>
+          </span>
         )}
       </button>
 
