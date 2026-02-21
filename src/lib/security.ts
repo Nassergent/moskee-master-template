@@ -1,23 +1,53 @@
 // ── API Security Utilities ──
+// Upstash Redis rate limiting (werkt op Vercel Serverless)
+// Fallback naar in-memory als geen Upstash credentials
 
-// In-memory rate limiter (per Vercel function instance)
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+// Rate limiter: Upstash Redis als beschikbaar, anders in-memory fallback
+let ratelimit: Ratelimit | null = null;
+
+try {
+  const redisUrl = import.meta.env.UPSTASH_REDIS_REST_URL;
+  const redisToken = import.meta.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (redisUrl && redisToken) {
+    const redis = new Redis({ url: redisUrl, token: redisToken });
+    ratelimit = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, '60 s'),
+      analytics: false,
+    });
+  }
+} catch {
+  // Silently fall back to in-memory
+}
+
+// In-memory fallback (voor local development)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 /**
- * Eenvoudige rate limiter: max X requests per IP per tijdsvenster.
+ * Rate limiter: Upstash Redis in productie, in-memory lokaal.
  * Returns true als het request is toegestaan, false als gelimiteerd.
  */
-export function checkRateLimit(
+export async function checkRateLimit(
   ip: string,
   maxRequests: number = 5,
   windowMs: number = 60_000
-): boolean {
+): Promise<boolean> {
+  // Upstash Redis (productie)
+  if (ratelimit) {
+    const { success } = await ratelimit.limit(ip);
+    return success;
+  }
+
+  // In-memory fallback (development)
   const now = Date.now();
-  const key = ip;
-  const entry = rateLimitMap.get(key);
+  const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs });
+    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
     return true;
   }
 
@@ -59,6 +89,5 @@ export function sanitize(value: string | undefined | null, maxLength: number = 5
  * Check honeypot veld — als ingevuld is het een bot
  */
 export function isBot(data: Record<string, any>): boolean {
-  // Controleer of het honeypot veld is ingevuld
   return !!(data.website || data.url || data._gotcha);
 }

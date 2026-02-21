@@ -9,6 +9,7 @@ export const settings = defineType({
     { name: 'navigation', title: 'Navigatie' },
     { name: 'kalender', title: 'Kalender Beheer' },
     { name: 'contact', title: 'Contact & Socials' },
+    { name: 'donaties', title: 'Donaties' },
     { name: 'legal', title: 'Juridisch & Financieel' },
   ],
   fields: [
@@ -209,6 +210,17 @@ export const settings = defineType({
           initialValue: true,
         }),
       ],
+    }),
+
+    // === DONATIES ===
+    defineField({
+      name: 'bedanktTekst',
+      title: 'Bedankt-pagina Tekst',
+      type: 'text',
+      rows: 3,
+      group: 'donaties',
+      description: 'De tekst die bezoekers zien na een succesvolle donatie. Laat leeg voor standaardtekst.',
+      initialValue: 'Bedankt voor je gulle bijdrage. We hebben je donatie in goede orde ontvangen.',
     }),
 
     // === CONTACT & SOCIALS ===

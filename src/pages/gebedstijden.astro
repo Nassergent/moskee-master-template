@@ -33,6 +33,17 @@ const prayer = await fetchPrayerTimes();
     </div>
     <div class="max-w-4xl mx-auto">
       <PrayerManager />
+      <!-- Tekst-fallback voor SEO (iframe-content is niet indexeerbaar) -->
+      <noscript>
+        <p class="text-center text-sm text-neutral-500 mt-4">
+          Bekijk de actuele gebedstijden op <a href={`https://mawaqit.net/nl/${prayer.mawaqitSlug}`} class="text-primary underline">Mawaqit</a>.
+        </p>
+      </noscript>
+      <p class="sr-only">
+        Dagelijkse gebedstijden voor {settings?.mosqueName}: Fajr, Dhuhr, Asr, Maghrib en Isha.
+        Bekijk de actuele tijden inclusief Iqamah via het Mawaqit-widget hierboven.
+        Voor het Vrijdaggebed (Jumu'ah), zie de sectie hieronder.
+      </p>
     </div>
   </Section>
 

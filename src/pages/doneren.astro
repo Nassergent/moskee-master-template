@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import DonationForm from '../components/DonationForm';
 import DonationCard from '../components/DonationCard.astro';
 import GeoIcon from '../components/GeoIcon.astro';
 import { fetchProjecten, fetchSettings, fetchQuote } from '../lib/sanity';
@@ -10,11 +9,20 @@ const projecten = await fetchProjecten();
 const settings = await fetchSettings();
 const quote = await fetchQuote('donaties');
 
-// Project namen doorgeven aan het formulier voor de dropdown
-const projectOptions = projecten.map((p: any) => ({
-  titel: p.titel,
-  slug: p.slug?.current || p.titel.toLowerCase().replace(/\s+/g, '-'),
-}));
+const hasProjects = projecten && projecten.length > 0;
+
+// Social proof: totaal opgehaald bedrag over alle projecten
+const totalRaised = hasProjects
+  ? projecten.reduce((sum: number, p: any) => sum + (p.huidigBedrag || 0), 0)
+  : 0;
+const activeProjectCount = hasProjects ? projecten.length : 0;
+
+const projectOptions = hasProjects
+  ? projecten.map((p: any) => ({
+      titel: p.titel,
+      slug: p.slug?.current || p.titel.toLowerCase().replace(/\s+/g, '-'),
+    }))
+  : [];
 ---
 
 <BaseLayout title="Doneren" description="Steun onze moskee met een donatie">
@@ -28,49 +36,154 @@ const projectOptions = projecten.map((p: any) => ({
     </div>
   </section>
 
-  <!-- Islamitisch Citaat — subtiele accent border-top -->
-  <Section variant="light-100">
-    <div class="max-w-3xl mx-auto text-center border-t border-accent/30 pt-10">
-      {quote.tekstArabisch && (
-        <p class="font-arabic text-2xl text-primary/50 leading-loose mb-6" dir="rtl">
-          {quote.tekstArabisch}
-        </p>
-      )}
-      <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-[3px] border-l-accent pl-6 text-left">
-        "{quote.tekst}"
-      </blockquote>
-      <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>
-    </div>
-  </Section>
+  <!-- Islamitisch Citaat -->
+  {quote?.tekst && (
+    <Section variant="light-100">
+      <div class="max-w-3xl mx-auto text-center border-t border-accent/30 pt-10">
+        {quote.tekstArabisch && (
+          <p class="font-arabic text-2xl text-primary/50 leading-loose mb-6" dir="rtl">
+            {quote.tekstArabisch}
+          </p>
+        )}
+        <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-[3px] border-l-accent pl-6 text-left">
+          "{quote.tekst}"
+        </blockquote>
+        <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>
+      </div>
+    </Section>
+  )}
 
-  <!-- Tweekolom: Direct Doneren (60%) + Lopende Projecten (40%) -->
+  <!-- Donatie Sectie -->
   <Section variant="light-50">
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
+    <div class:list={[
+      'max-w-6xl mx-auto',
+      hasProjects ? 'grid grid-cols-1 lg:grid-cols-5 gap-12' : 'max-w-2xl'
+    ]}>
 
-      <!-- Links (60%): Direct Doneren Formulier -->
-      <div class="lg:col-span-3">
-        <h2 class="text-2xl font-bold font-heading text-primary mb-8">Direct doneren</h2>
+      <!-- Donatie Formulier -->
+      <div class:list={[hasProjects ? 'lg:col-span-3' : '']}>
+        <h2 class="text-2xl font-bold font-heading text-primary mb-4">Direct doneren</h2>
+        {totalRaised > 0 && (
+          <p class="text-sm text-neutral-500 mb-8 flex items-center gap-2">
+            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            Al &euro;{totalRaised.toLocaleString('nl-BE')} opgehaald via {activeProjectCount} {activeProjectCount === 1 ? 'project' : 'projecten'}
+          </p>
+        )}
         <div class="bg-white border border-neutral-200 p-8">
-          <DonationForm client:load projects={JSON.stringify(projectOptions)} />
+          <form id="donation-form" class="space-y-8">
+
+            <!-- Bedrag Knoppen -->
+            <div>
+              <label class="block text-sm font-medium text-slate-800 mb-3">Kies een bedrag</label>
+              <div class="grid grid-cols-2 gap-3">
+                <button type="button" data-amount="10" aria-pressed="false" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                  &euro;10
+                </button>
+                <button type="button" data-amount="25" aria-pressed="true" class="donation-amount-btn active py-5 text-2xl font-heading font-bold transition-all border border-primary bg-primary text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                  &euro;25
+                </button>
+                <button type="button" data-amount="50" aria-pressed="false" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                  &euro;50
+                </button>
+                <button type="button" data-amount="100" aria-pressed="false" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                  &euro;100
+                </button>
+              </div>
+            </div>
+
+            <!-- Eigen Bedrag -->
+            <div>
+              <label class="block text-sm font-medium text-slate-800 mb-3">Of vul een eigen bedrag in</label>
+              <div id="custom-amount-wrapper" class="relative border-2 border-neutral-200 hover:border-neutral-300 transition-all">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-heading font-bold text-3xl">&euro;</span>
+                <input
+                  type="number"
+                  id="custom-amount"
+                  min="1"
+                  max="10000"
+                  placeholder="0"
+                  class="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none text-slate-800 font-heading font-bold text-3xl"
+                />
+              </div>
+            </div>
+
+            <!-- Bestemming (alleen als er projecten zijn) -->
+            {hasProjects && (
+              <div>
+                <label class="block text-sm font-medium text-slate-800 mb-3">Bestemming</label>
+                <select
+                  id="donation-project"
+                  class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:outline-none transition-colors"
+                >
+                  <option value="algemeen">Algemene Sadaqa</option>
+                  {projectOptions.map((p: any) => (
+                    <option value={p.titel}>{p.titel}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <!-- E-mail (optioneel, voor bedankmail) -->
+            <div>
+              <label class="block text-sm font-medium text-slate-800 mb-3">E-mailadres <span class="text-neutral-400 font-normal">(optioneel, voor bevestiging)</span></label>
+              <input
+                type="email"
+                id="donation-email"
+                placeholder="uw@email.be"
+                class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:outline-none transition-colors"
+              />
+            </div>
+
+            <!-- Error -->
+            <p id="donation-error" class="text-sm text-red-600 bg-red-50 p-3 text-center hidden" aria-live="polite"></p>
+
+            <!-- Betaalknop -->
+            <button
+              type="submit"
+              id="donation-submit"
+              class="w-full bg-primary hover:bg-primary-dark text-white py-4 font-bold text-lg transition-all flex items-center justify-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+              Donatie afronden via iDEAL / Bancontact
+            </button>
+
+            <!-- Trust Badges -->
+            <div class="flex items-center justify-center gap-4 pt-2">
+              <p class="text-xs text-neutral-400 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                </svg>
+                Beveiligd via Mollie
+              </p>
+              <span class="text-neutral-300">|</span>
+              <p class="text-xs text-neutral-400">Bancontact &middot; iDEAL &middot; Visa &middot; Mastercard</p>
+            </div>
+          </form>
         </div>
       </div>
 
-      <!-- Rechts (40%): Lopende Projecten -->
-      <div class="lg:col-span-2">
-        <h2 class="text-2xl font-bold font-heading text-primary mb-8">Lopende Projecten</h2>
-        <div class="space-y-6">
-          {projecten.map((project: any) => (
-            <DonationCard
-              titel={project.titel}
-              beschrijving={project.beschrijving}
-              doelbedrag={project.doelbedrag}
-              huidigBedrag={project.huidigBedrag}
-              actief={project.actief}
-              afbeelding={project.afbeelding}
-            />
-          ))}
+      <!-- Lopende Projecten (alleen als er projecten zijn) -->
+      {hasProjects && (
+        <div class="lg:col-span-2">
+          <h2 class="text-2xl font-bold font-heading text-primary mb-8">Lopende Projecten</h2>
+          <div class="space-y-6">
+            {projecten.map((project: any) => (
+              <DonationCard
+                titel={project.titel}
+                beschrijving={project.beschrijving}
+                doelbedrag={project.doelbedrag}
+                huidigBedrag={project.huidigBedrag}
+                actief={project.actief}
+                afbeelding={project.afbeelding}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
   </Section>
@@ -110,3 +223,113 @@ const projectOptions = projecten.map((p: any) => ({
     </div>
   </Section>
 </BaseLayout>
+
+<script>
+  const form = document.getElementById('donation-form') as HTMLFormElement;
+  const buttons = document.querySelectorAll('.donation-amount-btn') as NodeListOf<HTMLButtonElement>;
+  const customInput = document.getElementById('custom-amount') as HTMLInputElement;
+  const customWrapper = document.getElementById('custom-amount-wrapper') as HTMLDivElement;
+  const errorEl = document.getElementById('donation-error') as HTMLParagraphElement;
+  const submitBtn = document.getElementById('donation-submit') as HTMLButtonElement;
+  const projectSelect = document.getElementById('donation-project') as HTMLSelectElement | null;
+  const emailInput = document.getElementById('donation-email') as HTMLInputElement;
+
+  let selectedAmount: number | 'custom' = 25;
+
+  // Preset amount buttons
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const val = parseInt(btn.dataset.amount || '0', 10);
+      selectedAmount = val;
+      customInput.value = '';
+
+      // Reset alle knoppen
+      buttons.forEach((b) => {
+        b.classList.remove('active', 'bg-primary', 'text-white');
+        b.classList.add('text-primary');
+        b.setAttribute('aria-pressed', 'false');
+      });
+
+      // Activeer deze knop
+      btn.classList.add('active', 'bg-primary', 'text-white');
+      btn.classList.remove('text-primary');
+      btn.setAttribute('aria-pressed', 'true');
+
+      // Custom wrapper reset
+      customWrapper.classList.remove('border-primary');
+      customWrapper.classList.add('border-neutral-200');
+    });
+  });
+
+  // Custom bedrag
+  customInput.addEventListener('focus', () => {
+    selectedAmount = 'custom';
+
+    buttons.forEach((b) => {
+      b.classList.remove('active', 'bg-primary', 'text-white');
+      b.classList.add('text-primary');
+      b.setAttribute('aria-pressed', 'false');
+    });
+
+    customWrapper.classList.add('border-primary');
+    customWrapper.classList.remove('border-neutral-200');
+  });
+
+  customInput.addEventListener('input', () => {
+    selectedAmount = 'custom';
+  });
+
+  // Submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.classList.add('hidden');
+    errorEl.textContent = '';
+
+    const finalAmount = selectedAmount === 'custom'
+      ? parseFloat(customInput.value)
+      : selectedAmount;
+
+    if (!finalAmount || finalAmount < 1) {
+      errorEl.textContent = 'Vul een geldig bedrag in (minimaal \u20ac1).';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    // Disable submit
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Even geduld...';
+
+    const project = projectSelect
+      ? (projectSelect.value === 'algemeen' ? 'Algemene Sadaqa' : projectSelect.value)
+      : 'Algemene Sadaqa';
+
+    try {
+      const res = await fetch('/api/donate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: finalAmount,
+          frequency: 'eenmalig',
+          project,
+          email: emailInput?.value || '',
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        errorEl.textContent = data.error || 'Er is een fout opgetreden.';
+        errorEl.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg> Donatie afronden via iDEAL / Bancontact';
+      }
+    } catch {
+      errorEl.textContent = 'Kan geen verbinding maken. Probeer het later opnieuw.';
+      errorEl.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg> Donatie afronden via iDEAL / Bancontact';
+    }
+  });
+</script>

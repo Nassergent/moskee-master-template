@@ -9,7 +9,7 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     // Rate limiting: max 3 berichten per IP per minuut
     const ip = getClientIp(request);
-    if (!checkRateLimit(ip, 3, 60_000)) {
+    if (!(await checkRateLimit(ip, 3, 60_000))) {
       return new Response(JSON.stringify({ error: 'Te veel aanvragen. Probeer het over een minuut opnieuw.' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' },

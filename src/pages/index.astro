@@ -155,17 +155,37 @@ const toonActueel = homePage?.toonActueel ?? true;
   <Section variant="light-50">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 max-w-5xl mx-auto border border-neutral-200 overflow-hidden">
 
-      <!-- Links: Google Maps -->
-      <div class="h-[350px] lg:h-[400px]">
-        <iframe
-          src={`https://maps.google.com/maps?q=${encodeURIComponent(settings?.mosqueName + ' ' + (settings?.address || ''))}&output=embed&hl=nl`}
-          title={`Locatie ${settings?.mosqueName}`}
-          class="w-full h-full border-0"
+      <!-- Links: Statische Kaart (cookie-vrij) — klik opent Google Maps -->
+      <a
+        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings?.mosqueName + ' ' + (settings?.address || ''))}`}
+        target="_blank"
+        rel="noopener"
+        class="block h-[350px] lg:h-[400px] bg-base-100 relative group overflow-hidden"
+      >
+        <img
+          src={`https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(settings?.address || settings?.mosqueName || '')}&zoom=15&size=800x400&scale=2&maptype=roadmap&markers=color:red%7C${encodeURIComponent(settings?.address || '')}&key=${import.meta.env.GOOGLE_MAPS_KEY || ''}`}
+          alt={`Locatie ${settings?.mosqueName}`}
+          class="w-full h-full object-cover"
           loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          allowfullscreen
-        ></iframe>
-      </div>
+          onerror="this.style.display='none'"
+        />
+        <!-- Fallback als geen API key -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center bg-base-100 text-center px-6" id="map-fallback">
+          <svg class="w-16 h-16 text-primary/30 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+          </svg>
+          <p class="text-primary font-heading font-bold text-lg mb-1">{settings?.mosqueName}</p>
+          <p class="text-neutral-500 text-sm">{settings?.address}</p>
+          <p class="text-primary/60 text-xs mt-3 group-hover:text-primary transition-colors">Klik om te openen in Google Maps</p>
+        </div>
+        <!-- Hover overlay -->
+        <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors flex items-center justify-center">
+          <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-primary text-white px-4 py-2 text-sm font-bold">
+            Open in Google Maps
+          </span>
+        </div>
+      </a>
 
       <!-- Rechts: Kom langs -->
       <div class="bg-white p-10 lg:p-14 flex flex-col justify-center">

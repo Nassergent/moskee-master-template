@@ -6,7 +6,7 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
-    const { amount, frequency, project } = await request.json();
+    const { amount, frequency, project, email } = await request.json();
 
     // Validatie
     const numAmount = parseFloat(amount);
@@ -21,9 +21,14 @@ export const POST: APIRoute = async ({ request, url }) => {
     if (!mollieKey || mollieKey === 'test_xxxxxxxxxxxx') {
       // Graceful fallback: log de donatie maar redirect naar bedankt
       console.log('Donatie ontvangen (geen Mollie key):', { amount: numAmount, frequency, project });
+      const bedanktParams = new URLSearchParams({
+        bedrag: numAmount.toFixed(2),
+        bestemming: project || 'Algemene Sadaqa',
+        demo: 'true',
+      });
       return new Response(JSON.stringify({
         success: true,
-        redirectUrl: `${url.origin}/bedankt?demo=true`,
+        redirectUrl: `${url.origin}/bedankt?${bedanktParams.toString()}`,
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -46,11 +51,12 @@ export const POST: APIRoute = async ({ request, url }) => {
         value: numAmount.toFixed(2),
       },
       description,
-      redirectUrl: `${url.origin}/bedankt`,
+      redirectUrl: `${url.origin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(project || 'Algemene Sadaqa')}`,
       webhookUrl: `${url.origin}/api/mollie-webhook`,
       metadata: {
         frequency,
         project: project || 'Algemeen',
+        email: email || '',
       },
     });
 

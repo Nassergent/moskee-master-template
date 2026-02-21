@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import { fetchSettings } from '../lib/sanity';
+
+const settings = await fetchSettings();
+const mosqueName = settings?.mosqueName || 'Onze Moskee';
+const email = settings?.email || 'info@moskee.be';
+---
+
+<BaseLayout title="Privacyverklaring" description={`Privacybeleid van ${mosqueName}`}>
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <h1 class="text-4xl font-bold mb-4 text-white">Privacyverklaring</h1>
+      <p class="text-white/80 max-w-xl mx-auto">
+        Hoe wij omgaan met uw persoonsgegevens
+      </p>
+    </div>
+  </section>
+
+  <Section variant="light-50">
+    <div class="max-w-3xl mx-auto prose prose-neutral prose-lg">
+
+      <h2>1. Wie zijn wij?</h2>
+      <p>
+        Deze website wordt beheerd door <strong>{mosqueName}</strong>.
+        {settings?.address && (<span> Ons adres is: {settings.address}.</span>)}
+        Voor vragen over uw privacy kunt u contact opnemen via <a href={`mailto:${email}`}>{email}</a>.
+      </p>
+
+      <h2>2. Welke gegevens verzamelen wij?</h2>
+      <p>Wij verzamelen alleen gegevens die u zelf aan ons verstrekt:</p>
+      <ul>
+        <li><strong>Contactformulier:</strong> naam, e-mailadres, telefoonnummer (optioneel), onderwerp en bericht.</li>
+        <li><strong>Vrijwilligersformulier:</strong> naam, e-mailadres, telefoonnummer (optioneel), gekozen taken en bericht.</li>
+        <li><strong>Donaties:</strong> het gedoneerde bedrag en de gekozen bestemming. Betalingsgegevens (bankrekening, kaartgegevens) worden uitsluitend verwerkt door onze betalingsprovider Mollie en worden nooit op onze servers opgeslagen.</li>
+      </ul>
+
+      <h2>3. Waarvoor gebruiken wij uw gegevens?</h2>
+      <ul>
+        <li>Om uw contactverzoek te beantwoorden.</li>
+        <li>Om uw vrijwilligersaanmelding te verwerken en contact met u op te nemen.</li>
+        <li>Om uw donatie te verwerken en u een bevestiging te sturen.</li>
+      </ul>
+      <p>Wij gebruiken uw gegevens <strong>nooit</strong> voor marketingdoeleinden of het versturen van nieuwsbrieven, tenzij u hier uitdrukkelijk toestemming voor geeft.</p>
+
+      <h2>4. Rechtsgrondslag (AVG)</h2>
+      <p>De verwerking van uw gegevens is gebaseerd op:</p>
+      <ul>
+        <li><strong>Toestemming</strong> (art. 6 lid 1 sub a AVG): u verstrekt uw gegevens vrijwillig via onze formulieren.</li>
+        <li><strong>Gerechtvaardigd belang</strong> (art. 6 lid 1 sub f AVG): het beheren van onze gemeenschap en het verwerken van donaties.</li>
+      </ul>
+
+      <h2>5. Hoe lang bewaren wij uw gegevens?</h2>
+      <ul>
+        <li><strong>Contactberichten:</strong> worden na verwerking van uw verzoek binnen 12 maanden verwijderd.</li>
+        <li><strong>Vrijwilligersgegevens:</strong> worden bewaard zolang u actief vrijwilliger bent, en uiterlijk 12 maanden na uw laatste activiteit verwijderd.</li>
+        <li><strong>Donatiegegevens:</strong> worden bewaard conform de wettelijke bewaartermijn voor financiele administratie (7 jaar).</li>
+      </ul>
+
+      <h2>6. Delen wij uw gegevens?</h2>
+      <p>Wij delen uw persoonsgegevens alleen met de volgende partijen, uitsluitend voor de genoemde doeleinden:</p>
+      <ul>
+        <li><strong>Mollie B.V.</strong> (betalingsverwerking) — gevestigd in Nederland, AVG-conform.</li>
+        <li><strong>Resend Inc.</strong> (e-mailverzending) — voor het versturen van bevestigingsmails.</li>
+        <li><strong>Sanity AS</strong> (contentbeheer) — voor het opslaan van vrijwilligersaanmeldingen. Sanity biedt een verwerkersovereenkomst (DPA) conform de AVG.</li>
+        <li><strong>Vercel Inc.</strong> (hosting) — voor het hosten van de website.</li>
+      </ul>
+      <p>Wij verkopen uw gegevens <strong>nooit</strong> aan derden.</p>
+
+      <h2>7. Cookies</h2>
+      <p>
+        Deze website plaatst <strong>geen tracking-cookies</strong> en gebruikt geen analytics-diensten die uw gedrag volgen.
+        Wij gebruiken geen Google Analytics, Facebook Pixel of vergelijkbare diensten.
+        De website functioneert volledig zonder cookies.
+      </p>
+
+      <h2>8. Uw rechten</h2>
+      <p>Op grond van de AVG/GDPR heeft u de volgende rechten:</p>
+      <ul>
+        <li><strong>Recht op inzage:</strong> u kunt opvragen welke gegevens wij van u bewaren.</li>
+        <li><strong>Recht op rectificatie:</strong> u kunt onjuiste gegevens laten corrigeren.</li>
+        <li><strong>Recht op verwijdering:</strong> u kunt verzoeken om uw gegevens te laten verwijderen.</li>
+        <li><strong>Recht op beperking:</strong> u kunt de verwerking van uw gegevens laten beperken.</li>
+        <li><strong>Recht op overdraagbaarheid:</strong> u kunt uw gegevens in een gangbaar formaat opvragen.</li>
+        <li><strong>Recht op bezwaar:</strong> u kunt bezwaar maken tegen de verwerking van uw gegevens.</li>
+      </ul>
+      <p>
+        Om gebruik te maken van deze rechten, stuur een e-mail naar <a href={`mailto:${email}`}>{email}</a>.
+        Wij reageren binnen 30 dagen op uw verzoek.
+      </p>
+
+      <h2>9. Beveiliging</h2>
+      <p>
+        Wij nemen passende technische en organisatorische maatregelen om uw gegevens te beschermen, waaronder:
+        versleutelde verbindingen (HTTPS), beveiligde API-communicatie, en beperkte toegang tot persoonsgegevens.
+      </p>
+
+      <h2>10. Klachten</h2>
+      <p>
+        Heeft u een klacht over de verwerking van uw persoonsgegevens? Neem dan eerst contact met ons op via <a href={`mailto:${email}`}>{email}</a>.
+        U heeft ook het recht om een klacht in te dienen bij de toezichthouder:
+      </p>
+      <ul>
+        <li><strong>Belgie:</strong> <a href="https://www.gegevensbeschermingsautoriteit.be" target="_blank" rel="noopener">Gegevensbeschermingsautoriteit (GBA)</a></li>
+        <li><strong>Nederland:</strong> <a href="https://www.autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener">Autoriteit Persoonsgegevens (AP)</a></li>
+      </ul>
+
+      <h2>11. Wijzigingen</h2>
+      <p>
+        Wij kunnen deze privacyverklaring van tijd tot tijd aanpassen.
+        De meest actuele versie vindt u altijd op deze pagina.
+        Laatste update: februari 2026.
+      </p>
+
+    </div>
+  </Section>
+</BaseLayout>

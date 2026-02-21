@@ -9,10 +9,11 @@ function getEnv(key: string): string | undefined {
   }
 }
 
+// Public read client — useCdn: true voor snelle, gecachte responses
 export const sanityClient = createClient({
   projectId: getEnv('PUBLIC_SANITY_PROJECT_ID') || 'qjg8nn9m',
   dataset: getEnv('PUBLIC_SANITY_DATASET') || 'production',
-  useCdn: false,
+  useCdn: true,
   apiVersion: '2024-01-01',
   token: getEnv('SANITY_API_TOKEN') || '',
 });

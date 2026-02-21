@@ -12,6 +12,9 @@ interface Props {
 
 const { titel, beschrijving, doelbedrag, huidigBedrag, actief, afbeelding } = Astro.props;
 const percentage = doelbedrag > 0 ? Math.min(Math.round((huidigBedrag / doelbedrag) * 100), 100) : 0;
+const remaining = doelbedrag > 0 ? Math.max(doelbedrag - huidigBedrag, 0) : 0;
+const isUrgent = percentage >= 80 && percentage < 100;
+const isComplete = percentage >= 100;
 ---
 
 <!-- Flat Design Card: bg-white, 3px accent left border, no shadow, no rounded -->
@@ -33,27 +36,42 @@ const percentage = doelbedrag > 0 ? Math.min(Math.round((huidigBedrag / doelbedr
     </div>
     <p class="text-slate-600 text-sm leading-relaxed mb-5">{beschrijving}</p>
 
-    <!-- Progress Bar — Goud vulling op lichte accent achtergrond -->
+    <!-- Progress Bar -->
     <div class="mb-3">
       <div class="flex justify-between text-xs text-slate-500 mb-1.5">
         <span>&euro;{huidigBedrag.toLocaleString('nl-BE')}</span>
         <span>&euro;{doelbedrag.toLocaleString('nl-BE')}</span>
       </div>
-      <div class="w-full h-2.5 bg-accent/10 overflow-hidden">
+      <div class:list={['w-full h-3 overflow-hidden', isUrgent ? 'bg-accent/20' : 'bg-accent/10']}>
         <div
-          class="h-full bg-accent transition-all duration-500"
+          class:list={[
+            'h-full transition-all duration-500',
+            isUrgent ? 'bg-accent animate-pulse' : 'bg-accent',
+          ]}
           style={`width: ${percentage}%`}
         />
       </div>
-      <p class="text-xs text-slate-400 mt-1.5">{percentage}% bereikt</p>
+      <div class="flex justify-between items-center mt-1.5">
+        <p class="text-xs text-slate-400">{percentage}% bereikt</p>
+        {isUrgent && (
+          <p class="text-xs font-bold text-accent">
+            Nog slechts &euro;{remaining.toLocaleString('nl-BE')} nodig!
+          </p>
+        )}
+        {isComplete && (
+          <p class="text-xs font-bold text-green-600">Doel bereikt!</p>
+        )}
+      </div>
     </div>
 
     <!-- CTA — Primary (Deep Teal) -->
-    <a
-      href="/doneren"
-      class="btn-primary block text-center bg-primary hover:bg-primary-dark text-white py-3 font-bold text-sm transition-all mt-4"
-    >
-      Steun dit project
-    </a>
+    {!isComplete && (
+      <a
+        href="/doneren"
+        class="btn-primary block text-center bg-primary hover:bg-primary-dark text-white py-3 font-bold text-sm transition-all mt-4"
+      >
+        Steun dit project
+      </a>
+    )}
   </div>
 </div>

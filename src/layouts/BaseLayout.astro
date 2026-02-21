@@ -68,10 +68,68 @@ const colors = settings?.theme || {
     ) : (
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     )}
-    <!-- Flat Design Fonts: Philosopher (headings) + Lato (body) + Amiri (Arabic) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Lato:wght@300;400;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+    <!-- Preconnect voor Sanity CDN -->
+    <link rel="preconnect" href="https://cdn.sanity.io" />
+
+    <!-- Self-hosted Fonts: Philosopher + Lato + Amiri (geen Google Fonts CDN) -->
+    <style is:inline>
+      @font-face {
+        font-family: 'Philosopher';
+        src: url('/fonts/philosopher-regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Philosopher';
+        src: url('/fonts/philosopher-bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Lato';
+        src: url('/fonts/lato-light.woff2') format('woff2');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Lato';
+        src: url('/fonts/lato-regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Lato';
+        src: url('/fonts/lato-bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Lato';
+        src: url('/fonts/lato-black.woff2') format('woff2');
+        font-weight: 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Amiri';
+        src: url('/fonts/amiri-regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Amiri';
+        src: url('/fonts/amiri-bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
     <title>{fullTitle}</title>
 
     <!-- 60-30-10 Dynamic Theme Injection from Sanity CMS -->
@@ -113,9 +171,13 @@ const colors = settings?.theme || {
     })} />
   </head>
   <body class="min-h-screen flex flex-col bg-base transition-colors relative">
+    <!-- Skip to content (a11y) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold">
+      Ga naar inhoud
+    </a>
     <IslamicDayBar />
     <Navigation />
-    <main class="flex-1 relative z-10">
+    <main id="main-content" class="flex-1 relative z-10">
       <slot />
     </main>
     <Footer />
