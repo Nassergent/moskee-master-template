@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+
+@theme {
+  /* ─── 60-30-10 Dynamic Color System (Flat Design) ───
+     CSS custom properties overridden at runtime by Sanity CMS.
+     Fallback = El Albani defaults.
+  */
+
+  /* Base (60%) — Backgrounds, large areas */
+  --color-base: var(--theme-base, #FBF9F7);
+  --color-base-100: var(--theme-base-100, #F5F1ED);
+
+  /* Primary (30%) — Nav, headers, identity */
+  --color-primary: var(--theme-primary, #1D5C6B);
+  --color-primary-light: var(--theme-primary-light, #e8f2f5);
+  --color-primary-dark: var(--theme-primary-dark, #0f3039);
+
+  /* Accent (10%) — Donate button, CTAs, highlights */
+  --color-accent: var(--theme-accent, #593B1D);
+  --color-accent-light: var(--theme-accent-light, #f5ede4);
+  --color-accent-hover: var(--theme-accent-hover, #7a5229);
+
+  /* Neutral / Gray */
+  --color-neutral-50: #F9FAFB;
+  --color-neutral-100: #F3F4F6;
+  --color-neutral-200: #E5E7EB;
+  --color-neutral-300: #D1D5DB;
+  --color-neutral-400: #9CA3AF;
+  --color-neutral-500: #6B7280;
+  --color-neutral-600: #4B5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1F2937;
+  --color-neutral-900: #111827;
+  --color-neutral-950: #030712;
+
+  /* Typography — Flat Design */
+  --font-heading: 'Philosopher', serif;
+  --font-body: 'Lato', sans-serif;
+  --font-arabic: 'Amiri', serif;
+
+}
+
+/* ─── Base Styles (Flat Design) ─── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #1E293B;
+  background-color: var(--color-base);
+}
+
+/* Subtle horizontal line texture — premium paper feel */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 39px,
+    rgba(0, 0, 0, 0.02) 39px,
+    rgba(0, 0, 0, 0.02) 40px
+  );
+}
+
+/* ─── Typography: Headings in Primary ─── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* ─── Accent line under H2 — 40px breed, 2px hoog ─── */
+h2::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background-color: var(--color-accent);
+  margin-top: 0.5rem;
+}
+
+/* White accent line in dark sections */
+[class*="bg-primary"] h2::after {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Center accent line when h2 is centered */
+.text-center h2::after,
+h2.text-center::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* White headings in dark sections */
+.bg-primary h2,
+.bg-primary-dark h2,
+.bg-primary h1,
+.bg-primary-dark h1,
+.bg-primary h3,
+.bg-primary-dark h3 {
+  color: white;
+}
+
+/* Arabic text */
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+/* ─── Flat Design Overrides ─── */
+
+/* Kill all rounded corners globally except badges */
+*:not(.badge):not([class*="rounded-full"]) {
+  border-radius: 0 !important;
+}
+
+/* Kill all box shadows */
+*:not(.badge) {
+  box-shadow: none !important;
+}
+
+/* ─── Animations ─── */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(1.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(2.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in-up { animation: fade-in-up 0.7s ease-out both; }
+.animate-slide-up { animation: slide-up 0.8s ease-out both; }
+.animate-scale-in { animation: scale-in 0.5s ease-out both; }
+
+
+/* ─── CTA hover ─── */
+.btn-primary {
+  transition: all 0.2s ease;
+}
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* ─── Selection color ─── */
+::selection {
+  background-color: var(--color-primary);
+  color: white;
+}

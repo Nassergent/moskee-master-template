@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import DonationForm from '../components/DonationForm';
+import DonationCard from '../components/DonationCard.astro';
+import GeoIcon from '../components/GeoIcon.astro';
+import { fetchProjecten, fetchSettings, fetchQuote } from '../lib/sanity';
+
+const projecten = await fetchProjecten();
+const settings = await fetchSettings();
+const quote = await fetchQuote('donaties');
+---
+
+<BaseLayout title="Doneren" description="Steun onze moskee met een donatie">
+  <!-- Page Header — Dark -->
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <h1 class="text-4xl font-bold mb-4 text-white">Doneren</h1>
+      <p class="text-white/80 max-w-xl mx-auto">
+        Uw steun houdt onze moskee draaiende en helpt de gemeenschap groeien
+      </p>
+    </div>
+  </section>
+
+  <!-- Islamitisch Citaat -->
+  <Section variant="light-100">
+    <div class="max-w-3xl mx-auto text-center">
+      {quote.tekstArabisch && (
+        <p class="font-arabic text-2xl text-primary/60 leading-loose mb-6" dir="rtl">
+          {quote.tekstArabisch}
+        </p>
+      )}
+      <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-3 border-l-accent pl-6 text-left">
+        "{quote.tekst}"
+      </blockquote>
+      <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>
+    </div>
+  </Section>
+
+  <!-- Donatie Formulier + Projecten -->
+  <Section variant="light-50">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+      <div class="lg:col-span-2">
+        <h2 class="text-2xl font-bold mb-6">Direct doneren</h2>
+        <DonationForm client:load />
+      </div>
+      <div class="lg:col-span-3">
+        <h2 class="text-2xl font-bold mb-6">Lopende Projecten</h2>
+        <div class="space-y-6">
+          {projecten.map((project) => (
+            <DonationCard
+              titel={project.titel}
+              beschrijving={project.beschrijving}
+              doelbedrag={project.doelbedrag}
+              huidigBedrag={project.huidigBedrag}
+              actief={project.actief}
+              afbeelding={project.afbeelding}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Rekeninggegevens -->
+  <Section variant="light-100">
+    <div class="max-w-3xl mx-auto">
+      <div class="bg-white border border-neutral-200 p-8 md:p-10 text-center">
+        <div class="flex justify-center mb-4"><GeoIcon name="hexagon" size="xl" class="text-accent" /></div>
+        <h2 class="text-2xl font-bold mb-6">Overschrijving</h2>
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+            <span class="text-neutral-500">Begunstigde</span>
+            <span class="font-medium">{settings.mosqueName}</span>
+          </div>
+          <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+            <span class="text-neutral-500">IBAN</span>
+            <span class="font-mono font-medium">{settings.iban || 'BE00 0000 0000 0000'}</span>
+          </div>
+          <div class="flex justify-between items-center py-3">
+            <span class="text-neutral-500">Mededeling</span>
+            <span class="font-medium">Donatie + projectnaam</span>
+          </div>
+        </div>
+        <p class="text-xs text-neutral-400 mt-6">
+          Vul uw rekeninggegevens in via het Sanity CMS onder "Site Instellingen".
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Contact -->
+  <Section variant="light-50">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Vragen over doneren?</h2>
+      <p class="text-neutral-600 mb-6">Neem contact op voor meer informatie over donatiemogelijkheden.</p>
+      <a href="/contact" class="btn-primary inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-hover text-white font-semibold transition-all">
+        Contact opnemen
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

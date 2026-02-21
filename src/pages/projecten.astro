@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import DonationCard from '../components/DonationCard.astro';
+import GeoIcon from '../components/GeoIcon.astro';
+import { fetchProjecten, fetchQuote } from '../lib/sanity';
+
+const projecten = await fetchProjecten();
+const quote = await fetchQuote('donaties');
+---
+
+<BaseLayout title="Projecten & Donaties" description="Steun onze projecten en help de gemeenschap groeien">
+  <!-- Page Header — Dark -->
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <h1 class="text-4xl font-bold mb-4 text-white">Projecten & Donaties</h1>
+      <p class="text-white/80 max-w-xl mx-auto">
+        Uw bijdrage maakt het verschil. Steun onze lopende projecten en help de gemeenschap groeien.
+      </p>
+    </div>
+  </section>
+
+  <!-- Islamitisch Citaat -->
+  <Section variant="light-100">
+    <div class="max-w-3xl mx-auto text-center">
+      {quote.tekstArabisch && (
+        <p class="font-arabic text-2xl text-primary/60 leading-loose mb-6" dir="rtl">
+          {quote.tekstArabisch}
+        </p>
+      )}
+      <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-3 border-l-accent pl-6 text-left">
+        "{quote.tekst}"
+      </blockquote>
+      <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>
+    </div>
+  </Section>
+
+  <!-- Projects Grid -->
+  <Section variant="light-50">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {projecten.map((project) => (
+          <DonationCard
+            titel={project.titel}
+            beschrijving={project.beschrijving}
+            doelbedrag={project.doelbedrag}
+            huidigBedrag={project.huidigBedrag}
+            actief={project.actief}
+            afbeelding={project.afbeelding}
+          />
+        ))}
+      </div>
+    </div>
+  </Section>
+
+  <!-- How to Donate -->
+  <Section variant="light-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-center mb-8">Hoe kunt u doneren?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
+          <div class="flex justify-center mb-4"><GeoIcon name="hexagon" size="xl" class="text-accent" /></div>
+          <h3 class="font-heading font-bold mb-2">Overschrijving</h3>
+          <p class="text-sm text-neutral-600">Maak een overschrijving naar onze rekening met vermelding van het project.</p>
+        </div>
+        <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
+          <div class="flex justify-center mb-4"><GeoIcon name="ruit" size="xl" class="text-accent" /></div>
+          <h3 class="font-heading font-bold mb-2">Contant</h3>
+          <p class="text-sm text-neutral-600">U kunt ook contant doneren bij de moskee tijdens de openingsuren.</p>
+        </div>
+        <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
+          <div class="flex justify-center mb-4"><GeoIcon name="ster-4" size="xl" class="text-accent" /></div>
+          <h3 class="font-heading font-bold mb-2">Contact</h3>
+          <p class="text-sm text-neutral-600">Neem contact op voor andere donatiemogelijkheden.</p>
+        </div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

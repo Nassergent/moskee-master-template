@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import GeoIcon from '../components/GeoIcon.astro';
+import VolunteerForm from '../components/VolunteerForm.astro';
+import { fetchSettings, fetchAboutPage, urlFor, demoAboutPage } from '../lib/sanity';
+
+const settings = await fetchSettings();
+const aboutPage = await fetchAboutPage();
+
+const missieTitle = aboutPage.missieTitle || demoAboutPage.missieTitle;
+const waarden = aboutPage.waarden?.length ? aboutPage.waarden : demoAboutPage.waarden;
+const team = aboutPage.team || [];
+
+const missieImageUrl = aboutPage.missieImage
+  ? urlFor(aboutPage.missieImage).width(600).height(600).format('webp').url()
+  : null;
+
+const fallbackMissieText = [
+  `${settings.mosqueName} is een huis van gebed, onderwijs en gemeenschap. Wij streven ernaar een veilige en gastvrije ruimte te bieden voor alle moslims in de regio.`,
+  'Onze moskee organiseert dagelijkse gebeden, wekelijkse lessen en seizoensgebonden activiteiten die families en individuen samenbrengen.',
+];
+---
+
+<BaseLayout title="Over Ons" description={`Leer meer over ${settings.mosqueName} en onze missie`}>
+  <!-- Page Header — Dark -->
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <h1 class="text-4xl font-bold mb-4 text-white">Over Ons</h1>
+      <p class="text-white/80 max-w-xl mx-auto">
+        Ontdek wie wij zijn en wat ons drijft
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <Section variant="light-50">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+      <div>
+        <h2 class="text-3xl font-bold mb-6">{missieTitle}</h2>
+        {aboutPage.missieText ? (
+          aboutPage.missieText.map((block: any) => {
+            if (block._type === 'block') {
+              return <p class="text-neutral-600 leading-relaxed mb-4">{block.children?.map((c: any) => c.text).join('')}</p>;
+            }
+            return null;
+          })
+        ) : (
+          fallbackMissieText.map((text) => (
+            <p class="text-neutral-600 leading-relaxed mb-4">{text}</p>
+          ))
+        )}
+      </div>
+      {missieImageUrl ? (
+        <img src={missieImageUrl} alt={`${settings.mosqueName} - Onze Missie`} class="w-full aspect-square object-cover" loading="lazy" />
+      ) : (
+        <div class="bg-primary/5 p-8 flex items-center justify-center aspect-square">
+          <GeoIcon name="mihrab" size="xl" class="text-primary/30 !w-24 !h-24" />
+        </div>
+      )}
+    </div>
+  </Section>
+
+  <!-- Values (uit CMS) -->
+  <Section variant="light-100">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold text-center mb-12">Onze Waarden</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {waarden.map((item: any) => (
+          <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
+            <div class="flex justify-center mb-4">
+              <GeoIcon name={item.icon || 'ster-8'} size="xl" class="text-accent" />
+            </div>
+            <h3 class="font-heading font-bold mb-2">{item.title}</h3>
+            <p class="text-sm text-neutral-600">{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Section>
+
+  <!-- Bestuur & Team (alleen als er teamleden zijn) -->
+  {team.length > 0 && (
+    <Section variant="light-50">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl font-bold text-center mb-12">Bestuur & Team</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {team.map((lid: any) => (
+            <div class="bg-white p-6 text-center border border-neutral-200">
+              {lid.foto ? (
+                <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden">
+                  <img
+                    src={urlFor(lid.foto).width(192).height(192).url()}
+                    alt={lid.naam}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                  <GeoIcon name="ster-8" size="lg" class="text-primary/30" />
+                </div>
+              )}
+              <h3 class="font-heading font-bold">{lid.naam}</h3>
+              {lid.functie && <p class="text-sm text-neutral-600 mt-1">{lid.functie}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Section>
+  )}
+
+  <!-- Word Vrijwilliger -->
+  <Section variant="light-100">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl font-bold mb-3">Word Vrijwilliger</h2>
+        <p class="text-neutral-600">
+          Wil je bijdragen aan onze gemeenschap? Meld je aan als vrijwilliger en help mee met activiteiten, onderhoud en meer.
+        </p>
+      </div>
+      <VolunteerForm />
+    </div>
+  </Section>
+
+  <!-- Contact CTA -->
+  <Section variant="light-50">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Kom langs bij {settings.mosqueName}</h2>
+      <p class="text-neutral-600 mb-6">
+        Wij verwelkomen iedereen. Of u nu voor het gebed komt, wilt leren of gewoon een bezoek wilt brengen —
+        onze deuren staan open.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/contact" class="btn-primary px-6 py-3 bg-accent hover:bg-accent-hover text-white font-semibold transition-all">
+          Contact opnemen
+        </a>
+        <a href="/gebedstijden" class="px-6 py-3 bg-primary/5 hover:bg-primary/10 text-neutral-700 font-semibold transition-colors">
+          Gebedstijden bekijken
+        </a>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

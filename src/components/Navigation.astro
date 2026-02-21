@@ -1,0 +1,144 @@
+---
+import GeoIcon from './GeoIcon.astro';
+import { fetchSettings, urlFor } from '../lib/sanity';
+
+const settings = await fetchSettings();
+const mosqueName = settings?.mosqueName || 'Onze Moskee';
+const donateText = settings?.donateButtonText || 'Doneer';
+
+// De "Universele 7" lijst — Gebedstijden & Contact altijd aan
+const menuItems = [
+  { name: 'Gebedstijden', href: '/gebedstijden', show: true },
+  { name: 'Diensten', href: '/diensten', show: settings?.menuToggles?.showServices ?? true },
+  { name: 'Projecten', href: '/projecten', show: settings?.menuToggles?.showProjects ?? true },
+  { name: 'Nieuws', href: '/nieuws', show: settings?.menuToggles?.showNews ?? true },
+  { name: 'Agenda', href: '/agenda', show: settings?.menuToggles?.showAgenda ?? true },
+  { name: 'Over Ons', href: '/over-ons', show: settings?.menuToggles?.showAbout ?? true },
+  { name: 'Contact', href: '/contact', show: true },
+];
+
+const visibleItems = menuItems.filter((item) => item.show);
+const currentPath = Astro.url.pathname;
+---
+
+<!-- Flat Design Navigation — no rounded corners, no shadows -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-neutral-200">
+  <div class="max-w-[1280px] mx-auto px-6 h-16 flex justify-between items-center">
+
+    <!-- Logo / Naam -->
+    <a href="/" class="flex items-center gap-2.5 group">
+      {settings?.logo ? (
+        <img
+          src={urlFor(settings.logo).width(40).height(40).fit('crop').url()}
+          alt={mosqueName}
+          class="w-8 h-8 object-contain"
+        />
+      ) : (
+        <GeoIcon name="mihrab" size="md" class="text-primary" />
+      )}
+      <span class="text-lg font-bold font-heading text-primary group-hover:opacity-80 transition-opacity">
+        {mosqueName}
+      </span>
+    </a>
+
+    <!-- Desktop Menu -->
+    <div class="hidden lg:flex items-center gap-0">
+      {visibleItems.map((item) => {
+        const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+        return (
+          <a
+            href={item.href}
+            class:list={[
+              'px-4 py-2 text-sm font-medium transition-all border-b-2',
+              isActive
+                ? 'text-accent border-accent font-bold'
+                : 'text-neutral-600 border-transparent hover:text-primary hover:border-primary/30',
+            ]}
+          >
+            {item.name}
+          </a>
+        );
+      })}
+
+      <!-- Doneer CTA — Flat, no rounded -->
+      <a
+        href="/doneren"
+        class="btn-primary ml-6 bg-accent hover:bg-accent-hover text-white px-6 py-2 font-bold text-sm transition-all"
+      >
+        {donateText}
+      </a>
+
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <div class="lg:hidden flex items-center gap-2">
+
+      <button
+        id="nav-mobile-btn"
+        class="p-2 text-neutral-700 hover:bg-neutral-100 transition-colors"
+        aria-label="Menu openen"
+        aria-expanded="false"
+      >
+        <svg id="nav-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+        <svg id="nav-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Panel -->
+  <div
+    id="nav-mobile-menu"
+    class="hidden lg:hidden border-t border-neutral-200 bg-white"
+  >
+    <div class="max-w-[1280px] mx-auto px-6 py-4 flex flex-col gap-0">
+      {visibleItems.map((item) => {
+        const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+        return (
+          <a
+            href={item.href}
+            class:list={[
+              'px-4 py-3 text-sm font-medium transition-colors border-l-3',
+              isActive
+                ? 'text-accent border-accent bg-accent-light font-bold'
+                : 'text-neutral-600 border-transparent hover:text-primary hover:bg-base-100',
+            ]}
+          >
+            {item.name}
+          </a>
+        );
+      })}
+
+      <!-- Mobile Doneer -->
+      <a
+        href="/doneren"
+        class="mt-3 text-center bg-accent hover:bg-accent-hover text-white px-6 py-3 font-bold text-sm transition-all"
+      >
+        {donateText}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- Spacer for fixed navbar -->
+<div class="h-16" />
+
+<script>
+  // Mobile menu toggle
+  const btn = document.getElementById('nav-mobile-btn');
+  const menu = document.getElementById('nav-mobile-menu');
+  const iconOpen = document.getElementById('nav-icon-open');
+  const iconClose = document.getElementById('nav-icon-close');
+
+  btn?.addEventListener('click', () => {
+    const isOpen = !menu?.classList.contains('hidden');
+    menu?.classList.toggle('hidden');
+    iconOpen?.classList.toggle('hidden');
+    iconClose?.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+</script>

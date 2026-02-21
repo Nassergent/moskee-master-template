@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import GeoIcon from '../components/GeoIcon.astro';
+import { fetchDiensten, urlFor } from '../lib/sanity';
+
+const diensten = await fetchDiensten();
+---
+
+<BaseLayout title="Diensten" description="Overzicht van alle diensten bij onze moskee">
+  <!-- Page Header — Dark -->
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <h1 class="text-4xl font-bold mb-4 text-white">Onze Diensten</h1>
+      <p class="text-white/80 max-w-xl mx-auto">
+        Van Koranlessen tot uitvaartbegeleiding — ontdek wat wij bieden aan onze gemeenschap
+      </p>
+    </div>
+  </section>
+
+  <!-- Diensten Grid — Flat cards with left accent border -->
+  <Section variant="light-50">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {diensten.map((dienst, i) => (
+        <a
+          href={`/diensten/${dienst.slug.current}`}
+          class="group bg-white border border-neutral-200 border-l-3 border-l-accent p-8 hover:border-l-primary transition-all animate-slide-up"
+          style={`animation-delay: ${i * 100}ms`}
+        >
+          {dienst.afbeelding ? (
+            <img
+              src={urlFor(dienst.afbeelding).width(400).height(200).fit('crop').url()}
+              alt={dienst.titel}
+              class="w-full h-40 object-cover mb-4 -mx-8 -mt-8 w-[calc(100%+4rem)]"
+              loading="lazy"
+            />
+          ) : (
+            <div class="mb-6"><GeoIcon name={dienst.icoon || 'ster-8'} size="xl" class="text-accent" /></div>
+          )}
+          <h2 class="font-heading text-xl font-bold group-hover:text-primary transition-colors mb-3">
+            {dienst.titel}
+          </h2>
+          <p class="text-neutral-600 text-sm leading-relaxed mb-4">{dienst.beschrijving}</p>
+          <div class="flex items-center gap-2 text-xs text-neutral-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {dienst.tijden}
+          </div>
+        </a>
+      ))}
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section variant="light-100">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Vragen over onze diensten?</h2>
+      <p class="text-neutral-600 mb-8">Neem gerust contact met ons op voor meer informatie of inschrijvingen.</p>
+      <a href="/contact" class="btn-primary inline-flex items-center px-8 py-3 bg-accent hover:bg-accent-hover text-white font-bold transition-all">
+        Contact opnemen
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

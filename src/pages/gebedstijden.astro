@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import PrayerManager from '../components/PrayerManager.astro';
+import EtiquetteGrid from '../components/EtiquetteGrid.astro';
+import IslamicCalendar from '../components/IslamicCalendar.astro';
+import { fetchSettings, fetchPrayerTimes } from '../lib/sanity';
+import { formatHijriDate } from '../lib/hijri';
+
+const hijriToday = formatHijriDate();
+
+const settings = await fetchSettings();
+const prayer = await fetchPrayerTimes();
+---
+
+<BaseLayout title="Gebedstijden" description="Dagelijkse gebedstijden en Jumu'ah informatie">
+  <!-- Page Header — Dark -->
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <h1 class="text-4xl font-bold mb-4 text-white">Gebedstijden</h1>
+      <p class="text-white/80 max-w-xl mx-auto">
+        Dagelijkse gebedstijden en Iqamah via Mawaqit — altijd actueel
+      </p>
+      <p class="text-white/50 font-arabic text-sm mt-3">{hijriToday}</p>
+    </div>
+  </section>
+
+  <!-- Mawaqit + Jumu'ah — Light-50 -->
+  <Section variant="light-50">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl font-bold">Vandaag</h2>
+      <p class="text-neutral-500 mt-2 text-sm">Inclusief Iqamah-tijden — via Mawaqit</p>
+    </div>
+    <div class="max-w-4xl mx-auto">
+      <PrayerManager />
+    </div>
+  </Section>
+
+  <!-- Vrijdaggebed (Jumu'ah) — Light-100 -->
+  {prayer.jumuahShifts && prayer.jumuahShifts.length > 0 && (
+    <Section variant="light-100">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold font-heading text-primary">Vrijdaggebed (Jumu'ah)</h2>
+      </div>
+
+      <div class={`grid gap-6 max-w-3xl mx-auto ${prayer.jumuahShifts.length === 1 ? 'grid-cols-1 max-w-md' : 'grid-cols-1 md:grid-cols-2'}`}>
+        {prayer.jumuahShifts.map((shift: any, i: number) => (
+          <div class="bg-white border border-neutral-200 border-l-4 border-l-primary p-8 text-center">
+            <!-- Seizoen icoon -->
+            <div class={`w-14 h-14 mx-auto mb-4 flex items-center justify-center ${i === 0 ? 'bg-primary/10' : 'bg-accent/10'}`}>
+              {i === 0 ? (
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" /></svg>
+              ) : (
+                <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+              )}
+            </div>
+            <p class="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3">{shift.label}</p>
+            <p class="text-5xl font-bold font-heading text-primary tabular-nums mb-3">{shift.time}</p>
+            {shift.note && (
+              <p class="text-sm text-neutral-400">{shift.note}</p>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {prayer.jumuahNote && (
+        <div class="max-w-3xl mx-auto mt-8">
+          <div class="bg-white border border-neutral-200 border-l-4 border-l-primary p-5">
+            <p class="text-sm text-neutral-600 leading-relaxed text-center">
+              <strong class="text-primary">Let op:</strong> {prayer.jumuahNote.replace(/^Let op:\s*/i, '')}
+            </p>
+          </div>
+        </div>
+      )}
+    </Section>
+  )}
+
+  <!-- Disclaimer — Light-50 -->
+  {prayer.footerNote && (
+    <Section variant="light-50">
+      <div class="max-w-3xl mx-auto">
+        <div class="bg-base-100 border border-neutral-200 p-6 text-center">
+          <p class="text-sm text-neutral-500 leading-relaxed">{prayer.footerNote}</p>
+        </div>
+      </div>
+    </Section>
+  )}
+
+  <!-- Islamitische Kalender — Light-100 -->
+  <Section variant="light-100">
+    <IslamicCalendar />
+  </Section>
+
+  <!-- Huisregels — Light-50 -->
+  <Section variant="light-50">
+    <EtiquetteGrid />
+  </Section>
+</BaseLayout>

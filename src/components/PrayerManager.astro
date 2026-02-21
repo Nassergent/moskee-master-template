@@ -1,0 +1,31 @@
+---
+/**
+ * PrayerManager.astro — Hybride gebedstijden (Flat Design)
+ *
+ * Dagelijkse tijden: Mawaqit iframe (automatisch, incl. Iqamah)
+ * Vrijdaggebed: Handmatig via Sanity CMS
+ */
+import { fetchPrayerTimes } from '../lib/sanity';
+
+interface Props {
+  /** Toon alleen de Mawaqit embed (voor homepage compact view) */
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const prayer = await fetchPrayerTimes();
+const mawaqitUrl = `https://mawaqit.net/nl/${prayer.mawaqitSlug}`;
+---
+
+<!-- Mawaqit Dagelijkse Gebedstijden -->
+<div class="bg-white border border-neutral-200 border-l-4 border-l-accent overflow-hidden">
+  <iframe
+    src={mawaqitUrl}
+    title="Dagelijkse gebedstijden via Mawaqit"
+    class="w-full border-0"
+    style={compact ? 'height: 400px' : 'height: 600px'}
+    loading="lazy"
+    allow="fullscreen"
+  ></iframe>
+</div>
+

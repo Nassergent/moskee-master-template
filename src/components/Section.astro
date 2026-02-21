@@ -1,0 +1,34 @@
+---
+/**
+ * Section.astro — Zebra-striping sectie component (Flat Design)
+ *
+ * Varianten:
+ *   "dark"     → bg-primary-dark, witte tekst
+ *   "light-50" → bg-[#FBF9F7] (base), primary titels
+ *   "light-100"→ bg-[#F5F1ED] (base-100), primary titels
+ *
+ * Elke H2 krijgt automatisch een bg-accent lijn via global CSS.
+ */
+
+interface Props {
+  variant?: 'dark' | 'light-50' | 'light-100';
+  class?: string;
+  id?: string;
+}
+
+const { variant = 'light-50', class: className = '', id } = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  'dark': 'bg-primary-dark text-white',
+  'light-50': 'bg-base text-neutral-900',
+  'light-100': 'bg-base-100 text-neutral-900',
+};
+
+const sectionClass = `py-20 md:py-24 ${variantClasses[variant] || variantClasses['light-50']} ${className}`;
+---
+
+<section class={sectionClass} id={id}>
+  <div class="max-w-[1280px] mx-auto px-6">
+    <slot />
+  </div>
+</section>
