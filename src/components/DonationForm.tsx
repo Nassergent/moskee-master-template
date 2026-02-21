@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
-const presetAmounts = [5, 10, 25, 50, 100];
+const presetAmounts = [10, 25, 50, 100];
 
 interface Props {
-  projectName?: string;
+  projects?: Array<{ titel: string; slug: string }>;
 }
 
-export default function DonationForm({ projectName }: Props) {
-  const [frequency, setFrequency] = useState<'eenmalig' | 'maandelijks'>('maandelijks');
+export default function DonationForm({ projects = [] }: Props) {
   const [amount, setAmount] = useState<number | 'custom'>(25);
   const [customAmount, setCustomAmount] = useState('');
+  const [selectedProject, setSelectedProject] = useState('algemeen');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -31,8 +31,8 @@ export default function DonationForm({ projectName }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: finalAmount,
-          frequency,
-          project: projectName || null,
+          frequency: 'eenmalig',
+          project: selectedProject === 'algemeen' ? 'Algemene Sadaqa' : selectedProject,
         }),
       });
 
@@ -51,109 +51,111 @@ export default function DonationForm({ projectName }: Props) {
   };
 
   const displayAmount = amount === 'custom' ? customAmount || '0' : amount;
-  const frequencyLabel = frequency === 'maandelijks' ? ' per maand' : '';
 
   return (
-    <div className="bg-white p-8 border border-neutral-200">
+    <form onSubmit={handleSubmit} className="space-y-8">
 
-      {/* Frequentie Toggle — Flat tabs */}
-      <div className="flex border border-neutral-200 mb-8">
-        <button
-          type="button"
-          onClick={() => setFrequency('eenmalig')}
-          className={`flex-1 py-3 text-sm font-bold transition-all ${
-            frequency === 'eenmalig'
-              ? 'bg-white text-neutral-900 border-b-2 border-[var(--color-accent)]'
-              : 'bg-neutral-50 text-neutral-500 hover:text-neutral-700'
-          }`}
-        >
-          Eenmalig
-        </button>
-        <button
-          type="button"
-          onClick={() => setFrequency('maandelijks')}
-          className={`flex-1 py-3 text-sm font-bold transition-all ${
-            frequency === 'maandelijks'
-              ? 'bg-[var(--color-primary)] text-white'
-              : 'bg-neutral-50 text-neutral-500 hover:text-neutral-700'
-          }`}
-        >
-          Maandelijks
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-
-        {/* Bedrag Grid — Flat borders */}
-        <div className="grid grid-cols-3 gap-3">
+      {/* Quick-Pay Bedragen — 4 vierkante knoppen */}
+      <div>
+        <label className="block text-sm font-medium text-slate-800 mb-3">Kies een bedrag</label>
+        <div className="grid grid-cols-2 gap-3">
           {presetAmounts.map((preset) => (
             <button
               key={preset}
               type="button"
               onClick={() => { setAmount(preset); setCustomAmount(''); }}
-              className={`py-4 font-bold text-lg border-2 transition-all ${
+              className={`py-5 text-2xl transition-all border ${
                 amount === preset
-                  ? 'border-[var(--color-accent)] bg-[var(--color-accent-light)] text-neutral-900'
-                  : 'border-neutral-200 text-neutral-600 hover:border-[var(--color-accent)]'
+                  ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
+                  : 'bg-transparent text-[var(--color-primary)] border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white'
               }`}
+              style={{ fontFamily: "'Philosopher', serif", fontWeight: 700 }}
             >
               €{preset}
             </button>
           ))}
-          <button
-            type="button"
-            onClick={() => setAmount('custom')}
-            className={`py-4 font-bold text-lg border-2 transition-all ${
-              amount === 'custom'
-                ? 'border-[var(--color-accent)] bg-[var(--color-accent-light)] text-neutral-900'
-                : 'border-neutral-200 text-neutral-600 hover:border-[var(--color-accent)]'
-            }`}
-          >
-            Ander
-          </button>
         </div>
+      </div>
 
-        {/* Custom Input */}
-        {amount === 'custom' && (
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 font-bold">€</span>
-            <input
-              type="number"
-              min="1"
-              max="10000"
-              required
-              value={customAmount}
-              onChange={(e) => setCustomAmount(e.target.value)}
-              placeholder="Vrij bedrag"
-              className="w-full pl-8 pr-4 py-4 border-2 border-[var(--color-accent)] focus:outline-none bg-white text-neutral-900 font-bold text-lg"
-            />
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <p className="text-sm text-red-600 bg-red-50 p-3 text-center">{error}</p>
-        )}
-
-        {/* CTA Knop — Flat */}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white py-4 font-bold text-lg transition-all disabled:opacity-70"
+      {/* Eigen Bedrag */}
+      <div>
+        <label className="block text-sm font-medium text-slate-800 mb-3">Of vul een eigen bedrag in</label>
+        <div
+          className={`relative border-2 transition-all ${
+            amount === 'custom'
+              ? 'border-[var(--color-primary)]'
+              : 'border-neutral-200 hover:border-neutral-300'
+          }`}
         >
-          {isSubmitting
-            ? 'Even geduld...'
-            : `Doneer €${displayAmount}${frequencyLabel}`}
-        </button>
+          <span
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-primary)]"
+            style={{ fontFamily: "'Philosopher', serif", fontWeight: 700, fontSize: '1.875rem' }}
+          >
+            €
+          </span>
+          <input
+            type="number"
+            min="1"
+            max="10000"
+            value={amount === 'custom' ? customAmount : ''}
+            onFocus={() => setAmount('custom')}
+            onChange={(e) => { setAmount('custom'); setCustomAmount(e.target.value); }}
+            placeholder="0"
+            className="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none text-slate-800"
+            style={{ fontFamily: "'Philosopher', serif", fontWeight: 700, fontSize: '1.875rem' }}
+          />
+        </div>
+      </div>
 
-        {/* Trust Badge */}
-        <p className="text-center text-xs text-neutral-500 flex items-center justify-center gap-1">
-          <svg className="w-4 h-4 text-[var(--color-primary)]" fill="currentColor" viewBox="0 0 20 20">
+      {/* Project Kiezer */}
+      <div>
+        <label className="block text-sm font-medium text-slate-800 mb-3">Bestemming</label>
+        <select
+          value={selectedProject}
+          onChange={(e) => setSelectedProject(e.target.value)}
+          className="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-[var(--color-primary)] focus:outline-none transition-colors"
+        >
+          <option value="algemeen">Algemene Sadaqa</option>
+          {projects.map((p) => (
+            <option key={p.slug} value={p.titel}>{p.titel}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <p className="text-sm text-red-600 bg-red-50 p-3 text-center">{error}</p>
+      )}
+
+      {/* Betaalknop — Deep Teal (primary) */}
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white py-4 font-bold text-lg transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+      >
+        {isSubmitting ? (
+          'Even geduld...'
+        ) : (
+          <>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg>
+            Donatie afronden via iDEAL / Bancontact
+          </>
+        )}
+      </button>
+
+      {/* Trust Badges */}
+      <div className="flex items-center justify-center gap-4 pt-2">
+        <p className="text-xs text-neutral-400 flex items-center gap-1.5">
+          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
           </svg>
-          Beveiligde betaling via Mollie (Bancontact, iDEAL, creditcard)
+          Beveiligd via Mollie
         </p>
-      </form>
-    </div>
+        <span className="text-neutral-300">|</span>
+        <p className="text-xs text-neutral-400">Bancontact · iDEAL · Visa · Mastercard</p>
+      </div>
+    </form>
   );
 }

@@ -9,6 +9,12 @@ import { fetchProjecten, fetchSettings, fetchQuote } from '../lib/sanity';
 const projecten = await fetchProjecten();
 const settings = await fetchSettings();
 const quote = await fetchQuote('donaties');
+
+// Project namen doorgeven aan het formulier voor de dropdown
+const projectOptions = projecten.map((p: any) => ({
+  titel: p.titel,
+  slug: p.slug?.current || p.titel.toLowerCase().replace(/\s+/g, '-'),
+}));
 ---
 
 <BaseLayout title="Doneren" description="Steun onze moskee met een donatie">
@@ -22,32 +28,38 @@ const quote = await fetchQuote('donaties');
     </div>
   </section>
 
-  <!-- Islamitisch Citaat -->
+  <!-- Islamitisch Citaat — subtiele accent border-top -->
   <Section variant="light-100">
-    <div class="max-w-3xl mx-auto text-center">
+    <div class="max-w-3xl mx-auto text-center border-t border-accent/30 pt-10">
       {quote.tekstArabisch && (
-        <p class="font-arabic text-2xl text-primary/60 leading-loose mb-6" dir="rtl">
+        <p class="font-arabic text-2xl text-primary/50 leading-loose mb-6" dir="rtl">
           {quote.tekstArabisch}
         </p>
       )}
-      <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-3 border-l-accent pl-6 text-left">
+      <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-[3px] border-l-accent pl-6 text-left">
         "{quote.tekst}"
       </blockquote>
       <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>
     </div>
   </Section>
 
-  <!-- Donatie Formulier + Projecten -->
+  <!-- Tweekolom: Direct Doneren (60%) + Lopende Projecten (40%) -->
   <Section variant="light-50">
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
-      <div class="lg:col-span-2">
-        <h2 class="text-2xl font-bold mb-6">Direct doneren</h2>
-        <DonationForm client:load />
-      </div>
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
+
+      <!-- Links (60%): Direct Doneren Formulier -->
       <div class="lg:col-span-3">
-        <h2 class="text-2xl font-bold mb-6">Lopende Projecten</h2>
+        <h2 class="text-2xl font-bold font-heading text-primary mb-8">Direct doneren</h2>
+        <div class="bg-white border border-neutral-200 p-8">
+          <DonationForm client:load projects={projectOptions} />
+        </div>
+      </div>
+
+      <!-- Rechts (40%): Lopende Projecten -->
+      <div class="lg:col-span-2">
+        <h2 class="text-2xl font-bold font-heading text-primary mb-8">Lopende Projecten</h2>
         <div class="space-y-6">
-          {projecten.map((project) => (
+          {projecten.map((project: any) => (
             <DonationCard
               titel={project.titel}
               beschrijving={project.beschrijving}
@@ -59,42 +71,40 @@ const quote = await fetchQuote('donaties');
           ))}
         </div>
       </div>
+
     </div>
   </Section>
 
-  <!-- Rekeninggegevens -->
+  <!-- Rekeninggegevens — Overschrijving -->
   <Section variant="light-100">
     <div class="max-w-3xl mx-auto">
       <div class="bg-white border border-neutral-200 p-8 md:p-10 text-center">
         <div class="flex justify-center mb-4"><GeoIcon name="hexagon" size="xl" class="text-accent" /></div>
-        <h2 class="text-2xl font-bold mb-6">Overschrijving</h2>
+        <h2 class="text-2xl font-bold font-heading mb-6">Overschrijving</h2>
         <div class="space-y-3 text-sm">
           <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-            <span class="text-neutral-500">Begunstigde</span>
-            <span class="font-medium">{settings.mosqueName}</span>
+            <span class="text-slate-500">Begunstigde</span>
+            <span class="font-medium text-slate-800">{settings.mosqueName}</span>
           </div>
           <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-            <span class="text-neutral-500">IBAN</span>
-            <span class="font-mono font-medium">{settings.iban || 'BE00 0000 0000 0000'}</span>
+            <span class="text-slate-500">IBAN</span>
+            <span class="font-mono font-medium text-slate-800">{settings.iban || 'BE00 0000 0000 0000'}</span>
           </div>
           <div class="flex justify-between items-center py-3">
-            <span class="text-neutral-500">Mededeling</span>
-            <span class="font-medium">Donatie + projectnaam</span>
+            <span class="text-slate-500">Mededeling</span>
+            <span class="font-medium text-slate-800">Donatie + projectnaam</span>
           </div>
         </div>
-        <p class="text-xs text-neutral-400 mt-6">
-          Vul uw rekeninggegevens in via het Sanity CMS onder "Site Instellingen".
-        </p>
       </div>
     </div>
   </Section>
 
-  <!-- Contact -->
+  <!-- Contact CTA -->
   <Section variant="light-50">
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-4">Vragen over doneren?</h2>
-      <p class="text-neutral-600 mb-6">Neem contact op voor meer informatie over donatiemogelijkheden.</p>
-      <a href="/contact" class="btn-primary inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-hover text-white font-semibold transition-all">
+      <h2 class="text-2xl font-bold font-heading mb-4">Vragen over doneren?</h2>
+      <p class="text-slate-600 mb-6">Neem contact op voor meer informatie over donatiemogelijkheden.</p>
+      <a href="/contact" class="btn-primary inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold transition-all">
         Contact opnemen
       </a>
     </div>

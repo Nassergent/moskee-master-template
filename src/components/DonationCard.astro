@@ -14,8 +14,8 @@ const { titel, beschrijving, doelbedrag, huidigBedrag, actief, afbeelding } = As
 const percentage = doelbedrag > 0 ? Math.min(Math.round((huidigBedrag / doelbedrag) * 100), 100) : 0;
 ---
 
-<!-- Flat Design Card: no rounded, no shadow, 3px left accent border -->
-<div class="bg-white border border-neutral-200 border-l-3 border-l-accent overflow-hidden">
+<!-- Flat Design Card: bg-white, 3px accent left border, no shadow, no rounded -->
+<div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent overflow-hidden">
   {afbeelding && (
     <img
       src={urlFor(afbeelding).width(600).height(250).fit('crop').url()}
@@ -26,32 +26,32 @@ const percentage = doelbedrag > 0 ? Math.min(Math.round((huidigBedrag / doelbedr
   )}
   <div class="p-6">
     <div class="flex items-start justify-between mb-3">
-      <h3 class="font-heading text-lg font-bold">{titel}</h3>
+      <h3 class="font-heading text-lg font-bold text-primary">{titel}</h3>
       {actief && (
         <span class="badge text-xs bg-accent/10 text-accent font-semibold px-2.5 py-1 rounded-full">Actief</span>
       )}
     </div>
-    <p class="text-neutral-600 text-sm leading-relaxed mb-5">{beschrijving}</p>
+    <p class="text-slate-600 text-sm leading-relaxed mb-5">{beschrijving}</p>
 
-    <!-- Progress Bar — Flat -->
+    <!-- Progress Bar — Goud vulling op lichte accent achtergrond -->
     <div class="mb-3">
-      <div class="flex justify-between text-xs text-neutral-500 mb-1.5">
+      <div class="flex justify-between text-xs text-slate-500 mb-1.5">
         <span>&euro;{huidigBedrag.toLocaleString('nl-BE')}</span>
         <span>&euro;{doelbedrag.toLocaleString('nl-BE')}</span>
       </div>
-      <div class="w-full h-2 bg-neutral-100 overflow-hidden">
+      <div class="w-full h-2.5 bg-accent/10 overflow-hidden">
         <div
           class="h-full bg-accent transition-all duration-500"
           style={`width: ${percentage}%`}
         />
       </div>
-      <p class="text-xs text-neutral-400 mt-1.5">{percentage}% bereikt</p>
+      <p class="text-xs text-slate-400 mt-1.5">{percentage}% bereikt</p>
     </div>
 
-    <!-- CTA — Flat -->
+    <!-- CTA — Primary (Deep Teal) -->
     <a
       href="/doneren"
-      class="btn-primary block text-center bg-accent hover:bg-accent-hover text-white py-3 font-bold text-sm transition-all mt-4"
+      class="btn-primary block text-center bg-primary hover:bg-primary-dark text-white py-3 font-bold text-sm transition-all mt-4"
     >
       Steun dit project
     </a>
