@@ -6,16 +6,21 @@ import { fetchNieuws, urlFor } from '../../lib/sanity';
 
 export async function getStaticPaths() {
   const nieuws = await fetchNieuws();
-  return nieuws.map((item: any) => ({
-    params: { slug: item.slug.current },
-    props: { item },
-  }));
+  return nieuws
+    .filter((item: any) => item.slug?.current)
+    .map((item: any) => ({
+      params: { slug: item.slug.current },
+      props: { item },
+    }));
 }
 
 export const prerender = true;
 
 const { item } = Astro.props;
-const datum = new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric', month: 'long', day: 'numeric' });
+if (!item?.titel) return Astro.redirect('/nieuws');
+const datum = item.datum
+  ? new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric', month: 'long', day: 'numeric' })
+  : '';
 const ogImage = item.afbeelding ? urlFor(item.afbeelding).width(1200).height(630).fit('crop').url() : undefined;
 ---
 

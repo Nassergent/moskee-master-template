@@ -15,6 +15,7 @@ export const aboutPage = defineType({
       title: 'Missie Titel',
       type: 'string',
       group: 'missie',
+      description: 'Bijv. "Onze Missie", "Wie zijn wij?"',
     }),
     defineField({
       name: 'missieText',

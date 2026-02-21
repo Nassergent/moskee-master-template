@@ -177,6 +177,7 @@ const demoSettings = {
     showAshura: true,
     showIsraMiraj: true,
   },
+  volunteerTasks: ['Koken', 'Kuisen', 'Onderhoud', 'Evenementen', 'Educatie', 'Administratie'],
   donateButtonText: 'Doneer',
   address: 'Voorbeeldstraat 1, 1000 Brussel',
   city: 'Brussels',

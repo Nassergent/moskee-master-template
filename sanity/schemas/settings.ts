@@ -223,6 +223,16 @@ export const settings = defineType({
       initialValue: 'Bedankt voor je gulle bijdrage. We hebben je donatie in goede orde ontvangen.',
     }),
 
+    // === VRIJWILLIGERS ===
+    defineField({
+      name: 'volunteerTasks',
+      title: 'Vrijwilligers Taken',
+      type: 'array',
+      of: [{ type: 'string' }],
+      group: 'general',
+      description: 'Beheer hier de lijst met taken waarvoor mensen zich kunnen aanmelden als vrijwilliger. Voeg een taak toe (bijv. "Plopsaland begeleiding") en deze verschijnt direct op de website én krijgt een eigen map in het beheeroverzicht.',
+    }),
+
     // === CONTACT & SOCIALS ===
     defineField({
       name: 'address',

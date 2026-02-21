@@ -20,6 +20,10 @@
   --color-accent-light: var(--theme-accent-light, #f5ede4);
   --color-accent-hover: var(--theme-accent-hover, #7a5229);
 
+  /* WhatsApp */
+  --color-whatsapp: #25D366;
+  --color-whatsapp-hover: #1da851;
+
   /* Neutral / Gray */
   --color-neutral-50: #F9FAFB;
   --color-neutral-100: #F3F4F6;

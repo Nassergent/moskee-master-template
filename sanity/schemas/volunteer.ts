@@ -2,14 +2,20 @@ import { defineType, defineField } from 'sanity';
 
 export const volunteer = defineType({
   name: 'volunteer',
-  title: 'Vrijwilliger',
+  title: 'Vrijwilligers',
   type: 'document',
+  groups: [
+    { name: 'info', title: 'Gegevens', default: true },
+    { name: 'beheer', title: 'Beheer' },
+  ],
   fields: [
+    // === GEGEVENS (read-only, vanuit formulier) ===
     defineField({
       name: 'naam',
       title: 'Naam',
       type: 'string',
       readOnly: true,
+      group: 'info',
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -17,6 +23,7 @@ export const volunteer = defineType({
       title: 'E-mail',
       type: 'string',
       readOnly: true,
+      group: 'info',
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -24,50 +31,58 @@ export const volunteer = defineType({
       title: 'Telefoon',
       type: 'string',
       readOnly: true,
+      group: 'info',
     }),
     defineField({
       name: 'taken',
-      title: 'Interesses / Taken',
+      title: 'Gekozen Taken',
       type: 'array',
       of: [{ type: 'string' }],
       readOnly: true,
-      options: {
-        list: [
-          { title: 'Koken', value: 'koken' },
-          { title: 'Kuisen', value: 'kuisen' },
-          { title: 'Onderhoud', value: 'onderhoud' },
-          { title: 'Evenementen', value: 'evenementen' },
-          { title: 'Educatie', value: 'educatie' },
-          { title: 'Administratie', value: 'administratie' },
-        ],
-      },
+      group: 'info',
+      description: 'De taken die deze persoon heeft gekozen bij aanmelding.',
     }),
     defineField({
       name: 'bericht',
-      title: 'Bericht',
+      title: 'Bericht van vrijwilliger',
       type: 'text',
       readOnly: true,
+      group: 'info',
     }),
     defineField({
       name: 'aanmeldDatum',
       title: 'Aanmelddatum',
       type: 'datetime',
       readOnly: true,
+      group: 'info',
     }),
+
+    // === BEHEER (bewerkbaar door Imam/coördinator) ===
     defineField({
       name: 'status',
       title: 'Status',
       type: 'string',
+      group: 'beheer',
       options: {
         list: [
-          { title: 'Nieuw', value: 'nieuw' },
-          { title: 'Gecontacteerd', value: 'gecontacteerd' },
-          { title: 'Actief', value: 'actief' },
+          { title: '🆕 Nieuwe Aanmelding', value: 'nieuw' },
+          { title: '📞 Gecontacteerd', value: 'gecontacteerd' },
+          { title: '✅ Actief', value: 'actief' },
+          { title: '❌ Inactief', value: 'inactief' },
         ],
         layout: 'radio',
         direction: 'horizontal',
       },
       initialValue: 'nieuw',
+      description: 'Wijzig de status zodra u contact heeft opgenomen met een nieuwe vrijwilliger.',
+    }),
+    defineField({
+      name: 'interneNotities',
+      title: 'Interne Notities',
+      type: 'text',
+      rows: 5,
+      group: 'beheer',
+      description: 'Gespreksverslagen, opmerkingen of afspraken. Dit is NIET zichtbaar op de website.',
     }),
   ],
   orderings: [
@@ -76,12 +91,30 @@ export const volunteer = defineType({
       name: 'aanmeldDatumDesc',
       by: [{ field: 'aanmeldDatum', direction: 'desc' }],
     },
+    {
+      title: 'Status',
+      name: 'statusAsc',
+      by: [{ field: 'status', direction: 'asc' }],
+    },
   ],
   preview: {
-    select: { title: 'naam', subtitle: 'status' },
-    prepare({ title, subtitle }) {
-      const labels: Record<string, string> = { nieuw: 'Nieuw', gecontacteerd: 'Gecontacteerd', actief: 'Actief' };
-      return { title: title || 'Geen naam', subtitle: labels[subtitle] || subtitle };
+    select: { title: 'naam', status: 'status', telefoon: 'telefoon', taken: 'taken' },
+    prepare({ title, status, telefoon, taken }) {
+      const statusMap: Record<string, string> = {
+        nieuw: '🆕',
+        gecontacteerd: '📞',
+        actief: '✅',
+        inactief: '❌',
+      };
+      const badge = statusMap[status] || '🆕';
+      const takenStr = Array.isArray(taken) && taken.length > 0
+        ? taken.join(', ')
+        : '';
+      const telStr = telefoon ? ` | 📱 ${telefoon}` : '';
+      return {
+        title: `${badge} ${title || 'Geen naam'}${telStr}`,
+        subtitle: takenStr,
+      };
     },
   },
 });

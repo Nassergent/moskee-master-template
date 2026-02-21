@@ -30,7 +30,7 @@ export const POST: APIRoute = async ({ request }) => {
     const mollieClient = createMollieClient({ apiKey: mollieKey });
     const payment = await mollieClient.payments.get(paymentId);
 
-    console.log(`Mollie webhook: Payment ${paymentId} status=${payment.status}, amount=${payment.amount.value}`);
+    // Payment verwerking: status en bedrag worden gelogd bij fouten via console.error
 
     // Alleen bij succesvolle betaling
     if (payment.status === 'paid') {
@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
             .set({ huidigBedrag: currentAmount + paidAmount })
             .commit();
 
-          console.log(`Sanity: Project "${projectName}" huidigBedrag: €${currentAmount} → €${currentAmount + paidAmount}`);
+          // Project bedrag succesvol bijgewerkt in Sanity
         }
       }
 
@@ -107,7 +107,7 @@ export const POST: APIRoute = async ({ request }) => {
               </div>
             `,
           });
-          console.log(`Bedankmail verstuurd naar ${donorEmail}`);
+          // Bedankmail succesvol verstuurd
         } catch (emailErr) {
           console.error('Bedankmail fout:', emailErr);
         }

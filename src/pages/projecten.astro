@@ -21,23 +21,28 @@ const quote = await fetchQuote('donaties');
   </section>
 
   <!-- Islamitisch Citaat -->
-  <Section variant="light-100">
-    <div class="max-w-3xl mx-auto text-center">
-      {quote.tekstArabisch && (
-        <p class="font-arabic text-2xl text-primary/60 leading-loose mb-6" dir="rtl">
-          {quote.tekstArabisch}
-        </p>
-      )}
-      <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-3 border-l-accent pl-6 text-left">
-        "{quote.tekst}"
-      </blockquote>
-      <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>
-    </div>
-  </Section>
+  {quote?.tekst && (
+    <Section variant="light-100">
+      <div class="max-w-3xl mx-auto text-center">
+        {quote.tekstArabisch && (
+          <p class="font-arabic text-2xl text-primary/60 leading-loose mb-6" dir="rtl">
+            {quote.tekstArabisch}
+          </p>
+        )}
+        <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-3 border-l-accent pl-6 text-left">
+          "{quote.tekst}"
+        </blockquote>
+        {quote.bron && <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>}
+      </div>
+    </Section>
+  )}
 
   <!-- Projects Grid -->
   <Section variant="light-50">
     <div class="max-w-5xl mx-auto">
+      {projecten.length === 0 && (
+        <p class="text-center text-neutral-500 py-12">Er zijn momenteel geen actieve projecten.</p>
+      )}
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         {projecten.map((project) => (
           <DonationCard

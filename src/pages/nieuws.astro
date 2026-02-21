@@ -22,7 +22,7 @@ const nieuws = await fetchNieuws();
   <Section variant="light-50">
     <div class="max-w-5xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {nieuws.map((item) => (
+        {nieuws.filter((item) => item.slug?.current).map((item) => (
           <a
             href={`/nieuws/${item.slug.current}`}
             class="group bg-white border border-neutral-200 border-l-3 border-l-accent overflow-hidden hover:border-l-primary transition-all"

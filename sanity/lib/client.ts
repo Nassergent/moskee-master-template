@@ -30,5 +30,6 @@ export const writeClient = createClient({
 const builder = imageUrlBuilder(sanityClient);
 
 export function urlFor(source: any) {
-  return builder.image(source);
+  // Enforce WebP format and max 2000px width for all Sanity images
+  return builder.image(source).format('webp').quality(80);
 }

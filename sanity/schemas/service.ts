@@ -9,12 +9,14 @@ export const service = defineType({
       name: 'titel',
       title: 'Titel',
       type: 'string',
+      description: 'De naam van deze dienst zoals getoond op de website.',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+      description: 'URL-pad voor de detailpagina. Klik op "Generate" om automatisch aan te maken.',
       options: { source: 'titel', maxLength: 96 },
       validation: (rule) => rule.required(),
     }),
@@ -23,6 +25,7 @@ export const service = defineType({
       title: 'Korte Beschrijving',
       type: 'text',
       rows: 3,
+      description: 'Wordt getoond op de overzichtspagina en in Google-zoekresultaten.',
     }),
     defineField({
       name: 'icoon',
@@ -48,11 +51,13 @@ export const service = defineType({
       name: 'afbeelding',
       title: 'Afbeelding',
       type: 'image',
+      description: 'Optionele foto voor deze dienst. Aanbevolen: liggend formaat, min. 800px breed.',
       options: { hotspot: true },
     }),
     defineField({
       name: 'inhoud',
       title: 'Inhoud',
+      description: 'Uitgebreide tekst voor de detailpagina. U kunt hier ook afbeeldingen toevoegen.',
       type: 'array',
       of: [
         { type: 'block' },
@@ -69,6 +74,7 @@ export const service = defineType({
       name: 'volgorde',
       title: 'Volgorde',
       type: 'number',
+      description: 'Lagere nummers verschijnen eerst op de overzichtspagina.',
     }),
   ],
   orderings: [

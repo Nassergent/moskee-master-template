@@ -7,18 +7,21 @@ import { fetchDiensten } from '../../lib/sanity';
 
 export async function getStaticPaths() {
   const diensten = await fetchDiensten();
-  return diensten.map((dienst: any) => ({
-    params: { slug: dienst.slug.current },
-    props: { dienst },
-  }));
+  return diensten
+    .filter((dienst: any) => dienst.slug?.current)
+    .map((dienst: any) => ({
+      params: { slug: dienst.slug.current },
+      props: { dienst },
+    }));
 }
 
 export const prerender = true;
 
 const { dienst } = Astro.props;
+if (!dienst?.titel) return Astro.redirect('/diensten');
 ---
 
-<BaseLayout title={dienst.titel} description={dienst.beschrijving}>
+<BaseLayout title={dienst.titel} description={dienst.beschrijving || ''}>
   <!-- Page Header — Dark -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6">
@@ -32,7 +35,7 @@ const { dienst } = Astro.props;
         <GeoIcon name={dienst.icoon || 'ster-8'} size="xl" class="text-accent-light" />
         <div>
           <h1 class="text-4xl font-bold text-white">{dienst.titel}</h1>
-          <p class="text-white/70 mt-2">{dienst.tijden}</p>
+          {dienst.tijden && <p class="text-white/70 mt-2">{dienst.tijden}</p>}
         </div>
       </div>
     </div>
@@ -53,7 +56,7 @@ const { dienst } = Astro.props;
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p class="text-sm font-medium text-primary mb-1">Wanneer</p>
-              <p class="font-medium">{dienst.tijden}</p>
+              <p class="font-medium">{dienst.tijden || 'Neem contact op'}</p>
             </div>
             <div>
               <p class="text-sm font-medium text-primary mb-1">Locatie</p>

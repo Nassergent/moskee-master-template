@@ -23,7 +23,7 @@ const diensten = await fetchDiensten();
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {diensten.map((dienst, i) => (
         <a
-          href={`/diensten/${dienst.slug.current}`}
+          href={`/diensten/${dienst.slug?.current || dienst._id}`}
           class="group bg-white border border-neutral-200 border-l-3 border-l-accent p-8 hover:border-l-primary transition-all animate-slide-up"
           style={`animation-delay: ${i * 100}ms`}
         >
@@ -45,7 +45,7 @@ const diensten = await fetchDiensten();
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {dienst.tijden}
+            {dienst.tijden || 'Neem contact op'}
           </div>
         </a>
       ))}

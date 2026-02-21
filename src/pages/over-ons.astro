@@ -12,6 +12,7 @@ const aboutPage = await fetchAboutPage();
 const missieTitle = aboutPage.missieTitle || demoAboutPage.missieTitle;
 const waarden = aboutPage.waarden?.length ? aboutPage.waarden : demoAboutPage.waarden;
 const team = aboutPage.team || [];
+const vrijwilligerTaken = settings.volunteerTasks?.length ? settings.volunteerTasks : ['Koken', 'Kuisen', 'Onderhoud', 'Evenementen', 'Educatie', 'Administratie'];
 
 const missieImageUrl = aboutPage.missieImage
   ? urlFor(aboutPage.missieImage).width(600).height(600).format('webp').url()
@@ -115,7 +116,7 @@ const fallbackMissieText = [
           Wil je bijdragen aan onze gemeenschap? Meld je aan als vrijwilliger en help mee met activiteiten, onderhoud en meer.
         </p>
       </div>
-      <VolunteerForm />
+      <VolunteerForm taken={vrijwilligerTaken} />
     </div>
   </Section>
 

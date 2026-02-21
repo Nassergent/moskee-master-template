@@ -1,75 +1,92 @@
 ---
-// Vrijwilligersformulier — POST naar /api/vrijwilligers
+/**
+ * VolunteerForm.astro — Premium Flat Design vrijwilligersformulier
+ * Taken worden dynamisch opgehaald uit Sanity CMS (aboutPage.vrijwilligerTaken)
+ */
+interface Props {
+  taken?: string[];
+}
+
+const { taken = [] } = Astro.props;
 ---
 
-<form id="volunteer-form" class="space-y-5">
+<form id="volunteer-form" class="space-y-6">
   {/* Honeypot — verborgen voor echte gebruikers */}
   <div class="hidden" aria-hidden="true">
     <input type="text" name="website" tabindex="-1" autocomplete="off" />
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
     <div>
-      <label for="vol-naam" class="block text-sm font-medium text-neutral-700 mb-1">Naam *</label>
+      <label for="vol-naam" class="block text-sm font-heading font-semibold text-primary mb-2">Naam *</label>
       <input type="text" id="vol-naam" name="naam" required
-        class="w-full px-4 py-3 border border-neutral-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-        placeholder="Uw naam" />
+        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
+        placeholder="Uw volledige naam" />
     </div>
     <div>
-      <label for="vol-email" class="block text-sm font-medium text-neutral-700 mb-1">E-mail *</label>
+      <label for="vol-email" class="block text-sm font-heading font-semibold text-primary mb-2">E-mail *</label>
       <input type="email" id="vol-email" name="email" required
-        class="w-full px-4 py-3 border border-neutral-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
         placeholder="uw@email.be" />
     </div>
   </div>
+
   <div>
-    <label for="vol-telefoon" class="block text-sm font-medium text-neutral-700 mb-1">Telefoon</label>
+    <label for="vol-telefoon" class="block text-sm font-heading font-semibold text-primary mb-2">Telefoon</label>
     <input type="tel" id="vol-telefoon" name="telefoon"
-      class="w-full px-4 py-3 border border-neutral-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+      class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
       placeholder="+32 xxx xx xx xx" />
   </div>
 
-  <fieldset>
-    <legend class="block text-sm font-medium text-neutral-700 mb-3">Waar wil je bij helpen?</legend>
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {['Koken', 'Kuisen', 'Onderhoud', 'Evenementen', 'Educatie', 'Administratie'].map((taak) => (
-        <label class="flex items-center gap-2 cursor-pointer text-sm text-neutral-600 hover:text-neutral-900 transition-colors">
-          <input type="checkbox" name="taken" value={taak.toLowerCase()}
-            class="w-4 h-4 accent-primary" />
-          {taak}
-        </label>
-      ))}
+  {taken.length > 0 && (
+    <div>
+      <label for="vol-taak" class="block text-sm font-heading font-semibold text-primary mb-2">Waar wil je bij helpen?</label>
+      <select id="vol-taak" name="taak"
+        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
+        <option value="">Kies een taak</option>
+        {taken.map((taak: string) => (
+          <option value={taak.toLowerCase()}>{taak}</option>
+        ))}
+      </select>
     </div>
-  </fieldset>
+  )}
 
   <div>
-    <label for="vol-bericht" class="block text-sm font-medium text-neutral-700 mb-1">Bericht</label>
+    <label for="vol-bericht" class="block text-sm font-heading font-semibold text-primary mb-2">Bericht</label>
     <textarea id="vol-bericht" name="bericht" rows="3"
-      class="w-full px-4 py-3 border border-neutral-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-y"
-      placeholder="Eventuele opmerkingen..."></textarea>
+      class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all resize-y text-sm"
+      placeholder="Vertel ons kort waarom u vrijwilliger wilt worden..."></textarea>
   </div>
 
-  <button type="submit"
-    class="btn-primary w-full py-3 px-6 bg-accent hover:bg-accent-hover text-white font-semibold transition-all">
+  <button type="submit" id="volunteer-btn"
+    class="w-full py-3.5 px-6 bg-accent text-white font-heading font-bold text-sm tracking-wide hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
     Aanmelden als vrijwilliger
   </button>
-  <div id="volunteer-status" class="hidden text-center py-3 text-sm font-medium"></div>
+
+  <div id="volunteer-status" class="hidden"></div>
 </form>
 
 <script>
   const form = document.getElementById('volunteer-form') as HTMLFormElement;
-  const status = document.getElementById('volunteer-status') as HTMLDivElement;
+  const statusEl = document.getElementById('volunteer-status') as HTMLDivElement;
+  const btn = document.getElementById('volunteer-btn') as HTMLButtonElement;
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(form);
 
-    const taken = formData.getAll('taken') as string[];
+    // Loading state
+    const originalText = btn.textContent;
+    btn.textContent = 'Versturen...';
+    btn.disabled = true;
+
+    const formData = new FormData(form);
+    const taak = formData.get('taak') as string;
+
     const data = {
       naam: formData.get('naam'),
       email: formData.get('email'),
       telefoon: formData.get('telefoon') || '',
-      taken,
+      taken: taak ? [taak] : [],
       bericht: formData.get('bericht') || '',
       website: formData.get('website') || '',
     };
@@ -82,15 +99,29 @@
       });
 
       if (res.ok) {
-        status.textContent = 'Bedankt voor uw aanmelding! Wij nemen contact met u op.';
-        status.className = 'text-center py-3 text-sm font-medium bg-green-50 text-green-700';
+        statusEl.innerHTML = `
+          <div class="bg-primary/5 border-l-4 border-primary p-4 text-sm">
+            <p class="font-heading font-bold text-primary mb-1">Aanmelding ontvangen</p>
+            <p class="text-neutral-600">Jazak Allahu Khairan! Wij nemen zo snel mogelijk contact met u op.</p>
+          </div>
+        `;
+        statusEl.className = '';
         form.reset();
       } else {
-        throw new Error();
+        const result = await res.json().catch(() => ({}));
+        throw new Error(result.error || 'Verzending mislukt');
       }
-    } catch {
-      status.textContent = 'Er is iets misgegaan. Probeer het later opnieuw.';
-      status.className = 'text-center py-3 text-sm font-medium bg-red-50 text-red-700';
+    } catch (err: any) {
+      statusEl.innerHTML = `
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 text-sm">
+          <p class="font-heading font-bold text-red-700 mb-1">Fout bij verzenden</p>
+          <p class="text-red-600">${err.message || 'Er is iets misgegaan. Probeer het later opnieuw.'}</p>
+        </div>
+      `;
+      statusEl.className = '';
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
     }
   });
 </script>

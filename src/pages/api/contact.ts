@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { sanityClient } from '../../lib/sanity';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot } from '../../lib/security';
+import { contactNotificationEmail } from '../../lib/email-templates';
 
 export const prerender = false;
 
@@ -57,27 +58,33 @@ export const POST: APIRoute = async ({ request }) => {
     const apiKey = import.meta.env.RESEND_API_KEY;
 
     if (apiKey && apiKey !== 're_xxxxxxxxxxxx') {
-      const settings = await sanityClient.fetch(`*[_id == "settings"][0].email`);
-      const contactEmail = settings || 'info@moskee.be';
+      const settings = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, email, theme }`);
+      const mosqueName = settings?.mosqueName || 'Onze Moskee';
+      const contactEmail = settings?.email || 'info@moskee.be';
 
       const resend = new Resend(apiKey);
       await resend.emails.send({
-        from: 'Moskee Website <onboarding@resend.dev>',
+        from: `${mosqueName} <onboarding@resend.dev>`,
         to: [contactEmail],
         replyTo: email,
-        subject: `Contactformulier: ${onderwerp || 'Algemeen'}`,
-        html: `
-          <h2>Nieuw bericht via contactformulier</h2>
-          <p><strong>Naam:</strong> ${naam}</p>
-          <p><strong>E-mail:</strong> ${email}</p>
-          <p><strong>Telefoon:</strong> ${telefoon || 'Niet opgegeven'}</p>
-          <p><strong>Onderwerp:</strong> ${onderwerp || 'Niet opgegeven'}</p>
-          <hr />
-          <p>${bericht.replace(/\n/g, '<br />')}</p>
-        `,
+        subject: `📩 Contactformulier: ${onderwerp || 'Algemeen'} — ${naam}`,
+        html: contactNotificationEmail({
+          mosqueName,
+          mosqueEmail: contactEmail,
+          naam,
+          email,
+          telefoon,
+          onderwerp,
+          bericht,
+          colors: settings?.theme ? {
+            primary: settings.theme.primaryColor,
+            accent: settings.theme.accentColor,
+            base: settings.theme.baseColor,
+          } : undefined,
+        }),
       });
     } else {
-      console.log('Contact form submission (no Resend API key):', { naam, email, onderwerp, bericht });
+      // Geen Resend API key — formulier accepteert data zonder e-mail te versturen
     }
 
     return new Response(JSON.stringify({ success: true }), {

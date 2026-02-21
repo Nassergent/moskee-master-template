@@ -20,7 +20,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     const mollieKey = import.meta.env.MOLLIE_API_KEY;
     if (!mollieKey || mollieKey === 'test_xxxxxxxxxxxx') {
       // Graceful fallback: log de donatie maar redirect naar bedankt
-      console.log('Donatie ontvangen (geen Mollie key):', { amount: numAmount, frequency, project });
+      // Geen Mollie key — graceful fallback naar bedankt-pagina
       const bedanktParams = new URLSearchParams({
         bedrag: numAmount.toFixed(2),
         bestemming: project || 'Algemene Sadaqa',

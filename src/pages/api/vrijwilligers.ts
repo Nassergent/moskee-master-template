@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { writeClient, sanityClient } from '../../lib/sanity';
 import { Resend } from 'resend';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot } from '../../lib/security';
+import { volunteerNotificationEmail, volunteerConfirmationEmail } from '../../lib/email-templates';
 
 export const prerender = false;
 
@@ -20,7 +21,6 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Honeypot check
     if (isBot(data)) {
-      // Stille afwijzing — bot denkt dat het gelukt is
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -50,6 +50,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    // Sla vrijwilliger op in Sanity
     await writeClient.create({
       _type: 'volunteer',
       naam,
@@ -61,51 +62,57 @@ export const POST: APIRoute = async ({ request }) => {
       status: 'nieuw',
     });
 
-    // Stuur bevestigingsmail naar de vrijwilliger
+    // Haal settings op voor e-mails
     const resendKey = import.meta.env.RESEND_API_KEY;
     if (resendKey && resendKey !== 're_xxxxxxxxxxxx') {
       try {
-        const settings = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, email }`);
+        const settings = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, email, theme }`);
         const mosqueName = settings?.mosqueName || 'Onze Moskee';
+        const mosqueEmail = settings?.email;
+        const colors = settings?.theme ? {
+          primary: settings.theme.primaryColor,
+          accent: settings.theme.accentColor,
+          base: settings.theme.baseColor,
+        } : undefined;
 
         const resend = new Resend(resendKey);
+
+        // 1. Notificatie naar de moskee
+        if (mosqueEmail) {
+          await resend.emails.send({
+            from: `${mosqueName} <onboarding@resend.dev>`,
+            to: [mosqueEmail],
+            replyTo: email,
+            subject: `👥 Nieuwe vrijwilliger: ${naam}`,
+            html: volunteerNotificationEmail({
+              mosqueName,
+              mosqueEmail,
+              naam,
+              email,
+              telefoon,
+              taken,
+              bericht,
+              colors,
+            }),
+          });
+        }
+
+        // 2. Bevestiging naar de vrijwilliger
         await resend.emails.send({
           from: `${mosqueName} <onboarding@resend.dev>`,
           to: [email],
-          replyTo: settings?.email || undefined,
+          replyTo: mosqueEmail || undefined,
           subject: `Welkom als vrijwilliger bij ${mosqueName}`,
-          html: `
-            <div style="font-family: 'Lato', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1E293B;">
-              <div style="background-color: #1D5C6B; padding: 32px; text-align: center;">
-                <h1 style="color: white; font-family: Georgia, serif; margin: 0; font-size: 24px;">
-                  Jazak Allahu Khairan
-                </h1>
-              </div>
-              <div style="padding: 32px; background-color: #FBF9F7;">
-                <p style="font-size: 16px; line-height: 1.6;">Assalamu Alaikum ${naam},</p>
-                <p style="font-size: 16px; line-height: 1.6;">
-                  Bedankt voor je aanmelding als vrijwilliger bij <strong>${mosqueName}</strong>.
-                  Wij waarderen je inzet enorm en nemen binnenkort contact met je op.
-                </p>
-                ${taken.length > 0 ? `
-                <div style="background: white; border: 1px solid #E5E7EB; border-left: 3px solid #593B1D; padding: 16px; margin: 20px 0;">
-                  <p style="font-size: 14px; color: #6B7280; margin: 0 0 8px;">Je hebt je aangemeld voor:</p>
-                  <p style="font-size: 14px; font-weight: bold; margin: 0;">${taken.join(', ')}</p>
-                </div>
-                ` : ''}
-                <p style="font-size: 14px; color: #6B7280; text-align: center; font-style: italic; margin-top: 24px;">
-                  "De beste onder de mensen is degene die het meest nuttig is voor anderen."
-                  <br /><span style="color: #593B1D; font-weight: 600;">— Hadith</span>
-                </p>
-              </div>
-              <div style="padding: 16px; text-align: center; font-size: 12px; color: #9CA3AF;">
-                ${mosqueName}${settings?.email ? ` — ${settings.email}` : ''}
-              </div>
-            </div>
-          `,
+          html: volunteerConfirmationEmail({
+            mosqueName,
+            mosqueEmail,
+            naam,
+            taken,
+            colors,
+          }),
         });
       } catch (emailErr) {
-        console.error('Vrijwilliger bevestigingsmail fout:', emailErr);
+        console.error('Vrijwilliger e-mail fout:', emailErr);
       }
     }
 

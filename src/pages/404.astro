@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GeoIcon from '../components/GeoIcon.astro';
+
+export const prerender = true;
+---
+
+<BaseLayout title="Pagina niet gevonden" description="De pagina die u zoekt bestaat niet of is verplaatst.">
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <div class="flex justify-center mb-6">
+        <GeoIcon name="mihrab" size="xl" class="text-accent-light !w-20 !h-20 opacity-40" />
+      </div>
+      <h1 class="text-6xl font-bold mb-4 text-white">404</h1>
+      <p class="text-xl text-white/80 mb-2">Pagina niet gevonden</p>
+      <p class="text-white/60 max-w-md mx-auto">
+        De pagina die u zoekt bestaat niet of is verplaatst.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-base py-16">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+      <p class="text-neutral-600 mb-8">Misschien vindt u wat u zoekt via een van deze pagina's:</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="/" class="bg-white border border-neutral-200 border-t-3 border-t-accent p-4 hover:border-t-primary transition-all text-center">
+          <GeoIcon name="mihrab" size="md" class="text-accent mx-auto mb-2" />
+          <span class="text-sm font-medium">Home</span>
+        </a>
+        <a href="/gebedstijden" class="bg-white border border-neutral-200 border-t-3 border-t-accent p-4 hover:border-t-primary transition-all text-center">
+          <GeoIcon name="maan" size="md" class="text-accent mx-auto mb-2" />
+          <span class="text-sm font-medium">Gebedstijden</span>
+        </a>
+        <a href="/diensten" class="bg-white border border-neutral-200 border-t-3 border-t-accent p-4 hover:border-t-primary transition-all text-center">
+          <GeoIcon name="rozet" size="md" class="text-accent mx-auto mb-2" />
+          <span class="text-sm font-medium">Diensten</span>
+        </a>
+        <a href="/contact" class="bg-white border border-neutral-200 border-t-3 border-t-accent p-4 hover:border-t-primary transition-all text-center">
+          <GeoIcon name="ster-4" size="md" class="text-accent mx-auto mb-2" />
+          <span class="text-sm font-medium">Contact</span>
+        </a>
+      </div>
+      <a href="/" class="btn-primary inline-flex items-center px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold transition-all mt-8">
+        Terug naar home
+      </a>
+    </div>
+  </section>
+</BaseLayout>
