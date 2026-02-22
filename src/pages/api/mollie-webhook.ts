@@ -6,6 +6,10 @@ import { checkRateLimit, getClientIp, claimPayment, escapeHtml } from '../../lib
 
 export const prerender = false;
 
+export const GET: APIRoute = async () => {
+  return new Response('Webhook endpoint', { status: 405 });
+};
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     // Rate limiting op webhook endpoint (bescherming tegen abuse)

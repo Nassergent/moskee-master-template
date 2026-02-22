@@ -5,6 +5,10 @@ import { checkRateLimit, getClientIp, checkOrigin, isBot } from '../../lib/secur
 
 export const prerender = false;
 
+export const GET: APIRoute = async () => {
+  return new Response(null, { status: 302, headers: { Location: '/doneren' } });
+};
+
 export const POST: APIRoute = async ({ request, url }) => {
   try {
     // CSRF origin check
