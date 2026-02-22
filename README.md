@@ -49,6 +49,7 @@ SANITY_WRITE_TOKEN=sk...write-token...
 
 # Mollie Betalingen (uit Stap 5)
 MOLLIE_API_KEY=test_xxxxxxxxxxxx
+MOLLIE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxx
 
 # Resend E-mail (uit Stap 6)
 RESEND_API_KEY=re_xxxxxxxxxxxx
@@ -68,9 +69,12 @@ Vervang het project ID op **drie plekken**:
 2. Doorloop de verificatie (KVK/VZW nodig)
 3. Ga naar **Developers** → **API keys**
 4. Kopieer de **Test API key** → `MOLLIE_API_KEY` in `.env`
-5. Na goedkeuring: vervang door de **Live API key**
+5. Ga naar **Developers** → **Webhooks** → klik op je webhook-endpoint → kopieer de **Webhook secret** → `MOLLIE_WEBHOOK_SECRET` in `.env`
+6. Na goedkeuring: vervang door de **Live API key**
 
 > **Let op:** Zonder Mollie key werkt het donatieformulier in demo-modus (redirect naar bedankt-pagina zonder echte betaling).
+>
+> **Webhook secret:** De `MOLLIE_WEBHOOK_SECRET` wordt gebruikt om inkomende webhooks cryptografisch te verifiëren (HMAC-SHA256). Zonder deze secret worden webhooks niet gevalideerd op herkomst.
 
 ### Stap 6: Resend E-mail (optioneel)
 
@@ -104,6 +108,7 @@ npm run dev
 | `SANITY_API_TOKEN` | `sk...read-token...` |
 | `SANITY_WRITE_TOKEN` | `sk...write-token...` |
 | `MOLLIE_API_KEY` | `test_xxx` of `live_xxx` |
+| `MOLLIE_WEBHOOK_SECRET` | `whsec_xxx` (uit Developers → Webhooks) |
 | `RESEND_API_KEY` | `re_xxx` |
 
 5. Klik **Deploy**
@@ -222,6 +227,7 @@ PUBLIC_SANITY_PROJECT_ID: De unieke sleutel van hun Sanity project.
 SANITY_API_TOKEN: Voor het lezen van data.
 SANITY_WRITE_TOKEN: Voor het opslaan van vrijwilligers/donaties.
 MOLLIE_API_KEY: Voor hun eigen bankrekening.
+MOLLIE_WEBHOOK_SECRET: Webhook secret uit Mollie Dashboard (Developers → Webhooks).
 RESEND_API_KEY: Voor de branded e-mail notificaties.
 UPSTASH_REDIS_REST_URL & TOKEN: Voor de beveiliging (rate limiting).
 🛡️ Onderhoud & Support
