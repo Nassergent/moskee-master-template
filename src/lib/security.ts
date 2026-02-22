@@ -99,6 +99,10 @@ export function isBot(data: Record<string, any>): boolean {
  */
 export function checkOrigin(request: Request, siteUrl: string): Response | null {
   const origin = request.headers.get('origin');
+  const allowed = new URL(siteUrl).origin;
+
+  console.log('[CSRF] origin header:', origin, '| allowed:', allowed);
+
   if (!origin) {
     return new Response(JSON.stringify({ error: 'Forbidden' }), {
       status: 403,
@@ -106,8 +110,8 @@ export function checkOrigin(request: Request, siteUrl: string): Response | null 
     });
   }
 
-  const allowed = new URL(siteUrl).origin;
   if (origin !== allowed) {
+    console.log('[CSRF] MISMATCH — blocked request from', origin);
     return new Response(JSON.stringify({ error: 'Forbidden' }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' },
