@@ -14,7 +14,10 @@ interface Props {
 
 const { compact = false } = Astro.props;
 const prayer = await fetchPrayerTimes();
-const mawaqitUrl = `https://mawaqit.net/nl/${prayer.mawaqitSlug}`;
+// Accepteer zowel een slug ("moskee-el-fath") als een volledige URL ("https://mawaqit.net/nl/moskee-el-fath")
+const mawaqitUrl = prayer.mawaqitSlug?.startsWith('http')
+  ? prayer.mawaqitSlug
+  : `https://mawaqit.net/nl/${prayer.mawaqitSlug}`;
 ---
 
 <!-- Mawaqit Dagelijkse Gebedstijden -->
