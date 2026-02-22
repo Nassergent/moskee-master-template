@@ -1,7 +1,8 @@
 import type { APIRoute } from 'astro';
 import { createMollieClient } from '@mollie/api-client';
-import { sanityClient } from '../../lib/sanity';
+import { fetchSettings } from '../../lib/sanity';
 import { checkRateLimit, getClientIp, checkOrigin, isBot } from '../../lib/security';
+import { validatePaymentAmount } from '../../lib/logic/payment-validators';
 
 export const prerender = false;
 
@@ -11,7 +12,6 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
-    // Determine the real site origin (url.origin can be localhost on Vercel)
     const host = request.headers.get('host');
     const siteOrigin = host
       ? `https://${host}`
@@ -42,19 +42,18 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const { amount, frequency, project, email } = data;
 
-    // Validatie
-    const numAmount = parseFloat(amount);
-    if (!numAmount || numAmount < 1 || numAmount > 10000) {
-      return new Response(JSON.stringify({ error: 'Ongeldig bedrag (min €1, max €10.000).' }), {
+    // Validate via logic compartiment
+    const validation = validatePaymentAmount(amount);
+    if (!validation.valid) {
+      return new Response(JSON.stringify({ error: validation.error }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
     }
+    const numAmount = validation.amount!;
 
     const mollieKey = import.meta.env.MOLLIE_API_KEY;
     if (!mollieKey || mollieKey === 'test_xxxxxxxxxxxx') {
-      // Graceful fallback: log de donatie maar redirect naar bedankt
-      // Geen Mollie key — graceful fallback naar bedankt-pagina
       const bedanktParams = new URLSearchParams({
         bedrag: numAmount.toFixed(2),
         bestemming: project || 'Algemene Sadaqa',
@@ -69,8 +68,8 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    // Haal moskeenaam op voor beschrijving
-    const settings = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName }`);
+    // Fetch via centralized Sanity layer
+    const settings = await fetchSettings();
     const mosqueName = settings?.mosqueName || 'Moskee';
 
     const mollieClient = createMollieClient({ apiKey: mollieKey });
@@ -88,7 +87,6 @@ export const POST: APIRoute = async ({ request, url }) => {
       },
       description,
       redirectUrl: `${siteOrigin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(project || 'Algemene Sadaqa')}`,
-      // Skip webhook in test mode (Mollie validates reachability)
       ...(isTestKey ? {} : { webhookUrl: `${siteOrigin}/api/mollie-webhook` }),
       metadata: {
         frequency,

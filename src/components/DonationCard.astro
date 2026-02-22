@@ -1,20 +1,19 @@
 ---
 import { urlFor } from '../lib/sanity';
+import { calculateDonationProgress } from '../lib/logic/donation-utils';
 
 interface Props {
   titel: string;
   beschrijving: string;
   doelbedrag: number;
-  huidigBedrag: number;
+  /** Current amount in integer cents */
+  huidigBedragCents: number;
   actief: boolean;
   afbeelding?: any;
 }
 
-const { titel, beschrijving, doelbedrag, huidigBedrag, actief, afbeelding } = Astro.props;
-const percentage = doelbedrag > 0 ? Math.min(Math.round((huidigBedrag / doelbedrag) * 100), 100) : 0;
-const remaining = doelbedrag > 0 ? Math.max(doelbedrag - huidigBedrag, 0) : 0;
-const isUrgent = percentage >= 80 && percentage < 100;
-const isComplete = percentage >= 100;
+const { titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding } = Astro.props;
+const { percentage, remaining, huidigEuros, isUrgent, isComplete } = calculateDonationProgress(huidigBedragCents, doelbedrag);
 ---
 
 <!-- Flat Design Card: bg-white, 3px accent left border, no shadow, no rounded -->
@@ -39,7 +38,7 @@ const isComplete = percentage >= 100;
     <!-- Progress Bar -->
     <div class="mb-3">
       <div class="flex justify-between text-xs text-slate-500 mb-1.5">
-        <span>&euro;{huidigBedrag.toLocaleString('nl-BE')}</span>
+        <span>&euro;{huidigEuros.toLocaleString('nl-BE', { minimumFractionDigits: 2 })}</span>
         <span>&euro;{doelbedrag.toLocaleString('nl-BE')}</span>
       </div>
       <div class:list={['w-full h-3 overflow-hidden', isUrgent ? 'bg-accent/20' : 'bg-accent/10']}>

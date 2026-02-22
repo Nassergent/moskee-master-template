@@ -3,25 +3,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import DonationCard from '../components/DonationCard.astro';
 import { fetchProjecten, fetchSettings, fetchAllQuotes } from '../lib/sanity';
+import { calculateProjectStats } from '../lib/logic/project-utils';
 
 const projecten = await fetchProjecten();
 const settings = await fetchSettings();
 const quotes = await fetchAllQuotes('donaties');
 
 const hasProjects = projecten && projecten.length > 0;
-
-// Social proof: totaal opgehaald bedrag over alle projecten
-const totalRaised = hasProjects
-  ? projecten.reduce((sum: number, p: any) => sum + (p.huidigBedrag || 0), 0)
-  : 0;
-const activeProjectCount = hasProjects ? projecten.length : 0;
-
-const projectOptions = hasProjects
-  ? projecten.map((p: any) => ({
-      titel: p.titel,
-      slug: p.slug?.current || p.titel.toLowerCase().replace(/\s+/g, '-'),
-    }))
-  : [];
+const { totalRaised, activeCount: activeProjectCount, options: projectOptions } = hasProjects
+  ? calculateProjectStats(projecten)
+  : { totalRaised: 0, activeCount: 0, options: [] };
 ---
 
 <BaseLayout title="Doneren" description="Steun onze moskee met een donatie">
@@ -198,7 +189,7 @@ const projectOptions = hasProjects
                 titel={project.titel}
                 beschrijving={project.beschrijving}
                 doelbedrag={project.doelbedrag}
-                huidigBedrag={project.huidigBedrag}
+                huidigBedragCents={project.huidigBedragCents || 0}
                 actief={project.actief}
                 afbeelding={project.afbeelding}
               />

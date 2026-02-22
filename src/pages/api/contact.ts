@@ -1,8 +1,6 @@
 import type { APIRoute } from 'astro';
-import { Resend } from 'resend';
-import { sanityClient } from '../../lib/sanity';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
-import { contactNotificationEmail } from '../../lib/email-templates';
+import { sendContactNotification } from '../../services/email-service';
 
 export const prerender = false;
 
@@ -66,37 +64,8 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    const apiKey = import.meta.env.RESEND_API_KEY;
-
-    if (apiKey && apiKey !== 're_xxxxxxxxxxxx') {
-      const settings = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, email, theme }`);
-      const mosqueName = settings?.mosqueName || 'Onze Moskee';
-      const contactEmail = settings?.email || 'info@moskee.be';
-
-      const resend = new Resend(apiKey);
-      await resend.emails.send({
-        from: `${mosqueName} <onboarding@resend.dev>`,
-        to: [contactEmail],
-        replyTo: email,
-        subject: `📩 Contactformulier: ${onderwerp || 'Algemeen'} — ${naam}`,
-        html: contactNotificationEmail({
-          mosqueName,
-          mosqueEmail: contactEmail,
-          naam,
-          email,
-          telefoon,
-          onderwerp,
-          bericht,
-          colors: settings?.theme ? {
-            primary: settings.theme.primaryColor,
-            accent: settings.theme.accentColor,
-            base: settings.theme.baseColor,
-          } : undefined,
-        }),
-      });
-    } else {
-      // Geen Resend API key — formulier accepteert data zonder e-mail te versturen
-    }
+    // Delegate to email service
+    await sendContactNotification({ naam, email, telefoon, onderwerp, bericht });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

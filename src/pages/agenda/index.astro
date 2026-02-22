@@ -3,30 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
+import { extractCategories, formatDatum, formatTijd } from '../../lib/logic/agenda-utils';
 
 const settings = await fetchSettings();
 const events = await fetchAgendaEvents();
 const hijriToday = formatHijriDate();
-
-function formatDatum(datum: string): string {
-  return new Date(datum).toLocaleDateString('nl-BE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    timeZone: 'Europe/Brussels',
-  });
-}
-
-function formatTijd(datum: string): string {
-  const str = new Date(datum).toLocaleTimeString('nl-BE', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Europe/Brussels',
-  });
-  return str === '00:00' ? '' : str;
-}
-
-const categorieen = [...new Set(events.map((e: any) => e.categorie).filter(Boolean))];
+const categorieen = extractCategories(events);
 ---
 
 <BaseLayout title="Agenda" description="Ontdek de activiteiten en evenementen van onze moskee.">

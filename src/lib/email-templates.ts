@@ -204,6 +204,49 @@ export function volunteerNotificationEmail(opts: {
 
 // ── 3. Vrijwilliger Bevestiging (naar de vrijwilliger zelf) ──
 
+// ── 3. Donatie Bevestiging (naar de donateur) ──
+
+export function donationConfirmationEmail(opts: {
+  mosqueName: string;
+  paidAmount: number;
+  safeProjectName: string;
+  mosqueEmail?: string;
+  colors?: Partial<EmailColors>;
+}): string {
+  const c = { ...defaultColors, ...opts.colors };
+
+  const content = `
+    <p style="font-size: 16px; line-height: 1.6; color: #334155;">Assalamu Alaikum,</p>
+    <p style="font-size: 16px; line-height: 1.6; color: #334155;">
+      Bedankt voor uw gulle donatie aan <strong>${opts.mosqueName}</strong>.
+      Uw bijdrage maakt een verschil voor onze gemeenschap.
+    </p>
+    <div style="background: white; border: 1px solid #E5E7EB; border-left: 3px solid ${c.accent}; padding: 20px; margin: 24px 0;">
+      <table style="width: 100%; font-size: 14px;">
+        <tr>
+          <td style="padding: 8px 0; color: #6B7280;">Bedrag</td>
+          <td style="padding: 8px 0; text-align: right; font-weight: bold; font-size: 18px; color: ${c.primary};">&euro;${opts.paidAmount.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #6B7280;">Bestemming</td>
+          <td style="padding: 8px 0; text-align: right; font-weight: 500;">${opts.safeProjectName}</td>
+        </tr>
+      </table>
+    </div>
+    <p style="font-size: 14px; color: #6B7280; text-align: center; font-style: italic; margin-top: 24px;">
+      "De rijkdom van een persoon wordt niet verminderd door Sadaqah."
+      <br /><span style="color: ${c.accent}; font-weight: 600;">— Sahih Muslim 2588</span>
+    </p>`;
+
+  return emailWrapper(content, {
+    mosqueName: opts.mosqueName,
+    mosqueEmail: opts.mosqueEmail,
+    colors: opts.colors,
+  });
+}
+
+// ── 4. Vrijwilliger Bevestiging (naar de vrijwilliger zelf) ──
+
 export function volunteerConfirmationEmail(opts: {
   mosqueName: string;
   mosqueEmail?: string;

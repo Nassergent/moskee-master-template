@@ -130,15 +130,19 @@ export function checkOrigin(request: Request, siteUrl: string): Response | null 
 
 // ── Idempotency helpers (webhook deduplication) ──
 
+// Tenant prefix voor multi-tenant Redis isolatie
+const tenantId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'default';
+
 const processedPayments = new Map<string, number>();
 
 /**
  * Check of een payment al is verwerkt. Gebruikt Redis (productie) of in-memory (dev).
+ * Redis keys zijn tenant-prefixed om cross-tenant collisions te voorkomen.
  * Returns true als het payment NIEUW is en verwerkt mag worden.
  * Returns false als het al verwerkt is (skip).
  */
 export async function claimPayment(paymentId: string): Promise<boolean> {
-  const key = `processed:${paymentId}`;
+  const key = `${tenantId}:processed:${paymentId}`;
 
   // Redis: atomic SET NX met 24h TTL
   if (redis) {

@@ -28,7 +28,7 @@ export async function fetchDiensten() {
 export async function fetchProjecten() {
   try {
     const result = await sanityClient.fetch(`*[_type == "project" && actief == true] | order(_createdAt desc) {
-      _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedrag, actief,
+      _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, actief,
       citaat->{ tekst, tekstArabisch, bron }
     }`);
     if (result) return result;
@@ -157,6 +157,20 @@ export async function fetchEtiquette() {
   return demoEtiquette;
 }
 
+// ── Centralized query helpers (used by services + API routes) ────────
+
+export async function fetchProjectByTitle(titel: string) {
+  try {
+    return await sanityClient.fetch(
+      `*[_type == "project" && titel == $titel][0]{ _id }`,
+      { titel }
+    );
+  } catch (e) {
+    console.error('Sanity fetchProjectByTitle error:', e);
+    return null;
+  }
+}
+
 // ── Demo/placeholder data ───────────────────────────────────────────
 
 const demoPrayerTimes = {
@@ -251,7 +265,7 @@ const demoProjecten = [
     slug: { current: 'renovatie-gebedsruimte' },
     beschrijving: 'Help ons de gebedsruimte te renoveren met nieuw tapijt, verlichting en airconditioning voor een comfortabele gebedservaring.',
     doelbedrag: 25000,
-    huidigBedrag: 17500,
+    huidigBedragCents: 1750000,
     actief: true,
   },
   {
@@ -260,7 +274,7 @@ const demoProjecten = [
     slug: { current: 'zomerkamp-jeugd-2026' },
     beschrijving: 'Organiseer een educatief zomerkamp voor de jeugd met sportactiviteiten, workshops en islamitisch onderwijs.',
     doelbedrag: 5000,
-    huidigBedrag: 2100,
+    huidigBedragCents: 210000,
     actief: true,
   },
 ];

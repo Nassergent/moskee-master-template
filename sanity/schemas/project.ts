@@ -36,10 +36,12 @@ export const project = defineType({
       description: 'Het totaalbedrag dat u wilt inzamelen voor dit project.',
     }),
     defineField({
-      name: 'huidigBedrag',
-      title: 'Huidig Bedrag (€)',
+      name: 'huidigBedragCents',
+      title: 'Huidig Bedrag (centen)',
       type: 'number',
-      description: 'Het bedrag dat al is ingezameld. Wordt automatisch bijgewerkt na een online donatie.',
+      initialValue: 0,
+      readOnly: true,
+      description: 'Automatisch bijgewerkt na een online donatie. Waarde in centen (1750000 = €17.500,00). Niet handmatig aanpassen.',
     }),
     defineField({
       name: 'citaat',

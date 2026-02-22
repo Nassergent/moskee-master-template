@@ -1,8 +1,7 @@
 import type { APIRoute } from 'astro';
-import { writeClient, sanityClient } from '../../lib/sanity';
-import { Resend } from 'resend';
+import { writeClient } from '../../lib/sanity';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
-import { volunteerNotificationEmail, volunteerConfirmationEmail } from '../../lib/email-templates';
+import { sendVolunteerEmails } from '../../services/email-service';
 
 export const prerender = false;
 
@@ -73,58 +72,11 @@ export const POST: APIRoute = async ({ request, url }) => {
       status: 'nieuw',
     });
 
-    // Haal settings op voor e-mails
-    const resendKey = import.meta.env.RESEND_API_KEY;
-    if (resendKey && resendKey !== 're_xxxxxxxxxxxx') {
-      try {
-        const settings = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, email, theme }`);
-        const mosqueName = settings?.mosqueName || 'Onze Moskee';
-        const mosqueEmail = settings?.email;
-        const colors = settings?.theme ? {
-          primary: settings.theme.primaryColor,
-          accent: settings.theme.accentColor,
-          base: settings.theme.baseColor,
-        } : undefined;
-
-        const resend = new Resend(resendKey);
-
-        // 1. Notificatie naar de moskee
-        if (mosqueEmail) {
-          await resend.emails.send({
-            from: `${mosqueName} <onboarding@resend.dev>`,
-            to: [mosqueEmail],
-            replyTo: email,
-            subject: `👥 Nieuwe vrijwilliger: ${naam}`,
-            html: volunteerNotificationEmail({
-              mosqueName,
-              mosqueEmail,
-              naam,
-              email,
-              telefoon,
-              taken,
-              bericht,
-              colors,
-            }),
-          });
-        }
-
-        // 2. Bevestiging naar de vrijwilliger
-        await resend.emails.send({
-          from: `${mosqueName} <onboarding@resend.dev>`,
-          to: [email],
-          replyTo: mosqueEmail || undefined,
-          subject: `Welkom als vrijwilliger bij ${mosqueName}`,
-          html: volunteerConfirmationEmail({
-            mosqueName,
-            mosqueEmail,
-            naam,
-            taken,
-            colors,
-          }),
-        });
-      } catch (emailErr) {
-        console.error('Vrijwilliger e-mail fout:', emailErr);
-      }
+    // Delegate email sending to service
+    try {
+      await sendVolunteerEmails({ naam, email, telefoon, taken, bericht });
+    } catch (emailErr) {
+      console.error('Vrijwilliger e-mail fout:', emailErr);
     }
 
     return new Response(JSON.stringify({ success: true }), {

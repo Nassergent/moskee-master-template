@@ -2,15 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import { fetchSettings } from '../lib/sanity';
+import { parseDonationParams } from '../lib/logic/donation-utils';
 
 export const prerender = false;
 
 const settings = await fetchSettings();
-
-// Haal donatie-info op uit query params (van Mollie redirect)
-const bedrag = Astro.url.searchParams.get('bedrag');
-const bestemming = Astro.url.searchParams.get('bestemming');
-const isDemo = Astro.url.searchParams.get('demo') === 'true';
+const { bedrag, bestemming, isDemo } = parseDonationParams(Astro.url);
 
 const bedanktTekst = settings.bedanktTekst
   || 'Bedankt voor je gulle bijdrage. We hebben je donatie in goede orde ontvangen.';
