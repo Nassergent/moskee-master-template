@@ -11,8 +11,14 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
+    // Determine the real site origin (url.origin can be localhost on Vercel)
+    const host = request.headers.get('host');
+    const siteOrigin = host
+      ? `https://${host}`
+      : import.meta.env.PUBLIC_SITE_URL || url.origin;
+
     // CSRF origin check
-    const originError = checkOrigin(request, url.origin);
+    const originError = checkOrigin(request, siteOrigin);
     if (originError) return originError;
 
     // Rate limiting: max 5 donaties per IP per minuut
@@ -56,7 +62,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
       return new Response(JSON.stringify({
         success: true,
-        redirectUrl: `${url.origin}/bedankt?${bedanktParams.toString()}`,
+        redirectUrl: `${siteOrigin}/bedankt?${bedanktParams.toString()}`,
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -81,9 +87,9 @@ export const POST: APIRoute = async ({ request, url }) => {
         value: numAmount.toFixed(2),
       },
       description,
-      redirectUrl: `${url.origin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(project || 'Algemene Sadaqa')}`,
+      redirectUrl: `${siteOrigin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(project || 'Algemene Sadaqa')}`,
       // Skip webhook in test mode (Mollie validates reachability)
-      ...(isTestKey ? {} : { webhookUrl: `${url.origin}/api/mollie-webhook` }),
+      ...(isTestKey ? {} : { webhookUrl: `${siteOrigin}/api/mollie-webhook` }),
       metadata: {
         frequency,
         project: project || 'Algemeen',
