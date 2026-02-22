@@ -38,7 +38,7 @@ const prayer = await fetchPrayerTimes();
       <!-- Tekst-fallback voor SEO (iframe-content is niet indexeerbaar) -->
       <noscript>
         <p class="text-center text-sm text-neutral-500 mt-4">
-          Bekijk de actuele gebedstijden op <a href={prayer.mawaqitSlug?.startsWith('http') ? prayer.mawaqitSlug : `https://mawaqit.net/nl/${prayer.mawaqitSlug}`} class="text-primary underline">Mawaqit</a>.
+          Bekijk de actuele gebedstijden op <a href={`https://mawaqit.net/nl/${prayer.mawaqitSlug?.startsWith('http') ? new URL(prayer.mawaqitSlug).pathname.split('/').filter(Boolean).pop() : prayer.mawaqitSlug}`} class="text-primary underline">Mawaqit</a>.
         </p>
       </noscript>
       <p class="sr-only">
