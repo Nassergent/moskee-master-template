@@ -99,9 +99,6 @@ export function isBot(data: Record<string, any>): boolean {
  */
 export function checkOrigin(request: Request, siteUrl: string): Response | null {
   const origin = request.headers.get('origin');
-  const allowed = new URL(siteUrl).origin;
-
-  console.log('[CSRF] origin header:', origin, '| allowed:', allowed);
 
   if (!origin) {
     return new Response(JSON.stringify({ error: 'Forbidden' }), {
@@ -110,15 +107,25 @@ export function checkOrigin(request: Request, siteUrl: string): Response | null 
     });
   }
 
-  if (origin !== allowed) {
-    console.log('[CSRF] MISMATCH — blocked request from', origin);
-    return new Response(JSON.stringify({ error: 'Forbidden' }), {
-      status: 403,
-      headers: { 'Content-Type': 'application/json' },
-    });
+  // Use Host header as primary check (works on any deployment URL)
+  const host = request.headers.get('host');
+  const originHost = new URL(origin).host;
+
+  if (host && originHost === host) {
+    return null; // Same host — allowed
   }
 
-  return null;
+  // Fallback: check against site config
+  const allowed = new URL(siteUrl).origin;
+  if (origin === allowed) {
+    return null;
+  }
+
+  console.log('[CSRF] BLOCKED — origin:', origin, '| host:', host, '| allowed:', allowed);
+  return new Response(JSON.stringify({ error: 'Forbidden' }), {
+    status: 403,
+    headers: { 'Content-Type': 'application/json' },
+  });
 }
 
 // ── Idempotency helpers (webhook deduplication) ──

@@ -10,7 +10,7 @@ import sitemap from '@astrojs/sitemap';
 const env = loadEnv('', process.cwd(), 'PUBLIC_');
 
 export default defineConfig({
-  site: 'https://moskee-template.vercel.app',
+  site: 'https://moskee-master-template.vercel.app',
   output: 'server',
   adapter: vercel(),
   integrations: [
