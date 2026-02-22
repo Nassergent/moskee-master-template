@@ -73,6 +73,8 @@ export const POST: APIRoute = async ({ request, url }) => {
       ? `Donatie: ${project} — ${mosqueName}`
       : `${frequency === 'maandelijks' ? 'Maandelijkse d' : 'D'}onatie — ${mosqueName}`;
 
+    const isTestKey = mollieKey.startsWith('test_');
+
     const payment = await mollieClient.payments.create({
       amount: {
         currency: 'EUR',
@@ -80,7 +82,8 @@ export const POST: APIRoute = async ({ request, url }) => {
       },
       description,
       redirectUrl: `${url.origin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(project || 'Algemene Sadaqa')}`,
-      webhookUrl: `${url.origin}/api/mollie-webhook`,
+      // Skip webhook in test mode (Mollie validates reachability)
+      ...(isTestKey ? {} : { webhookUrl: `${url.origin}/api/mollie-webhook` }),
       metadata: {
         frequency,
         project: project || 'Algemeen',
