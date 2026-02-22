@@ -43,6 +43,14 @@ export const homePage = defineType({
       description: 'Schakel de actueel sectie op de homepage in/uit',
     }),
     defineField({
+      name: 'badgeKleur',
+      title: 'Badge Kleur',
+      type: 'string',
+      initialValue: '#593B1D',
+      description: 'De kleur van de welkom-badges. Formaat: #RRGGBB (bijv. #593B1D voor bruin, #1D5C6B voor blauw, #D4AF37 voor goud)',
+      validation: (rule) => rule.regex(/^#[0-9A-Fa-f]{6}$/, { name: 'hex kleur', invert: false }).error('Voer een geldige hex kleur in (bijv. #593B1D)'),
+    }),
+    defineField({
       name: 'badges',
       title: 'Welkom Badges',
       type: 'array',

@@ -340,7 +340,7 @@ const demoEtiquette = [
 export async function fetchHomePage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "homePage"][0]{
-      heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, seoTitle, seoDescription
+      heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur, seoTitle, seoDescription
     }`);
     if (result) return result;
   } catch (e) {

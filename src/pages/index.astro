@@ -18,6 +18,7 @@ const heroTitle = homePage?.heroTitle || 'Welkom bij';
 const heroSubtitle = homePage?.heroSubtitle || settings.description;
 const heroCta = homePage?.heroCta || 'Gebedstijden bekijken';
 const badges = homePage?.badges?.length ? homePage.badges : ['Allen Welkom', 'Të gjithë të mirëpritur', 'All Welcome', 'الجميع مرحب به'];
+const badgeKleur = homePage?.badgeKleur || '#593B1D';
 const toonActueel = homePage?.toonActueel ?? true;
 ---
 
@@ -33,7 +34,7 @@ const toonActueel = homePage?.toonActueel ?? true;
           <!-- Meertalige badges uit CMS -->
           <div class="flex flex-wrap gap-2 mb-6">
             {badges.map((badge: string) => (
-              <span class="badge px-4 py-1.5 text-sm font-semibold rounded-full border border-accent/30 bg-accent/15 text-accent-light">{badge}</span>
+              <span class="badge px-4 py-1.5 text-sm font-semibold rounded-full border" style={`border-color: ${badgeKleur}40; background-color: ${badgeKleur}20; color: ${badgeKleur}`}>{badge}</span>
             ))}
           </div>
 
