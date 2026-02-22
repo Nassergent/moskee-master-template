@@ -77,7 +77,7 @@ const settings = await fetchSettings();
 
       <!-- Kolom 2: Navigatie (respecteert menuToggles) -->
       <div>
-        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: #c9a983;">Snelkoppelingen</h4>
+        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: var(--color-accent-gold);">Snelkoppelingen</h4>
         <ul class="space-y-3 text-sm">
           <li><a href="/gebedstijden" class="text-white/90 hover:text-white transition-colors">Gebedstijden</a></li>
           {(settings?.menuToggles?.showServices ?? true) && (
@@ -101,7 +101,7 @@ const settings = await fetchSettings();
 
       <!-- Kolom 3: Contact & Bezoek -->
       <div>
-        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: #c9a983;">Contact & Bezoek</h4>
+        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: var(--color-accent-gold);">Contact & Bezoek</h4>
         <ul class="space-y-3 text-sm">
           {settings?.address && (
             <li class="flex items-start gap-3">
@@ -138,7 +138,7 @@ const settings = await fetchSettings();
 
       <!-- Kolom 4: Transparantie -->
       <div>
-        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: #c9a983;">Transparantie</h4>
+        <h4 class="font-bold mb-5 uppercase tracking-widest text-xs" style="color: var(--color-accent-gold);">Transparantie</h4>
         <p class="text-xs mb-4 text-white/85 leading-relaxed">
           Wij zijn een officiële non-profit organisatie. Uw donaties zijn in veilige handen.
         </p>

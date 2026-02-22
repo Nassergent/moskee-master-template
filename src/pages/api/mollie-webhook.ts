@@ -5,6 +5,31 @@ import { processSuccessfulPayment } from '../../services/payment-service';
 
 export const prerender = false;
 
+/**
+ * Verify Mollie webhook signature (HMAC-SHA256).
+ * Returns true if verification passes or if no secret is configured (dev mode).
+ */
+async function verifyMollieSignature(request: Request, body: string): Promise<boolean> {
+  const secret = import.meta.env.MOLLIE_WEBHOOK_SECRET;
+  if (!secret) return true; // Skip in dev when no secret configured
+
+  const signature = request.headers.get('x-mollie-signature');
+  if (!signature) return false;
+
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  );
+  const signed = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
+  const computed = btoa(String.fromCharCode(...new Uint8Array(signed)));
+
+  return signature === computed;
+}
+
 export const GET: APIRoute = async () => {
   return new Response('Webhook endpoint', { status: 405 });
 };
@@ -17,16 +42,24 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response('Rate limited', { status: 429 });
     }
 
+    // Read raw body for signature verification
+    const rawBody = await request.text();
+
+    // Verify Mollie HMAC-SHA256 signature
+    if (!(await verifyMollieSignature(request, rawBody))) {
+      console.warn('Mollie webhook: invalid signature');
+      return new Response('Invalid signature', { status: 401 });
+    }
+
     // Parse request — Mollie kan form-urlencoded OF JSON sturen
     const contentType = request.headers.get('content-type') || '';
     let paymentId: string;
 
     if (contentType.includes('application/json')) {
-      const body = await request.json();
-      paymentId = body.id;
+      paymentId = JSON.parse(rawBody).id;
     } else {
-      const formData = await request.formData();
-      paymentId = formData.get('id') as string;
+      const params = new URLSearchParams(rawBody);
+      paymentId = params.get('id') || '';
     }
 
     if (!paymentId || typeof paymentId !== 'string' || !paymentId.startsWith('tr_')) {
