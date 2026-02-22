@@ -2,12 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import DonationCard from '../components/DonationCard.astro';
-import GeoIcon from '../components/GeoIcon.astro';
-import { fetchProjecten, fetchSettings, fetchQuote } from '../lib/sanity';
+import { fetchProjecten, fetchSettings, fetchAllQuotes } from '../lib/sanity';
 
 const projecten = await fetchProjecten();
 const settings = await fetchSettings();
-const quote = await fetchQuote('donaties');
+const quotes = await fetchAllQuotes('donaties');
 
 const hasProjects = projecten && projecten.length > 0;
 
@@ -36,19 +35,37 @@ const projectOptions = hasProjects
     </div>
   </section>
 
-  <!-- Islamitisch Citaat -->
-  {quote?.tekst && (
+  <!-- Islamitische Citaten Carousel -->
+  {quotes.length > 0 && (
     <Section variant="light-100">
-      <div class="max-w-3xl mx-auto text-center border-t border-accent/30 pt-10">
-        {quote.tekstArabisch && (
-          <p class="font-arabic text-2xl text-primary/50 leading-loose mb-6" dir="rtl">
-            {quote.tekstArabisch}
-          </p>
+      <div class="max-w-3xl mx-auto text-center py-4">
+        <div id="quote-carousel-doneren" class="relative min-h-[180px] flex items-center justify-center" aria-live="polite">
+          {quotes.map((q: any, i: number) => (
+            <div class:list={['quote-slide-doneren absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-700', i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none']}>
+              {q.tekstArabisch && (
+                <p class="font-arabic text-3xl md:text-4xl leading-loose mb-6 text-primary/70" dir="rtl" lang="ar">
+                  {q.tekstArabisch}
+                </p>
+              )}
+              <p class="text-lg md:text-xl font-heading text-primary/90 italic leading-relaxed max-w-2xl">
+                "{q.tekst}"
+              </p>
+              <p class="text-sm mt-4" style="color: #c9a983;">— {q.bron}</p>
+            </div>
+          ))}
+        </div>
+        {quotes.length > 1 && (
+          <div class="flex justify-center gap-2 mt-6" role="tablist">
+            {quotes.map((_: any, i: number) => (
+              <button
+                class:list={['quote-dot-doneren w-2 h-2 rounded-full transition-all duration-300', i === 0 ? 'bg-accent w-6' : 'bg-neutral-300']}
+                data-index={i}
+                role="tab"
+                aria-label={`Citaat ${i + 1}`}
+              />
+            ))}
+          </div>
         )}
-        <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-[3px] border-l-accent pl-6 text-left">
-          "{quote.tekst}"
-        </blockquote>
-        <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>
       </div>
     </Section>
   )}
@@ -56,8 +73,8 @@ const projectOptions = hasProjects
   <!-- Donatie Sectie -->
   <Section variant="light-50">
     <div class:list={[
-      'max-w-6xl mx-auto',
-      hasProjects ? 'grid grid-cols-1 lg:grid-cols-5 gap-12' : 'max-w-2xl'
+      'mx-auto',
+      hasProjects ? 'max-w-6xl grid grid-cols-1 lg:grid-cols-5 gap-12' : 'max-w-2xl'
     ]}>
 
       <!-- Donatie Formulier -->
@@ -73,21 +90,26 @@ const projectOptions = hasProjects
         )}
         <div class="bg-white border border-neutral-200 p-8">
           <form id="donation-form" class="space-y-8">
+            {/* Honeypot — verborgen voor echte gebruikers */}
+            <div class="hidden" aria-hidden="true">
+              <input type="text" name="website" tabindex="-1" autocomplete="off" />
+            </div>
 
             <!-- Bedrag Knoppen -->
             <div>
               <label class="block text-sm font-medium text-slate-800 mb-3">Kies een bedrag</label>
+              <p class="text-xs text-neutral-400 mb-3">&euro;10 = 1 maaltijd &middot; &euro;50 = 1 dag onderhoud &middot; &euro;100 = 1 week educatie</p>
               <div class="grid grid-cols-2 gap-3">
-                <button type="button" data-amount="10" aria-pressed="false" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="10" aria-pressed="false" aria-label="Doneer &euro;10" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;10
                 </button>
-                <button type="button" data-amount="25" aria-pressed="true" class="donation-amount-btn active py-5 text-2xl font-heading font-bold transition-all border border-primary bg-primary text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="25" aria-pressed="true" aria-label="Doneer &euro;25" class="donation-amount-btn active py-5 text-2xl font-heading font-bold transition-all border border-primary bg-primary text-white focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;25
                 </button>
-                <button type="button" data-amount="50" aria-pressed="false" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="50" aria-pressed="false" aria-label="Doneer &euro;50" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;50
                 </button>
-                <button type="button" data-amount="100" aria-pressed="false" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="100" aria-pressed="false" aria-label="Doneer &euro;100" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;100
                 </button>
               </div>
@@ -96,15 +118,16 @@ const projectOptions = hasProjects
             <!-- Eigen Bedrag -->
             <div>
               <label class="block text-sm font-medium text-slate-800 mb-3">Of vul een eigen bedrag in</label>
-              <div id="custom-amount-wrapper" class="relative border-2 border-neutral-200 hover:border-neutral-300 transition-all">
+              <div id="custom-amount-wrapper" class="relative border-2 border-neutral-200 hover:border-neutral-300 transition-all focus-within:ring-2 focus-within:ring-primary/30">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-heading font-bold text-3xl">&euro;</span>
                 <input
                   type="number"
                   id="custom-amount"
                   min="1"
                   max="10000"
-                  placeholder="0"
-                  class="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none text-slate-800 font-heading font-bold text-3xl"
+                  placeholder=""
+                  aria-label="Donatiebedrag in euro"
+                  class="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/30 text-slate-800 font-heading font-bold text-3xl"
                 />
               </div>
             </div>
@@ -115,7 +138,7 @@ const projectOptions = hasProjects
                 <label class="block text-sm font-medium text-slate-800 mb-3">Bestemming</label>
                 <select
                   id="donation-project"
-                  class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:outline-none transition-colors"
+                  class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none transition-colors"
                 >
                   <option value="algemeen">Algemene Sadaqa</option>
                   {projectOptions.map((p: any) => (
@@ -132,12 +155,23 @@ const projectOptions = hasProjects
                 type="email"
                 id="donation-email"
                 placeholder="uw@email.be"
-                class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:outline-none transition-colors"
+                class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none transition-colors"
               />
             </div>
 
             <!-- Error -->
-            <p id="donation-error" class="text-sm text-red-600 bg-red-50 p-3 text-center hidden" aria-live="polite"></p>
+            <p id="donation-error" class="text-sm text-red-600 bg-red-50 p-3 text-center hidden" role="alert" aria-live="polite"></p>
+
+            <!-- Trust Badges (before submit for CRO) -->
+            <div class="bg-accent/5 border border-accent/20 p-4 text-center">
+              <p class="text-xs text-neutral-500 flex items-center justify-center gap-2">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                </svg>
+                Beveiligd via Mollie &middot; Bancontact &middot; iDEAL &middot; Visa &middot; Mastercard
+              </p>
+              <p class="text-[10px] text-neutral-400 mt-1">100% non-profit — uw donatie gaat direct naar projecten</p>
+            </div>
 
             <!-- Betaalknop -->
             <button
@@ -150,18 +184,6 @@ const projectOptions = hasProjects
               </svg>
               Donatie afronden via iDEAL / Bancontact
             </button>
-
-            <!-- Trust Badges -->
-            <div class="flex items-center justify-center gap-4 pt-2">
-              <p class="text-xs text-neutral-400 flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                </svg>
-                Beveiligd via Mollie
-              </p>
-              <span class="text-neutral-300">|</span>
-              <p class="text-xs text-neutral-400">Bancontact &middot; iDEAL &middot; Visa &middot; Mastercard</p>
-            </div>
           </form>
         </div>
       </div>
@@ -192,7 +214,6 @@ const projectOptions = hasProjects
   <Section variant="light-100">
     <div class="max-w-3xl mx-auto">
       <div class="bg-white border border-neutral-200 p-8 md:p-10 text-center">
-        <div class="flex justify-center mb-4"><GeoIcon name="hexagon" size="xl" class="text-accent" /></div>
         <h2 class="text-2xl font-bold font-heading mb-6">Overschrijving</h2>
         <div class="space-y-3 text-sm">
           <div class="flex justify-between items-center py-3 border-b border-neutral-100">
@@ -225,6 +246,57 @@ const projectOptions = hasProjects
 </BaseLayout>
 
 <script>
+  // Quote carousel
+  const slidesD = document.querySelectorAll('.quote-slide-doneren');
+  const dotsD = document.querySelectorAll('.quote-dot-doneren');
+  if (slidesD.length > 1) {
+    let currentD = 0;
+    function showSlideD(index: number) {
+      slidesD.forEach((s, i) => {
+        s.classList.toggle('opacity-100', i === index);
+        s.classList.toggle('opacity-0', i !== index);
+        s.classList.toggle('pointer-events-none', i !== index);
+      });
+      dotsD.forEach((d, i) => {
+        d.classList.toggle('bg-accent', i === index);
+        d.classList.toggle('w-6', i === index);
+        d.classList.toggle('bg-neutral-300', i !== index);
+        d.classList.toggle('w-2', i !== index);
+      });
+    }
+    let activeIntervalD: ReturnType<typeof setInterval> | null = null;
+
+    function startAutoplayD() {
+      stopAutoplayD();
+      activeIntervalD = setInterval(() => {
+        currentD = (currentD + 1) % slidesD.length;
+        showSlideD(currentD);
+      }, 5000);
+    }
+
+    function stopAutoplayD() {
+      if (activeIntervalD) { clearInterval(activeIntervalD); activeIntervalD = null; }
+    }
+
+    startAutoplayD();
+
+    // Cleanup interval to prevent memory leaks
+    document.addEventListener('astro:before-preparation', stopAutoplayD);
+    window.addEventListener('beforeunload', stopAutoplayD);
+
+    // Pause on hover
+    const carouselD = document.getElementById('quote-carousel-doneren');
+    carouselD?.addEventListener('mouseenter', stopAutoplayD);
+    carouselD?.addEventListener('mouseleave', startAutoplayD);
+
+    dotsD.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        currentD = parseInt((dot as HTMLElement).dataset.index || '0');
+        showSlideD(currentD);
+      });
+    });
+  }
+
   const form = document.getElementById('donation-form') as HTMLFormElement;
   const buttons = document.querySelectorAll('.donation-amount-btn') as NodeListOf<HTMLButtonElement>;
   const customInput = document.getElementById('custom-amount') as HTMLInputElement;
@@ -312,6 +384,7 @@ const projectOptions = hasProjects
           frequency: 'eenmalig',
           project,
           email: emailInput?.value || '',
+          website: (document.querySelector('input[name="website"]') as HTMLInputElement)?.value || '',
         }),
       });
 

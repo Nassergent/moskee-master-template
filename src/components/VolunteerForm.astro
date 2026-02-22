@@ -74,9 +74,9 @@ const { taken = [] } = Astro.props;
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Loading state
+    // Loading state with spinner
     const originalText = btn.textContent;
-    btn.textContent = 'Versturen...';
+    btn.innerHTML = '<svg class="animate-spin inline w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity=".25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Versturen...';
     btn.disabled = true;
 
     const formData = new FormData(form);
@@ -112,15 +112,18 @@ const { taken = [] } = Astro.props;
         throw new Error(result.error || 'Verzending mislukt');
       }
     } catch (err: any) {
+      const msg = document.createElement('span');
+      msg.textContent = err.message || 'Er is iets misgegaan. Probeer het later opnieuw.';
       statusEl.innerHTML = `
         <div class="bg-red-50 border-l-4 border-red-500 p-4 text-sm">
           <p class="font-heading font-bold text-red-700 mb-1">Fout bij verzenden</p>
-          <p class="text-red-600">${err.message || 'Er is iets misgegaan. Probeer het later opnieuw.'}</p>
+          <p class="text-red-600"></p>
         </div>
       `;
+      statusEl.querySelector('.text-red-600')!.appendChild(msg);
       statusEl.className = '';
     } finally {
-      btn.textContent = originalText;
+      btn.innerHTML = originalText || 'Aanmelden als vrijwilliger';
       btn.disabled = false;
     }
   });

@@ -20,39 +20,26 @@ export const etiquette = defineType({
       description: 'Korte uitleg bij de regel',
     }),
     defineField({
-      name: 'icon',
-      title: 'Icoon',
-      type: 'string',
-      description: 'Kies een geometrisch icoon voor deze huisregel.',
-      options: {
-        list: [
-          { title: '✦ Ster (8-puntig)', value: 'ster-8' },
-          { title: '✧ Ster (4-puntig)', value: 'ster-4' },
-          { title: '◇ Ruit', value: 'ruit' },
-          { title: '❋ Rozet', value: 'rozet' },
-          { title: '⬡ Hexagon', value: 'hexagon' },
-          { title: '◎ Cirkels', value: 'cirkels' },
-          { title: '☪ Maan & Ster', value: 'maan' },
-          { title: '⊞ Raster', value: 'raster' },
-          { title: '🕌 Mihrab (boog)', value: 'mihrab' },
-          { title: '📿 Tasbih (kralen)', value: 'tasbih' },
-        ],
-      },
-    }),
-    defineField({
       name: 'volgorde',
       title: 'Volgorde',
       type: 'number',
       description: 'Lagere nummers verschijnen eerst',
+    }),
+    defineField({
+      name: 'gepubliceerd',
+      title: 'Toon op website',
+      type: 'boolean',
+      initialValue: true,
+      description: 'Zet uit om dit etiket tijdelijk te verbergen op de website',
     }),
   ],
   orderings: [
     { title: 'Volgorde', name: 'volgordeAsc', by: [{ field: 'volgorde', direction: 'asc' }] },
   ],
   preview: {
-    select: { title: 'title', subtitle: 'icon' },
-    prepare({ title, subtitle }) {
-      return { title: `${subtitle || ''} ${title}` };
+    select: { title: 'title' },
+    prepare({ title }) {
+      return { title };
     },
   },
 });

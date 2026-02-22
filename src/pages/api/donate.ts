@@ -1,12 +1,36 @@
 import type { APIRoute } from 'astro';
 import { createMollieClient } from '@mollie/api-client';
 import { sanityClient } from '../../lib/sanity';
+import { checkRateLimit, getClientIp, checkOrigin, isBot } from '../../lib/security';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
-    const { amount, frequency, project, email } = await request.json();
+    // CSRF origin check
+    const originError = checkOrigin(request, url.origin);
+    if (originError) return originError;
+
+    // Rate limiting: max 5 donaties per IP per minuut
+    const ip = getClientIp(request);
+    if (!(await checkRateLimit(ip, 5, 60_000))) {
+      return new Response(JSON.stringify({ error: 'Te veel aanvragen. Probeer het over een minuut opnieuw.' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const data = await request.json();
+
+    // Honeypot check
+    if (isBot(data)) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { amount, frequency, project, email } = data;
 
     // Validatie
     const numAmount = parseFloat(amount);

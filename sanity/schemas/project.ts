@@ -25,6 +25,9 @@ export const project = defineType({
       type: 'image',
       description: 'Optionele foto voor de projectkaart. Aanbevolen: liggend formaat, min. 600px breed.',
       options: { hotspot: true },
+      fields: [
+        defineField({ name: 'alt', title: 'Alt-tekst (SEO)', type: 'string', description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.' }),
+      ],
     }),
     defineField({
       name: 'doelbedrag',

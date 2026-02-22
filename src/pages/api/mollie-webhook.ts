@@ -17,8 +17,8 @@ export const POST: APIRoute = async ({ request }) => {
     const formData = await request.formData();
     const paymentId = formData.get('id') as string;
 
-    if (!paymentId) {
-      return new Response('Missing payment ID', { status: 400 });
+    if (!paymentId || typeof paymentId !== 'string' || !paymentId.startsWith('tr_')) {
+      return new Response('Invalid payment ID', { status: 400 });
     }
 
     const mollieKey = import.meta.env.MOLLIE_API_KEY;

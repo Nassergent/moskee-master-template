@@ -4,6 +4,8 @@ import Section from '../../components/Section.astro';
 import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
 
+export const prerender = true;
+
 const settings = await fetchSettings();
 const events = await fetchAgendaEvents();
 const hijriToday = formatHijriDate();

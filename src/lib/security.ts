@@ -91,3 +91,27 @@ export function sanitize(value: string | undefined | null, maxLength: number = 5
 export function isBot(data: Record<string, any>): boolean {
   return !!(data.website || data.url || data._gotcha);
 }
+
+/**
+ * CSRF origin check — valideert dat het request van onze eigen site komt.
+ * Retourneert een error Response als de origin niet matcht, of null als alles OK is.
+ */
+export function checkOrigin(request: Request, siteUrl: string): Response | null {
+  const origin = request.headers.get('origin');
+  if (!origin) {
+    return new Response(JSON.stringify({ error: 'Forbidden' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const allowed = new URL(siteUrl).origin;
+  if (origin !== allowed) {
+    return new Response(JSON.stringify({ error: 'Forbidden' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  return null;
+}

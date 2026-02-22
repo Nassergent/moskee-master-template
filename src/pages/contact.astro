@@ -6,19 +6,21 @@ import { fetchSettings, fetchContactPage, demoContactPage } from '../lib/sanity'
 const settings = await fetchSettings();
 const contactPage = await fetchContactPage();
 
-const introText = contactPage.introText || demoContactPage.introText;
-const openingstijden = contactPage.openingstijden?.length ? contactPage.openingstijden : demoContactPage.openingstijden;
-const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : demoContactPage.onderwerpen;
+const introText = contactPage.introText || '';
+const openingstijden = contactPage.openingstijden?.length ? contactPage.openingstijden : [];
+const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : [];
 ---
 
-<BaseLayout title="Contact" description="Neem contact op met onze moskee">
+<BaseLayout title={contactPage?.seoTitle || "Contact"} description={contactPage?.seoDescription || "Neem contact op met onze moskee"}>
   <!-- Page Header — Dark -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
       <h1 class="text-4xl font-bold mb-4 text-white">Contact</h1>
-      <p class="text-white/80 max-w-xl mx-auto">
-        {introText}
-      </p>
+      {introText && (
+        <p class="text-white/80 max-w-xl mx-auto">
+          {introText}
+        </p>
+      )}
     </div>
   </section>
 
@@ -36,7 +38,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           <div>
             <label for="naam" class="block text-sm font-heading font-semibold text-primary mb-2">Naam *</label>
             <input type="text" id="naam" name="naam" required
-              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm"
               placeholder="Uw volledige naam" />
           </div>
 
@@ -44,13 +46,13 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
             <div>
               <label for="email" class="block text-sm font-heading font-semibold text-primary mb-2">E-mail *</label>
               <input type="email" id="email" name="email" required
-                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
+                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm"
                 placeholder="uw@email.be" />
             </div>
             <div>
               <label for="telefoon" class="block text-sm font-heading font-semibold text-primary mb-2">Telefoon</label>
               <input type="tel" id="telefoon" name="telefoon"
-                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
+                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm"
                 placeholder="+32 xxx xx xx xx" />
             </div>
           </div>
@@ -58,7 +60,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           <div>
             <label for="onderwerp" class="block text-sm font-heading font-semibold text-primary mb-2">Onderwerp *</label>
             <select id="onderwerp" name="onderwerp" required
-              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
               <option value="">Kies een onderwerp</option>
               {onderwerpen.map((o: string) => (
                 <option value={o.toLowerCase().replace(/\s+/g, '-')}>{o}</option>
@@ -69,7 +71,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           <div>
             <label for="bericht" class="block text-sm font-heading font-semibold text-primary mb-2">Bericht *</label>
             <textarea id="bericht" name="bericht" required rows="5"
-              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all resize-y text-sm"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all resize-y text-sm"
               placeholder="Waar kunnen wij u mee helpen?"></textarea>
           </div>
 
@@ -78,7 +80,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
             Versturen
           </button>
 
-          <div id="form-status" class="hidden"></div>
+          <div id="form-status" class="hidden" aria-live="polite"></div>
         </form>
       </div>
 
@@ -126,23 +128,25 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           </div>
         </div>
 
-        <!-- Openingstijden uit CMS -->
-        <div class="bg-white p-6 border border-slate-200 border-t-[3px] border-t-accent">
-          <h3 class="font-heading font-bold text-primary mb-5">Openingstijden</h3>
-          <div class="space-y-3 text-sm">
-            {openingstijden.map((item: any) => (
-              <div class={`flex flex-col ${item.opmerking ? 'pt-3 border-t border-slate-100' : ''}`}>
-                <div class="flex justify-between">
-                  <span class={item.opmerking ? 'text-primary font-medium' : 'text-neutral-600'}>{item.dagen}</span>
-                  <span class={`font-medium ${item.opmerking ? 'text-primary' : 'text-neutral-800'}`}>{item.tijden}</span>
+        {/* Openingstijden uit CMS — alleen tonen als ingevuld */}
+        {openingstijden.length > 0 && (
+          <div class="bg-white p-6 border border-slate-200 border-t-[3px] border-t-accent">
+            <h3 class="font-heading font-bold text-primary mb-5">Openingstijden</h3>
+            <div class="space-y-3 text-sm">
+              {openingstijden.map((item: any) => (
+                <div class={`flex flex-col ${item.opmerking ? 'pt-3 border-t border-slate-100' : ''}`}>
+                  <div class="flex justify-between">
+                    <span class={item.opmerking ? 'text-primary font-medium' : 'text-neutral-600'}>{item.dagen}</span>
+                    <span class={`font-medium ${item.opmerking ? 'text-primary' : 'text-neutral-800'}`}>{item.tijden}</span>
+                  </div>
+                  {item.opmerking && (
+                    <span class="text-xs text-neutral-400 mt-1">{item.opmerking}</span>
+                  )}
                 </div>
-                {item.opmerking && (
-                  <span class="text-xs text-neutral-400 mt-1">{item.opmerking}</span>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   </Section>
@@ -156,9 +160,9 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Loading state
+    // Loading state with spinner
     const originalText = btn.textContent;
-    btn.textContent = 'Versturen...';
+    btn.innerHTML = '<svg class="animate-spin inline w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity=".25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Versturen...';
     btn.disabled = true;
 
     const formData = new FormData(form);
@@ -185,15 +189,18 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
         throw new Error(result.error || 'Verzending mislukt');
       }
     } catch (err: any) {
+      const msg = document.createElement('span');
+      msg.textContent = err.message || 'Er is iets misgegaan. Probeer het later opnieuw.';
       statusEl.innerHTML = `
         <div class="bg-red-50 border-l-4 border-red-500 p-4 text-sm">
           <p class="font-heading font-bold text-red-700 mb-1">Fout bij verzenden</p>
-          <p class="text-red-600">${err.message || 'Er is iets misgegaan. Probeer het later opnieuw.'}</p>
+          <p class="text-red-600"></p>
         </div>
       `;
+      statusEl.querySelector('.text-red-600')!.appendChild(msg);
       statusEl.className = '';
     } finally {
-      btn.textContent = originalText;
+      btn.innerHTML = originalText || 'Versturen';
       btn.disabled = false;
     }
   });

@@ -1,13 +1,17 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { sanityClient } from '../../lib/sanity';
-import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot } from '../../lib/security';
+import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
 import { contactNotificationEmail } from '../../lib/email-templates';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, url }) => {
   try {
+    // CSRF origin check
+    const originError = checkOrigin(request, url.origin);
+    if (originError) return originError;
+
     // Rate limiting: max 3 berichten per IP per minuut
     const ip = getClientIp(request);
     if (!(await checkRateLimit(ip, 3, 60_000))) {

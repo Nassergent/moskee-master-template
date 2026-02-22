@@ -1,5 +1,4 @@
 ---
-import GeoIcon from './GeoIcon.astro';
 import { fetchSettings, urlFor } from '../lib/sanity';
 
 const settings = await fetchSettings();
@@ -33,9 +32,7 @@ const currentPath = Astro.url.pathname;
           alt={mosqueName}
           class="w-8 h-8 object-contain"
         />
-      ) : (
-        <GeoIcon name="mihrab" size="md" class="text-primary" />
-      )}
+      ) : null}
       <span class="text-lg font-bold font-heading text-primary group-hover:opacity-80 transition-opacity">
         {mosqueName}
       </span>
@@ -78,6 +75,7 @@ const currentPath = Astro.url.pathname;
         class="p-2 text-neutral-700 hover:bg-neutral-100 transition-colors"
         aria-label="Menu openen"
         aria-expanded="false"
+        aria-controls="nav-mobile-menu"
       >
         <svg id="nav-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -139,6 +137,36 @@ const currentPath = Astro.url.pathname;
     iconOpen?.classList.toggle('hidden');
     iconClose?.classList.toggle('hidden');
     btn.setAttribute('aria-expanded', String(!isOpen));
+    btn.setAttribute('aria-label', isOpen ? 'Menu openen' : 'Menu sluiten');
+
+    // When menu opens, focus the first link inside
+    if (isOpen === false && menu) {
+      const firstLink = menu.querySelector('a') as HTMLAnchorElement | null;
+      if (firstLink) firstLink.focus();
+    }
+  });
+
+  // ESC key closes mobile menu and returns focus to button
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.classList.contains('hidden')) {
+      menu.classList.add('hidden');
+      iconOpen?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      btn?.setAttribute('aria-expanded', 'false');
+      btn?.setAttribute('aria-label', 'Menu openen');
+      btn?.focus();
+    }
+  });
+
+  // Close mobile menu when a link is clicked
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      menu?.classList.add('hidden');
+      iconOpen?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      btn?.setAttribute('aria-expanded', 'false');
+      btn?.setAttribute('aria-label', 'Menu openen');
+    });
   });
 
 </script>

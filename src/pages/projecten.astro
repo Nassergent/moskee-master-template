@@ -2,11 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import DonationCard from '../components/DonationCard.astro';
-import GeoIcon from '../components/GeoIcon.astro';
-import { fetchProjecten, fetchQuote } from '../lib/sanity';
+import { fetchProjecten, fetchAllQuotes } from '../lib/sanity';
+
+export const prerender = true;
 
 const projecten = await fetchProjecten();
-const quote = await fetchQuote('donaties');
+const quotes = await fetchAllQuotes('donaties');
 ---
 
 <BaseLayout title="Projecten & Donaties" description="Steun onze projecten en help de gemeenschap groeien">
@@ -20,19 +21,37 @@ const quote = await fetchQuote('donaties');
     </div>
   </section>
 
-  <!-- Islamitisch Citaat -->
-  {quote?.tekst && (
+  <!-- Islamitische Citaten Carousel -->
+  {quotes.length > 0 && (
     <Section variant="light-100">
-      <div class="max-w-3xl mx-auto text-center">
-        {quote.tekstArabisch && (
-          <p class="font-arabic text-2xl text-primary/60 leading-loose mb-6" dir="rtl">
-            {quote.tekstArabisch}
-          </p>
+      <div class="max-w-3xl mx-auto text-center py-4">
+        <div id="quote-carousel" class="relative min-h-[180px] flex items-center justify-center" aria-live="polite">
+          {quotes.map((q: any, i: number) => (
+            <div class:list={['quote-slide absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-700', i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none']}>
+              {q.tekstArabisch && (
+                <p class="font-arabic text-3xl md:text-4xl leading-loose mb-6 text-primary/70" dir="rtl" lang="ar">
+                  {q.tekstArabisch}
+                </p>
+              )}
+              <p class="text-lg md:text-xl font-heading text-primary/90 italic leading-relaxed max-w-2xl">
+                "{q.tekst}"
+              </p>
+              <p class="text-sm mt-4" style="color: #c9a983;">— {q.bron}</p>
+            </div>
+          ))}
+        </div>
+        {quotes.length > 1 && (
+          <div class="flex justify-center gap-2 mt-6" role="tablist">
+            {quotes.map((_: any, i: number) => (
+              <button
+                class:list={['quote-dot w-2 h-2 rounded-full transition-all duration-300', i === 0 ? 'bg-accent w-6' : 'bg-neutral-300']}
+                data-index={i}
+                role="tab"
+                aria-label={`Citaat ${i + 1}`}
+              />
+            ))}
+          </div>
         )}
-        <blockquote class="text-xl font-heading font-bold text-primary leading-relaxed border-l-3 border-l-accent pl-6 text-left">
-          "{quote.tekst}"
-        </blockquote>
-        {quote.bron && <p class="text-sm text-accent font-medium mt-4">— {quote.bron}</p>}
       </div>
     </Section>
   )}
@@ -64,17 +83,14 @@ const quote = await fetchQuote('donaties');
       <h2 class="text-2xl font-bold text-center mb-8">Hoe kunt u doneren?</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
-          <div class="flex justify-center mb-4"><GeoIcon name="hexagon" size="xl" class="text-accent" /></div>
           <h3 class="font-heading font-bold mb-2">Overschrijving</h3>
           <p class="text-sm text-neutral-600">Maak een overschrijving naar onze rekening met vermelding van het project.</p>
         </div>
         <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
-          <div class="flex justify-center mb-4"><GeoIcon name="ruit" size="xl" class="text-accent" /></div>
           <h3 class="font-heading font-bold mb-2">Contant</h3>
           <p class="text-sm text-neutral-600">U kunt ook contant doneren bij de moskee tijdens de openingsuren.</p>
         </div>
         <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
-          <div class="flex justify-center mb-4"><GeoIcon name="ster-4" size="xl" class="text-accent" /></div>
           <h3 class="font-heading font-bold mb-2">Contact</h3>
           <p class="text-sm text-neutral-600">Neem contact op voor andere donatiemogelijkheden.</p>
         </div>
@@ -82,3 +98,56 @@ const quote = await fetchQuote('donaties');
     </div>
   </Section>
 </BaseLayout>
+
+<script>
+  const slides = document.querySelectorAll('.quote-slide');
+  const dots = document.querySelectorAll('.quote-dot');
+  if (slides.length > 1) {
+    let current = 0;
+    let activeInterval: ReturnType<typeof setInterval> | null = null;
+
+    function showSlide(index: number) {
+      slides.forEach((s, i) => {
+        s.classList.toggle('opacity-100', i === index);
+        s.classList.toggle('opacity-0', i !== index);
+        s.classList.toggle('pointer-events-none', i !== index);
+      });
+      dots.forEach((d, i) => {
+        d.classList.toggle('bg-accent', i === index);
+        d.classList.toggle('w-6', i === index);
+        d.classList.toggle('bg-neutral-300', i !== index);
+        d.classList.toggle('w-2', i !== index);
+      });
+    }
+
+    function startAutoplay() {
+      stopAutoplay();
+      activeInterval = setInterval(() => {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+      }, 5000);
+    }
+
+    function stopAutoplay() {
+      if (activeInterval) { clearInterval(activeInterval); activeInterval = null; }
+    }
+
+    startAutoplay();
+
+    // Cleanup interval to prevent memory leaks
+    document.addEventListener('astro:before-preparation', stopAutoplay);
+    window.addEventListener('beforeunload', stopAutoplay);
+
+    // Pause on hover
+    const carousel = document.getElementById('quote-carousel');
+    carousel?.addEventListener('mouseenter', stopAutoplay);
+    carousel?.addEventListener('mouseleave', startAutoplay);
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        current = parseInt((dot as HTMLElement).dataset.index || '0');
+        showSlide(current);
+      });
+    });
+  }
+</script>

@@ -40,6 +40,9 @@ export const post = defineType({
       type: 'image',
       description: 'Hoofdafbeelding van het artikel. Aanbevolen: liggend formaat, min. 600px breed.',
       options: { hotspot: true },
+      fields: [
+        defineField({ name: 'alt', title: 'Alt-tekst (SEO)', type: 'string', description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.' }),
+      ],
     }),
     defineField({
       name: 'inhoud',

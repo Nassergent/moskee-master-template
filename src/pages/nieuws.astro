@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import GeoIcon from '../components/GeoIcon.astro';
 import { fetchNieuws, urlFor } from '../lib/sanity';
+
+export const prerender = true;
 
 const nieuws = await fetchNieuws();
 ---
@@ -30,13 +31,13 @@ const nieuws = await fetchNieuws();
             {item.afbeelding ? (
               <img
                 src={urlFor(item.afbeelding).width(600).height(300).fit('crop').url()}
-                alt={item.titel}
+                alt={`${item.titel} — nieuws`}
                 class="w-full h-44 object-cover"
                 loading="lazy"
               />
             ) : (
               <div class="bg-primary/5 h-44 flex items-center justify-center">
-                <GeoIcon name="ster-4" size="xl" class="text-primary/20 !w-16 !h-16" />
+                <span class="text-primary/20 text-5xl">✦</span>
               </div>
             )}
             <div class="p-6">

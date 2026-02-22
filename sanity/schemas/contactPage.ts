@@ -38,6 +38,21 @@ export const contactPage = defineType({
       of: [{ type: 'string' }],
       description: 'Keuzes voor het onderwerp-dropdown in het contactformulier',
     }),
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      description: 'Optioneel: overschrijf de paginatitel voor zoekmachines (max. 70 tekens).',
+      validation: (rule) => rule.max(70),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 2,
+      description: 'Optioneel: overschrijf de meta-beschrijving voor Google (max. 160 tekens).',
+      validation: (rule) => rule.max(160),
+    }),
   ],
   preview: {
     prepare() {

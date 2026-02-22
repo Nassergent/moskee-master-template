@@ -10,21 +10,22 @@ function getEnv(key: string): string | undefined {
 }
 
 // Public read client — useCdn: true voor snelle, gecachte responses
+// Geen token nodig: leest alleen publieke data via CDN
 export const sanityClient = createClient({
   projectId: getEnv('PUBLIC_SANITY_PROJECT_ID') || 'qjg8nn9m',
   dataset: getEnv('PUBLIC_SANITY_DATASET') || 'production',
   useCdn: true,
   apiVersion: '2024-01-01',
-  token: getEnv('SANITY_API_TOKEN') || '',
 });
 
 // Write client for creating documents (volunteer form etc.)
+// Token MOET via env var — geen hardcoded fallback
 export const writeClient = createClient({
   projectId: getEnv('PUBLIC_SANITY_PROJECT_ID') || 'qjg8nn9m',
   dataset: getEnv('PUBLIC_SANITY_DATASET') || 'production',
   useCdn: false,
   apiVersion: '2024-01-01',
-  token: getEnv('SANITY_WRITE_TOKEN') || getEnv('SANITY_API_TOKEN') || '',
+  token: getEnv('SANITY_WRITE_TOKEN') || getEnv('SANITY_API_TOKEN'),
 });
 
 const builder = imageUrlBuilder(sanityClient);

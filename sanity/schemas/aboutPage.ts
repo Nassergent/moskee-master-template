@@ -32,6 +32,9 @@ export const aboutPage = defineType({
       options: { hotspot: true },
       group: 'missie',
       description: 'De afbeelding naast de missietekst',
+      fields: [
+        defineField({ name: 'alt', title: 'Alt-tekst (SEO)', type: 'string', description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.' }),
+      ],
     }),
     defineField({
       name: 'waarden',
@@ -45,7 +48,6 @@ export const aboutPage = defineType({
           fields: [
             defineField({ name: 'title', title: 'Titel', type: 'string', validation: (rule) => rule.required() }),
             defineField({ name: 'description', title: 'Beschrijving', type: 'text', rows: 2 }),
-            defineField({ name: 'icon', title: 'Icoon', type: 'string', description: 'Geometrisch icoon (bijv. "maan", "rozet", "tasbih")' }),
           ],
           preview: {
             select: { title: 'title', subtitle: 'description' },
@@ -65,13 +67,30 @@ export const aboutPage = defineType({
           fields: [
             defineField({ name: 'naam', title: 'Naam', type: 'string', validation: (rule) => rule.required() }),
             defineField({ name: 'functie', title: 'Functie', type: 'string' }),
-            defineField({ name: 'foto', title: 'Foto', type: 'image', options: { hotspot: true } }),
+            defineField({ name: 'foto', title: 'Foto', type: 'image', options: { hotspot: true }, fields: [defineField({ name: 'alt', title: 'Alt-tekst', type: 'string' })] }),
           ],
           preview: {
             select: { title: 'naam', subtitle: 'functie', media: 'foto' },
           },
         },
       ],
+    }),
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      group: 'missie',
+      description: 'Optioneel: overschrijf de paginatitel voor zoekmachines (max. 70 tekens).',
+      validation: (rule) => rule.max(70),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 2,
+      group: 'missie',
+      description: 'Optioneel: overschrijf de meta-beschrijving voor Google (max. 160 tekens).',
+      validation: (rule) => rule.max(160),
     }),
   ],
   preview: {

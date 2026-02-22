@@ -28,31 +28,14 @@ export const service = defineType({
       description: 'Wordt getoond op de overzichtspagina en in Google-zoekresultaten.',
     }),
     defineField({
-      name: 'icoon',
-      title: 'Icoon',
-      type: 'string',
-      description: 'Kies een geometrisch icoon voor deze dienst.',
-      options: {
-        list: [
-          { title: '✦ Ster (8-puntig)', value: 'ster-8' },
-          { title: '✧ Ster (4-puntig)', value: 'ster-4' },
-          { title: '◇ Ruit', value: 'ruit' },
-          { title: '❋ Rozet', value: 'rozet' },
-          { title: '⬡ Hexagon', value: 'hexagon' },
-          { title: '◎ Cirkels', value: 'cirkels' },
-          { title: '☪ Maan & Ster', value: 'maan' },
-          { title: '⊞ Raster', value: 'raster' },
-          { title: '🕌 Mihrab (boog)', value: 'mihrab' },
-          { title: '📿 Tasbih (kralen)', value: 'tasbih' },
-        ],
-      },
-    }),
-    defineField({
       name: 'afbeelding',
       title: 'Afbeelding',
       type: 'image',
       description: 'Optionele foto voor deze dienst. Aanbevolen: liggend formaat, min. 800px breed.',
       options: { hotspot: true },
+      fields: [
+        defineField({ name: 'alt', title: 'Alt-tekst (SEO)', type: 'string', description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.' }),
+      ],
     }),
     defineField({
       name: 'inhoud',
@@ -75,6 +58,13 @@ export const service = defineType({
       title: 'Volgorde',
       type: 'number',
       description: 'Lagere nummers verschijnen eerst op de overzichtspagina.',
+    }),
+    defineField({
+      name: 'actief',
+      title: 'Toon op website',
+      type: 'boolean',
+      initialValue: true,
+      description: 'Zet uit om deze dienst tijdelijk te verbergen op de website',
     }),
   ],
   orderings: [

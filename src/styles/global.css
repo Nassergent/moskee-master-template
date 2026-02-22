@@ -156,6 +156,12 @@ h2.text-center::after {
   opacity: 0.9;
 }
 
+/* ─── Focus-visible (a11y) ─── */
+:focus-visible {
+  outline: 2px solid var(--color-accent) !important;
+  outline-offset: 2px !important;
+}
+
 /* ─── Selection color ─── */
 ::selection {
   background-color: var(--color-primary);

@@ -5,7 +5,7 @@ export { sanityClient, urlFor, writeClient };
 
 export async function fetchSettings() {
   try {
-    const result = await sanityClient.fetch(`*[_id == "settings"][0]`);
+    const result = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, theme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, hijriAdjustment, islamicDays, bedanktTekst }`);
     if (result) return result;
   } catch (e) {
     console.error('Sanity fetchSettings error:', e);
@@ -15,10 +15,10 @@ export async function fetchSettings() {
 
 export async function fetchDiensten() {
   try {
-    const result = await sanityClient.fetch(`*[_type == "service"] | order(volgorde asc) {
-      _id, titel, "slug": slug, beschrijving, inhoud, icoon, afbeelding, tijden, volgorde
+    const result = await sanityClient.fetch(`*[_type == "service" && actief != false] | order(volgorde asc) {
+      _id, titel, "slug": slug, beschrijving, inhoud, afbeelding, tijden, volgorde
     }`);
-    if (result && result.length > 0) return result;
+    if (result) return result;
   } catch (e) {
     console.error('Sanity fetchDiensten error:', e);
   }
@@ -31,7 +31,7 @@ export async function fetchProjecten() {
       _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedrag, actief,
       citaat->{ tekst, tekstArabisch, bron }
     }`);
-    if (result && result.length > 0) return result;
+    if (result) return result;
   } catch (e) {
     console.error('Sanity fetchProjecten error:', e);
   }
@@ -43,7 +43,8 @@ export async function fetchNieuws() {
     const result = await sanityClient.fetch(`*[_type == "post" && gepubliceerd == true] | order(datum desc) {
       _id, titel, "slug": slug, datum, samenvatting, inhoud, afbeelding
     }`);
-    if (result && result.length > 0) return result;
+    if (result) return result;
+    return [];
   } catch (e) {
     console.error('Sanity fetchNieuws error:', e);
   }
@@ -66,7 +67,7 @@ export async function fetchActueel() {
   try {
     const result = await sanityClient.fetch(`*[
       (_type == "post" && gepubliceerd == true) ||
-      (_type == "service") ||
+      (_type == "service" && actief != false) ||
       (_type == "project" && actief == true)
     ] | order(_createdAt desc) [0...3] {
       _id,
@@ -103,11 +104,25 @@ export async function fetchActueel() {
         _type == "project" => "/projecten"
       )
     }`);
-    if (result && result.length > 0) return result;
+    if (result) return result;
+    return [];
   } catch (e) {
     console.error('Sanity fetchActueel error:', e);
   }
   return demoActueel;
+}
+
+export async function fetchAllQuotes(categorie: string = 'donaties') {
+  try {
+    const result = await sanityClient.fetch(`*[_type == "quote" && actief == true && categorie == $categorie] {
+      _id, tekst, tekstArabisch, bron
+    }`, { categorie });
+    if (result && result.length > 0) return result;
+    if (result) return [];
+  } catch (e) {
+    console.error('Sanity fetchAllQuotes error:', e);
+  }
+  return demoQuotes.filter(q => q.categorie === categorie);
 }
 
 export async function fetchQuote(categorie: string = 'donaties') {
@@ -115,27 +130,30 @@ export async function fetchQuote(categorie: string = 'donaties') {
     const result = await sanityClient.fetch(`*[_type == "quote" && actief == true && categorie == $categorie] {
       _id, tekst, tekstArabisch, bron
     }`, { categorie });
+    // Sanity verbinding gelukt → return resultaat (ook als leeg/null)
     if (result && result.length > 0) {
-      // Kies willekeurig een citaat
       return result[Math.floor(Math.random() * result.length)];
     }
+    if (result) return null; // Alles uitgeschakeld → geen citaat tonen
   } catch (e) {
     console.error('Sanity fetchQuote error:', e);
   }
-  // Fallback: willekeurig demo citaat uit de juiste categorie
+  // Alleen demo data als Sanity niet bereikbaar is
   const filtered = demoQuotes.filter(q => q.categorie === categorie);
   return filtered[Math.floor(Math.random() * filtered.length)] || demoQuotes[0];
 }
 
 export async function fetchEtiquette() {
   try {
-    const result = await sanityClient.fetch(`*[_type == "etiquette"] | order(volgorde asc) {
-      _id, title, description, icon, volgorde
+    const result = await sanityClient.fetch(`*[_type == "etiquette" && gepubliceerd != false] | order(volgorde asc) {
+      _id, title, description, volgorde
     }`);
-    if (result && result.length > 0) return result;
+    // Sanity verbinding gelukt → return resultaat (ook als leeg)
+    if (result) return result;
   } catch (e) {
     console.error('Sanity fetchEtiquette error:', e);
   }
+  // Alleen demo data als Sanity niet bereikbaar is
   return demoEtiquette;
 }
 
@@ -305,7 +323,7 @@ const demoEtiquette = [
 export async function fetchHomePage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "homePage"][0]{
-      heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges
+      heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, seoTitle, seoDescription
     }`);
     if (result) return result;
   } catch (e) {
@@ -317,7 +335,7 @@ export async function fetchHomePage() {
 export async function fetchAboutPage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "aboutPage"][0]{
-      missieTitle, missieText, missieImage, waarden, team
+      missieTitle, missieText, missieImage, waarden, team, seoTitle, seoDescription
     }`);
     if (result) return result;
   } catch (e) {
@@ -329,7 +347,7 @@ export async function fetchAboutPage() {
 export async function fetchContactPage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "contactPage"][0]{
-      introText, openingstijden, onderwerpen
+      introText, openingstijden, onderwerpen, seoTitle, seoDescription
     }`);
     if (result) return result;
   } catch (e) {
@@ -377,7 +395,8 @@ export async function fetchAgendaEvents() {
       _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
       "afbeelding": afbeelding.asset->url
     }`);
-    if (result && result.length > 0) return result;
+    if (result) return result;
+    return [];
   } catch (e) {
     console.error('Sanity fetchAgendaEvents error:', e);
   }
@@ -390,7 +409,8 @@ export async function fetchUpcomingAgendaEvents(limit = 3) {
       _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
       "afbeelding": afbeelding.asset->url
     }`, { limit });
-    if (result && result.length > 0) return result;
+    if (result) return result;
+    return [];
   } catch (e) {
     console.error('Sanity fetchUpcomingAgendaEvents error:', e);
   }

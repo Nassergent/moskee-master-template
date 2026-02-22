@@ -31,6 +31,9 @@ export const homePage = defineType({
       type: 'image',
       options: { hotspot: true },
       description: 'De grote afbeelding rechts in de hero sectie',
+      fields: [
+        defineField({ name: 'alt', title: 'Alt-tekst (SEO)', type: 'string', description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.' }),
+      ],
     }),
     defineField({
       name: 'toonActueel',
@@ -45,6 +48,21 @@ export const homePage = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Welkomstwoorden in verschillende talen (bijv. "Allen Welkom", "All Welcome")',
+    }),
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      description: 'Optioneel: overschrijf de paginatitel voor zoekmachines (bijv. "Moskee Al-Nour Gent — Gebedstijden & Gemeenschap"). Als dit leeg is, wordt de moskeenaam gebruikt.',
+      validation: (rule) => rule.max(70),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 2,
+      description: 'Optioneel: overschrijf de meta-beschrijving voor Google (max. 160 tekens).',
+      validation: (rule) => rule.max(160),
     }),
   ],
   preview: {

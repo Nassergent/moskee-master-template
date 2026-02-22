@@ -4,9 +4,9 @@
  *
  * 3-kolommen grid met geometrische iconen, accent left border, Philosopher headings.
  * Data uit Sanity CMS (of demo fallback).
+ * Verbergt zichzelf als er geen gepubliceerde etiketten zijn.
  */
 import { fetchEtiquette } from '../lib/sanity';
-import GeoIcon from './GeoIcon.astro';
 
 const etiquette = await fetchEtiquette();
 ---
@@ -16,20 +16,22 @@ const etiquette = await fetchEtiquette();
   <h2 class="text-3xl font-bold font-heading mt-2">Moskee-etiketten</h2>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  {etiquette.map((item: any) => (
-    <div class="bg-white border border-neutral-200 border-l-3 border-l-accent p-6">
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 bg-base-100 border border-neutral-200 rounded-full flex items-center justify-center shrink-0">
-          <GeoIcon name={item.icon || 'ster-8'} size="md" class="text-accent" />
-        </div>
-        <div>
-          <h3 class="font-heading font-bold text-primary mb-1">{item.title}</h3>
-          {item.description && (
-            <p class="text-sm text-neutral-500 leading-relaxed">{item.description}</p>
-          )}
+{etiquette.length > 0 && (
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {etiquette.map((item: any) => (
+      <div class="bg-white border border-neutral-200 border-l-3 border-l-accent p-6">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-base-100 border border-neutral-200 rounded-full flex items-center justify-center shrink-0 text-accent font-bold text-lg">
+            ✦
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-primary mb-1">{item.title}</h3>
+            {item.description && (
+              <p class="text-sm text-neutral-500 leading-relaxed">{item.description}</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  ))}
-</div>
+    ))}
+  </div>
+)}

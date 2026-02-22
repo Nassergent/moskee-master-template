@@ -2,8 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import PrayerManager from '../components/PrayerManager.astro';
-import GeoIcon from '../components/GeoIcon.astro';
 import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, urlFor } from '../lib/sanity';
+
+export const prerender = true;
 
 const settings = await fetchSettings();
 const actueel = await fetchActueel();
@@ -22,7 +23,7 @@ const badges = homePage?.badges?.length ? homePage.badges : ['Allen Welkom', 'T�
 const toonActueel = homePage?.toonActueel ?? true;
 ---
 
-<BaseLayout title={settings.mosqueName} description={settings.description} ogImage={heroImageUrl || undefined}>
+<BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined}>
 
   <!-- Hero Section — Two Column: Text Left + Image Right (Flat Design) -->
   <section class="bg-primary-dark text-white">
@@ -49,8 +50,8 @@ const toonActueel = homePage?.toonActueel ?? true;
             <a href="/gebedstijden" class="btn-primary inline-flex items-center px-8 py-3 bg-accent hover:bg-accent-hover text-white font-bold transition-all">
               {heroCta}
             </a>
-            <a href="/contact" class="inline-flex items-center px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold transition-all border border-white/20">
-              Neem contact op
+            <a href="/doneren" class="inline-flex items-center px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold transition-all border border-white/20">
+              Steun onze moskee
             </a>
           </div>
         </div>
@@ -62,11 +63,12 @@ const toonActueel = homePage?.toonActueel ?? true;
               src={heroImageUrl}
               alt={`${settings.mosqueName} — Moskee`}
               class="w-full h-[500px] object-cover"
+              width={800}
+              height={900}
               loading="eager"
             />
           ) : (
             <div class="w-full h-[500px] bg-white/5 border border-white/10 flex items-center justify-center">
-              <GeoIcon name="mihrab" size="xl" class="text-white/20 !w-32 !h-32" />
             </div>
           )}
         </div>
@@ -101,7 +103,6 @@ const toonActueel = homePage?.toonActueel ?? true;
       {actueel.map((item: any) => (
         <a href={item.href} class="group bg-white border border-neutral-200 border-l-3 border-l-accent p-6 hover:border-l-primary transition-all">
           <div class="flex items-center gap-3 mb-4">
-            <GeoIcon name={item.icoon || 'ster-8'} size="md" class="text-accent" />
             <span class="text-[10px] font-semibold uppercase tracking-widest text-accent">{item.label}</span>
           </div>
           <h3 class="font-heading text-lg font-bold text-primary group-hover:text-accent transition-colors mb-2">
@@ -114,12 +115,12 @@ const toonActueel = homePage?.toonActueel ?? true;
   </Section>}
 
   <!-- Sectie 3: Light-50 — Binnenkort in de moskee -->
-  {agendaEvents.length > 0 && (
-    <Section variant="light-50">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl font-bold">Binnenkort in de moskee</h2>
-        <p class="text-neutral-500 mt-3">Aankomende evenementen en activiteiten</p>
-      </div>
+  <Section variant="light-50">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl font-bold">Binnenkort in de moskee</h2>
+      <p class="text-neutral-500 mt-3">Aankomende evenementen en activiteiten</p>
+    </div>
+    {agendaEvents.length > 0 ? (
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {agendaEvents.map((event: any) => (
           <a
@@ -148,8 +149,10 @@ const toonActueel = homePage?.toonActueel ?? true;
           Bekijk volledige agenda &rarr;
         </a>
       </div>
-    </Section>
-  )}
+    ) : (
+      <p class="text-center text-neutral-400">Momenteel geen geplande evenementen.</p>
+    )}
+  </Section>
 
   <!-- Sectie 4: Light-50 — Kom Langs (Maps + CTA) -->
   <Section variant="light-50">

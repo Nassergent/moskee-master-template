@@ -2,15 +2,25 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import AddToCalendar from '../../components/AddToCalendar.astro';
-import { fetchAgendaEvent, fetchSettings } from '../../lib/sanity';
+import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
 
-const { slug } = Astro.params;
-if (!slug) return Astro.redirect('/agenda');
+export async function getStaticPaths() {
+  const events = await fetchAgendaEvents();
+  return events
+    .filter((event: any) => event.slug?.current)
+    .map((event: any) => ({
+      params: { slug: event.slug.current },
+      props: { event },
+    }));
+}
+
+export const prerender = true;
+
+const { event } = Astro.props;
+if (!event) return Astro.redirect('/agenda');
 
 const settings = await fetchSettings();
-const event = await fetchAgendaEvent(slug);
-if (!event) return Astro.redirect('/agenda');
 
 function formatDatum(datum: string): string {
   return new Date(datum).toLocaleDateString('nl-BE', {
@@ -25,9 +35,24 @@ function formatTijd(datum: string): string {
   });
   return str === '00:00' ? '' : str;
 }
+
+const eventSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": event.titel,
+  "description": event.beschrijving || undefined,
+  "startDate": event.startDatum || undefined,
+  "endDate": event.eindDatum || undefined,
+  "location": event.locatie ? {
+    "@type": "Place",
+    "name": event.locatie,
+    "address": settings?.address || undefined,
+  } : undefined,
+});
 ---
 
 <BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`}>
+  <script type="application/ld+json" set:html={eventSchema} />
 
   <!-- Page Header -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
