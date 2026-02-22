@@ -4,19 +4,9 @@ import Section from '../../components/Section.astro';
 import PortableText from '../../components/PortableText.astro';
 import { fetchDiensten, fetchSettings, urlFor } from '../../lib/sanity';
 
-export async function getStaticPaths() {
-  const diensten = await fetchDiensten();
-  return diensten
-    .filter((dienst: any) => dienst.slug?.current)
-    .map((dienst: any) => ({
-      params: { slug: dienst.slug.current },
-      props: { dienst },
-    }));
-}
-
-export const prerender = true;
-
-const { dienst } = Astro.props;
+const { slug } = Astro.params;
+const diensten = await fetchDiensten();
+const dienst = diensten.find((d: any) => d.slug?.current === slug);
 if (!dienst?.titel) return Astro.redirect('/diensten');
 const settings = await fetchSettings();
 ---

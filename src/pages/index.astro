@@ -4,8 +4,6 @@ import Section from '../components/Section.astro';
 import PrayerManager from '../components/PrayerManager.astro';
 import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, urlFor } from '../lib/sanity';
 
-export const prerender = true;
-
 const settings = await fetchSettings();
 const actueel = await fetchActueel();
 const homePage = await fetchHomePage();

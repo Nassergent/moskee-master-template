@@ -5,19 +5,10 @@ import AddToCalendar from '../../components/AddToCalendar.astro';
 import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
 
-export async function getStaticPaths() {
-  const events = await fetchAgendaEvents();
-  return events
-    .filter((event: any) => event.slug?.current)
-    .map((event: any) => ({
-      params: { slug: event.slug.current },
-      props: { event },
-    }));
-}
-
-export const prerender = true;
-
-const { event } = Astro.props;
+const { slug } = Astro.params;
+const events = await fetchAgendaEvents();
+const event = events.find((e: any) => e.slug?.current === slug);
+if (!event) return Astro.redirect('/agenda');
 if (!event) return Astro.redirect('/agenda');
 
 const settings = await fetchSettings();

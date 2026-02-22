@@ -3,8 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import { fetchNieuws, urlFor } from '../lib/sanity';
 
-export const prerender = true;
-
 const nieuws = await fetchNieuws();
 ---
 

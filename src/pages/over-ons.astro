@@ -5,8 +5,6 @@ import VolunteerForm from '../components/VolunteerForm.astro';
 import PortableText from '../components/PortableText.astro';
 import { fetchSettings, fetchAboutPage, urlFor, demoAboutPage } from '../lib/sanity';
 
-export const prerender = true;
-
 const settings = await fetchSettings();
 const aboutPage = await fetchAboutPage();
 

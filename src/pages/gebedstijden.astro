@@ -7,8 +7,6 @@ import IslamicCalendar from '../components/IslamicCalendar.astro';
 import { fetchSettings, fetchPrayerTimes } from '../lib/sanity';
 import { formatHijriDate } from '../lib/hijri';
 
-export const prerender = true;
-
 const hijriToday = formatHijriDate();
 
 const settings = await fetchSettings();

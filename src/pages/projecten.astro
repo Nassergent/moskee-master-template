@@ -4,8 +4,6 @@ import Section from '../components/Section.astro';
 import DonationCard from '../components/DonationCard.astro';
 import { fetchProjecten, fetchAllQuotes } from '../lib/sanity';
 
-export const prerender = true;
-
 const projecten = await fetchProjecten();
 const quotes = await fetchAllQuotes('donaties');
 ---

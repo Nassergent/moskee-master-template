@@ -3,8 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import { fetchSettings } from '../lib/sanity';
 
-export const prerender = true;
-
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
 const email = settings?.email || 'info@moskee.be';

@@ -4,19 +4,9 @@ import Section from '../../components/Section.astro';
 import PortableText from '../../components/PortableText.astro';
 import { fetchNieuws, fetchSettings, urlFor } from '../../lib/sanity';
 
-export async function getStaticPaths() {
-  const nieuws = await fetchNieuws();
-  return nieuws
-    .filter((item: any) => item.slug?.current)
-    .map((item: any) => ({
-      params: { slug: item.slug.current },
-      props: { item },
-    }));
-}
-
-export const prerender = true;
-
-const { item } = Astro.props;
+const { slug } = Astro.params;
+const nieuws = await fetchNieuws();
+const item = nieuws.find((n: any) => n.slug?.current === slug);
 if (!item?.titel) return Astro.redirect('/nieuws');
 const settings = await fetchSettings();
 const datum = item.datum
