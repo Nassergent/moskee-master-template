@@ -72,10 +72,11 @@ export function getClientIp(request: Request): string {
 }
 
 /**
- * Valideer e-mailadres (basis regex)
+ * Valideer e-mailadres (RFC 5322 simplified).
+ * Weigert ongeldige patronen: dubbele @, ontbrekende local part, opeenvolgende punten.
  */
 export function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(email);
 }
 
 /**

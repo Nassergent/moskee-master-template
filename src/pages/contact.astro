@@ -162,7 +162,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
 
     // Loading state with spinner
     const originalText = btn.textContent;
-    btn.innerHTML = '<svg class="animate-spin inline w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity=".25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Versturen...';
+    btn.textContent = 'Versturen...';
     btn.disabled = true;
 
     const formData = new FormData(form);

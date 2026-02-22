@@ -141,6 +141,24 @@ export const settings = defineType({
 
     // === KALENDER BEHEER ===
     defineField({
+      name: 'timezone',
+      title: 'Tijdzone',
+      type: 'string',
+      group: 'kalender',
+      description: 'De tijdzone van uw moskee. Standaard: Europe/Brussels.',
+      initialValue: 'Europe/Brussels',
+      options: {
+        list: [
+          { title: 'Brussel (België)', value: 'Europe/Brussels' },
+          { title: 'Amsterdam (Nederland)', value: 'Europe/Amsterdam' },
+          { title: 'Parijs (Frankrijk)', value: 'Europe/Paris' },
+          { title: 'Berlijn (Duitsland)', value: 'Europe/Berlin' },
+          { title: 'Londen (VK)', value: 'Europe/London' },
+          { title: 'Istanbul (Turkije)', value: 'Europe/Istanbul' },
+        ],
+      },
+    }),
+    defineField({
       name: 'hijriAdjustment',
       title: 'Hijri Datum Correctie',
       type: 'number',

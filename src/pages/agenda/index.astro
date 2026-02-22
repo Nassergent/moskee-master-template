@@ -131,11 +131,11 @@ const categorieen = extractCategories(events);
         filterBtns.forEach((b) => {
           const el = b as HTMLElement;
           if (b === btn) {
-            el.className = el.className.replace('bg-neutral-100 text-neutral-600', 'bg-primary text-white');
-            el.classList.add('active');
+            el.classList.remove('bg-neutral-100', 'text-neutral-600');
+            el.classList.add('bg-primary', 'text-white', 'active');
           } else {
-            el.className = el.className.replace('bg-primary text-white', 'bg-neutral-100 text-neutral-600');
-            el.classList.remove('active');
+            el.classList.remove('bg-primary', 'text-white', 'active');
+            el.classList.add('bg-neutral-100', 'text-neutral-600');
           }
         });
         cards.forEach((card) => {

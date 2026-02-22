@@ -7,11 +7,17 @@ export const prerender = false;
 
 /**
  * Verify Mollie webhook signature (HMAC-SHA256).
- * Returns true if verification passes or if no secret is configured (dev mode).
+ * Throws in production if MOLLIE_WEBHOOK_SECRET is not configured.
  */
 async function verifyMollieSignature(request: Request, body: string): Promise<boolean> {
   const secret = import.meta.env.MOLLIE_WEBHOOK_SECRET;
-  if (!secret) return true; // Skip in dev when no secret configured
+  if (!secret) {
+    const mollieKey = import.meta.env.MOLLIE_API_KEY || '';
+    if (mollieKey.startsWith('live_')) {
+      throw new Error('MOLLIE_WEBHOOK_SECRET is required in production');
+    }
+    return true; // Skip only in dev/test mode
+  }
 
   const signature = request.headers.get('x-mollie-signature');
   if (!signature) return false;

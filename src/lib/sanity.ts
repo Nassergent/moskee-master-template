@@ -1,11 +1,14 @@
-import { sanityClient, urlFor, writeClient } from '../../sanity/lib/client';
-export { sanityClient, urlFor, writeClient };
+import { sanityClient, urlFor } from '../../sanity/lib/client';
+export { sanityClient, urlFor };
+
+// writeClient is NOT re-exported here — import directly from
+// '../../sanity/lib/client' in server-only code (src/services/, src/pages/api/)
 
 // ── Fetch helpers (Sanity → fallback to demo) ──────────────────────
 
 export async function fetchSettings() {
   try {
-    const result = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, theme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, hijriAdjustment, islamicDays, bedanktTekst }`);
+    const result = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, theme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst }`);
     if (result) return result;
   } catch (e) {
     console.error('Sanity fetchSettings error:', e);

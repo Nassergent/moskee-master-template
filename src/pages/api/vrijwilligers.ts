@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { writeClient } from '../../lib/sanity';
+import { writeClient } from '../../../sanity/lib/client';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
 import { sendVolunteerEmails } from '../../services/email-service';
 

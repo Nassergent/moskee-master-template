@@ -15,13 +15,20 @@ export interface ValidationResult {
 }
 
 export function validatePaymentAmount(rawAmount: unknown): ValidationResult {
-  const numAmount = typeof rawAmount === 'string'
-    ? parseFloat(rawAmount)
-    : typeof rawAmount === 'number'
-      ? rawAmount
-      : NaN;
+  // Convert to string first for strict validation
+  const str = String(rawAmount ?? '').trim();
 
-  if (!numAmount || numAmount < PAYMENT_LIMITS.MIN || numAmount > PAYMENT_LIMITS.MAX) {
+  // Reject scientific notation, non-numeric chars, and more than 2 decimals
+  if (!/^\d+(\.\d{1,2})?$/.test(str)) {
+    return {
+      valid: false,
+      error: 'Ongeldig bedragformaat. Gebruik een getal met maximaal 2 decimalen.',
+    };
+  }
+
+  const numAmount = parseFloat(str);
+
+  if (isNaN(numAmount) || numAmount < PAYMENT_LIMITS.MIN || numAmount > PAYMENT_LIMITS.MAX) {
     return {
       valid: false,
       error: `Ongeldig bedrag (min \u20ac${PAYMENT_LIMITS.MIN}, max \u20ac${PAYMENT_LIMITS.MAX.toLocaleString('nl-BE')}).`,

@@ -9,20 +9,20 @@ const { slug } = Astro.params;
 const events = await fetchAgendaEvents();
 const event = events.find((e: any) => e.slug?.current === slug);
 if (!event) return Astro.redirect('/agenda');
-if (!event) return Astro.redirect('/agenda');
 
 const settings = await fetchSettings();
+const tz = settings?.timezone || 'Europe/Brussels';
 
 function formatDatum(datum: string): string {
   return new Date(datum).toLocaleDateString('nl-BE', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-    timeZone: 'Europe/Brussels',
+    timeZone: tz,
   });
 }
 
 function formatTijd(datum: string): string {
   const str = new Date(datum).toLocaleTimeString('nl-BE', {
-    hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Brussels',
+    hour: '2-digit', minute: '2-digit', timeZone: tz,
   });
   return str === '00:00' ? '' : str;
 }

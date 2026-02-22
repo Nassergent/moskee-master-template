@@ -3,7 +3,7 @@
  * Handles Mollie payment processing and Sanity project updates.
  */
 
-import { writeClient } from '../lib/sanity';
+import { writeClient } from '../../sanity/lib/client';
 import { fetchProjectByTitle, fetchSettings } from '../lib/sanity';
 import { parseCurrencyAmountCents, centsToEuros, shouldUpdateProject } from '../lib/logic/payment-validators';
 import { escapeHtml } from '../lib/security';

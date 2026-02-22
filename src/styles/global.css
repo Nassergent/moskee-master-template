@@ -128,7 +128,7 @@ h2.text-center::after {
 
 /* ─── Design Token: accent-gold for subheadings ─── */
 :root {
-  --color-accent-gold: #c9a983;
+  --color-accent-gold: #b8935e;
 }
 
 /* ─── Animations ─── */
