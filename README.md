@@ -69,12 +69,28 @@ Vervang het project ID op **drie plekken**:
 2. Doorloop de verificatie (KVK/VZW nodig)
 3. Ga naar **Developers** → **API keys**
 4. Kopieer de **Test API key** → `MOLLIE_API_KEY` in `.env`
-5. Ga naar **Developers** → **Webhooks** → klik op je webhook-endpoint → kopieer de **Webhook secret** → `MOLLIE_WEBHOOK_SECRET` in `.env`
-6. Na goedkeuring: vervang door de **Live API key**
+5. Na goedkeuring: vervang door de **Live API key**
 
 > **Let op:** Zonder Mollie key werkt het donatieformulier in demo-modus (redirect naar bedankt-pagina zonder echte betaling).
->
-> **Webhook secret:** De `MOLLIE_WEBHOOK_SECRET` wordt gebruikt om inkomende webhooks cryptografisch te verifiëren (HMAC-SHA256). Zonder deze secret worden webhooks niet gevalideerd op herkomst.
+
+### Stap 5b: Mollie Webhook Configuratie
+
+De webhook zorgt ervoor dat de site automatisch een bevestiging stuurt na een succesvolle betaling. **Zonder webhook ontvangt de site geen betalingsbevestigingen van Mollie.**
+
+1. Ga in het Mollie Dashboard naar **Developers** → **Webhooks**
+2. Klik op **"Webhook aanmaken"**
+3. Vul bij **Webhook-URL** het adres van de moskee-website in, gevolgd door `/api/mollie-webhook`:
+   ```
+   https://uwdomein.nl/api/mollie-webhook
+   ```
+   Voorbeeld: `https://moskee-master-template.vercel.app/api/mollie-webhook`
+4. Vink bij **Evenementtypes** de optie **`payment.paid`** aan
+5. Klik op **Opslaan** — Mollie toont nu een **Secret** (begint met `whsec_`)
+6. Kopieer deze Secret en plak deze als `MOLLIE_WEBHOOK_SECRET` in:
+   - Je lokale **`.env`** bestand
+   - **Vercel** → Project Settings → Environment Variables
+
+> **Belangrijk:** Met een `live_` API key is de webhook secret **verplicht**. De site weigert webhooks zonder geldige HMAC-SHA256 signature. Dit voorkomt dat kwaadwillenden nep-betalingen kunnen triggeren.
 
 ### Stap 6: Resend E-mail (optioneel)
 

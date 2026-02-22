@@ -235,6 +235,14 @@ export const settings = defineType({
 
     // === DONATIES ===
     defineField({
+      name: 'mollieWebhookInfo',
+      title: 'Mollie Webhook Setup',
+      type: 'string',
+      group: 'donaties',
+      readOnly: true,
+      description: 'De Mollie Webhook Secret wordt NIET hier ingesteld maar als Environment Variable in Vercel. Ga naar Mollie Dashboard > Developers > Webhooks > maak webhook aan met URL: https://uwdomein.nl/api/mollie-webhook > vink "payment.paid" aan > kopieer de secret (whsec_...) > plak in Vercel als MOLLIE_WEBHOOK_SECRET.',
+    }),
+    defineField({
       name: 'bedanktTekst',
       title: 'Bedankt-pagina Tekst',
       type: 'text',
