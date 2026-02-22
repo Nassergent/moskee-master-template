@@ -7,13 +7,14 @@ import { Redis } from '@upstash/redis';
 
 // Rate limiter: Upstash Redis als beschikbaar, anders in-memory fallback
 let ratelimit: Ratelimit | null = null;
+let redis: Redis | null = null;
 
 try {
   const redisUrl = import.meta.env.UPSTASH_REDIS_REST_URL;
   const redisToken = import.meta.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (redisUrl && redisToken) {
-    const redis = new Redis({ url: redisUrl, token: redisToken });
+    redis = new Redis({ url: redisUrl, token: redisToken });
     ratelimit = new Ratelimit({
       redis,
       limiter: Ratelimit.slidingWindow(5, '60 s'),
@@ -114,4 +115,47 @@ export function checkOrigin(request: Request, siteUrl: string): Response | null 
   }
 
   return null;
+}
+
+// ── Idempotency helpers (webhook deduplication) ──
+
+const processedPayments = new Map<string, number>();
+
+/**
+ * Check of een payment al is verwerkt. Gebruikt Redis (productie) of in-memory (dev).
+ * Returns true als het payment NIEUW is en verwerkt mag worden.
+ * Returns false als het al verwerkt is (skip).
+ */
+export async function claimPayment(paymentId: string): Promise<boolean> {
+  const key = `processed:${paymentId}`;
+
+  // Redis: atomic SET NX met 24h TTL
+  if (redis) {
+    const result = await redis.set(key, Date.now(), { nx: true, ex: 86400 });
+    return result !== null;
+  }
+
+  // In-memory fallback (dev)
+  if (processedPayments.has(paymentId)) return false;
+  processedPayments.set(paymentId, Date.now());
+
+  // Cleanup: verwijder entries ouder dan 24 uur
+  const cutoff = Date.now() - 86_400_000;
+  for (const [id, ts] of processedPayments) {
+    if (ts < cutoff) processedPayments.delete(id);
+  }
+
+  return true;
+}
+
+/**
+ * Escape HTML entities om XSS in e-mails te voorkomen.
+ */
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

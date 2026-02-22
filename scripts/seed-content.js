@@ -23,9 +23,12 @@ try {
   }
 } catch { /* .env niet gevonden */ }
 
+const projectId = process.env.PUBLIC_SANITY_PROJECT_ID;
+if (!projectId) throw new Error('Missing PUBLIC_SANITY_PROJECT_ID in .env');
+
 const client = createClient({
-  projectId: 'qjg8nn9m',
-  dataset: 'production',
+  projectId,
+  dataset: process.env.PUBLIC_SANITY_DATASET || 'production',
   useCdn: false,
   apiVersion: '2024-01-01',
   token: process.env.SANITY_WRITE_TOKEN || process.env.SANITY_API_TOKEN || '',

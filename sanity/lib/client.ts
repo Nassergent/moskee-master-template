@@ -9,11 +9,19 @@ function getEnv(key: string): string | undefined {
   }
 }
 
+// Fail fast: geen hardcoded fallbacks — voorkomt cross-tenant data access
+const projectId = getEnv('PUBLIC_SANITY_PROJECT_ID');
+const dataset = getEnv('PUBLIC_SANITY_DATASET') || 'production';
+
+if (!projectId) {
+  throw new Error('Missing PUBLIC_SANITY_PROJECT_ID — set it in .env');
+}
+
 // Public read client — useCdn: true voor snelle, gecachte responses
 // Geen token nodig: leest alleen publieke data via CDN
 export const sanityClient = createClient({
-  projectId: getEnv('PUBLIC_SANITY_PROJECT_ID') || 'qjg8nn9m',
-  dataset: getEnv('PUBLIC_SANITY_DATASET') || 'production',
+  projectId,
+  dataset,
   useCdn: true,
   apiVersion: '2024-01-01',
 });
@@ -21,8 +29,8 @@ export const sanityClient = createClient({
 // Write client for creating documents (volunteer form etc.)
 // Token MOET via env var — geen hardcoded fallback
 export const writeClient = createClient({
-  projectId: getEnv('PUBLIC_SANITY_PROJECT_ID') || 'qjg8nn9m',
-  dataset: getEnv('PUBLIC_SANITY_DATASET') || 'production',
+  projectId,
+  dataset,
   useCdn: false,
   apiVersion: '2024-01-01',
   token: getEnv('SANITY_WRITE_TOKEN') || getEnv('SANITY_API_TOKEN'),

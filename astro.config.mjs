@@ -1,10 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
+
+const env = loadEnv('', process.cwd(), 'PUBLIC_');
 
 export default defineConfig({
   site: 'https://moskee-template.vercel.app',
@@ -13,8 +16,8 @@ export default defineConfig({
   integrations: [
     react(),
     sanity({
-      projectId: 'qjg8nn9m',
-      dataset: 'production',
+      projectId: env.PUBLIC_SANITY_PROJECT_ID,
+      dataset: env.PUBLIC_SANITY_DATASET || 'production',
       useCdn: true,
       studioBasePath: '/admin',
     }),

@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { createMollieClient } from '@mollie/api-client';
 import { writeClient, sanityClient } from '../../lib/sanity';
 import { Resend } from 'resend';
-import { checkRateLimit, getClientIp } from '../../lib/security';
+import { checkRateLimit, getClientIp, claimPayment, escapeHtml } from '../../lib/security';
 
 export const prerender = false;
 
@@ -26,33 +26,35 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response('OK', { status: 200 });
     }
 
+    // Idempotency: voorkom dubbele verwerking bij webhook retries
+    const isNew = await claimPayment(paymentId);
+    if (!isNew) {
+      return new Response('OK', { status: 200 });
+    }
+
     // Mollie API valideert het payment ID — een nep ID geeft een error
     const mollieClient = createMollieClient({ apiKey: mollieKey });
     const payment = await mollieClient.payments.get(paymentId);
-
-    // Payment verwerking: status en bedrag worden gelogd bij fouten via console.error
 
     // Alleen bij succesvolle betaling
     if (payment.status === 'paid') {
       const metadata = payment.metadata as { project?: string; frequency?: string; email?: string } | null;
       const projectName = metadata?.project;
-      const paidAmount = parseFloat(payment.amount.value);
+      // Veilige currency math: afronden op 2 decimalen
+      const paidAmount = Math.round(parseFloat(payment.amount.value) * 100) / 100;
 
-      // 1. Update het project bedrag in Sanity
+      // 1. Atomic increment van het project bedrag in Sanity
       if (projectName && projectName !== 'Algemeen' && projectName !== 'Algemene Sadaqa') {
         const project = await sanityClient.fetch(
-          `*[_type == "project" && titel == $titel][0]{ _id, huidigBedrag }`,
+          `*[_type == "project" && titel == $titel][0]{ _id }`,
           { titel: projectName }
         );
 
         if (project?._id) {
-          const currentAmount = project.huidigBedrag || 0;
           await writeClient
             .patch(project._id)
-            .set({ huidigBedrag: currentAmount + paidAmount })
+            .inc({ huidigBedrag: paidAmount })
             .commit();
-
-          // Project bedrag succesvol bijgewerkt in Sanity
         }
       }
 
@@ -63,11 +65,12 @@ export const POST: APIRoute = async ({ request }) => {
       if (donorEmail && resendKey && resendKey !== 're_xxxxxxxxxxxx') {
         try {
           const settings = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, email }`);
-          const mosqueName = settings?.mosqueName || 'Onze Moskee';
+          const mosqueName = escapeHtml(settings?.mosqueName || 'Onze Moskee');
+          const safeProjectName = escapeHtml(projectName || 'Algemene Sadaqa');
 
           const resend = new Resend(resendKey);
           await resend.emails.send({
-            from: `${mosqueName} <onboarding@resend.dev>`,
+            from: `${settings?.mosqueName || 'Onze Moskee'} <onboarding@resend.dev>`,
             to: [donorEmail],
             replyTo: settings?.email || undefined,
             subject: `Jazak Allahu Khairan — Bedankt voor uw donatie`,
@@ -92,7 +95,7 @@ export const POST: APIRoute = async ({ request }) => {
                       </tr>
                       <tr>
                         <td style="padding: 8px 0; color: #6B7280;">Bestemming</td>
-                        <td style="padding: 8px 0; text-align: right; font-weight: 500;">${projectName || 'Algemene Sadaqa'}</td>
+                        <td style="padding: 8px 0; text-align: right; font-weight: 500;">${safeProjectName}</td>
                       </tr>
                     </table>
                   </div>
@@ -102,12 +105,11 @@ export const POST: APIRoute = async ({ request }) => {
                   </p>
                 </div>
                 <div style="padding: 16px; text-align: center; font-size: 12px; color: #9CA3AF;">
-                  ${mosqueName}${settings?.email ? ` — ${settings.email}` : ''}
+                  ${mosqueName}${settings?.email ? ` — ${escapeHtml(settings.email)}` : ''}
                 </div>
               </div>
             `,
           });
-          // Bedankmail succesvol verstuurd
         } catch (emailErr) {
           console.error('Bedankmail fout:', emailErr);
         }
