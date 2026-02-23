@@ -10,13 +10,14 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
+  hideFooterMobile?: boolean;
 }
 
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
 const defaultDescription = settings?.description || 'Welkom bij onze moskee — een plek van gebed, gemeenschap en kennis.';
 
-const { title = mosqueName, description = defaultDescription, ogImage, ogType = 'website' } = Astro.props;
+const { title = mosqueName, description = defaultDescription, ogImage, ogType = 'website', hideFooterMobile = false } = Astro.props;
 const fullTitle = title === mosqueName ? title : `${title} | ${mosqueName}`;
 const canonicalUrl = Astro.url.href;
 
@@ -189,6 +190,8 @@ const colors = settings?.theme || {
     <main id="main-content" class="flex-1 relative z-10">
       <slot />
     </main>
-    <Footer />
+    <div class:list={[hideFooterMobile && 'hidden sm:block']}>
+      <Footer />
+    </div>
   </body>
 </html>

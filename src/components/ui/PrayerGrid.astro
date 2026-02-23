@@ -4,10 +4,10 @@
  *
  * Compartiment: UI
  * 100% SSR, geen JavaScript (behalve kleine countdown ticker).
- * Ontvangt ComputedPrayerTimes als prop — doet NOOIT eigen berekeningen.
  *
- * compact=true  → homepage (kleinere rijen)
- * compact=false → gebedstijden pagina (Mawaqit-stijl, grotere fonts, +offset)
+ * compact=true    → homepage mobiel (kleinere rijen, iqama als tijd)
+ * fullscreen=true → gebedstijden mobiel (rijen vullen heel het scherm)
+ * default         → desktop 5-kolom grid
  */
 
 import { PRAYER_NAMES, PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
@@ -18,11 +18,12 @@ interface Props {
   nextPrayer?: PrayerName | null;
   secondsUntilNext?: number;
   compact?: boolean;
+  fullscreen?: boolean;
 }
 
-const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, compact = false } = Astro.props;
+const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, compact = false, fullscreen = false } = Astro.props;
 
-/** Format seconds as "Xu Ym" for compact display */
+/** Format seconds as "Xu Ym" */
 function formatCompactCountdown(secs: number): string {
   if (secs <= 0) return '';
   const h = Math.floor(secs / 3600);
@@ -37,77 +38,14 @@ function getIqamaOffset(adhan: string, iqama: string | null): string | null {
   const [ah, am] = adhan.split(':').map(Number);
   const [ih, im] = iqama.split(':').map(Number);
   let diff = (ih * 60 + im) - (ah * 60 + am);
-  if (diff < 0) diff += 1440; // midnight wrap
+  if (diff < 0) diff += 1440;
   return `+${diff}`;
 }
 ---
 
-<!-- Prayer Grid — Desktop: 5 kolommen -->
-<div class="border border-neutral-200 overflow-hidden">
-
-  {/* ── Desktop/Tablet: 5-kolom grid (≥640px) ── */}
-  <div class="hidden sm:grid sm:grid-cols-5 gap-0">
-    {PRAYER_NAMES.map((name) => {
-      const isCurrent = currentPrayer === name;
-      const isNext = nextPrayer === name;
-      return (
-        <div
-          class:list={[
-            'flex flex-col items-center py-6 border-r last:border-r-0 transition-colors',
-            isCurrent
-              ? 'bg-primary text-white'
-              : 'bg-white hover:bg-base-100',
-          ]}
-        >
-          <p class:list={[
-            'text-xs font-bold uppercase tracking-[0.15em] mb-3',
-            isCurrent ? 'text-white/80' : 'text-neutral-400',
-          ]}>
-            {PRAYER_LABELS[name]}
-          </p>
-
-          <p class:list={[
-            'text-3xl font-bold font-heading tabular-nums',
-            isCurrent ? 'text-white' : 'text-primary',
-          ]}>
-            {times.adhan[name]}
-          </p>
-
-          <div class="h-6 flex items-center mt-2">
-            {times.iqama[name] ? (
-              <div class="flex items-center gap-1.5">
-                <span class:list={[
-                  'text-[10px] uppercase tracking-wider font-bold',
-                  isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
-                ]}>Iqama</span>
-                <span class:list={[
-                  'text-sm font-bold tabular-nums',
-                  isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
-                ]}>{times.iqama[name]}</span>
-              </div>
-            ) : null}
-          </div>
-
-          {isNext && secondsUntilNext > 0 && (
-            <p
-              id="grid-countdown"
-              data-seconds={secondsUntilNext}
-              class="text-[10px] font-bold uppercase tracking-wider text-primary mt-1 tabular-nums"
-            >
-              In {formatCompactCountdown(secondsUntilNext)}
-            </p>
-          )}
-
-          {isCurrent && (
-            <div class="w-1.5 h-1.5 bg-accent mt-3" aria-hidden="true" />
-          )}
-        </div>
-      );
-    })}
-  </div>
-
-  {/* ── Mobiel: Mawaqit-stijl rijen (< 640px) ── */}
-  <div class="sm:hidden divide-y divide-neutral-100">
+{/* ── Fullscreen mobiel: rijen vullen 100% hoogte ── */}
+{fullscreen && (
+  <div class="flex flex-col h-full divide-y divide-neutral-100">
     {PRAYER_NAMES.map((name) => {
       const isCurrent = currentPrayer === name;
       const isNext = nextPrayer === name;
@@ -115,61 +53,170 @@ function getIqamaOffset(adhan: string, iqama: string | null): string | null {
       return (
         <div
           class:list={[
-            'flex items-center transition-colors',
-            compact ? 'px-5 py-3.5' : 'px-5 py-4',
-            isCurrent
-              ? compact ? 'bg-primary' : 'bg-accent'
-              : 'bg-white',
+            'flex-1 flex items-center px-5 transition-colors',
+            isCurrent ? 'bg-accent' : 'bg-white',
           ]}
         >
           {/* Links: gebedsnaam */}
-          <div class:list={['shrink-0', compact ? 'w-20' : 'w-24']}>
+          <div class="w-24 shrink-0">
             <p class:list={[
-              'font-bold font-heading',
-              compact ? 'text-sm uppercase tracking-wide' : 'text-base',
+              'text-base font-bold font-heading',
               isCurrent ? 'text-white' : 'text-primary',
             ]}>
               {PRAYER_LABELS[name]}
             </p>
-            {!compact && isCurrent && (
-              <span class="inline-block mt-0.5 text-[10px] font-bold uppercase tracking-wider text-white/70">
-                Nu
-              </span>
-            )}
-            {compact && isCurrent && (
-              <span class="inline-block mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#E8CDB5]">
-                Nu
-              </span>
+            {isCurrent && (
+              <span class="text-[10px] font-bold uppercase tracking-wider text-white/70">Nu</span>
             )}
             {isNext && secondsUntilNext > 0 && (
               <p
                 id="grid-countdown"
                 data-seconds={secondsUntilNext}
-                class:list={[
-                  'text-[10px] font-bold uppercase tracking-wider mt-0.5 tabular-nums',
-                  compact ? 'text-accent' : 'text-primary/60',
-                ]}
+                class="text-[10px] font-bold uppercase tracking-wider text-primary/60 tabular-nums"
               >
                 In {formatCompactCountdown(secondsUntilNext)}
               </p>
             )}
           </div>
 
-          {/* Midden: adhan tijd — groot en bold */}
+          {/* Midden: adhan tijd */}
           <div class="flex-1 text-center">
             <p class:list={[
-              'font-bold font-heading tabular-nums',
-              compact ? 'text-2xl' : 'text-3xl',
+              'text-3xl font-bold font-heading tabular-nums',
               isCurrent ? 'text-white' : 'text-primary',
             ]}>
               {times.adhan[name]}
             </p>
           </div>
 
-          {/* Rechts: iqama als offset (+5) of volledige tijd */}
-          <div class:list={['shrink-0 text-right', compact ? 'w-20' : 'w-20']}>
-            {times.iqama[name] ? (
-              compact ? (
+          {/* Rechts: iqama offset */}
+          <div class="w-16 shrink-0 text-right">
+            {offset ? (
+              <p class:list={[
+                'text-xl font-bold font-heading tabular-nums',
+                isCurrent ? 'text-white/80' : 'text-accent',
+              ]}>
+                {offset}
+              </p>
+            ) : (
+              <span class="text-neutral-300">&mdash;</span>
+            )}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+)}
+
+{/* ── Niet-fullscreen: desktop grid + compact mobiel ── */}
+{!fullscreen && (
+  <div class="border border-neutral-200 overflow-hidden">
+
+    {/* Desktop/Tablet: 5-kolom grid */}
+    <div class="hidden sm:grid sm:grid-cols-5 gap-0">
+      {PRAYER_NAMES.map((name) => {
+        const isCurrent = currentPrayer === name;
+        const isNext = nextPrayer === name;
+        return (
+          <div
+            class:list={[
+              'flex flex-col items-center py-6 border-r last:border-r-0 transition-colors',
+              isCurrent
+                ? 'bg-primary text-white'
+                : 'bg-white hover:bg-base-100',
+            ]}
+          >
+            <p class:list={[
+              'text-xs font-bold uppercase tracking-[0.15em] mb-3',
+              isCurrent ? 'text-white/80' : 'text-neutral-400',
+            ]}>
+              {PRAYER_LABELS[name]}
+            </p>
+
+            <p class:list={[
+              'text-3xl font-bold font-heading tabular-nums',
+              isCurrent ? 'text-white' : 'text-primary',
+            ]}>
+              {times.adhan[name]}
+            </p>
+
+            <div class="h-6 flex items-center mt-2">
+              {times.iqama[name] ? (
+                <div class="flex items-center gap-1.5">
+                  <span class:list={[
+                    'text-[10px] uppercase tracking-wider font-bold',
+                    isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                  ]}>Iqama</span>
+                  <span class:list={[
+                    'text-sm font-bold tabular-nums',
+                    isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                  ]}>{times.iqama[name]}</span>
+                </div>
+              ) : null}
+            </div>
+
+            {isNext && secondsUntilNext > 0 && (
+              <p
+                id="grid-countdown"
+                data-seconds={secondsUntilNext}
+                class="text-[10px] font-bold uppercase tracking-wider text-primary mt-1 tabular-nums"
+              >
+                In {formatCompactCountdown(secondsUntilNext)}
+              </p>
+            )}
+
+            {isCurrent && (
+              <div class="w-1.5 h-1.5 bg-accent mt-3" aria-hidden="true" />
+            )}
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Compact mobiel (homepage) */}
+    <div class="sm:hidden divide-y divide-neutral-100">
+      {PRAYER_NAMES.map((name) => {
+        const isCurrent = currentPrayer === name;
+        const isNext = nextPrayer === name;
+        return (
+          <div
+            class:list={[
+              'flex items-center px-5 py-3.5 transition-colors',
+              isCurrent ? 'bg-primary' : 'bg-white',
+            ]}
+          >
+            <div class="w-20 shrink-0">
+              <p class:list={[
+                'text-sm font-bold uppercase tracking-wide',
+                isCurrent ? 'text-white' : 'text-primary',
+              ]}>
+                {PRAYER_LABELS[name]}
+              </p>
+              {isCurrent && (
+                <span class="inline-block mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#E8CDB5]">Nu</span>
+              )}
+              {isNext && secondsUntilNext > 0 && (
+                <p
+                  id="grid-countdown"
+                  data-seconds={secondsUntilNext}
+                  class="text-[10px] font-bold uppercase tracking-wider text-accent mt-0.5 tabular-nums"
+                >
+                  In {formatCompactCountdown(secondsUntilNext)}
+                </p>
+              )}
+            </div>
+
+            <div class="flex-1 text-center">
+              <p class:list={[
+                'text-2xl font-bold font-heading tabular-nums',
+                isCurrent ? 'text-white' : 'text-primary',
+              ]}>
+                {times.adhan[name]}
+              </p>
+            </div>
+
+            <div class="w-20 shrink-0 text-right">
+              {times.iqama[name] ? (
                 <div>
                   <p class:list={[
                     'text-[10px] uppercase tracking-wider font-bold',
@@ -181,33 +228,28 @@ function getIqamaOffset(adhan: string, iqama: string | null): string | null {
                   ]}>{times.iqama[name]}</p>
                 </div>
               ) : (
-                <p class:list={[
-                  'text-xl font-bold font-heading tabular-nums',
-                  isCurrent ? 'text-white/80' : 'text-accent',
-                ]}>
-                  {offset}
-                </p>
-              )
-            ) : (
-              <span class="text-[10px] text-neutral-300">&mdash;</span>
-            )}
+                <span class="text-[10px] text-neutral-300">&mdash;</span>
+              )}
+            </div>
           </div>
-        </div>
-      );
-    })}
+        );
+      })}
+    </div>
+
   </div>
+)}
 
-</div>
+{/* Meta */}
+{!fullscreen && (
+  <p class="text-[10px] text-neutral-400 mt-3 text-right">
+    {times.meta.source === 'computed' && 'Berekend'}
+    {times.meta.source === 'cache' && 'Uit cache'}
+    {times.meta.source === 'fallback' && 'Laatste bekende tijden'}
+    {' '}&middot; {times.meta.method} &middot; {times.meta.madhab === 'hanafi' ? 'Hanafi' : 'Shafi\'i'}
+  </p>
+)}
 
-{/* Meta: berekeningsbron */}
-<p class="text-[10px] text-neutral-400 mt-3 text-right">
-  {times.meta.source === 'computed' && 'Berekend'}
-  {times.meta.source === 'cache' && 'Uit cache'}
-  {times.meta.source === 'fallback' && 'Laatste bekende tijden'}
-  {' '}&middot; {times.meta.method} &middot; {times.meta.madhab === 'hanafi' ? 'Hanafi' : 'Shafi\'i'}
-</p>
-
-{/* Live countdown ticker — <500B */}
+{/* Live countdown ticker */}
 {nextPrayer && secondsUntilNext > 0 && (
   <script>
     const el = document.getElementById('grid-countdown');

@@ -34,7 +34,7 @@ if (configComplete) {
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
 ---
 
-<BaseLayout title="Gebedstijden" description="Dagelijkse gebedstijden en Jumu'ah informatie">
+<BaseLayout title="Gebedstijden" description="Dagelijkse gebedstijden en Jumu'ah informatie" hideFooterMobile>
   <!-- Page Header — alleen desktop -->
   <section class="hidden sm:block bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
@@ -46,9 +46,9 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </section>
 
-  <!-- Dagelijkse Gebedstijden — mobiel: minimale padding voor vast scherm -->
-  <div class="sm:hidden px-0 py-0">
-    <PrayerManager />
+  <!-- Mobiel: fullscreen gebedstijden, geen scroll -->
+  <div class="sm:hidden h-[calc(100dvh-4rem)] flex flex-col overflow-hidden">
+    <PrayerManager fullscreen />
   </div>
   <Section variant="light-50" class="hidden sm:block">
     <div class="text-center mb-10">
@@ -64,9 +64,9 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </Section>
 
-  <!-- Vrijdaggebed (Jumu'ah) — Light-100 -->
+  <!-- Vrijdaggebed (Jumu'ah) — Light-100 (alleen desktop) -->
   {prayer.jumuahShifts && prayer.jumuahShifts.length > 0 && (
-    <Section variant="light-100">
+    <Section variant="light-100" class="hidden sm:block">
       <div class="text-center mb-6">
         <p class="font-arabic text-2xl text-accent/60 mb-2" dir="rtl" lang="ar">صلاة الجمعة</p>
         <h2 class="text-3xl font-bold font-heading text-primary">Vrijdaggebed</h2>
@@ -102,13 +102,13 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </Section>
   )}
 
-  <!-- Islamitische Kalender — Light-100 -->
-  <Section variant="light-100">
+  <!-- Islamitische Kalender — alleen desktop -->
+  <Section variant="light-100" class="hidden sm:block">
     <IslamicCalendar />
   </Section>
 
-  <!-- Huisregels — Light-50 -->
-  <Section variant="light-50">
+  <!-- Huisregels — alleen desktop -->
+  <Section variant="light-50" class="hidden sm:block">
     <EtiquetteGrid />
   </Section>
 
