@@ -10,7 +10,7 @@ const actueel = await fetchActueel();
 const homePage = await fetchHomePage();
 const agendaEvents = await fetchUpcomingAgendaEvents(3);
 const projecten = await fetchProjecten();
-const eersteProject = projecten?.length > 0 ? projecten[0] : null;
+const eersteProject = projecten?.find((p: any) => p.toonOpHomepage) || (projecten?.length > 0 ? projecten[0] : null);
 
 // Hero data: alleen uit homePage singleton
 const heroImageUrl = homePage?.heroImage

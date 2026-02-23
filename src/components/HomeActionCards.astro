@@ -21,6 +21,8 @@ interface Props {
     beschrijving?: string;
     doelbedrag?: number;
     huidigBedragCents?: number;
+    prijsPerEenheid?: number;
+    eenheid?: string;
   } | null;
   // Download kaart
   downloadTitel?: string;
@@ -155,6 +157,13 @@ const gridClass = cardCount === 3
               {project.beschrijving && (
                 <p class="text-neutral-600 text-sm leading-relaxed mb-4">
                   {project.beschrijving}
+                </p>
+              )}
+
+              {/* Prijs per eenheid */}
+              {project.prijsPerEenheid && project.eenheid && (
+                <p class="text-sm font-semibold text-accent mb-4">
+                  &euro;{project.prijsPerEenheid} per {project.eenheid}
                 </p>
               )}
 

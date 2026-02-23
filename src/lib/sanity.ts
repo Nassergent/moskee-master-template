@@ -32,6 +32,7 @@ export async function fetchProjecten() {
   try {
     const result = await sanityClient.fetch(`*[_type == "project" && actief == true] | order(_createdAt desc) {
       _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, actief,
+      prijsPerEenheid, eenheid, toonOpHomepage,
       citaat->{ tekst, tekstArabisch, bron }
     }`);
     return result || [];
