@@ -83,9 +83,6 @@ const settings = await fetchSettings();
           {(settings?.menuToggles?.showServices ?? true) && (
             <li><a href="/diensten" class="text-white/90 hover:text-white transition-colors">Onze Diensten</a></li>
           )}
-          {(settings?.menuToggles?.showProjects ?? true) && (
-            <li><a href="/projecten" class="text-white/90 hover:text-white transition-colors">Projecten</a></li>
-          )}
           {(settings?.menuToggles?.showNews ?? true) && (
             <li><a href="/nieuws" class="text-white/90 hover:text-white transition-colors">Nieuws & Artikelen</a></li>
           )}

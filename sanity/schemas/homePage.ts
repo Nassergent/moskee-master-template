@@ -64,37 +64,7 @@ export const homePage = defineType({
       of: [{ type: 'string' }],
       description: 'Welkomstwoorden in verschillende talen (bijv. "Allen Welkom", "All Welcome")',
     }),
-    // ── Doneer Kaart (homepage) ──
-    defineField({
-      name: 'doneerEmoji',
-      title: 'Doneer Kaart — Emoji',
-      type: 'string',
-      initialValue: '🤲',
-      description: 'Emoji bovenaan de doneerkaart (bijv. 🤲, 💚, 🕌)',
-    }),
-    defineField({
-      name: 'doneerTitel',
-      title: 'Doneer Kaart — Titel',
-      type: 'string',
-      initialValue: 'Steun onze moskee',
-      description: 'Titel van de doneerkaart op de homepage',
-    }),
-    defineField({
-      name: 'doneerBeschrijving',
-      title: 'Doneer Kaart — Beschrijving',
-      type: 'text',
-      rows: 2,
-      description: 'Korte tekst onder de titel (bijv. "Uw bijdrage houdt de deuren open voor iedereen")',
-    }),
-
     // ── Document Download (homepage) ──
-    defineField({
-      name: 'downloadEmoji',
-      title: 'Download Kaart — Emoji',
-      type: 'string',
-      initialValue: '📄',
-      description: 'Emoji bovenaan de downloadkaart (bijv. 📄, 📅, 🌙)',
-    }),
     defineField({
       name: 'downloadTitel',
       title: 'Download Kaart — Titel',

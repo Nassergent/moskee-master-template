@@ -112,7 +112,7 @@ export async function fetchActueel() {
       "href": select(
         _type == "post" => "/nieuws/" + slug.current,
         _type == "service" => "/diensten/" + slug.current,
-        _type == "project" => "/projecten"
+        _type == "project" => "/doneren"
       )
     }`);
     return result || [];
@@ -181,8 +181,7 @@ export async function fetchHomePage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "homePage"][0]{
       heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur,
-      doneerEmoji, doneerTitel, doneerBeschrijving,
-      downloadEmoji, downloadTitel, downloadBeschrijving, "downloadUrl": downloadBestand.asset->url,
+      downloadTitel, downloadBeschrijving, "downloadUrl": downloadBestand.asset->url,
       seoTitle, seoDescription
     }`);
     return result || null;
