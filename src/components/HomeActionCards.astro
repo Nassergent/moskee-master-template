@@ -1,0 +1,204 @@
+---
+/**
+ * HomeActionCards.astro — 3-kolom actiekaarten sectie (homepage)
+ *
+ * 1. Islamitische Countdown (als er een dag binnen 30 dagen is)
+ * 2. Doneer CTA (altijd zichtbaar)
+ * 3. Document Download (als er een bestand is geüpload in CMS)
+ *
+ * Grid past zich automatisch aan: 1, 2, of 3 kolommen.
+ */
+import { getUpcomingIslamicDay, generateGoogleCalendarUrl } from '../lib/hijri';
+
+interface Props {
+  hijriAdjustment?: number;
+  islamicDays?: Record<string, boolean>;
+  mosqueName?: string;
+  // Doneer kaart
+  doneerEmoji?: string;
+  doneerTitel?: string;
+  doneerBeschrijving?: string;
+  // Download kaart
+  downloadEmoji?: string;
+  downloadTitel?: string;
+  downloadBeschrijving?: string;
+  downloadUrl?: string;
+}
+
+const {
+  hijriAdjustment = 0,
+  islamicDays,
+  mosqueName,
+  doneerEmoji = '🤲',
+  doneerTitel = 'Steun onze moskee',
+  doneerBeschrijving = 'Uw bijdrage houdt de deuren open voor iedereen',
+  downloadEmoji = '📄',
+  downloadTitel,
+  downloadBeschrijving,
+  downloadUrl,
+} = Astro.props;
+
+// ── Islamic Countdown ──
+const upcoming = await getUpcomingIslamicDay(hijriAdjustment, islamicDays);
+
+const BETEKENIS: Record<string, string> = {
+  'Start Ramadan': 'De heilige vastenmaand waarin de Quran werd geopenbaard',
+  'Laylat al-Qadr': 'De Nacht van de Bestemming — beter dan duizend maanden',
+  'Eid al-Fitr': 'Het feest van het verbreken van het vasten',
+  'Eid al-Adha': 'Het offerfeest — herdenking van Ibrahim\'s overgave',
+  'Dag van Arafah': 'De belangrijkste dag van de Hadj',
+  'Ashura': 'Dag van bezinning en vasten',
+  "Isra' & Mi'raj": 'De nachtelijke reis en hemelvaart van de Profeet ﷺ',
+};
+
+const betekenis = upcoming ? BETEKENIS[upcoming.name] || '' : '';
+const formattedDate = upcoming
+  ? new Date(upcoming.gregorianDate).toLocaleDateString('nl-BE', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    })
+  : '';
+const calendarUrl = upcoming
+  ? generateGoogleCalendarUrl({
+      titel: upcoming.name,
+      startDatum: `${upcoming.gregorianDate}T00:00:00`,
+      eindDatum: `${upcoming.gregorianDate}T23:59:00`,
+      beschrijving: `${upcoming.nameAr} — ${betekenis}`,
+      mosqueName: mosqueName || undefined,
+    })
+  : '';
+
+// ── Bepaal hoeveel kaarten zichtbaar zijn ──
+const showCountdown = !!upcoming;
+const showDoneer = true; // altijd
+const showDownload = !!(downloadUrl && downloadTitel);
+const cardCount = [showCountdown, showDoneer, showDownload].filter(Boolean).length;
+
+// Grid classes op basis van aantal kaarten
+const gridClass = cardCount === 3
+  ? 'grid-cols-1 md:grid-cols-3'
+  : cardCount === 2
+    ? 'grid-cols-1 md:grid-cols-2'
+    : 'grid-cols-1 max-w-lg mx-auto';
+---
+
+{cardCount > 0 && (
+  <section class="py-14 sm:py-20 md:py-24 bg-base-100 text-neutral-900">
+    <div class="max-w-[1280px] mx-auto px-6">
+      <div class={`grid ${gridClass} gap-6`}>
+
+        {/* ── Kaart 1: Islamitische Countdown ── */}
+        {showCountdown && upcoming && (
+          <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col">
+            <div class="p-7 flex-1">
+              <span class="text-3xl mb-3 block">{upcoming.emoji}</span>
+              <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-1">
+                {upcoming.name}
+              </h2>
+              <p class="font-arabic text-base text-neutral-400 mb-3" dir="rtl">
+                {upcoming.nameAr}
+              </p>
+              {betekenis && (
+                <p class="text-neutral-600 text-sm leading-relaxed mb-4">
+                  {betekenis}
+                </p>
+              )}
+            </div>
+            <div class="px-7 pb-7 pt-0 border-t border-neutral-100">
+              <div class="flex items-end justify-between pt-5">
+                <div>
+                  {upcoming.daysUntil === 0 ? (
+                    <span class="text-xl font-bold text-accent">Vandaag</span>
+                  ) : (
+                    <div class="flex items-baseline gap-2">
+                      <span class="text-4xl md:text-5xl font-black text-primary leading-none">
+                        {upcoming.daysUntil}
+                      </span>
+                      <span class="text-sm font-semibold text-neutral-500">
+                        {upcoming.daysUntil === 1 ? 'dag' : 'dagen'}
+                      </span>
+                    </div>
+                  )}
+                  <p class="text-xs text-neutral-400 mt-1 capitalize">{formattedDate}</p>
+                </div>
+                <a
+                  href={calendarUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-primary transition-colors"
+                  title="Voeg toe aan Google Agenda"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                  </svg>
+                  Agenda
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Kaart 2: Doneer ── */}
+        {showDoneer && (
+          <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col" style="animation-delay: 100ms">
+            <div class="p-7 flex-1">
+              <span class="text-3xl mb-3 block">{doneerEmoji}</span>
+              <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-2">
+                {doneerTitel}
+              </h2>
+              <p class="text-neutral-600 text-sm leading-relaxed">
+                {doneerBeschrijving}
+              </p>
+            </div>
+            <div class="px-7 pb-7 pt-0 border-t border-neutral-100">
+              <div class="pt-5">
+                <a
+                  href="/doneren"
+                  class="inline-flex items-center gap-2 px-6 py-2.5 min-h-[44px] bg-accent text-white font-bold text-sm hover:bg-accent-hover active:brightness-90 transition-all"
+                >
+                  Doneer nu
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Kaart 3: Document Download ── */}
+        {showDownload && downloadUrl && (
+          <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col" style="animation-delay: 200ms">
+            <div class="p-7 flex-1">
+              <span class="text-3xl mb-3 block">{downloadEmoji}</span>
+              <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-2">
+                {downloadTitel}
+              </h2>
+              {downloadBeschrijving && (
+                <p class="text-neutral-600 text-sm leading-relaxed">
+                  {downloadBeschrijving}
+                </p>
+              )}
+            </div>
+            <div class="px-7 pb-7 pt-0 border-t border-neutral-100">
+              <div class="pt-5">
+                <a
+                  href={downloadUrl}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-6 py-2.5 min-h-[44px] bg-primary text-white font-bold text-sm hover:bg-primary-dark active:brightness-90 transition-all"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                  Download PDF
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  </section>
+)}

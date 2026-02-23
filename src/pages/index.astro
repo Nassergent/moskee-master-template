@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
+import HomeActionCards from '../components/HomeActionCards.astro';
 import PrayerManager from '../components/PrayerManager.astro';
 import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, urlFor } from '../lib/sanity';
 
@@ -92,6 +93,20 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       </div>
     </div>
   </section>
+
+  <!-- Actiekaarten: Countdown + Doneer + Download -->
+  <HomeActionCards
+    hijriAdjustment={settings?.hijriAdjustment ?? 0}
+    islamicDays={settings?.islamicDays}
+    mosqueName={settings?.mosqueName}
+    doneerEmoji={homePage?.doneerEmoji}
+    doneerTitel={homePage?.doneerTitel}
+    doneerBeschrijving={homePage?.doneerBeschrijving}
+    downloadEmoji={homePage?.downloadEmoji}
+    downloadTitel={homePage?.downloadTitel}
+    downloadBeschrijving={homePage?.downloadBeschrijving}
+    downloadUrl={homePage?.downloadUrl}
+  />
 
   <!-- Sectie 1: Light-50 — Gebedstijden (compact) -->
   <Section variant="light-50">

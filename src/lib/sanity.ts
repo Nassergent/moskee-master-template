@@ -180,7 +180,10 @@ export async function fetchProjectByTitle(titel: string) {
 export async function fetchHomePage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "homePage"][0]{
-      heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur, seoTitle, seoDescription
+      heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur,
+      doneerEmoji, doneerTitel, doneerBeschrijving,
+      downloadEmoji, downloadTitel, downloadBeschrijving, "downloadUrl": downloadBestand.asset->url,
+      seoTitle, seoDescription
     }`);
     return result || null;
   } catch (e) {

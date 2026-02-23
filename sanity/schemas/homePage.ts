@@ -64,6 +64,61 @@ export const homePage = defineType({
       of: [{ type: 'string' }],
       description: 'Welkomstwoorden in verschillende talen (bijv. "Allen Welkom", "All Welcome")',
     }),
+    // ── Doneer Kaart (homepage) ──
+    defineField({
+      name: 'doneerEmoji',
+      title: 'Doneer Kaart — Emoji',
+      type: 'string',
+      initialValue: '🤲',
+      description: 'Emoji bovenaan de doneerkaart (bijv. 🤲, 💚, 🕌)',
+    }),
+    defineField({
+      name: 'doneerTitel',
+      title: 'Doneer Kaart — Titel',
+      type: 'string',
+      initialValue: 'Steun onze moskee',
+      description: 'Titel van de doneerkaart op de homepage',
+    }),
+    defineField({
+      name: 'doneerBeschrijving',
+      title: 'Doneer Kaart — Beschrijving',
+      type: 'text',
+      rows: 2,
+      description: 'Korte tekst onder de titel (bijv. "Uw bijdrage houdt de deuren open voor iedereen")',
+    }),
+
+    // ── Document Download (homepage) ──
+    defineField({
+      name: 'downloadEmoji',
+      title: 'Download Kaart — Emoji',
+      type: 'string',
+      initialValue: '📄',
+      description: 'Emoji bovenaan de downloadkaart (bijv. 📄, 📅, 🌙)',
+    }),
+    defineField({
+      name: 'downloadTitel',
+      title: 'Download Kaart — Titel',
+      type: 'string',
+      description: 'Titel van het document (bijv. "Ramadan Programma 2026", "Gebedskalender")',
+    }),
+    defineField({
+      name: 'downloadBeschrijving',
+      title: 'Download Kaart — Beschrijving',
+      type: 'text',
+      rows: 2,
+      description: 'Korte beschrijving (bijv. "Download het volledige programma voor de heilige maand")',
+    }),
+    defineField({
+      name: 'downloadBestand',
+      title: 'Download Kaart — Bestand',
+      type: 'file',
+      options: {
+        accept: '.pdf,.jpg,.jpeg,.png,.webp',
+      },
+      description: 'Upload een PDF, afbeelding of ander document. Als er geen bestand is geüpload, wordt de downloadkaart niet getoond.',
+    }),
+
+    // ── SEO ──
     defineField({
       name: 'seoTitle',
       title: 'SEO Titel',
