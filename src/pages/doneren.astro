@@ -32,7 +32,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
   {quotes.length > 0 && (
     <Section variant="light-100">
       <div class="max-w-3xl mx-auto text-center py-4">
-        <div id="quote-carousel-doneren" class="relative min-h-[180px] flex items-center justify-center" aria-live="polite">
+        <div id="quote-carousel-doneren" class="relative min-h-[260px] flex items-center justify-center" aria-live="polite">
           {quotes.map((q: any, i: number) => (
             <div class:list={['quote-slide-doneren absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-700', i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none']}>
               {q.tekstArabisch && (
@@ -43,7 +43,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
               <p class="text-lg md:text-xl font-heading text-primary/90 italic leading-relaxed max-w-2xl">
                 "{q.tekst}"
               </p>
-              <p class="text-sm mt-4" style="color: var(--color-accent-gold);">— {q.bron}</p>
+              <p class="text-sm mt-4 mb-4" style="color: var(--color-accent-gold);">— {q.bron}</p>
             </div>
           ))}
         </div>
