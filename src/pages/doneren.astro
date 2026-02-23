@@ -192,20 +192,33 @@ const showMollie = settings.menuToggles?.showMollie !== false;
         )}
       </div>
     ) : (
-      /* Mollie UIT: alleen goede doelen in 3-koloms grid */
-      <div class="max-w-5xl mx-auto">
-        {hasProjects && (
-          <Fragment>
-            <div class="text-center mb-10">
-              <h2 class="text-3xl font-bold">Goede Doelen</h2>
-              <p class="text-neutral-500 mt-3">Uw steun maakt het verschil — kies een doel dat u aanspreekt</p>
-              {totalRaised > 0 && (
-                <p class="text-sm text-accent font-semibold mt-2">
-                  Al &euro;{totalRaised.toLocaleString('nl-BE')} opgehaald via {activeProjectCount} {activeProjectCount === 1 ? 'goed doel' : 'goede doelen'}
-                </p>
-              )}
+      /* Mollie UIT: overschrijving links + doelen rechts */
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <div class="lg:col-span-3">
+          <h2 class="text-2xl font-bold font-heading text-primary mb-4">Overschrijving</h2>
+          <p class="text-neutral-500 mb-8">Maak uw donatie over via onderstaande bankgegevens</p>
+          <div class="bg-white border border-neutral-200 p-8 md:p-10">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+                <span class="text-slate-500">Begunstigde</span>
+                <span class="font-medium text-slate-800">{settings.mosqueName}</span>
+              </div>
+              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+                <span class="text-slate-500">IBAN</span>
+                <span class="font-mono font-medium text-slate-800 text-lg">{settings.iban || 'BE00 0000 0000 0000'}</span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-slate-500">Mededeling</span>
+                <span class="font-medium text-slate-800">Donatie + projectnaam</span>
+              </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          </div>
+        </div>
+
+        {hasProjects && (
+          <div class="lg:col-span-2">
+            <h2 class="text-2xl font-bold font-heading text-primary mb-8">Goede Doelen</h2>
+            <div class="space-y-6">
               {projecten.map((project: any) => (
                 <DonationCard
                   titel={project.titel}
@@ -217,50 +230,37 @@ const showMollie = settings.menuToggles?.showMollie !== false;
                 />
               ))}
             </div>
-          </Fragment>
+          </div>
         )}
       </div>
     )}
   </Section>
 
-  <!-- Rekeninggegevens — Overschrijving -->
-  <Section variant="light-100">
-    <div class:list={[showMollie ? 'max-w-3xl' : 'max-w-2xl', 'mx-auto']}>
-      <div class:list={[
-        'bg-white border border-neutral-200 text-center',
-        showMollie ? 'p-8 md:p-10' : 'p-10 md:p-14'
-      ]}>
-        <h2 class:list={[
-          'font-bold font-heading mb-2',
-          showMollie ? 'text-2xl' : 'text-3xl'
-        ]}>Overschrijving</h2>
-        {!showMollie && (
-          <p class="text-slate-500 mb-8">Maak uw donatie over via onderstaande bankgegevens</p>
-        )}
-        {showMollie && <div class="mb-6" />}
-        <div class:list={[
-          'space-y-3',
-          showMollie ? 'text-sm' : 'text-base'
-        ]}>
-          <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-            <span class="text-slate-500">Begunstigde</span>
-            <span class="font-medium text-slate-800">{settings.mosqueName}</span>
-          </div>
-          <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-            <span class="text-slate-500">IBAN</span>
-            <span class:list={[
-              'font-mono font-medium text-slate-800',
-              !showMollie && 'text-lg'
-            ]}>{settings.iban || 'BE00 0000 0000 0000'}</span>
-          </div>
-          <div class="flex justify-between items-center py-3">
-            <span class="text-slate-500">Mededeling</span>
-            <span class="font-medium text-slate-800">Donatie + projectnaam</span>
+  <!-- Rekeninggegevens — alleen als Mollie AAN staat (bij UIT zit het al in de layout) -->
+  {showMollie && (
+    <Section variant="light-100">
+      <div class="max-w-3xl mx-auto">
+        <div class="bg-white border border-neutral-200 text-center p-8 md:p-10">
+          <h2 class="text-2xl font-bold font-heading mb-2">Overschrijving</h2>
+          <div class="mb-6" />
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+              <span class="text-slate-500">Begunstigde</span>
+              <span class="font-medium text-slate-800">{settings.mosqueName}</span>
+            </div>
+            <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+              <span class="text-slate-500">IBAN</span>
+              <span class="font-mono font-medium text-slate-800">{settings.iban || 'BE00 0000 0000 0000'}</span>
+            </div>
+            <div class="flex justify-between items-center py-3">
+              <span class="text-slate-500">Mededeling</span>
+              <span class="font-medium text-slate-800">Donatie + projectnaam</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </Section>
+    </Section>
+  )}
 
   <!-- Contact CTA -->
   <Section variant="light-50">
