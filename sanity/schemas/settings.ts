@@ -129,6 +129,13 @@ export const settings = defineType({
           type: 'boolean',
           initialValue: true,
         }),
+        defineField({
+          name: 'showMollie',
+          title: 'Toon online betaalformulier (Mollie)',
+          type: 'boolean',
+          initialValue: true,
+          description: 'Uit = bezoekers zien alleen bankgegevens voor overschrijving. Aan = bezoekers kunnen online betalen via iDEAL/Bancontact.',
+        }),
       ],
     }),
     defineField({
