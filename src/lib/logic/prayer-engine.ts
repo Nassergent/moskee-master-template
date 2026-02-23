@@ -58,6 +58,7 @@ export interface ComputedPrayerTimes {
   timezone: string;
   adhan: Record<PrayerName, string>;        // HH:mm
   iqama: Record<PrayerName, string | null>; // HH:mm or null
+  sunrise: string;        // HH:mm (Shurooq)
   jumuah: JumuahShift[];
   meta: {
     source: 'computed' | 'cache' | 'fallback';
@@ -289,11 +290,22 @@ export function computeFullPrayerTimes(
     : rawAdhan;
   const iqama = computeIqamaTimes(adhan, config.iqamaConfig, config.timezone);
 
+  // Compute sunrise (Shurooq) separately
+  const coords = new Coordinates(config.coordinates.lat, config.coordinates.lng);
+  const params = METHOD_MAP[config.method] || CalculationMethod.MuslimWorldLeague();
+  params.madhab = config.madhab === 'hanafi' ? Madhab.Hanafi : Madhab.Shafi;
+  if (config.highLatitudeRule && HIGH_LAT_MAP[config.highLatitudeRule]) {
+    params.highLatitudeRule = HIGH_LAT_MAP[config.highLatitudeRule];
+  }
+  const pt = new PrayerTimes(coords, date, params);
+  const sunrise = formatTime(pt.sunrise, config.timezone);
+
   return {
     date: date.toISOString().split('T')[0],
     timezone: config.timezone,
     adhan,
     iqama,
+    sunrise,
     jumuah,
     meta: {
       source: 'computed',

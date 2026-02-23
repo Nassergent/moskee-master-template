@@ -1,11 +1,10 @@
 ---
 /**
- * LivePrayerCard.astro — Countdown + huidig gebed status
+ * LivePrayerCard.astro — Desktop countdown + huidig gebed status
  *
  * Compartiment: UI
- * Mobiel: compacte countdown balk (geen klok, geen hero)
- * Desktop: twee-kolom layout (huidig gebed + countdown)
- * SSR + klein script voor live ticker.
+ * Mobiel fullscreen is nu in PrayerManager (Mawaqit-stijl).
+ * Dit component = alleen desktop twee-kolom card.
  */
 
 import { PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
@@ -34,23 +33,6 @@ function formatCountdownSSR(secs: number): string {
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 ---
-
-<!-- Mobiel: compacte countdown balk -->
-<div
-  class="sm:hidden bg-primary-dark px-5 py-3 flex items-center justify-between"
-  id="mobile-countdown-bar"
-  data-seconds={secondsUntilNext}
->
-  <p class="text-white text-sm font-bold font-heading">
-    {nextLabel} over
-  </p>
-  <p
-    id="mobile-countdown"
-    class="text-xl font-bold font-heading tabular-nums text-[#E8CDB5]"
-  >
-    {formatCountdownSSR(secondsUntilNext)}
-  </p>
-</div>
 
 <!-- Desktop: twee-kolom card -->
 <div class="hidden sm:block bg-white border border-neutral-200 border-l-[3px] border-l-accent overflow-hidden">
@@ -98,37 +80,6 @@ function formatCountdownSSR(secs: number): string {
 </div>
 
 <script>
-  // Mobiel countdown
-  const mobileBar = document.getElementById('mobile-countdown-bar');
-  const mobileDisplay = document.getElementById('mobile-countdown');
-  if (mobileBar && mobileDisplay) {
-    let mobileRemaining = parseInt(mobileBar.dataset.seconds || '0', 10);
-
-    function fmtMobile(s: number): string {
-      if (s <= 0) return '00:00:00';
-      const h = Math.floor(s / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      const sec = s % 60;
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-    }
-
-    mobileDisplay.textContent = fmtMobile(mobileRemaining);
-
-    const mobileTick = setInterval(() => {
-      mobileRemaining--;
-      if (mobileRemaining <= 0) {
-        mobileDisplay!.textContent = '00:00:00';
-        setTimeout(() => window.location.reload(), 3000);
-        clearInterval(mobileTick);
-        return;
-      }
-      mobileDisplay!.textContent = fmtMobile(mobileRemaining);
-    }, 1000);
-
-    document.addEventListener('astro:before-preparation', () => clearInterval(mobileTick));
-    window.addEventListener('beforeunload', () => clearInterval(mobileTick));
-  }
-
   // Desktop countdown
   const el = document.getElementById('prayer-countdown');
   const display = document.getElementById('countdown-display');

@@ -1,12 +1,12 @@
 ---
 /**
- * PrayerManager.astro — WaqfOS Native Prayer Engine (v1.6)
+ * PrayerManager.astro — WaqfOS Native Prayer Engine (v1.7)
  *
  * Compartiment: UI — delegeert alle berekeningen naar prayer-engine.ts
  *
  * Modi:
  *   compact=true    → homepage (kleine rijen, geen LivePrayerCard)
- *   fullscreen=true → gebedstijden mobiel (vult heel het scherm)
+ *   fullscreen=true → gebedstijden mobiel (Mawaqit-stijl layout)
  *   default         → gebedstijden desktop (LivePrayerCard + PrayerGrid)
  */
 import { fetchPrayerTimes } from '../lib/sanity';
@@ -16,15 +16,17 @@ import {
   computeFullPrayerTimes,
   getPrayerStatus,
 } from '../lib/logic/prayer-engine';
+import { formatHijriDate } from '../lib/hijri';
 import PrayerGrid from './ui/PrayerGrid.astro';
 import LivePrayerCard from './ui/LivePrayerCard.astro';
 
 interface Props {
   compact?: boolean;
   fullscreen?: boolean;
+  mosqueName?: string;
 }
 
-const { compact = false, fullscreen = false } = Astro.props;
+const { compact = false, fullscreen = false, mosqueName = '' } = Astro.props;
 const prayer = await fetchPrayerTimes();
 
 const configComplete = isEngineConfigComplete(prayer);
@@ -41,18 +43,58 @@ if (configComplete) {
     console.error('Prayer engine computation failed:', e);
   }
 }
+
+const hijriToday = formatHijriDate();
+const gregorianToday = new Date().toLocaleDateString('nl-BE', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
 ---
 
 {computedTimes && prayerStatus ? (
   fullscreen ? (
-    <!-- Fullscreen mobiel: countdown + grid vullen heel het scherm -->
-    <div class="flex flex-col h-full">
-      <LivePrayerCard
-        times={computedTimes}
-        currentPrayer={prayerStatus.currentPrayer}
-        nextPrayer={prayerStatus.nextPrayer}
-        secondsUntilNext={prayerStatus.secondsUntilNext}
-      />
+    <!-- Fullscreen mobiel: Mawaqit-stijl layout -->
+    <div class="flex flex-col h-full bg-base">
+      {/* Hero: moskee naam + live klok + datums */}
+      <div class="bg-primary-dark text-white px-5 pt-5 pb-4 text-center">
+        {mosqueName && (
+          <p class="text-sm font-heading font-bold text-white/80 mb-2 truncate">{mosqueName}</p>
+        )}
+        <p
+          id="mawaqit-clock"
+          class="text-5xl font-bold font-heading tabular-nums text-white leading-none"
+          data-tz={computedTimes.timezone}
+        >
+          {new Date().toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: computedTimes.timezone })}
+        </p>
+        <p class="text-white/50 font-arabic text-sm mt-2">{hijriToday}</p>
+        <p class="text-white/40 text-xs mt-0.5 capitalize">{gregorianToday}</p>
+      </div>
+
+      {/* Countdown balk */}
+      <div
+        class="bg-accent text-white px-5 py-2.5 flex items-center justify-center gap-3"
+        id="mawaqit-countdown-bar"
+        data-seconds={prayerStatus.secondsUntilNext}
+        data-next-label={prayerStatus.nextPrayer ? ({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[prayerStatus.nextPrayer]) : ''}
+      >
+        <span class="font-bold font-heading text-sm">
+          {prayerStatus.nextPrayer ? ({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[prayerStatus.nextPrayer]) : ''} in
+        </span>
+        <span id="mawaqit-countdown" class="text-lg font-bold font-heading tabular-nums">
+          {(() => {
+            const s = prayerStatus.secondsUntilNext;
+            const h = Math.floor(s / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const sec = s % 60;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+          })()}
+        </span>
+      </div>
+
+      {/* Gebedstijden rijen */}
       <div class="flex-1 min-h-0">
         <PrayerGrid
           times={computedTimes}
@@ -62,7 +104,63 @@ if (configComplete) {
           fullscreen
         />
       </div>
+
+      {/* Jumu'ah + Shurooq onderaan */}
+      <div class="bg-primary-dark text-white px-5 py-3 flex items-center justify-between">
+        <div class="text-center flex-1">
+          <p class="text-[10px] uppercase tracking-wider text-white/50 font-bold">Djoemoe'ah</p>
+          <p class="text-xl font-bold font-heading tabular-nums">
+            {computedTimes.jumuah?.[0]?.time || computedTimes.adhan.dhuhr}
+          </p>
+        </div>
+        <div class="w-px h-8 bg-white/20" />
+        <div class="text-center flex-1">
+          <p class="text-[10px] uppercase tracking-wider text-white/50 font-bold">Shurooq</p>
+          <p class="text-xl font-bold font-heading tabular-nums">{computedTimes.sunrise}</p>
+        </div>
+      </div>
     </div>
+
+    <script>
+      // Live klok
+      const clockEl = document.getElementById('mawaqit-clock');
+      if (clockEl) {
+        const tz = clockEl.dataset.tz || 'Europe/Brussels';
+        function updateClock() {
+          clockEl!.textContent = new Date().toLocaleTimeString('nl-BE', {
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false, timeZone: tz,
+          });
+        }
+        const clockTick = setInterval(updateClock, 1000);
+        document.addEventListener('astro:before-preparation', () => clearInterval(clockTick));
+      }
+
+      // Countdown
+      const countdownBar = document.getElementById('mawaqit-countdown-bar');
+      const countdownEl = document.getElementById('mawaqit-countdown');
+      if (countdownBar && countdownEl) {
+        let secs = parseInt(countdownBar.dataset.seconds || '0', 10);
+        function fmtCountdown(s: number): string {
+          if (s <= 0) return '00:00:00';
+          const h = Math.floor(s / 3600);
+          const m = Math.floor((s % 3600) / 60);
+          const sec = s % 60;
+          return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        }
+        const countdownTick = setInterval(() => {
+          secs--;
+          if (secs <= 0) {
+            countdownEl!.textContent = '00:00:00';
+            setTimeout(() => window.location.reload(), 3000);
+            clearInterval(countdownTick);
+            return;
+          }
+          countdownEl!.textContent = fmtCountdown(secs);
+        }, 1000);
+        document.addEventListener('astro:before-preparation', () => clearInterval(countdownTick));
+      }
+    </script>
   ) : (
     <div class="space-y-6">
       {!compact && (
