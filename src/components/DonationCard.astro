@@ -5,15 +5,18 @@ import { calculateDonationProgress } from '../lib/logic/donation-utils';
 interface Props {
   titel: string;
   beschrijving: string;
-  doelbedrag: number;
+  doelbedrag?: number | null;
   /** Current amount in integer cents */
-  huidigBedragCents: number;
+  huidigBedragCents?: number | null;
   actief: boolean;
   afbeelding?: any;
 }
 
 const { titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding } = Astro.props;
-const { percentage, remaining, huidigEuros, isUrgent, isComplete } = calculateDonationProgress(huidigBedragCents, doelbedrag);
+const hasProgress = !!(doelbedrag && doelbedrag > 0);
+const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
+  ? calculateDonationProgress(huidigBedragCents || 0, doelbedrag)
+  : { percentage: 0, remaining: 0, huidigEuros: 0, isUrgent: false, isComplete: false };
 ---
 
 <!-- Flat Design Card: bg-white, 3px accent left border, no shadow, no rounded -->
@@ -35,33 +38,35 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = calculateDo
     </div>
     <p class="text-slate-600 text-sm leading-relaxed mb-5">{beschrijving}</p>
 
-    <!-- Progress Bar -->
-    <div class="mb-3">
-      <div class="flex justify-between text-xs text-slate-500 mb-1.5">
-        <span>&euro;{huidigEuros.toLocaleString('nl-BE', { minimumFractionDigits: 2 })}</span>
-        <span>&euro;{doelbedrag.toLocaleString('nl-BE')}</span>
+    <!-- Progress Bar (alleen als doelbedrag is ingesteld) -->
+    {hasProgress && doelbedrag && (
+      <div class="mb-3">
+        <div class="flex justify-between text-xs text-slate-500 mb-1.5">
+          <span>&euro;{huidigEuros.toLocaleString('nl-BE', { minimumFractionDigits: 2 })}</span>
+          <span>&euro;{doelbedrag.toLocaleString('nl-BE')}</span>
+        </div>
+        <div class:list={['w-full h-3 overflow-hidden', isUrgent ? 'bg-accent/20' : 'bg-accent/10']}>
+          <div
+            class:list={[
+              'h-full transition-all duration-500',
+              isUrgent ? 'bg-accent animate-pulse' : 'bg-accent',
+            ]}
+            style={`width: ${percentage}%`}
+          />
+        </div>
+        <div class="flex justify-between items-center mt-1.5">
+          <p class="text-xs text-slate-400">{percentage}% bereikt</p>
+          {isUrgent && (
+            <p class="text-xs font-bold text-accent">
+              Nog slechts &euro;{remaining.toLocaleString('nl-BE')} nodig!
+            </p>
+          )}
+          {isComplete && (
+            <p class="text-xs font-bold text-green-600">Doel bereikt!</p>
+          )}
+        </div>
       </div>
-      <div class:list={['w-full h-3 overflow-hidden', isUrgent ? 'bg-accent/20' : 'bg-accent/10']}>
-        <div
-          class:list={[
-            'h-full transition-all duration-500',
-            isUrgent ? 'bg-accent animate-pulse' : 'bg-accent',
-          ]}
-          style={`width: ${percentage}%`}
-        />
-      </div>
-      <div class="flex justify-between items-center mt-1.5">
-        <p class="text-xs text-slate-400">{percentage}% bereikt</p>
-        {isUrgent && (
-          <p class="text-xs font-bold text-accent">
-            Nog slechts &euro;{remaining.toLocaleString('nl-BE')} nodig!
-          </p>
-        )}
-        {isComplete && (
-          <p class="text-xs font-bold text-green-600">Doel bereikt!</p>
-        )}
-      </div>
-    </div>
+    )}
 
     <!-- CTA — Primary (Deep Teal) -->
     {!isComplete && (
