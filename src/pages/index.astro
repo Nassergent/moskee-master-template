@@ -96,17 +96,6 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </section>
 
-  <!-- Actiekaarten: Countdown + Doneer + Download -->
-  <HomeActionCards
-    hijriAdjustment={settings?.hijriAdjustment ?? 0}
-    islamicDays={settings?.islamicDays}
-    mosqueName={settings?.mosqueName}
-    project={eersteProject}
-    downloadTitel={homePage?.downloadTitel}
-    downloadBeschrijving={homePage?.downloadBeschrijving}
-    downloadUrl={homePage?.downloadUrl}
-  />
-
   <!-- Sectie 1: Light-50 — Gebedstijden (compact) -->
   <Section variant="light-50">
     <div class="text-center mb-10">
@@ -123,34 +112,13 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </Section>
 
-  <!-- Sectie 2: Light-100 — Actueel (conditioneel via CMS) -->
-  {toonActueel && <Section variant="light-100">
-    <div class="text-center mb-14">
-      <h2 class="text-3xl font-bold">Actueel</h2>
-      <p class="text-neutral-500 mt-3">De hartslag van de moskee</p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {actueel.map((item: any) => (
-        <a href={item.href} class="group bg-white border border-neutral-200 border-l-3 border-l-accent p-6 hover:border-l-primary transition-all">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="text-[10px] font-semibold uppercase tracking-widest text-accent">{item.label}</span>
-          </div>
-          <h3 class="font-heading text-lg font-bold text-primary group-hover:text-accent transition-colors mb-2">
-            {item.titel}
-          </h3>
-          <p class="text-sm text-neutral-500 leading-relaxed line-clamp-3">{item.beschrijving}</p>
-        </a>
-      ))}
-    </div>
-  </Section>}
-
-  <!-- Sectie 3: Light-50 — Binnenkort in de moskee -->
-  <Section variant="light-50">
-    <div class="text-center mb-14">
-      <h2 class="text-3xl font-bold">Binnenkort in de moskee</h2>
-      <p class="text-neutral-500 mt-3">Aankomende evenementen en activiteiten</p>
-    </div>
-    {agendaEvents.length > 0 ? (
+  <!-- Sectie 2: Light-100 — Binnenkort in de moskee (Agenda, verborgen als leeg) -->
+  {agendaEvents.length > 0 && (
+    <Section variant="light-100">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl font-bold">Binnenkort in de moskee</h2>
+        <p class="text-neutral-500 mt-3">Aankomende activiteiten en bijeenkomsten</p>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {agendaEvents.map((event: any) => (
           <a
@@ -179,10 +147,40 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           Bekijk volledige agenda &rarr;
         </a>
       </div>
-    ) : (
-      <p class="text-center text-neutral-400">Momenteel geen geplande evenementen.</p>
-    )}
-  </Section>
+    </Section>
+  )}
+
+  <!-- Sectie 3: Actiekaarten — Countdown + Doneer + Download -->
+  <HomeActionCards
+    hijriAdjustment={settings?.hijriAdjustment ?? 0}
+    islamicDays={settings?.islamicDays}
+    mosqueName={settings?.mosqueName}
+    project={eersteProject}
+    downloadTitel={homePage?.downloadTitel}
+    downloadBeschrijving={homePage?.downloadBeschrijving}
+    downloadUrl={homePage?.downloadUrl}
+  />
+
+  <!-- Sectie 4: Light-50 — Laatste nieuws (conditioneel via CMS) -->
+  {toonActueel && <Section variant="light-50">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl font-bold">Laatste nieuws</h2>
+      <p class="text-neutral-500 mt-3">Blijf op de hoogte van wat er leeft in onze gemeenschap</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {actueel.map((item: any) => (
+        <a href={item.href} class="group bg-white border border-neutral-200 border-l-3 border-l-accent p-6 hover:border-l-primary transition-all">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-accent">{item.label}</span>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-primary group-hover:text-accent transition-colors mb-2">
+            {item.titel}
+          </h3>
+          <p class="text-sm text-neutral-500 leading-relaxed line-clamp-3">{item.beschrijving}</p>
+        </a>
+      ))}
+    </div>
+  </Section>}
 
   <!-- Sectie 4: Light-50 — Kom Langs (Maps + CTA) -->
   <Section variant="light-50">

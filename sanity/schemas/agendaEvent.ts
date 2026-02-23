@@ -70,9 +70,14 @@ export const agendaEvent = defineType({
     defineField({
       name: 'beschrijving',
       title: 'Beschrijving',
-      type: 'text',
-      rows: 6,
-      description: 'Uitgebreide beschrijving van het evenement.',
+      type: 'array',
+      of: [
+        { type: 'block' },
+        { type: 'image', options: { hotspot: true }, fields: [
+          defineField({ name: 'alt', title: 'Alt-tekst', type: 'string' }),
+        ]},
+      ],
+      description: 'Uitgebreide beschrijving van het evenement (rich text met afbeeldingen).',
     }),
     defineField({
       name: 'afbeelding',

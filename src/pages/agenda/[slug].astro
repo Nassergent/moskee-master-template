@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import AddToCalendar from '../../components/AddToCalendar.astro';
+import PortableText from '../../components/PortableText.astro';
 import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
 
@@ -119,9 +120,13 @@ const eventSchema = JSON.stringify({
       {event.beschrijving && (
         <div class="mb-8">
           <h2 class="text-xl font-bold mb-4">Over dit evenement</h2>
-          <div class="text-neutral-600 leading-relaxed whitespace-pre-line">
-            {event.beschrijving}
-          </div>
+          {Array.isArray(event.beschrijving) ? (
+            <PortableText value={event.beschrijving} />
+          ) : (
+            <div class="text-neutral-600 leading-relaxed whitespace-pre-line">
+              {event.beschrijving}
+            </div>
+          )}
         </div>
       )}
 
@@ -135,7 +140,7 @@ const eventSchema = JSON.stringify({
           startDatum={event.startDatum}
           eindDatum={event.eindDatum}
           locatie={event.locatie}
-          beschrijving={event.beschrijving}
+          beschrijving={Array.isArray(event.beschrijving) ? event.beschrijving.map((b: any) => b.children?.map((c: any) => c.text).join('')).filter(Boolean).join('\n') : event.beschrijving}
           mosqueName={settings?.mosqueName}
           address={settings?.address}
         />
