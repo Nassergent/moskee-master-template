@@ -161,11 +161,11 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     downloadUrl={homePage?.downloadUrl}
   />
 
-  <!-- Sectie 4: Light-50 — Laatste nieuws (conditioneel via CMS) -->
+  <!-- Sectie 4: Light-50 — Uit onze gemeenschap (conditioneel via CMS) -->
   {toonActueel && <Section variant="light-50">
     <div class="text-center mb-14">
-      <h2 class="text-3xl font-bold">Laatste nieuws</h2>
-      <p class="text-neutral-500 mt-3">Blijf op de hoogte van wat er leeft in onze gemeenschap</p>
+      <h2 class="text-3xl font-bold">Uit onze gemeenschap</h2>
+      <p class="text-neutral-500 mt-3">Artikelen, tips en updates</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       {actueel.map((item: any) => (

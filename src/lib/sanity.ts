@@ -106,7 +106,7 @@ export async function fetchActueel() {
         _type == "project" => "ruit"
       ),
       "label": select(
-        _type == "post" => "Nieuws",
+        _type == "post" => "Artikel",
         _type == "service" => "Dienst",
         _type == "project" => "Project"
       ),
