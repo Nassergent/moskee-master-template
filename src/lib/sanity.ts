@@ -79,41 +79,34 @@ export async function fetchActueel() {
   try {
     const result = await sanityClient.fetch(`*[
       (_type == "post" && gepubliceerd == true) ||
-      (_type == "service" && actief != false) ||
-      (_type == "project" && actief == true)
+      (_type == "service" && actief != false)
     ] | order(_createdAt desc) [0...3] {
       _id,
       _type,
       _createdAt,
       "titel": select(
         _type == "post" => titel,
-        _type == "service" => titel,
-        _type == "project" => titel
+        _type == "service" => titel
       ),
       "slug": select(
         _type == "post" => slug.current,
-        _type == "service" => slug.current,
-        _type == "project" => slug.current
+        _type == "service" => slug.current
       ),
       "beschrijving": select(
         _type == "post" => samenvatting,
-        _type == "service" => beschrijving,
-        _type == "project" => beschrijving
+        _type == "service" => beschrijving
       ),
       "icoon": select(
         _type == "post" => "ster-4",
-        _type == "service" => icoon,
-        _type == "project" => "ruit"
+        _type == "service" => icoon
       ),
       "label": select(
         _type == "post" => "Artikel",
-        _type == "service" => "Dienst",
-        _type == "project" => "Project"
+        _type == "service" => "Dienst"
       ),
       "href": select(
         _type == "post" => "/nieuws/" + slug.current,
-        _type == "service" => "/diensten/" + slug.current,
-        _type == "project" => "/doneren"
+        _type == "service" => "/diensten/" + slug.current
       )
     }`);
     return result || [];
@@ -195,7 +188,14 @@ export async function fetchHomePage() {
 export async function fetchAboutPage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "aboutPage"][0]{
-      missieTitle, missieText, missieImage, waarden, team, seoTitle, seoDescription
+      heroTitle, heroSubtitle,
+      missieTitle, missieText, missieImage,
+      kengetallenTonen, kengetallen,
+      geschiedenisTonen, geschiedenisTitle, tijdlijn,
+      waardenTonen, waardenTitle, waarden,
+      teamTonen, teamTitle, team,
+      vrijwilligerTonen, vrijwilligerTitle, vrijwilligerText,
+      seoTitle, seoDescription
     }`);
     return result || null;
   } catch (e) {

@@ -8,38 +8,112 @@ import { fetchSettings, fetchAboutPage, urlFor } from '../lib/sanity';
 const settings = await fetchSettings();
 const aboutPage = await fetchAboutPage();
 
-const missieTitle = aboutPage?.missieTitle || 'Onze Missie';
-const waarden = aboutPage?.waarden?.length ? aboutPage.waarden : [];
-const team = aboutPage.team || [];
-const vrijwilligerTaken = settings.volunteerTasks?.length ? settings.volunteerTasks : ['Koken', 'Kuisen', 'Onderhoud', 'Evenementen', 'Educatie', 'Administratie'];
+// ── Data met fallbacks ──────────────────────────────────────────
+const heroTitle = aboutPage?.heroTitle || 'Over Ons';
+const heroSubtitle = aboutPage?.heroSubtitle || `Ontdek wie wij zijn en wat ons drijft`;
 
-const missieImageUrl = aboutPage.missieImage
-  ? urlFor(aboutPage.missieImage).width(600).height(600).format('webp').url()
+const missieTitle = aboutPage?.missieTitle || 'Onze Missie';
+const missieImageUrl = aboutPage?.missieImage
+  ? urlFor(aboutPage.missieImage).width(800).height(600).format('webp').url()
   : null;
+const hasMissieImage = !!missieImageUrl;
 
 const fallbackMissieText = [
-  `${settings.mosqueName} is een huis van gebed, onderwijs en gemeenschap. Wij streven ernaar een veilige en gastvrije ruimte te bieden voor alle moslims in de regio.`,
+  `${settings?.mosqueName || 'Onze moskee'} is een huis van gebed, onderwijs en gemeenschap. Wij streven ernaar een veilige en gastvrije ruimte te bieden voor alle moslims in de regio.`,
   'Onze moskee organiseert dagelijkse gebeden, wekelijkse lessen en seizoensgebonden activiteiten die families en individuen samenbrengen.',
 ];
+
+const showKengetallen = aboutPage?.kengetallenTonen && aboutPage?.kengetallen?.length > 0;
+const kengetallen = aboutPage?.kengetallen || [];
+
+const showGeschiedenis = aboutPage?.geschiedenisTonen && aboutPage?.tijdlijn?.length > 0;
+const geschiedenisTitle = aboutPage?.geschiedenisTitle || 'Onze Geschiedenis';
+const tijdlijn = aboutPage?.tijdlijn || [];
+
+const showWaarden = aboutPage?.waardenTonen !== false && aboutPage?.waarden?.length > 0;
+const waardenTitle = aboutPage?.waardenTitle || 'Onze Waarden';
+const waarden = aboutPage?.waarden || [];
+
+const showTeam = aboutPage?.teamTonen !== false && aboutPage?.team?.length > 0;
+const teamTitle = aboutPage?.teamTitle || 'Bestuur & Team';
+const team = aboutPage?.team || [];
+
+const showVrijwilliger = aboutPage?.vrijwilligerTonen !== false;
+const vrijwilligerTitle = aboutPage?.vrijwilligerTitle || 'Word Vrijwilliger';
+const vrijwilligerText = aboutPage?.vrijwilligerText || 'Wil je bijdragen aan onze gemeenschap? Meld je aan als vrijwilliger en help mee met activiteiten, onderhoud en meer.';
+const vrijwilligerTaken = settings?.volunteerTasks?.length ? settings.volunteerTasks : ['Koken', 'Kuisen', 'Onderhoud', 'Evenementen', 'Educatie', 'Administratie'];
+
+// ── Dynamische zebra-striping ───────────────────────────────────
+// Bouw een lijst van zichtbare secties, elk krijgt afwisselend light-50 / light-100
+const visibleSections: string[] = [
+  'missie',
+  ...(showKengetallen ? ['kengetallen'] : []),
+  ...(showGeschiedenis ? ['geschiedenis'] : []),
+  ...(showWaarden ? ['waarden'] : []),
+  ...(showTeam ? ['team'] : []),
+  ...(showVrijwilliger ? ['vrijwilliger'] : []),
+  'cta',
+];
+
+function getVariant(sectionName: string): 'light-50' | 'light-100' {
+  const index = visibleSections.indexOf(sectionName);
+  return index % 2 === 0 ? 'light-50' : 'light-100';
+}
+
+// ── Smart grid helpers ──────────────────────────────────────────
+function waardenGridClass(count: number): string {
+  if (count === 1) return 'grid grid-cols-1 max-w-md mx-auto';
+  if (count === 2) return 'grid grid-cols-1 sm:grid-cols-2 gap-6';
+  if (count === 4) return 'grid grid-cols-1 sm:grid-cols-2 gap-6';
+  return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'; // 3, 5, 6
+}
+
+function teamGridClass(count: number): string {
+  if (count === 1) return 'grid grid-cols-1 max-w-xs mx-auto';
+  if (count <= 4) return 'grid grid-cols-1 sm:grid-cols-2 gap-6';
+  return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
+}
 ---
 
-<BaseLayout title={aboutPage?.seoTitle || "Over Ons"} description={aboutPage?.seoDescription || `Leer meer over ${settings.mosqueName} en onze missie`}>
-  <!-- Page Header — Dark -->
+<BaseLayout title={aboutPage?.seoTitle || "Over Ons"} description={aboutPage?.seoDescription || `Leer meer over ${settings?.mosqueName || 'onze moskee'} en onze missie`}>
+
+  <!-- 1. Hero (altijd) — Dark -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
-      <h1 class="text-4xl font-bold mb-4 text-white">Over Ons</h1>
+      <h1 class="text-4xl font-bold mb-4 text-white">{heroTitle}</h1>
       <p class="text-white/80 max-w-xl mx-auto">
-        Ontdek wie wij zijn en wat ons drijft
+        {heroSubtitle}
       </p>
     </div>
   </section>
 
-  <!-- Mission -->
-  <Section variant="light-50">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-      <div>
+  <!-- 2. Missie (altijd) -->
+  <Section variant={getVariant('missie')}>
+    {hasMissieImage ? (
+      <!-- 2-kolom layout met afbeelding -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+        <div>
+          <h2 class="text-3xl font-bold mb-6">{missieTitle}</h2>
+          {aboutPage?.missieText && aboutPage.missieText.length > 0 ? (
+            <PortableText value={aboutPage.missieText} />
+          ) : (
+            fallbackMissieText.map((text) => (
+              <p class="text-neutral-600 leading-relaxed mb-4">{text}</p>
+            ))
+          )}
+        </div>
+        <img
+          src={missieImageUrl}
+          alt={aboutPage?.missieImage?.alt || `${settings?.mosqueName || 'Moskee'} - Onze Missie`}
+          class="w-full aspect-[4/3] object-cover"
+          loading="lazy"
+        />
+      </div>
+    ) : (
+      <!-- 1-kolom centered layout zonder afbeelding -->
+      <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-3xl font-bold mb-6">{missieTitle}</h2>
-        {aboutPage.missieText && aboutPage.missieText.length > 0 ? (
+        {aboutPage?.missieText && aboutPage.missieText.length > 0 ? (
           <PortableText value={aboutPage.missieText} />
         ) : (
           fallbackMissieText.map((text) => (
@@ -47,54 +121,88 @@ const fallbackMissieText = [
           ))
         )}
       </div>
-      {missieImageUrl ? (
-        <img src={missieImageUrl} alt={`${settings.mosqueName} - Onze Missie`} class="w-full aspect-square object-cover" loading="lazy" />
-      ) : (
-        <div class="bg-primary/5 p-8 flex items-center justify-center aspect-square">
-          <span class="text-primary/30 text-6xl">✦</span>
-        </div>
-      )}
-    </div>
+    )}
   </Section>
 
-  <!-- Values (uit CMS) -->
-  <Section variant="light-100">
-    <div class="max-w-5xl mx-auto">
-      <h2 class="text-2xl font-bold text-center mb-12">Onze Waarden</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {waarden.map((item: any) => (
-          <div class="bg-white p-6 text-center border border-neutral-200 border-t-3 border-t-accent">
-            <div class="flex justify-center mb-4">
-              <span class="text-accent text-3xl">✦</span>
-            </div>
-            <h3 class="font-heading font-bold mb-2">{item.title}</h3>
-            <p class="text-sm text-neutral-600">{item.description}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </Section>
-
-  <!-- Bestuur & Team (alleen als er teamleden zijn) -->
-  {team.length > 0 && (
-    <Section variant="light-50">
+  <!-- 3. Kengetallen (conditioneel) -->
+  {showKengetallen && (
+    <Section variant={getVariant('kengetallen')}>
       <div class="max-w-5xl mx-auto">
-        <h2 class="text-2xl font-bold text-center mb-12">Bestuur & Team</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class={`grid gap-6 ${kengetallen.length <= 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto' : 'grid-cols-2 lg:grid-cols-4'}`}>
+          {kengetallen.map((item: any) => (
+            <div class="bg-white p-6 border border-neutral-200 border-l-[3px] border-l-accent">
+              <div class="text-3xl md:text-4xl font-bold text-primary mb-1">{item.waarde}</div>
+              <div class="text-sm text-neutral-600 uppercase tracking-wide">{item.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Section>
+  )}
+
+  <!-- 4. Geschiedenis / Tijdlijn (conditioneel) -->
+  {showGeschiedenis && (
+    <Section variant={getVariant('geschiedenis')}>
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-center mb-12">{geschiedenisTitle}</h2>
+        <div class="relative pl-8 border-l-[3px] border-l-accent">
+          {tijdlijn.map((item: any) => (
+            <div class="mb-10 last:mb-0 relative">
+              {/* Accent dot op de lijn */}
+              <div class="absolute -left-[calc(0.5rem+1.5px+1rem)] w-4 h-4 bg-accent top-1" />
+              <div class="inline-block bg-primary text-white text-sm font-bold px-3 py-1 mb-2">
+                {item.jaar}
+              </div>
+              <h3 class="text-lg font-bold mb-1">{item.titel}</h3>
+              {item.beschrijving && (
+                <p class="text-neutral-600 text-sm leading-relaxed">{item.beschrijving}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Section>
+  )}
+
+  <!-- 5. Waarden (conditioneel) -->
+  {showWaarden && (
+    <Section variant={getVariant('waarden')}>
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl font-bold text-center mb-12">{waardenTitle}</h2>
+        <div class={waardenGridClass(waarden.length)}>
+          {waarden.map((item: any) => (
+            <div class="bg-white p-6 border border-neutral-200 border-l-[3px] border-l-accent text-left">
+              <h3 class="font-heading font-bold mb-2">{item.title}</h3>
+              {item.description && (
+                <p class="text-sm text-neutral-600">{item.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Section>
+  )}
+
+  <!-- 6. Bestuur & Team (conditioneel) -->
+  {showTeam && (
+    <Section variant={getVariant('team')}>
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl font-bold text-center mb-12">{teamTitle}</h2>
+        <div class={teamGridClass(team.length)}>
           {team.map((lid: any) => (
-            <div class="bg-white p-6 text-center border border-neutral-200">
+            <div class="bg-white p-6 border border-neutral-200 border-l-[3px] border-l-accent text-center">
               {lid.foto ? (
-                <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden">
+                <div class="w-24 h-24 mx-auto mb-4 overflow-hidden">
                   <img
                     src={urlFor(lid.foto).width(192).height(192).url()}
-                    alt={lid.naam}
+                    alt={lid.foto?.alt || lid.naam}
                     class="w-full h-full object-cover"
                     loading="lazy"
                   />
                 </div>
               ) : (
-                <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span class="text-primary/30 text-2xl">✦</span>
+                <div class="w-24 h-24 mx-auto mb-4 bg-primary/10 flex items-center justify-center">
+                  <span class="text-primary/30 text-2xl">&#10022;</span>
                 </div>
               )}
               <h3 class="font-heading font-bold">{lid.naam}</h3>
@@ -106,23 +214,23 @@ const fallbackMissieText = [
     </Section>
   )}
 
-  <!-- Word Vrijwilliger -->
-  <Section variant="light-100">
-    <div class="max-w-3xl mx-auto">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl font-bold mb-3">Word Vrijwilliger</h2>
-        <p class="text-neutral-600">
-          Wil je bijdragen aan onze gemeenschap? Meld je aan als vrijwilliger en help mee met activiteiten, onderhoud en meer.
-        </p>
+  <!-- 7. Vrijwilliger (conditioneel) -->
+  {showVrijwilliger && (
+    <Section variant={getVariant('vrijwilliger')}>
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-10">
+          <h2 class="text-2xl font-bold mb-3">{vrijwilligerTitle}</h2>
+          <p class="text-neutral-600">{vrijwilligerText}</p>
+        </div>
+        <VolunteerForm taken={vrijwilligerTaken} />
       </div>
-      <VolunteerForm taken={vrijwilligerTaken} />
-    </div>
-  </Section>
+    </Section>
+  )}
 
-  <!-- Contact CTA -->
-  <Section variant="light-50">
+  <!-- 8. Contact CTA (altijd) -->
+  <Section variant={getVariant('cta')}>
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-4">Kom langs bij {settings.mosqueName}</h2>
+      <h2 class="text-2xl font-bold mb-4">Kom langs bij {settings?.mosqueName || 'onze moskee'}</h2>
       <p class="text-neutral-600 mb-6">
         Wij verwelkomen iedereen. Of u nu voor het gebed komt, wilt leren of gewoon een bezoek wilt brengen —
         onze deuren staan open.
