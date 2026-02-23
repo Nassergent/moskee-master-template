@@ -74,7 +74,7 @@ export const project = defineType({
       title: 'Actief',
       type: 'boolean',
       initialValue: true,
-      description: 'Alleen actieve goede doelen zijn zichtbaar op de website en donatiepagina.',
+      description: 'Maximaal 3 goede doelen mogen tegelijk actief zijn. Alleen actieve doelen zijn zichtbaar op de website.',
     }),
   ],
   preview: {
