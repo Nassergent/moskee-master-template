@@ -8,7 +8,7 @@
  *
  * Grid past zich automatisch aan: 1, 2, of 3 kolommen.
  */
-import { getUpcomingIslamicDay, generateGoogleCalendarUrl } from '../lib/hijri';
+import { fetchIslamicDays, generateGoogleCalendarUrl } from '../lib/hijri';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
 import { urlFor } from '../lib/sanity';
 
@@ -42,8 +42,10 @@ const {
   downloadUrl,
 } = Astro.props;
 
-// ── Islamic Countdown ──
-const upcoming = await getUpcomingIslamicDay(hijriAdjustment, islamicDays);
+// ── Islamic Countdown — alle aankomende dagen ──
+const allDays = await fetchIslamicDays(hijriAdjustment, islamicDays);
+const upcoming = allDays.length > 0 ? allDays[0] : null;
+const nextDays = allDays.slice(1, 3); // volgende 2 dagen als vooruitblik
 
 const BETEKENIS: Record<string, string> = {
   'Start Ramadan': 'De heilige vastenmaand waarin de Quran werd geopenbaard',
@@ -144,6 +146,31 @@ const gridClass = cardCount === 3
                 </a>
               </div>
             </div>
+
+            {/* Vooruitblik: volgende 2 dagen */}
+            {nextDays.length > 0 && (
+              <div class="px-7 pb-5 space-y-0">
+                <p class="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-2">Daarna</p>
+                {nextDays.map((day) => {
+                  const dayDate = new Date(day.gregorianDate).toLocaleDateString('nl-BE', {
+                    day: 'numeric', month: 'short',
+                  });
+                  return (
+                    <div class="flex items-center justify-between py-2 border-t border-neutral-100">
+                      <div class="flex items-center gap-2 min-w-0">
+                        <span class="text-sm font-bold text-primary truncate">{day.name}</span>
+                        <span class="font-arabic text-xs text-neutral-300 shrink-0" dir="rtl">{day.nameAr}</span>
+                      </div>
+                      <div class="flex items-center gap-3 shrink-0">
+                        <span class="text-xs text-neutral-400">{dayDate}</span>
+                        <span class="text-sm font-black text-primary">{day.daysUntil}<span class="text-[10px] font-semibold text-neutral-400 ml-0.5">d</span></span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
           </div>
         )}
 
