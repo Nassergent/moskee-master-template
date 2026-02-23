@@ -397,7 +397,7 @@ export async function fetchAgendaEvents() {
   } catch (e) {
     console.error('Sanity fetchAgendaEvents error:', e);
   }
-  return demoAgendaEvents;
+  return [];
 }
 
 export async function fetchUpcomingAgendaEvents(limit = 3) {
@@ -406,12 +406,11 @@ export async function fetchUpcomingAgendaEvents(limit = 3) {
       _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
       "afbeelding": afbeelding.asset->url
     }`, { limit });
-    if (result) return result;
-    return [];
+    return result || [];
   } catch (e) {
     console.error('Sanity fetchUpcomingAgendaEvents error:', e);
+    return [];
   }
-  return demoAgendaEvents.slice(0, limit);
 }
 
 export async function fetchAgendaEvent(slug: string) {
@@ -420,57 +419,13 @@ export async function fetchAgendaEvent(slug: string) {
       _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
       "afbeelding": afbeelding.asset->url
     }`, { slug });
-    if (result) return result;
+    return result || null;
   } catch (e) {
     console.error('Sanity fetchAgendaEvent error:', e);
+    return null;
   }
-  return demoAgendaEvents.find(e => e.slug.current === slug) || null;
 }
 
-// Volgende vrijdag helper
-function nextDay(dayOfWeek: number, weeksAhead = 0): string {
-  const d = new Date();
-  const diff = ((dayOfWeek - d.getDay()) + 7) % 7 || 7;
-  d.setDate(d.getDate() + diff + (weeksAhead * 7));
-  d.setHours(13, 0, 0, 0);
-  return d.toISOString();
-}
-
-const demoAgendaEvents = [
-  {
-    _id: 'demo-1',
-    titel: 'Vrijdaggebed & Khutbah',
-    slug: { current: 'vrijdaggebed' },
-    startDatum: nextDay(5),
-    eindDatum: null,
-    locatie: 'Gebedsruimte',
-    categorie: 'Gebed',
-    beschrijving: 'Wekelijks vrijdaggebed met khutbah (preek). Kom op tijd en parkeer correct.',
-    afbeelding: null,
-  },
-  {
-    _id: 'demo-2',
-    titel: 'Arabische Les',
-    slug: { current: 'arabische-les' },
-    startDatum: nextDay(6),
-    eindDatum: null,
-    locatie: 'Leslokaal',
-    categorie: 'Les',
-    beschrijving: 'Wekelijkse Arabische les voor beginners en gevorderden.',
-    afbeelding: null,
-  },
-  {
-    _id: 'demo-3',
-    titel: 'Gemeenschapsbijeenkomst',
-    slug: { current: 'gemeenschapsbijeenkomst' },
-    startDatum: nextDay(0, 2),
-    eindDatum: null,
-    locatie: 'Grote zaal',
-    categorie: 'Bijeenkomst',
-    beschrijving: 'Maandelijkse bijeenkomst voor de hele gemeenschap met thee en koekjes.',
-    afbeelding: null,
-  },
-];
 
 const demoNieuws = [
   {
