@@ -112,21 +112,21 @@ function statusFilter(S: StructureBuilder, status: string, title: string) {
     );
 }
 
-// ── Nieuws & Blog met Aan/Uit secties ──
+// ── Artikelen & Updates met Aan/Uit secties ──
 function nieuwsManagement(S: StructureBuilder) {
   return S.listItem()
-    .title('Nieuws & Blog')
+    .title('Artikelen & Updates')
     .icon(() => '📰')
     .child(
       S.list()
-        .title('Nieuws & Blog')
+        .title('Artikelen & Updates')
         .items([
           S.listItem()
             .title('🟢 Gepubliceerd')
             .icon(() => '🟢')
             .child(
               S.documentList()
-                .title('Gepubliceerde berichten')
+                .title('Gepubliceerde artikelen')
                 .schemaType('post')
                 .filter('_type == "post" && gepubliceerd == true')
                 .defaultOrdering([{ field: 'datum', direction: 'desc' }])
@@ -143,11 +143,11 @@ function nieuwsManagement(S: StructureBuilder) {
             ),
           S.divider(),
           S.listItem()
-            .title('Alle berichten')
+            .title('Alle artikelen')
             .icon(() => '📰')
             .child(
               S.documentTypeList('post')
-                .title('Alle berichten')
+                .title('Alle artikelen')
                 .defaultOrdering([{ field: 'datum', direction: 'desc' }])
             ),
         ])
