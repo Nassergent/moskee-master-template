@@ -2,14 +2,14 @@ import { defineType, defineField } from 'sanity';
 
 export const project = defineType({
   name: 'project',
-  title: 'Projecten',
+  title: 'Goede Doelen',
   type: 'document',
   fields: [
     defineField({
       name: 'titel',
       title: 'Titel',
       type: 'string',
-      description: 'De naam van dit project zoals getoond op de website en donatiepagina.',
+      description: 'De naam van dit goede doel zoals getoond op de website en donatiepagina.',
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -17,7 +17,7 @@ export const project = defineType({
       title: 'Beschrijving',
       type: 'text',
       rows: 4,
-      description: 'Korte uitleg over het project. Wordt getoond op de projectenkaart.',
+      description: 'Korte uitleg over het goede doel. Wordt getoond op de kaart.',
     }),
     defineField({
       name: 'afbeelding',
@@ -33,7 +33,7 @@ export const project = defineType({
       name: 'doelbedrag',
       title: 'Doelbedrag (€)',
       type: 'number',
-      description: 'Het totaalbedrag dat u wilt inzamelen voor dit project.',
+      description: 'Het totaalbedrag dat u wilt inzamelen voor dit goede doel.',
     }),
     defineField({
       name: 'huidigBedragCents',
@@ -60,21 +60,21 @@ export const project = defineType({
       title: 'Gekoppeld Citaat',
       type: 'reference',
       to: [{ type: 'quote' }],
-      description: 'Optioneel: koppel een islamitisch citaat aan dit project',
+      description: 'Optioneel: koppel een islamitisch citaat aan dit goede doel',
     }),
     defineField({
       name: 'toonOpHomepage',
       title: 'Toon op homepage',
       type: 'boolean',
       initialValue: false,
-      description: 'Zet aan om dit project te tonen op de homepage. Slechts 1 project wordt getoond — als meerdere zijn aangevinkt, wordt het eerste gekozen.',
+      description: 'Zet aan om dit goede doel te tonen op de homepage. Slechts 1 wordt getoond — als meerdere zijn aangevinkt, wordt het eerste gekozen.',
     }),
     defineField({
       name: 'actief',
       title: 'Actief',
       type: 'boolean',
       initialValue: true,
-      description: 'Alleen actieve projecten zijn zichtbaar op de website en donatiepagina.',
+      description: 'Alleen actieve goede doelen zijn zichtbaar op de website en donatiepagina.',
     }),
   ],
   preview: {

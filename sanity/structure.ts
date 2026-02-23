@@ -280,21 +280,21 @@ function etiquetteManagement(S: StructureBuilder) {
     );
 }
 
-// ── Projecten met Aan/Uit secties ──
+// ── Goede Doelen met Aan/Uit secties ──
 function projectenManagement(S: StructureBuilder) {
   return S.listItem()
-    .title('Projecten')
+    .title('Goede Doelen')
     .icon(() => '🏗️')
     .child(
       S.list()
-        .title('Projecten')
+        .title('Goede Doelen')
         .items([
           S.listItem()
             .title('🟢 Actief op website')
             .icon(() => '🟢')
             .child(
               S.documentList()
-                .title('Actieve projecten')
+                .title('Actieve goede doelen')
                 .schemaType('project')
                 .filter('_type == "project" && actief == true')
                 .defaultOrdering([{ field: '_createdAt', direction: 'desc' }])
@@ -304,18 +304,18 @@ function projectenManagement(S: StructureBuilder) {
             .icon(() => '⚫')
             .child(
               S.documentList()
-                .title('Uitgeschakelde projecten')
+                .title('Uitgeschakelde goede doelen')
                 .schemaType('project')
                 .filter('_type == "project" && actief != true')
                 .defaultOrdering([{ field: '_createdAt', direction: 'desc' }])
             ),
           S.divider(),
           S.listItem()
-            .title('Alle projecten')
+            .title('Alle goede doelen')
             .icon(() => '🏗️')
             .child(
               S.documentTypeList('project')
-                .title('Alle projecten')
+                .title('Alle goede doelen')
                 .defaultOrdering([{ field: '_createdAt', direction: 'desc' }])
             ),
         ])
