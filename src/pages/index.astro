@@ -24,6 +24,9 @@ const heroCta = homePage?.heroCta || 'Gebedstijden bekijken';
 const badges = homePage?.badges?.length ? homePage.badges : ['Allen Welkom', 'Të gjithë të mirëpritur', 'All Welcome', 'الجميع مرحب به'];
 const badgeKleur = homePage?.badgeKleur || '#593B1D';
 const toonActueel = homePage?.toonActueel ?? true;
+
+// Cache headers: kort tijdens fine-tuning, verhoog later naar s-maxage=3600
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
 ---
 
 <BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined}>
