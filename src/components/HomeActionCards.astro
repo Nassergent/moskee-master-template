@@ -10,6 +10,7 @@
  */
 import { getUpcomingIslamicDay, generateGoogleCalendarUrl } from '../lib/hijri';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
+import { urlFor } from '../lib/sanity';
 
 interface Props {
   hijriAdjustment?: number;
@@ -23,6 +24,7 @@ interface Props {
     huidigBedragCents?: number;
     prijsPerEenheid?: number;
     eenheid?: string;
+    afbeelding?: any;
   } | null;
   // Download kaart
   downloadTitel?: string;
@@ -99,7 +101,6 @@ const gridClass = cardCount === 3
         {showCountdown && upcoming && (
           <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col">
             <div class="p-7 flex-1">
-              <span class="text-3xl mb-3 block">{upcoming.emoji}</span>
               <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-1">
                 {upcoming.name}
               </h2>
@@ -148,9 +149,16 @@ const gridClass = cardCount === 3
 
         {/* ── Kaart 2: Doneer — eerste actieve project uit Sanity ── */}
         {showDoneer && project && (
-          <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col" style="animation-delay: 100ms">
+          <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col overflow-hidden" style="animation-delay: 100ms">
+            {project.afbeelding && (
+              <img
+                src={urlFor(project.afbeelding).width(600).height(250).fit('crop').url()}
+                alt={project.titel}
+                class="w-full h-40 object-cover"
+                loading="lazy"
+              />
+            )}
             <div class="p-7 flex-1">
-              <span class="text-3xl mb-3 block">🤲</span>
               <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-2">
                 {project.titel}
               </h2>
