@@ -64,44 +64,6 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </Section>
 
-  <!-- Vrijdaggebed (Jumu'ah) — Light-100 (alleen desktop) -->
-  {prayer.jumuahShifts && prayer.jumuahShifts.length > 0 && (
-    <Section variant="light-100" class="hidden sm:block">
-      <div class="text-center mb-6">
-        <p class="font-arabic text-2xl text-accent/60 mb-2" dir="rtl" lang="ar">صلاة الجمعة</p>
-        <h2 class="text-3xl font-bold font-heading text-primary">Vrijdaggebed</h2>
-      </div>
-
-      <div class={`grid gap-6 max-w-3xl mx-auto ${prayer.jumuahShifts.length === 1 ? 'grid-cols-1 max-w-md' : 'grid-cols-1 md:grid-cols-2'}`}>
-        {prayer.jumuahShifts.map((shift: any, i: number) => (
-          <div class="bg-white border border-neutral-200 text-center relative">
-            <div class={`h-1 ${i === 0 ? 'bg-primary' : 'bg-accent'}`} />
-            <div class="px-8 py-8">
-              <div class={`w-14 h-14 mx-auto mb-4 flex items-center justify-center ${i === 0 ? 'bg-primary/10' : 'bg-accent/10'}`}>
-                {i === 0 ? (
-                  <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" /></svg>
-                ) : (
-                  <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
-                )}
-              </div>
-              <p class={`text-xs font-bold uppercase tracking-[0.2em] mb-3 ${i === 0 ? 'text-primary/60' : 'text-accent/80'}`}>{shift.label}</p>
-              <p class={`text-4xl sm:text-5xl font-bold font-heading tabular-nums ${i === 0 ? 'text-primary' : 'text-accent'}`}>{shift.time}</p>
-              {shift.note && (
-                <p class="text-sm text-neutral-400 mt-3">{shift.note}</p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {prayer.jumuahNote && (
-        <p class="text-sm text-neutral-500 text-center mt-6 max-w-2xl mx-auto">
-          {prayer.jumuahNote}
-        </p>
-      )}
-    </Section>
-  )}
-
   <!-- Islamitische Kalender — alleen desktop -->
   <Section variant="light-100" class="hidden sm:block">
     <IslamicCalendar />
