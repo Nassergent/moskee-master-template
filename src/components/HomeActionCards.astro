@@ -171,16 +171,16 @@ const gridClass = cardCount === 3
         {/* ── Kaart 3: Document Download (met afbeelding preview) ── */}
         {showDownload && downloadUrl && (
           <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col overflow-hidden" style="animation-delay: 200ms">
-            {/* Afbeelding preview als het een image is */}
+            {/* Afbeelding preview als het een image is — klik opent lightbox */}
             {isImage && (
-              <a href={downloadUrl} target="_blank" rel="noopener noreferrer" class="block">
+              <button type="button" data-lightbox-trigger class="block w-full cursor-zoom-in">
                 <img
                   src={downloadUrl}
                   alt={downloadTitel || 'Document preview'}
                   class="w-full h-auto max-h-[300px] object-contain bg-neutral-50"
                   loading="lazy"
                 />
-              </a>
+              </button>
             )}
             <div class="p-7 flex-1">
               <span class="text-3xl mb-3 block">{downloadEmoji}</span>
@@ -216,3 +216,57 @@ const gridClass = cardCount === 3
     </div>
   </section>
 )}
+
+{/* Lightbox overlay */}
+{showDownload && isImage && (
+  <div
+    id="download-lightbox"
+    class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-zoom-out"
+    role="dialog"
+    aria-label="Afbeelding vergroten"
+  >
+    <img
+      id="download-lightbox-img"
+      src={downloadUrl}
+      alt={downloadTitel || 'Document'}
+      class="max-w-full max-h-[90vh] object-contain animate-fade-in-up"
+    />
+    <button
+      id="download-lightbox-close"
+      class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2"
+      aria-label="Sluiten"
+    >
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+)}
+
+<script>
+  const trigger = document.querySelector('[data-lightbox-trigger]');
+  const lightbox = document.getElementById('download-lightbox');
+  const closeBtn = document.getElementById('download-lightbox-close');
+
+  if (trigger && lightbox) {
+    trigger.addEventListener('click', () => {
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    });
+
+    const closeLightbox = () => {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = '';
+    };
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    closeBtn?.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) closeLightbox();
+    });
+  }
+</script>
