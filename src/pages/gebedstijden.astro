@@ -47,7 +47,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
   </section>
 
   <!-- Mobiel: fullscreen gebedstijden, geen scroll -->
-  <div class="sm:hidden h-[calc(100dvh-4rem)] flex flex-col overflow-hidden">
+  <div class="sm:hidden fixed inset-0 top-16 flex flex-col overflow-hidden z-20 bg-white">
     <PrayerManager fullscreen />
   </div>
   <Section variant="light-50" class="hidden sm:block">
