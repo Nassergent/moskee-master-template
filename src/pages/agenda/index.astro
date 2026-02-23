@@ -96,7 +96,11 @@ const categorieen = extractCategories(events);
                 </p>
               )}
               {event.beschrijving && (
-                <p class="text-sm text-neutral-500 mt-2 line-clamp-2">{event.beschrijving}</p>
+                <p class="text-sm text-neutral-500 mt-2 line-clamp-2">
+                  {Array.isArray(event.beschrijving)
+                    ? event.beschrijving.map((b: any) => b.children?.map((c: any) => c.text).join('')).filter(Boolean).join(' ')
+                    : event.beschrijving}
+                </p>
               )}
             </div>
           </a>
