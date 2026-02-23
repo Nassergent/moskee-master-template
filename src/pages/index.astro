@@ -18,7 +18,7 @@ const heroImageMobile = homePage?.heroImage
   ? urlFor(homePage.heroImage).width(400).height(500).fit('crop').quality(60).url()
   : null;
 
-const heroTitle = homePage?.heroTitle || 'Welkom bij';
+const heroTitle = homePage?.heroTitle || `Welkom bij ${settings.mosqueName}`;
 const heroSubtitle = homePage?.heroSubtitle || settings.description;
 const heroCta = homePage?.heroCta || 'Gebedstijden bekijken';
 const badges = homePage?.badges?.length ? homePage.badges : ['Allen Welkom', 'Të gjithë të mirëpritur', 'All Welcome', 'الجميع مرحب به'];
@@ -52,8 +52,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           </div>
 
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white">
-            {heroTitle}<br />
-            <span class="text-accent-light">{settings.mosqueName}</span>
+            {heroTitle}
           </h1>
           <p class="text-lg text-white/80 leading-relaxed mb-10 max-w-xl">
             {heroSubtitle}

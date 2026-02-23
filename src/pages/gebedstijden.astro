@@ -5,7 +5,7 @@ import PrayerManager from '../components/PrayerManager.astro';
 import EtiquetteGrid from '../components/EtiquetteGrid.astro';
 import IslamicCalendar from '../components/IslamicCalendar.astro';
 import { fetchSettings, fetchPrayerTimes } from '../lib/sanity';
-import { formatHijriDate } from '../lib/hijri';
+import { formatHijriDate, fetchIslamicDays } from '../lib/hijri';
 import {
   isEngineConfigComplete,
   buildConfigFromSanity,
@@ -18,6 +18,9 @@ const hijriToday = formatHijriDate();
 
 const settings = await fetchSettings();
 const prayer = await fetchPrayerTimes();
+const hijriAdjustment = settings?.hijriAdjustment ?? 0;
+const islamicDays = await fetchIslamicDays(hijriAdjustment, settings?.islamicDays);
+const hasIslamicDays = islamicDays.length > 0;
 
 // Compute times for SEO structured data
 const configComplete = isEngineConfigComplete(prayer);
@@ -64,10 +67,12 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </Section>
 
-  <!-- Islamitische Kalender — alleen desktop -->
-  <Section variant="light-100" class="hidden sm:block">
-    <IslamicCalendar />
-  </Section>
+  <!-- Islamitische Kalender — alleen desktop, alleen als er dagen zijn -->
+  {hasIslamicDays && (
+    <Section variant="light-100" class="hidden sm:block">
+      <IslamicCalendar />
+    </Section>
+  )}
 
   <!-- Huisregels — alleen desktop -->
   <Section variant="light-50" class="hidden sm:block">

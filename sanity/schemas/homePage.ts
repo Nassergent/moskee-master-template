@@ -7,17 +7,17 @@ export const homePage = defineType({
   fields: [
     defineField({
       name: 'heroTitle',
-      title: 'Welkomsttekst boven moskeenaam',
+      title: 'Hero Titel (H1)',
       type: 'string',
-      description: 'Dit verschijnt boven de moskeenaam op de homepage (bijv. "Welkom bij"). De moskeenaam zelf staat bij Site Instellingen.',
+      description: 'De grote titel in de hero sectie (bijv. "Ramadan Mubarak", "Welkom bij onze moskee"). De moskeenaam verschijnt automatisch bij het logo en in de footer.',
       validation: (rule) => rule.max(100),
     }),
     defineField({
       name: 'heroSubtitle',
-      title: 'Beschrijving onder moskeenaam',
+      title: 'Hero Ondertitel',
       type: 'text',
       rows: 3,
-      description: 'De korte tekst die bezoekers als eerste lezen onder de moskeenaam. Als dit leeg is, wordt de "Korte Beschrijving" uit Site Instellingen gebruikt.',
+      description: 'De beschrijvende tekst onder de titel. Als dit leeg is, wordt de "Korte Beschrijving" uit Site Instellingen gebruikt.',
     }),
     defineField({
       name: 'heroCta',
