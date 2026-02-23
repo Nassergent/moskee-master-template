@@ -12,15 +12,27 @@ import { PRAYER_NAMES, PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName 
 interface Props {
   times: ComputedPrayerTimes;
   currentPrayer?: PrayerName | null;
+  nextPrayer?: PrayerName | null;
+  secondsUntilNext?: number;
 }
 
-const { times, currentPrayer = null } = Astro.props;
+const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0 } = Astro.props;
+
+/** Format seconds as "Xu Ym" for compact display */
+function formatCompactCountdown(secs: number): string {
+  if (secs <= 0) return '';
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  if (h > 0) return `${h}u ${m}m`;
+  return `${m}m`;
+}
 ---
 
 <!-- Prayer Grid — Desktop: 5 kolommen, Mobiel: gestapelde lijst -->
 <div class="grid grid-cols-1 sm:grid-cols-5 gap-0 border border-neutral-200 overflow-hidden">
   {PRAYER_NAMES.map((name) => {
     const isCurrent = currentPrayer === name;
+    const isNext = nextPrayer === name;
     return (
       <div
         class:list={[
@@ -49,23 +61,36 @@ const { times, currentPrayer = null } = Astro.props;
             {times.adhan[name]}
           </p>
 
-          {/* Iqama tijd */}
-          {times.iqama[name] ? (
-            <div class="flex items-center gap-1.5 sm:mt-2">
-              <span class:list={[
-                'text-[10px] uppercase tracking-wider font-semibold',
-                isCurrent ? 'text-white/60' : 'text-accent/60',
-              ]}>
-                Iqama
-              </span>
-              <span class:list={[
-                'text-sm font-bold tabular-nums',
-                isCurrent ? 'text-white/90' : 'text-accent',
-              ]}>
-                {times.iqama[name]}
-              </span>
-            </div>
-          ) : null}
+          {/* Iqama tijd — vaste hoogte voor consistente spacing */}
+          <div class="h-6 flex items-center sm:mt-2">
+            {times.iqama[name] ? (
+              <div class="flex items-center gap-1.5">
+                <span class:list={[
+                  'text-[10px] uppercase tracking-wider font-bold',
+                  isCurrent ? 'text-accent-light' : 'text-accent/60',
+                ]}>
+                  Iqama
+                </span>
+                <span class:list={[
+                  'text-sm font-bold tabular-nums',
+                  isCurrent ? 'text-white' : 'text-accent',
+                ]}>
+                  {times.iqama[name]}
+                </span>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Countdown — subtiel in het vak van het volgende gebed */}
+          {isNext && secondsUntilNext > 0 && (
+            <p
+              id="grid-countdown"
+              data-seconds={secondsUntilNext}
+              class="text-[10px] font-bold uppercase tracking-wider text-accent mt-1 tabular-nums"
+            >
+              In {formatCompactCountdown(secondsUntilNext)}
+            </p>
+          )}
 
           {/* Current indicator — alleen op mobiel zichtbaar */}
           {isCurrent && (
@@ -91,3 +116,21 @@ const { times, currentPrayer = null } = Astro.props;
   {times.meta.source === 'fallback' && 'Laatste bekende tijden'}
   {' '}&middot; {times.meta.method} &middot; {times.meta.madhab === 'hanafi' ? 'Hanafi' : 'Shafi\'i'}
 </p>
+
+{/* Live countdown ticker voor het volgende gebed — <500B */}
+{nextPrayer && secondsUntilNext > 0 && (
+  <script>
+    const el = document.getElementById('grid-countdown');
+    if (el) {
+      let secs = parseInt(el.dataset.seconds || '0', 10);
+      const tick = setInterval(() => {
+        secs--;
+        if (secs <= 0) { clearInterval(tick); el.textContent = 'Nu'; return; }
+        const h = Math.floor(secs / 3600);
+        const m = Math.floor((secs % 3600) / 60);
+        el.textContent = h > 0 ? `In ${h}u ${m}m` : `In ${m}m`;
+      }, 60000); // Update elke minuut (geen seconde-ticker nodig voor compact format)
+      document.addEventListener('astro:before-preparation', () => clearInterval(tick));
+    }
+  </script>
+)}
