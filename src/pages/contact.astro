@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import { fetchSettings, fetchContactPage, demoContactPage } from '../lib/sanity';
+import { fetchSettings, fetchContactPage } from '../lib/sanity';
 
 const settings = await fetchSettings();
 const contactPage = await fetchContactPage();

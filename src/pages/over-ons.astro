@@ -3,13 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import VolunteerForm from '../components/VolunteerForm.astro';
 import PortableText from '../components/PortableText.astro';
-import { fetchSettings, fetchAboutPage, urlFor, demoAboutPage } from '../lib/sanity';
+import { fetchSettings, fetchAboutPage, urlFor } from '../lib/sanity';
 
 const settings = await fetchSettings();
 const aboutPage = await fetchAboutPage();
 
-const missieTitle = aboutPage.missieTitle || demoAboutPage.missieTitle;
-const waarden = aboutPage.waarden?.length ? aboutPage.waarden : demoAboutPage.waarden;
+const missieTitle = aboutPage?.missieTitle || 'Onze Missie';
+const waarden = aboutPage?.waarden?.length ? aboutPage.waarden : [];
 const team = aboutPage.team || [];
 const vrijwilligerTaken = settings.volunteerTasks?.length ? settings.volunteerTasks : ['Koken', 'Kuisen', 'Onderhoud', 'Evenementen', 'Educatie', 'Administratie'];
 
