@@ -1,14 +1,15 @@
 ---
 /**
- * LivePrayerCard.astro — Live countdown card (El Albani Flat Design)
+ * LivePrayerCard.astro — Live klok + countdown (Mawaqit-stijl op mobiel)
  *
  * Compartiment: UI
- * SSR render + klein <script> voor countdown ticker.
- * Geen React island, geen full hydration.
- * UI doet NOOIT eigen berekeningen — alleen output consumeren.
+ * Mobiel: full-width hero met grote klok, hijri/gregorian datum, countdown
+ * Desktop: twee-kolom layout (huidig gebed + countdown)
+ * SSR + klein <script> voor live ticker.
  */
 
 import { PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
+import { formatHijriDate } from '../../lib/hijri';
 
 interface Props {
   times: ComputedPrayerTimes;
@@ -18,6 +19,7 @@ interface Props {
 }
 
 const { times, currentPrayer, nextPrayer, secondsUntilNext } = Astro.props;
+const tz = times.timezone;
 
 const currentLabel = currentPrayer ? PRAYER_LABELS[currentPrayer] : null;
 const currentTime = currentPrayer ? times.adhan[currentPrayer] : null;
@@ -25,49 +27,93 @@ const currentIqama = currentPrayer ? times.iqama[currentPrayer] : null;
 
 const nextLabel = PRAYER_LABELS[nextPrayer];
 const nextTime = times.adhan[nextPrayer];
+
+// SSR: initiële waarden
+const now = new Date();
+const ssrClock = new Intl.DateTimeFormat('nl-BE', {
+  hour: '2-digit', minute: '2-digit', second: '2-digit',
+  hour12: false, timeZone: tz,
+}).format(now);
+
+const ssrDateLong = new Intl.DateTimeFormat('nl-BE', {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  timeZone: tz,
+}).format(now);
+
+const hijriToday = formatHijriDate();
+
+function formatCountdownSSR(secs: number): string {
+  if (secs <= 0) return '00:00';
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
 ---
 
-<!-- Live Prayer Card — Flat Design -->
-<div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent overflow-hidden">
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-0">
+<!-- ═══ Mobiel: Mawaqit-stijl hero ═══ -->
+<div class="sm:hidden" id="prayer-hero" data-seconds={secondsUntilNext} data-tz={tz}>
 
-    <!-- Links: Huidig Gebed -->
-    <div class="bg-primary text-white p-6 sm:p-8">
+  {/* Klok + Datum — Accent achtergrond */}
+  <div class="bg-accent border-l-[4px] border-primary-dark px-6 py-8 text-center">
+    <p id="hero-clock" class="text-5xl font-bold font-heading tabular-nums text-white leading-none">
+      {ssrClock}
+    </p>
+    <p class="text-white/70 text-sm mt-3">{hijriToday}</p>
+    <p id="hero-date" class="text-white/50 text-xs mt-1 capitalize">{ssrDateLong}</p>
+  </div>
+
+  {/* Status bar — Primary dark */}
+  <div class="bg-primary-dark px-6 py-3.5 flex items-center justify-center gap-3">
+    <span class="text-accent text-lg">&#9774;</span>
+    <p class="text-white font-bold text-base font-heading">
+      {nextLabel} in
+      <span id="hero-countdown" class="tabular-nums text-[#E8CDB5]">
+        {formatCountdownSSR(secondsUntilNext)}
+      </span>
+    </p>
+    <span class="text-accent text-lg">&#9774;</span>
+  </div>
+</div>
+
+<!-- ═══ Desktop: twee-kolom card ═══ -->
+<div class="hidden sm:block bg-white border border-neutral-200 border-l-[3px] border-l-accent overflow-hidden">
+  <div class="grid grid-cols-2 gap-0">
+
+    {/* Links: Huidig Gebed */}
+    <div class="bg-primary text-white p-6 md:p-8">
       {currentPrayer ? (
         <>
           <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-2 font-bold">Nu</p>
-          <p class="text-3xl sm:text-4xl font-bold font-heading mb-1">{currentLabel}</p>
+          <p class="text-3xl md:text-4xl font-bold font-heading mb-1">{currentLabel}</p>
           <p class="text-2xl font-heading tabular-nums text-white/90">{currentTime}</p>
           {currentIqama && (
-            <p class="text-sm text-[#E8CDB5] mt-2">Iqama: <span class="text-[#E8CDB5] font-bold">{currentIqama}</span></p>
+            <p class="text-sm text-[#E8CDB5] mt-2">Iqama: <span class="font-bold">{currentIqama}</span></p>
           )}
         </>
       ) : (
         <>
           <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-2 font-bold">Wachten op</p>
-          <p class="text-3xl sm:text-4xl font-bold font-heading">{nextLabel}</p>
+          <p class="text-3xl md:text-4xl font-bold font-heading">{nextLabel}</p>
         </>
       )}
     </div>
 
-    <!-- Rechts: Volgend Gebed + Countdown -->
-    <div class="p-6 sm:p-8 flex flex-col justify-center">
+    {/* Rechts: Volgend Gebed + Countdown */}
+    <div class="p-6 md:p-8 flex flex-col justify-center">
       <p class="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">
         {currentPrayer ? 'Volgend gebed' : 'Begint over'}
       </p>
       <p class="text-xl font-bold font-heading text-primary mb-1">{nextLabel}</p>
       <p class="text-sm text-neutral-500 mb-3">Adhan: {nextTime}</p>
 
-      <!-- Countdown -->
       <div
         id="prayer-countdown"
         class="bg-base-100 border border-neutral-200 px-4 py-3 text-center"
         data-seconds={secondsUntilNext}
         aria-live="polite"
-        aria-label="Aftellen tot volgend gebed"
       >
         <p class="text-[10px] uppercase tracking-[0.15em] text-neutral-400 mb-1 font-bold">Over</p>
-        <p id="countdown-display" class="text-2xl sm:text-3xl font-bold font-heading tabular-nums text-primary">
+        <p id="countdown-display" class="text-2xl md:text-3xl font-bold font-heading tabular-nums text-primary">
           --:--:--
         </p>
       </div>
@@ -76,8 +122,51 @@ const nextTime = times.adhan[nextPrayer];
   </div>
 </div>
 
-<!-- Countdown Script — <2KB, no dependencies -->
+<!-- Unified Script — klok + countdown, <1.5KB -->
 <script>
+  // ── Mobiel hero: live klok + countdown ──
+  const hero = document.getElementById('prayer-hero');
+  const heroClockEl = document.getElementById('hero-clock');
+  const heroCountdownEl = document.getElementById('hero-countdown');
+
+  if (hero && heroClockEl && heroCountdownEl) {
+    const tz = hero.dataset.tz || 'Europe/Brussels';
+    let heroRemaining = parseInt(hero.dataset.seconds || '0', 10);
+
+    function updateHeroClock() {
+      heroClockEl!.textContent = new Intl.DateTimeFormat('nl-BE', {
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false, timeZone: tz,
+      }).format(new Date());
+    }
+
+    function fmtHeroCountdown(s: number): string {
+      if (s <= 0) return '00:00';
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    }
+
+    updateHeroClock();
+    heroCountdownEl.textContent = fmtHeroCountdown(heroRemaining);
+
+    const heroTick = setInterval(() => {
+      updateHeroClock();
+      heroRemaining--;
+      if (heroRemaining <= 0) {
+        heroCountdownEl!.textContent = '00:00';
+        setTimeout(() => window.location.reload(), 3000);
+        clearInterval(heroTick);
+        return;
+      }
+      heroCountdownEl!.textContent = fmtHeroCountdown(heroRemaining);
+    }, 1000);
+
+    document.addEventListener('astro:before-preparation', () => clearInterval(heroTick));
+    window.addEventListener('beforeunload', () => clearInterval(heroTick));
+  }
+
+  // ── Desktop: countdown ticker ──
   const el = document.getElementById('prayer-countdown');
   const display = document.getElementById('countdown-display');
   if (el && display) {
@@ -91,14 +180,12 @@ const nextTime = times.adhan[nextPrayer];
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
-    // Initial render
     display.textContent = formatCountdown(remaining);
 
     const interval = setInterval(() => {
       remaining--;
       if (remaining <= 0) {
         display.textContent = '00:00:00';
-        // Show "Nu" state briefly, then reload for fresh data
         setTimeout(() => {
           display.innerHTML = '<span class="text-accent font-bold">Nu</span>';
         }, 500);
@@ -109,7 +196,6 @@ const nextTime = times.adhan[nextPrayer];
       display.textContent = formatCountdown(remaining);
     }, 1000);
 
-    // Cleanup on navigation (Astro view transitions)
     document.addEventListener('astro:before-preparation', () => clearInterval(interval));
     window.addEventListener('beforeunload', () => clearInterval(interval));
   }
