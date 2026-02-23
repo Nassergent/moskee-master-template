@@ -1,0 +1,146 @@
+---
+/**
+ * LivePrayerHero.astro — High-impact live klok + gebedsstatus
+ *
+ * Compartiment: UI
+ * SSR render + lichtgewicht <script> voor live klok (1s) en countdown (1s).
+ * Initiële status in HTML voor SEO (Google leest de tekst).
+ */
+
+import { PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
+
+interface Props {
+  times: ComputedPrayerTimes;
+  currentPrayer: PrayerName | null;
+  nextPrayer: PrayerName;
+  secondsUntilNext: number;
+  timezone: string;
+}
+
+const { times, currentPrayer, nextPrayer, secondsUntilNext, timezone } = Astro.props;
+
+const nextLabel = PRAYER_LABELS[nextPrayer];
+const nextAdhan = times.adhan[nextPrayer];
+
+// SSR: initiële tijd + datum voor SEO
+const now = new Date();
+const ssrTime = new Intl.DateTimeFormat('nl-BE', {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+  timeZone: timezone,
+}).format(now);
+
+const ssrDate = new Intl.DateTimeFormat('nl-BE', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: timezone,
+}).format(now);
+
+// SSR: initiële countdown tekst voor SEO
+function formatStatusText(secs: number): string {
+  if (secs <= 0) return 'Nu';
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+const ssrCountdown = formatStatusText(secondsUntilNext);
+const statusPrefix = currentPrayer ? `${nextLabel} begint over` : `${nextLabel} begint over`;
+---
+
+<!-- Live Prayer Hero — Flat Design, high-impact -->
+<div
+  id="prayer-hero"
+  class="overflow-hidden"
+  data-seconds={secondsUntilNext}
+  data-next-label={nextLabel}
+  data-next-adhan={nextAdhan}
+  data-timezone={timezone}
+>
+
+  <!-- Top: Klok + Datum — Accent (goud) -->
+  <div class="bg-accent border-l-[4px] border-primary-dark px-6 py-6 sm:py-8 text-center">
+    <p
+      id="hero-clock"
+      class="text-5xl sm:text-6xl md:text-7xl font-bold font-heading tabular-nums text-white leading-none"
+    >
+      {ssrTime}
+    </p>
+    <p
+      id="hero-date"
+      class="text-sm sm:text-base text-white/70 mt-2 capitalize"
+    >
+      {ssrDate}
+    </p>
+  </div>
+
+  <!-- Bottom: Gebedsstatus — Primary Dark -->
+  <div class="bg-primary-dark px-6 py-4 sm:py-5 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+    <p class="text-white/60 text-sm font-bold uppercase tracking-wider">
+      {statusPrefix}
+    </p>
+    <p
+      id="hero-countdown"
+      class="text-2xl sm:text-3xl font-bold font-heading tabular-nums text-accent-light"
+    >
+      {ssrCountdown}
+    </p>
+  </div>
+
+</div>
+
+<!-- Live Clock + Countdown Script — <1KB -->
+<script>
+  const hero = document.getElementById('prayer-hero');
+  const clockEl = document.getElementById('hero-clock');
+  const countdownEl = document.getElementById('hero-countdown');
+
+  if (hero && clockEl && countdownEl) {
+    const tz = hero.dataset.timezone || 'Europe/Brussels';
+    let remaining = parseInt(hero.dataset.seconds || '0', 10);
+
+    function updateClock() {
+      const now = new Date();
+      clockEl!.textContent = new Intl.DateTimeFormat('nl-BE', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZone: tz,
+      }).format(now);
+    }
+
+    function formatCountdown(secs: number): string {
+      if (secs <= 0) return '00:00:00';
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    // Initial render
+    updateClock();
+    countdownEl.textContent = formatCountdown(remaining);
+
+    const interval = setInterval(() => {
+      updateClock();
+      remaining--;
+      if (remaining <= 0) {
+        countdownEl!.textContent = '00:00:00';
+        setTimeout(() => window.location.reload(), 3000);
+        clearInterval(interval);
+        return;
+      }
+      countdownEl!.textContent = formatCountdown(remaining);
+    }, 1000);
+
+    // Cleanup
+    document.addEventListener('astro:before-preparation', () => clearInterval(interval));
+    window.addEventListener('beforeunload', () => clearInterval(interval));
+  }
+</script>

@@ -14,6 +14,7 @@ import {
 } from '../lib/logic/prayer-engine';
 import PrayerGrid from './ui/PrayerGrid.astro';
 import LivePrayerCard from './ui/LivePrayerCard.astro';
+import LivePrayerHero from './ui/LivePrayerHero.astro';
 
 interface Props {
   /** Toon alleen compact view (voor homepage — geen LivePrayerCard) */
@@ -42,6 +43,15 @@ if (configComplete) {
 
 {computedTimes && prayerStatus ? (
   <div class="space-y-6">
+    {compact && (
+      <LivePrayerHero
+        times={computedTimes}
+        currentPrayer={prayerStatus.currentPrayer}
+        nextPrayer={prayerStatus.nextPrayer}
+        secondsUntilNext={prayerStatus.secondsUntilNext}
+        timezone={computedTimes.timezone}
+      />
+    )}
     {!compact && (
       <LivePrayerCard
         times={computedTimes}
