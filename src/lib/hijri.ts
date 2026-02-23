@@ -94,7 +94,9 @@ export async function fetchIslamicDays(
       // Probeer dit hijri jaar en volgend jaar
       for (const yearOffset of [0, 1]) {
         const targetYear = hijriYear + yearOffset;
-        const url = `https://api.aladhan.com/v1/hToG/${day.hijriDay}/${day.hijriMonth}/${targetYear}?adjustment=${hijriAdjustment}`;
+        const dd = String(day.hijriDay).padStart(2, '0');
+        const mm = String(day.hijriMonth).padStart(2, '0');
+        const url = `https://api.aladhan.com/v1/hToG/${dd}-${mm}-${targetYear}?adjustment=${hijriAdjustment}`;
         const response = await fetch(url);
         if (!response.ok) continue;
 
