@@ -1,15 +1,14 @@
 ---
 /**
- * LivePrayerCard.astro — Live klok + countdown (Mawaqit-stijl op mobiel)
+ * LivePrayerCard.astro — Countdown + huidig gebed status
  *
  * Compartiment: UI
- * Mobiel: full-width hero met grote klok, hijri/gregorian datum, countdown
+ * Mobiel: compacte countdown balk (geen klok, geen hero)
  * Desktop: twee-kolom layout (huidig gebed + countdown)
  * SSR + klein <script> voor live ticker.
  */
 
 import { PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
-import { formatHijriDate } from '../../lib/hijri';
 
 interface Props {
   times: ComputedPrayerTimes;
@@ -19,7 +18,6 @@ interface Props {
 }
 
 const { times, currentPrayer, nextPrayer, secondsUntilNext } = Astro.props;
-const tz = times.timezone;
 
 const currentLabel = currentPrayer ? PRAYER_LABELS[currentPrayer] : null;
 const currentTime = currentPrayer ? times.adhan[currentPrayer] : null;
@@ -28,58 +26,36 @@ const currentIqama = currentPrayer ? times.iqama[currentPrayer] : null;
 const nextLabel = PRAYER_LABELS[nextPrayer];
 const nextTime = times.adhan[nextPrayer];
 
-// SSR: initiële waarden
-const now = new Date();
-const ssrClock = new Intl.DateTimeFormat('nl-BE', {
-  hour: '2-digit', minute: '2-digit', second: '2-digit',
-  hour12: false, timeZone: tz,
-}).format(now);
-
-const ssrDateLong = new Intl.DateTimeFormat('nl-BE', {
-  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-  timeZone: tz,
-}).format(now);
-
-const hijriToday = formatHijriDate();
-
 function formatCountdownSSR(secs: number): string {
   if (secs <= 0) return '00:00';
   const h = Math.floor(secs / 3600);
   const m = Math.floor((secs % 3600) / 60);
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  const s = secs % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 ---
 
-<!-- ═══ Mobiel: Mawaqit-stijl hero ═══ -->
-<div class="sm:hidden" id="prayer-hero" data-seconds={secondsUntilNext} data-tz={tz}>
-
-  {/* Klok + Datum — Accent achtergrond */}
-  <div class="bg-accent border-l-[4px] border-primary-dark px-6 py-8 text-center">
-    <p id="hero-clock" class="text-5xl font-bold font-heading tabular-nums text-white leading-none">
-      {ssrClock}
-    </p>
-    <p class="text-white/70 text-sm mt-3">{hijriToday}</p>
-    <p id="hero-date" class="text-white/50 text-xs mt-1 capitalize">{ssrDateLong}</p>
-  </div>
-
-  {/* Status bar — Primary dark */}
-  <div class="bg-primary-dark px-6 py-3.5 flex items-center justify-center gap-3">
-    <span class="text-accent text-lg">&#9774;</span>
-    <p class="text-white font-bold text-base font-heading">
-      {nextLabel} in
-      <span id="hero-countdown" class="tabular-nums text-[#E8CDB5]">
-        {formatCountdownSSR(secondsUntilNext)}
-      </span>
-    </p>
-    <span class="text-accent text-lg">&#9774;</span>
-  </div>
+<!-- Mobiel: compacte countdown balk -->
+<div
+  class="sm:hidden bg-primary-dark px-5 py-3 flex items-center justify-between"
+  id="mobile-countdown-bar"
+  data-seconds={secondsUntilNext}
+>
+  <p class="text-white text-sm font-bold font-heading">
+    {nextLabel} over
+  </p>
+  <p
+    id="mobile-countdown"
+    class="text-xl font-bold font-heading tabular-nums text-[#E8CDB5]"
+  >
+    {formatCountdownSSR(secondsUntilNext)}
+  </p>
 </div>
 
-<!-- ═══ Desktop: twee-kolom card ═══ -->
+<!-- Desktop: twee-kolom card -->
 <div class="hidden sm:block bg-white border border-neutral-200 border-l-[3px] border-l-accent overflow-hidden">
   <div class="grid grid-cols-2 gap-0">
 
-    {/* Links: Huidig Gebed */}
     <div class="bg-primary text-white p-6 md:p-8">
       {currentPrayer ? (
         <>
@@ -98,7 +74,6 @@ function formatCountdownSSR(secs: number): string {
       )}
     </div>
 
-    {/* Rechts: Volgend Gebed + Countdown */}
     <div class="p-6 md:p-8 flex flex-col justify-center">
       <p class="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">
         {currentPrayer ? 'Volgend gebed' : 'Begint over'}
@@ -122,51 +97,39 @@ function formatCountdownSSR(secs: number): string {
   </div>
 </div>
 
-<!-- Unified Script — klok + countdown, <1.5KB -->
 <script>
-  // ── Mobiel hero: live klok + countdown ──
-  const hero = document.getElementById('prayer-hero');
-  const heroClockEl = document.getElementById('hero-clock');
-  const heroCountdownEl = document.getElementById('hero-countdown');
+  // Mobiel countdown
+  const mobileBar = document.getElementById('mobile-countdown-bar');
+  const mobileDisplay = document.getElementById('mobile-countdown');
+  if (mobileBar && mobileDisplay) {
+    let mobileRemaining = parseInt(mobileBar.dataset.seconds || '0', 10);
 
-  if (hero && heroClockEl && heroCountdownEl) {
-    const tz = hero.dataset.tz || 'Europe/Brussels';
-    let heroRemaining = parseInt(hero.dataset.seconds || '0', 10);
-
-    function updateHeroClock() {
-      heroClockEl!.textContent = new Intl.DateTimeFormat('nl-BE', {
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false, timeZone: tz,
-      }).format(new Date());
-    }
-
-    function fmtHeroCountdown(s: number): string {
-      if (s <= 0) return '00:00';
+    function fmtMobile(s: number): string {
+      if (s <= 0) return '00:00:00';
       const h = Math.floor(s / 3600);
       const m = Math.floor((s % 3600) / 60);
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+      const sec = s % 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
     }
 
-    updateHeroClock();
-    heroCountdownEl.textContent = fmtHeroCountdown(heroRemaining);
+    mobileDisplay.textContent = fmtMobile(mobileRemaining);
 
-    const heroTick = setInterval(() => {
-      updateHeroClock();
-      heroRemaining--;
-      if (heroRemaining <= 0) {
-        heroCountdownEl!.textContent = '00:00';
+    const mobileTick = setInterval(() => {
+      mobileRemaining--;
+      if (mobileRemaining <= 0) {
+        mobileDisplay!.textContent = '00:00:00';
         setTimeout(() => window.location.reload(), 3000);
-        clearInterval(heroTick);
+        clearInterval(mobileTick);
         return;
       }
-      heroCountdownEl!.textContent = fmtHeroCountdown(heroRemaining);
+      mobileDisplay!.textContent = fmtMobile(mobileRemaining);
     }, 1000);
 
-    document.addEventListener('astro:before-preparation', () => clearInterval(heroTick));
-    window.addEventListener('beforeunload', () => clearInterval(heroTick));
+    document.addEventListener('astro:before-preparation', () => clearInterval(mobileTick));
+    window.addEventListener('beforeunload', () => clearInterval(mobileTick));
   }
 
-  // ── Desktop: countdown ticker ──
+  // Desktop countdown
   const el = document.getElementById('prayer-countdown');
   const display = document.getElementById('countdown-display');
   if (el && display) {
@@ -186,9 +149,6 @@ function formatCountdownSSR(secs: number): string {
       remaining--;
       if (remaining <= 0) {
         display.textContent = '00:00:00';
-        setTimeout(() => {
-          display.innerHTML = '<span class="text-accent font-bold">Nu</span>';
-        }, 500);
         setTimeout(() => window.location.reload(), 5000);
         clearInterval(interval);
         return;

@@ -35,8 +35,8 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 ---
 
 <BaseLayout title="Gebedstijden" description="Dagelijkse gebedstijden en Jumu'ah informatie">
-  <!-- Page Header — Dark -->
-  <section class="bg-primary-dark text-white py-16 md:py-20">
+  <!-- Page Header — alleen desktop -->
+  <section class="hidden sm:block bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
       <h1 class="text-4xl font-bold mb-4 text-white">Gebedstijden</h1>
       <p class="text-white/80 max-w-xl mx-auto">
@@ -46,8 +46,11 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </section>
 
-  <!-- Dagelijkse Gebedstijden — Light-50 -->
-  <Section variant="light-50">
+  <!-- Dagelijkse Gebedstijden — mobiel: minimale padding voor vast scherm -->
+  <div class="sm:hidden px-0 py-0">
+    <PrayerManager />
+  </div>
+  <Section variant="light-50" class="hidden sm:block">
     <div class="text-center mb-10">
       <h2 class="text-2xl font-bold">Vandaag</h2>
       <p class="text-neutral-500 mt-2 text-sm">Adhan- en Iqamah-tijden</p>
