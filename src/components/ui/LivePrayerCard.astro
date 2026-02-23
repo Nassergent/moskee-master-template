@@ -1,0 +1,116 @@
+---
+/**
+ * LivePrayerCard.astro — Live countdown card (El Albani Flat Design)
+ *
+ * Compartiment: UI
+ * SSR render + klein <script> voor countdown ticker.
+ * Geen React island, geen full hydration.
+ * UI doet NOOIT eigen berekeningen — alleen output consumeren.
+ */
+
+import { PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
+
+interface Props {
+  times: ComputedPrayerTimes;
+  currentPrayer: PrayerName | null;
+  nextPrayer: PrayerName;
+  secondsUntilNext: number;
+}
+
+const { times, currentPrayer, nextPrayer, secondsUntilNext } = Astro.props;
+
+const currentLabel = currentPrayer ? PRAYER_LABELS[currentPrayer] : null;
+const currentTime = currentPrayer ? times.adhan[currentPrayer] : null;
+const currentIqama = currentPrayer ? times.iqama[currentPrayer] : null;
+
+const nextLabel = PRAYER_LABELS[nextPrayer];
+const nextTime = times.adhan[nextPrayer];
+---
+
+<!-- Live Prayer Card — Flat Design -->
+<div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent overflow-hidden">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-0">
+
+    <!-- Links: Huidig Gebed -->
+    <div class="bg-primary text-white p-6 sm:p-8">
+      {currentPrayer ? (
+        <>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-2 font-bold">Nu</p>
+          <p class="text-3xl sm:text-4xl font-bold font-heading mb-1">{currentLabel}</p>
+          <p class="text-2xl font-heading tabular-nums text-white/90">{currentTime}</p>
+          {currentIqama && (
+            <p class="text-sm text-white/60 mt-2">Iqama: <span class="text-white/80 font-bold">{currentIqama}</span></p>
+          )}
+        </>
+      ) : (
+        <>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-2 font-bold">Wachten op</p>
+          <p class="text-3xl sm:text-4xl font-bold font-heading">{nextLabel}</p>
+        </>
+      )}
+    </div>
+
+    <!-- Rechts: Volgend Gebed + Countdown -->
+    <div class="p-6 sm:p-8 flex flex-col justify-center">
+      <p class="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">
+        {currentPrayer ? 'Volgend gebed' : 'Begint over'}
+      </p>
+      <p class="text-xl font-bold font-heading text-primary mb-1">{nextLabel}</p>
+      <p class="text-sm text-neutral-500 mb-3">Adhan: {nextTime}</p>
+
+      <!-- Countdown -->
+      <div
+        id="prayer-countdown"
+        class="bg-base-100 border border-neutral-200 px-4 py-3 text-center"
+        data-seconds={secondsUntilNext}
+        aria-live="polite"
+        aria-label="Aftellen tot volgend gebed"
+      >
+        <p class="text-[10px] uppercase tracking-[0.15em] text-neutral-400 mb-1 font-bold">Over</p>
+        <p id="countdown-display" class="text-2xl sm:text-3xl font-bold font-heading tabular-nums text-primary">
+          --:--:--
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Countdown Script — <2KB, no dependencies -->
+<script>
+  const el = document.getElementById('prayer-countdown');
+  const display = document.getElementById('countdown-display');
+  if (el && display) {
+    let remaining = parseInt(el.dataset.seconds || '0', 10);
+
+    function formatCountdown(secs: number): string {
+      if (secs <= 0) return '00:00:00';
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    // Initial render
+    display.textContent = formatCountdown(remaining);
+
+    const interval = setInterval(() => {
+      remaining--;
+      if (remaining <= 0) {
+        display.textContent = '00:00:00';
+        // Show "Nu" state briefly, then reload for fresh data
+        setTimeout(() => {
+          display.innerHTML = '<span class="text-accent font-bold">Nu</span>';
+        }, 500);
+        setTimeout(() => window.location.reload(), 5000);
+        clearInterval(interval);
+        return;
+      }
+      display.textContent = formatCountdown(remaining);
+    }, 1000);
+
+    // Cleanup on navigation (Astro view transitions)
+    document.addEventListener('astro:before-preparation', () => clearInterval(interval));
+    window.addEventListener('beforeunload', () => clearInterval(interval));
+  }
+</script>

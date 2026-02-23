@@ -6,11 +6,32 @@ import EtiquetteGrid from '../components/EtiquetteGrid.astro';
 import IslamicCalendar from '../components/IslamicCalendar.astro';
 import { fetchSettings, fetchPrayerTimes } from '../lib/sanity';
 import { formatHijriDate } from '../lib/hijri';
+import {
+  isEngineConfigComplete,
+  buildConfigFromSanity,
+  computeFullPrayerTimes,
+  PRAYER_LABELS,
+  PRAYER_NAMES,
+} from '../lib/logic/prayer-engine';
 
 const hijriToday = formatHijriDate();
 
 const settings = await fetchSettings();
 const prayer = await fetchPrayerTimes();
+
+// Compute times for SEO structured data
+const configComplete = isEngineConfigComplete(prayer);
+let prayerTimesForSeo: Record<string, string> | null = null;
+if (configComplete) {
+  try {
+    const config = buildConfigFromSanity(prayer);
+    const computed = computeFullPrayerTimes(new Date(), config, []);
+    prayerTimesForSeo = computed.adhan;
+  } catch { /* SEO data not critical */ }
+}
+
+// Cache headers: gebedstijden wijzigen max 1x per dag
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
 ---
 
 <BaseLayout title="Gebedstijden" description="Dagelijkse gebedstijden en Jumu'ah informatie">
@@ -19,30 +40,23 @@ const prayer = await fetchPrayerTimes();
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
       <h1 class="text-4xl font-bold mb-4 text-white">Gebedstijden</h1>
       <p class="text-white/80 max-w-xl mx-auto">
-        Dagelijkse gebedstijden en Iqamah via Mawaqit — altijd actueel
+        Dagelijkse gebedstijden en Iqamah — altijd actueel
       </p>
       <p class="text-white/50 font-arabic text-sm mt-3">{hijriToday}</p>
     </div>
   </section>
 
-  <!-- Mawaqit + Jumu'ah — Light-50 -->
+  <!-- Dagelijkse Gebedstijden — Light-50 -->
   <Section variant="light-50">
     <div class="text-center mb-10">
       <h2 class="text-2xl font-bold">Vandaag</h2>
-      <p class="text-neutral-500 mt-2 text-sm">Inclusief Iqamah-tijden — via Mawaqit</p>
+      <p class="text-neutral-500 mt-2 text-sm">Adhan- en Iqamah-tijden</p>
     </div>
     <div class="max-w-4xl mx-auto">
       <PrayerManager />
-      <!-- Tekst-fallback voor SEO (iframe-content is niet indexeerbaar) -->
-      <noscript>
-        <p class="text-center text-sm text-neutral-500 mt-4">
-          Bekijk de actuele gebedstijden op <a href={`https://mawaqit.net/nl/${prayer.mawaqitSlug?.startsWith('http') ? new URL(prayer.mawaqitSlug).pathname.split('/').filter(Boolean).pop() : prayer.mawaqitSlug}`} class="text-primary underline">Mawaqit</a>.
-        </p>
-      </noscript>
       <p class="sr-only">
         Dagelijkse gebedstijden voor {settings?.mosqueName}: Fajr, Dhuhr, Asr, Maghrib en Isha.
-        Bekijk de actuele tijden inclusief Iqamah via het Mawaqit-widget hierboven.
-        Voor het Vrijdaggebed (Jumu'ah), zie de sectie hieronder.
+        Inclusief Iqamah-tijden. Voor het Vrijdaggebed (Jumu'ah), zie de sectie hieronder.
       </p>
     </div>
   </Section>
@@ -94,4 +108,24 @@ const prayer = await fetchPrayerTimes();
   <Section variant="light-50">
     <EtiquetteGrid />
   </Section>
+
+  {/* JSON-LD Structured Data — Gebedstijden direct uit engine */}
+  {prayerTimesForSeo && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": `Dagelijkse gebedstijden — ${settings?.mosqueName}`,
+      "description": `Gebedstijden voor ${settings?.mosqueName}: Fajr ${prayerTimesForSeo.fajr}, Dhuhr ${prayerTimesForSeo.dhuhr}, Asr ${prayerTimesForSeo.asr}, Maghrib ${prayerTimesForSeo.maghrib}, Isha ${prayerTimesForSeo.isha}`,
+      "startDate": new Date().toISOString().split('T')[0],
+      "location": {
+        "@type": "Mosque",
+        "name": settings?.mosqueName,
+        "address": settings?.address || undefined,
+      },
+      "organizer": {
+        "@type": "Organization",
+        "name": settings?.mosqueName,
+      },
+    })} />
+  )}
 </BaseLayout>

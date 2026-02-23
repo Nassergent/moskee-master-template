@@ -146,10 +146,36 @@ const quoteItems = [
   },
 ];
 
+// ── Prayer Times (Native Engine defaults) ──
+
+const prayerTimesDoc = {
+  _id: 'prayerTimes',
+  _type: 'prayerTimes',
+  timezone: 'Europe/Brussels',
+  coordinates: { lat: 51.05, lng: 3.73 }, // Gent centrum
+  method: 'MuslimWorldLeague',
+  madhab: 'shafi',
+  highLatitudeRule: 'middleOfTheNight',
+  adhanOffsets: { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 },
+  iqamaConfig: {
+    fajr: { enabled: true, type: 'offset', minutes: 15 },
+    dhuhr: { enabled: true, type: 'offset', minutes: 15 },
+    asr: { enabled: true, type: 'offset', minutes: 15 },
+    maghrib: { enabled: true, type: 'offset', minutes: 5 },
+    isha: { enabled: true, type: 'offset', minutes: 15 },
+  },
+  jumuahShifts: [
+    { _key: 'jumuah-1', label: 'Wintertijd', time: '13:00', note: 'Khutbah begint stipt' },
+    { _key: 'jumuah-2', label: 'Zomertijd', time: '14:00', note: 'Khutbah begint stipt' },
+  ],
+  jumuahNote: 'Let op: De iqamah-tijden kunnen variëren. Raadpleeg het bord in de moskee.',
+  footerNote: 'Gebedstijden worden berekend op basis van uw locatie en methode. Controleer bij twijfel altijd de tijden bij de moskee.',
+};
+
 // ── Seed alles ──
 
 async function seed() {
-  const allDocs = [...etiquetteItems, ...serviceItems, ...quoteItems];
+  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems];
 
   console.log(`Seeding ${allDocs.length} documenten naar Sanity...`);
 

@@ -1,0 +1,93 @@
+---
+/**
+ * PrayerGrid.astro — 5-column prayer grid (El Albani Flat Design)
+ *
+ * Compartiment: UI
+ * 100% SSR, geen JavaScript.
+ * Ontvangt ComputedPrayerTimes als prop — doet NOOIT eigen berekeningen.
+ */
+
+import { PRAYER_NAMES, PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
+
+interface Props {
+  times: ComputedPrayerTimes;
+  currentPrayer?: PrayerName | null;
+}
+
+const { times, currentPrayer = null } = Astro.props;
+---
+
+<!-- Prayer Grid — Desktop: 5 kolommen, Mobiel: gestapelde lijst -->
+<div class="grid grid-cols-1 sm:grid-cols-5 gap-0 border border-neutral-200 overflow-hidden">
+  {PRAYER_NAMES.map((name) => {
+    const isCurrent = currentPrayer === name;
+    return (
+      <div
+        class:list={[
+          'flex flex-col items-center py-5 sm:py-6 border-b sm:border-b-0 sm:border-r last:border-r-0 last:border-b-0 transition-colors',
+          isCurrent
+            ? 'bg-primary text-white'
+            : 'bg-white hover:bg-base-100',
+        ]}
+      >
+        {/* Mobiel: rij-layout, Desktop: kolom-layout */}
+        <div class="flex sm:flex-col items-center sm:items-center gap-4 sm:gap-0 w-full px-6 sm:px-0">
+
+          {/* Gebedsnaam */}
+          <p class:list={[
+            'text-xs font-bold uppercase tracking-[0.15em] sm:mb-3',
+            isCurrent ? 'text-white/80' : 'text-neutral-400',
+          ]}>
+            {PRAYER_LABELS[name]}
+          </p>
+
+          {/* Adhan tijd */}
+          <p class:list={[
+            'text-2xl sm:text-3xl font-bold font-heading tabular-nums',
+            isCurrent ? 'text-white' : 'text-primary',
+          ]}>
+            {times.adhan[name]}
+          </p>
+
+          {/* Iqama tijd */}
+          {times.iqama[name] ? (
+            <div class="flex items-center gap-1.5 sm:mt-2">
+              <span class:list={[
+                'text-[10px] uppercase tracking-wider font-semibold',
+                isCurrent ? 'text-white/60' : 'text-accent/60',
+              ]}>
+                Iqama
+              </span>
+              <span class:list={[
+                'text-sm font-bold tabular-nums',
+                isCurrent ? 'text-white/90' : 'text-accent',
+              ]}>
+                {times.iqama[name]}
+              </span>
+            </div>
+          ) : null}
+
+          {/* Current indicator — alleen op mobiel zichtbaar */}
+          {isCurrent && (
+            <span class="sm:hidden ml-auto text-[10px] uppercase tracking-wider font-bold text-white/70 bg-white/10 px-2 py-1">
+              Nu
+            </span>
+          )}
+        </div>
+
+        {/* Current indicator — desktop dot */}
+        {isCurrent && (
+          <div class="hidden sm:block w-1.5 h-1.5 bg-accent mt-3" aria-hidden="true" />
+        )}
+      </div>
+    );
+  })}
+</div>
+
+{/* Meta: berekeningsbron */}
+<p class="text-[10px] text-neutral-400 mt-3 text-right">
+  {times.meta.source === 'computed' && 'Berekend'}
+  {times.meta.source === 'cache' && 'Uit cache'}
+  {times.meta.source === 'fallback' && 'Laatste bekende tijden'}
+  {' '}&middot; {times.meta.method} &middot; {times.meta.madhab === 'hanafi' ? 'Hanafi' : 'Shafi\'i'}
+</p>

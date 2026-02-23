@@ -57,7 +57,16 @@ export async function fetchNieuws() {
 export async function fetchPrayerTimes() {
   try {
     const result = await sanityClient.fetch(`*[_id == "prayerTimes"][0]{
-      mawaqitSlug, jumuahShifts, jumuahNote, footerNote
+      timezone,
+      coordinates,
+      method,
+      madhab,
+      highLatitudeRule,
+      adhanOffsets,
+      iqamaConfig,
+      jumuahShifts,
+      jumuahNote,
+      footerNote
     }`);
     if (result) return result;
   } catch (e) {
@@ -177,13 +186,25 @@ export async function fetchProjectByTitle(titel: string) {
 // ── Demo/placeholder data ───────────────────────────────────────────
 
 const demoPrayerTimes = {
-  mawaqitSlug: 'moskeeelalbani',
+  timezone: 'Europe/Brussels',
+  coordinates: { lat: 51.05, lng: 3.73 }, // Gent
+  method: 'MuslimWorldLeague',
+  madhab: 'shafi',
+  highLatitudeRule: 'middleOfTheNight',
+  adhanOffsets: { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 },
+  iqamaConfig: {
+    fajr: { enabled: true, type: 'offset', minutes: 15 },
+    dhuhr: { enabled: true, type: 'offset', minutes: 15 },
+    asr: { enabled: true, type: 'offset', minutes: 15 },
+    maghrib: { enabled: true, type: 'offset', minutes: 5 },
+    isha: { enabled: true, type: 'offset', minutes: 15 },
+  },
   jumuahShifts: [
     { label: 'Wintertijd', time: '13:00', note: 'Khutbah (preek) begint stipt' },
     { label: 'Zomertijd', time: '14:00', note: 'Khutbah (preek) begint stipt' },
   ],
-  jumuahNote: 'Let op: De iqamah-tijden kunnen variëren. Raadpleeg het bord in de moskee voor de exacte tijden van het gezamenlijke gebed. Zorg dat u op tijd aanwezig bent voor de khutbah.',
-  footerNote: 'De dagelijkse gebedstijden worden automatisch bijgewerkt via Mawaqit. Controleer bij twijfel altijd de tijden bij de moskee.',
+  jumuahNote: 'Let op: De iqamah-tijden kunnen variëren. Raadpleeg het bord in de moskee voor de exacte tijden van het gezamenlijke gebed.',
+  footerNote: 'De gebedstijden worden berekend op basis van uw locatie en de gekozen berekeningsmethode. Controleer bij twijfel altijd de tijden bij de moskee.',
 };
 
 const demoSettings = {
