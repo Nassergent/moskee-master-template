@@ -6,10 +6,17 @@ export const homePage = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'heroTagline',
+      title: 'Tagline boven titel',
+      type: 'string',
+      description: 'Optioneel: klein tekstje boven de H1 titel (bijv. "Welkom", "Ramadan Mubarak"). Laat leeg om te verbergen.',
+      validation: (rule) => rule.max(50),
+    }),
+    defineField({
       name: 'heroTitle',
       title: 'Hero Titel (H1)',
       type: 'string',
-      description: 'De grote titel in de hero sectie (bijv. "Ramadan Mubarak", "Welkom bij onze moskee"). De moskeenaam verschijnt automatisch bij het logo en in de footer.',
+      description: 'De grote hoofdtitel in de hero sectie (bijv. "Moskee El Fath"). Dit is de H1 — belangrijk voor SEO.',
       validation: (rule) => rule.max(100),
     }),
     defineField({
