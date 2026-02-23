@@ -129,12 +129,11 @@ export async function fetchAllQuotes(categorie: string = 'donaties') {
     const result = await sanityClient.fetch(`*[_type == "quote" && actief == true && categorie == $categorie] {
       _id, tekst, tekstArabisch, bron
     }`, { categorie });
-    if (result && result.length > 0) return result;
-    if (result) return [];
+    return result || [];
   } catch (e) {
     console.error('Sanity fetchAllQuotes error:', e);
+    return [];
   }
-  return demoQuotes.filter(q => q.categorie === categorie);
 }
 
 export async function fetchQuote(categorie: string = 'donaties') {
@@ -142,17 +141,14 @@ export async function fetchQuote(categorie: string = 'donaties') {
     const result = await sanityClient.fetch(`*[_type == "quote" && actief == true && categorie == $categorie] {
       _id, tekst, tekstArabisch, bron
     }`, { categorie });
-    // Sanity verbinding gelukt → return resultaat (ook als leeg/null)
     if (result && result.length > 0) {
       return result[Math.floor(Math.random() * result.length)];
     }
-    if (result) return null; // Alles uitgeschakeld → geen citaat tonen
+    return null;
   } catch (e) {
     console.error('Sanity fetchQuote error:', e);
+    return null;
   }
-  // Alleen demo data als Sanity niet bereikbaar is
-  const filtered = demoQuotes.filter(q => q.categorie === categorie);
-  return filtered[Math.floor(Math.random() * filtered.length)] || demoQuotes[0];
 }
 
 export async function fetchEtiquette() {
@@ -303,80 +299,6 @@ const demoProjecten = [
   },
 ];
 
-const demoQuotes = [
-  // ── Qur'an ────────────────────────────────────────────────────────
-  {
-    _id: 'q1',
-    tekst: 'De gelijkenis van degenen die hun bezit uitgeven op de Weg van Allah is als die van een graankorrel die zeven aren voortbrengt; in elke aar honderd korrels. En Allah vermenigvuldigt voor wie Hij wil.',
-    tekstArabisch: 'مَّثَلُ ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُمْ فِى سَبِيلِ ٱللَّهِ كَمَثَلِ حَبَّةٍ أَنۢبَتَتْ سَبْعَ سَنَابِلَ فِى كُلِّ سُنۢبُلَةٍۢ مِّا۟ئَةُ حَبَّةٍۢ ۗ وَٱللَّهُ يُضَـٰعِفُ لِمَن يَشَآءُ',
-    bron: 'Surat al-Baqara 2:261',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q2',
-    tekst: 'Jullie zullen de ware vroomheid niet bereiken totdat jullie uitgeven van wat jullie liefhebben.',
-    tekstArabisch: 'لَن تَنَالُوا۟ ٱلْبِرَّ حَتَّىٰ تُنفِقُوا۟ مِمَّا تُحِبُّونَ',
-    bron: 'Surat Āl-ʿImrān 3:92',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q3',
-    tekst: 'Degenen die hun bezittingen uitgeven, in de nacht en overdag, heimelijk en openlijk — voor hen is hun beloning bij hun Heer; geen angst zal over hen zijn en zij zullen niet treuren.',
-    tekstArabisch: 'ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُم بِٱلَّيْلِ وَٱلنَّهَارِ سِرًّۭا وَعَلَانِيَةًۭ فَلَهُمْ أَجْرُهُمْ عِندَ رَبِّهِمْ وَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ',
-    bron: 'Surat al-Baqara 2:274',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q4',
-    tekst: 'En wat jullie ook uitgeven (voor Allah), Hij zal het vervangen.',
-    tekstArabisch: 'وَمَآ أَنفَقْتُم مِّن شَىْءٍۢ فَهُوَ يُخْلِفُهُۥ',
-    bron: 'Surat Sabaʾ 34:39',
-    categorie: 'donaties',
-  },
-  // ── Sahih al-Bukhari & Sahih Muslim ───────────────────────────────
-  {
-    _id: 'q5',
-    tekst: 'Bescherm jezelf tegen het Vuur, al is het met een halve dadel.',
-    tekstArabisch: 'اتَّقُوا النَّارَ وَلَوْ بِشِقِّ تَمْرَةٍ',
-    bron: 'Sahih al-Bukhari 1417 · Sahih Muslim 1016',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q6',
-    tekst: 'Rijkdom vermindert niet door liefdadigheid.',
-    tekstArabisch: 'مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ',
-    bron: 'Sahih Muslim 2588',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q7',
-    tekst: 'De beste liefdadigheid is die gegeven wordt terwijl je gezond bent, hoop hebt op rijkdom en bang bent voor armoede.',
-    tekstArabisch: 'أَفْضَلُ الصَّدَقَةِ أَنْ تَصَدَّقَ وَأَنْتَ صَحِيحٌ شَحِيحٌ تَأْمُلُ الْغِنَى وَتَخْشَى الْفَقْرَ',
-    bron: 'Sahih al-Bukhari 1419 · Sahih Muslim 1032',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q8',
-    tekst: 'Allah accepteert sadaqah met Zijn rechterhand en laat het groeien voor degene die het gaf, zoals één van jullie een veulen grootbrengt.',
-    tekstArabisch: 'إِنَّ اللَّهَ يَقْبَلُ الصَّدَقَةَ وَيَأْخُذُهَا بِيَمِينِهِ فَيُرَبِّيهَا لأَحَدِكُمْ كَمَا يُرَبِّي أَحَدُكُمْ مُهْرَهُ',
-    bron: 'Sahih al-Bukhari 1410 · Sahih Muslim 1014',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q9',
-    tekst: 'Wanneer een mens sterft, stoppen zijn daden behalve drie: voortdurende liefdadigheid, nuttige kennis, of een rechtschapen kind dat voor hem bidt.',
-    tekstArabisch: 'إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلَّا مِنْ ثَلاَثَةٍ إِلَّا مِنْ صَدَقَةٍ جَارِيَةٍ أَوْ عِلْمٍ يُنْتَفَعُ بِهِ أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ',
-    bron: 'Sahih Muslim 1631',
-    categorie: 'donaties',
-  },
-  {
-    _id: 'q10',
-    tekst: 'Neem van hun bezittingen een liefdadigheid waarmee jij hen reinigt en zuivert.',
-    tekstArabisch: 'خُذْ مِنْ أَمْوَٰلِهِمْ صَدَقَةًۭ تُطَهِّرُهُمْ وَتُزَكِّيهِم بِهَا',
-    bron: 'Surat at-Tawbah 9:103',
-    categorie: 'donaties',
-  },
-];
 
 const demoActueel = [
   { _id: '1', _type: 'post', titel: 'Ramadan 2026 Programma Bekend', beschrijving: 'Het volledige Ramadan programma is nu beschikbaar. Bekijk de iftar-tijden, taraweeh-gebeden en speciale lezingen.', icoon: 'ster-4', label: 'Nieuws', href: '/nieuws/ramadan-2026-programma' },
