@@ -26,6 +26,14 @@ export const sanityClient = createClient({
   apiVersion: '2024-01-01',
 });
 
+// Fresh client — useCdn: false voor data die real-time moet zijn (donaties, bedragen)
+export const freshClient = createClient({
+  projectId,
+  dataset,
+  useCdn: false,
+  apiVersion: '2024-01-01',
+});
+
 // Write client for creating documents (volunteer form etc.)
 // Token MOET via env var — geen hardcoded fallback
 export const writeClient = createClient({

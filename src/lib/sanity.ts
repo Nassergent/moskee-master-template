@@ -1,5 +1,5 @@
-import { sanityClient, urlFor } from '../../sanity/lib/client';
-export { sanityClient, urlFor };
+import { sanityClient, freshClient, urlFor } from '../../sanity/lib/client';
+export { sanityClient, freshClient, urlFor };
 
 // writeClient is NOT re-exported here — import directly from
 // '../../sanity/lib/client' in server-only code (src/services/, src/pages/api/)
@@ -30,7 +30,8 @@ export async function fetchDiensten() {
 
 export async function fetchProjecten() {
   try {
-    const result = await sanityClient.fetch(`*[_type == "project" && actief == true] | order(toonOpHomepage desc, _createdAt desc) [0...2] {
+    // freshClient: donatiebedragen moeten real-time zijn, geen CDN cache
+    const result = await freshClient.fetch(`*[_type == "project" && actief == true] | order(toonOpHomepage desc, _createdAt desc) [0...2] {
       _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, actief,
       prijsPerEenheid, eenheid, toonOpHomepage,
       citaat->{ tekst, tekstArabisch, bron }
@@ -159,7 +160,8 @@ export async function fetchEtiquette() {
 
 export async function fetchProjectByTitle(titel: string) {
   try {
-    return await sanityClient.fetch(
+    // freshClient: webhook moet actuele _id ophalen
+    return await freshClient.fetch(
       `*[_type == "project" && titel == $titel][0]{ _id }`,
       { titel }
     );
