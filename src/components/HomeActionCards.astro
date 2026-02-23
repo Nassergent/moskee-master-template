@@ -81,6 +81,8 @@ const progress = hasProject && project.doelbedrag
 
 // ── Download ──
 const isImage = downloadUrl ? /\.(jpe?g|png|webp|gif)$/i.test(downloadUrl) : false;
+const downloadFileName = downloadUrl ? downloadUrl.split('/').pop()?.split('?')[0] || 'document' : 'document';
+const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
 
 const showCountdown = !!upcoming;
 const showDoneer = hasProject;
@@ -263,10 +265,8 @@ const gridClass = cardCount === 3
             <div class="px-7 pb-7 pt-0 border-t border-neutral-100">
               <div class="pt-5">
                 <a
-                  href={downloadUrl}
+                  href={directDownloadUrl}
                   download
-                  target="_blank"
-                  rel="noopener noreferrer"
                   class="inline-flex items-center gap-2 px-6 py-2.5 min-h-[44px] bg-primary text-white font-bold text-sm hover:bg-primary-dark active:brightness-90 transition-all"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
