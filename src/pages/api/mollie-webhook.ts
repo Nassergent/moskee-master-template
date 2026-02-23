@@ -10,16 +10,19 @@ export const prerender = false;
  * Throws in production if MOLLIE_WEBHOOK_SECRET is not configured.
  */
 async function verifyMollieSignature(request: Request, body: string): Promise<boolean> {
+  const mollieKey = import.meta.env.MOLLIE_API_KEY || '';
   const secret = import.meta.env.MOLLIE_WEBHOOK_SECRET;
-  if (!secret) {
-    const mollieKey = import.meta.env.MOLLIE_API_KEY || '';
-    if (mollieKey.startsWith('live_')) {
-      throw new Error('MOLLIE_WEBHOOK_SECRET is required in production');
-    }
-    return true; // Skip only in dev/test mode
+  const signature = request.headers.get('x-mollie-signature');
+
+  // Test mode: Mollie stuurt geen signature header → skip verificatie
+  if (mollieKey.startsWith('test_')) {
+    return true;
   }
 
-  const signature = request.headers.get('x-mollie-signature');
+  // Live mode: signature verificatie is verplicht
+  if (!secret) {
+    throw new Error('MOLLIE_WEBHOOK_SECRET is required in production');
+  }
   if (!signature) return false;
 
   const encoder = new TextEncoder();
