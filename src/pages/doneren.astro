@@ -91,16 +91,16 @@ const { totalRaised, activeCount: activeProjectCount, options: projectOptions } 
               <legend class="block text-sm font-medium text-slate-800 mb-3">Kies een bedrag</legend>
               <p class="text-xs text-neutral-400 mb-3">&euro;10 = 1 maaltijd &middot; &euro;50 = 1 dag onderhoud &middot; &euro;100 = 1 week educatie</p>
               <div class="grid grid-cols-2 gap-3">
-                <button type="button" data-amount="10" aria-pressed="false" aria-label="Doneer &euro;10" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="10" aria-pressed="false" aria-label="Doneer &euro;10" class="donation-amount-btn py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;10
                 </button>
-                <button type="button" data-amount="25" aria-pressed="true" aria-label="Doneer &euro;25" class="donation-amount-btn active py-5 text-2xl font-heading font-bold transition-all border border-primary bg-primary text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="25" aria-pressed="true" aria-label="Doneer &euro;25" class="donation-amount-btn active py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary bg-primary text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;25
                 </button>
-                <button type="button" data-amount="50" aria-pressed="false" aria-label="Doneer &euro;50" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="50" aria-pressed="false" aria-label="Doneer &euro;50" class="donation-amount-btn py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;50
                 </button>
-                <button type="button" data-amount="100" aria-pressed="false" aria-label="Doneer &euro;100" class="donation-amount-btn py-5 text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary/50">
+                <button type="button" data-amount="100" aria-pressed="false" aria-label="Doneer &euro;100" class="donation-amount-btn py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                   &euro;100
                 </button>
               </div>
@@ -110,15 +110,16 @@ const { totalRaised, activeCount: activeProjectCount, options: projectOptions } 
             <div>
               <label class="block text-sm font-medium text-slate-800 mb-3">Of vul een eigen bedrag in</label>
               <div id="custom-amount-wrapper" class="relative border-2 border-neutral-200 hover:border-neutral-300 transition-all focus-within:ring-2 focus-within:ring-primary/30">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-heading font-bold text-3xl">&euro;</span>
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-heading font-bold text-2xl sm:text-3xl">&euro;</span>
                 <input
                   type="number"
                   id="custom-amount"
                   min="1"
                   max="10000"
+                  inputmode="decimal"
                   placeholder=""
                   aria-label="Donatiebedrag in euro"
-                  class="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/30 text-slate-800 font-heading font-bold text-3xl"
+                  class="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/30 text-slate-800 font-heading font-bold text-2xl sm:text-3xl"
                 />
               </div>
               <p class="text-xs text-neutral-400 mt-1">Bedrag tussen &euro;1 en &euro;10.000</p>
@@ -169,7 +170,7 @@ const { totalRaised, activeCount: activeProjectCount, options: projectOptions } 
             <button
               type="submit"
               id="donation-submit"
-              class="w-full bg-primary hover:bg-primary-dark text-white py-4 font-bold text-lg transition-all flex items-center justify-center gap-2"
+              class="w-full bg-primary hover:bg-primary-dark active:brightness-90 text-white py-4 min-h-[52px] font-bold text-lg transition-all flex items-center justify-center gap-2"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />

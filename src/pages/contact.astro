@@ -38,7 +38,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           <div>
             <label for="naam" class="block text-sm font-heading font-semibold text-primary mb-2">Naam *</label>
             <input type="text" id="naam" name="naam" required
-              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-base"
               placeholder="Uw volledige naam" />
           </div>
 
@@ -46,13 +46,13 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
             <div>
               <label for="email" class="block text-sm font-heading font-semibold text-primary mb-2">E-mail *</label>
               <input type="email" id="email" name="email" required
-                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm"
+                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-base"
                 placeholder="uw@email.be" />
             </div>
             <div>
               <label for="telefoon" class="block text-sm font-heading font-semibold text-primary mb-2">Telefoon</label>
               <input type="tel" id="telefoon" name="telefoon"
-                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm"
+                class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-base"
                 placeholder="+32 xxx xx xx xx" />
             </div>
           </div>
@@ -60,7 +60,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           <div>
             <label for="onderwerp" class="block text-sm font-heading font-semibold text-primary mb-2">Onderwerp *</label>
             <select id="onderwerp" name="onderwerp" required
-              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-base appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
               <option value="">Kies een onderwerp</option>
               {onderwerpen.map((o: string) => (
                 <option value={o.toLowerCase().replace(/\s+/g, '-')}>{o}</option>
@@ -71,12 +71,12 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           <div>
             <label for="bericht" class="block text-sm font-heading font-semibold text-primary mb-2">Bericht *</label>
             <textarea id="bericht" name="bericht" required rows="5"
-              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all resize-y text-sm"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all resize-y text-base"
               placeholder="Waar kunnen wij u mee helpen?"></textarea>
           </div>
 
           <button type="submit" id="contact-btn"
-            class="w-full py-3.5 px-6 bg-accent text-white font-heading font-bold text-sm tracking-wide hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+            class="w-full py-3.5 px-6 min-h-[48px] bg-accent text-white font-heading font-bold text-sm tracking-wide hover:brightness-110 active:brightness-90 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
             Versturen
           </button>
 

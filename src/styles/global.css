@@ -163,12 +163,30 @@ h2.text-center::after {
   }
 }
 
-/* ─── CTA hover ─── */
+/* ─── CTA hover + touch feedback ─── */
 .btn-primary {
   transition: all 0.2s ease;
 }
 .btn-primary:hover {
   opacity: 0.9;
+}
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+
+/* ─── Touch feedback for all interactive elements ─── */
+a:active,
+button:active {
+  transition-duration: 0.1s;
+}
+
+/* Ensure minimum touch targets on mobile */
+@media (pointer: coarse) {
+  a[href],
+  button {
+    min-height: 44px;
+  }
 }
 
 /* ─── Focus-visible (a11y) ─── */

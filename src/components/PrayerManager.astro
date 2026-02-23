@@ -27,18 +27,19 @@ const mawaqitPageUrl = `https://mawaqit.net/nl/${extractedSlug}`;
 <!-- Mawaqit Dagelijkse Gebedstijden -->
 <div class="bg-white border border-neutral-200 border-l-4 border-l-accent overflow-hidden relative" id="mawaqit-wrapper">
   <!-- Skeleton loader — verdwijnt wanneer iframe geladen is -->
-  <div id="mawaqit-skeleton" class={`absolute inset-0 bg-white z-10 flex flex-col items-center justify-center gap-4 ${compact ? 'h-[400px] md:h-[400px]' : 'h-[450px] md:h-[600px]'}`}>
+  <div id="mawaqit-skeleton" class={`absolute inset-0 bg-white z-10 flex flex-col items-center justify-center gap-4 ${compact ? 'h-[350px] sm:h-[400px]' : 'h-[400px] sm:h-[450px] md:h-[600px]'}`}>
     <div class="w-12 h-12 border-3 border-accent/30 border-t-accent rounded-full animate-spin"></div>
     <p class="text-sm text-neutral-400">Gebedstijden laden...</p>
   </div>
   <iframe
     src={mawaqitUrl}
     title="Dagelijkse gebedstijden via Mawaqit"
-    class={`w-full border-0 ${compact ? 'h-[400px] md:h-[400px]' : 'h-[450px] md:h-[600px]'}`}
+    class={`w-full border-0 max-w-full ${compact ? 'h-[350px] sm:h-[400px]' : 'h-[400px] sm:h-[450px] md:h-[600px]'}`}
     loading="lazy"
     allow="fullscreen"
     referrerpolicy="no-referrer"
     id="mawaqit-iframe"
+    style="overflow-x: hidden;"
   ></iframe>
   <noscript>
     <p class="text-center p-6 text-neutral-500 text-sm">

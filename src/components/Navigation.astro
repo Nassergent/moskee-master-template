@@ -67,12 +67,12 @@ const currentPath = Astro.url.pathname;
 
     </div>
 
-    <!-- Mobile Menu Button -->
+    <!-- Mobile Menu Button — min 44x44px touch target -->
     <div class="lg:hidden flex items-center gap-2">
 
       <button
         id="nav-mobile-btn"
-        class="p-2 text-neutral-700 hover:bg-neutral-100 transition-colors"
+        class="min-w-[44px] min-h-[44px] flex items-center justify-center text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200 transition-colors"
         aria-label="Menu openen"
         aria-expanded="false"
         aria-controls="nav-mobile-menu"
@@ -87,10 +87,20 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 
+  <!-- Mobile Menu Overlay (click to close) -->
+  <div
+    id="nav-mobile-overlay"
+    class="hidden fixed inset-0 bg-black/20 z-40 lg:hidden"
+    aria-hidden="true"
+  ></div>
+
   <!-- Mobile Menu Panel -->
   <div
     id="nav-mobile-menu"
-    class="hidden lg:hidden border-t border-neutral-200 bg-white"
+    class="hidden lg:hidden border-t border-neutral-200 bg-white relative z-50"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Navigatiemenu"
   >
     <div class="max-w-[1280px] mx-auto px-6 py-4 flex flex-col gap-0">
       {visibleItems.map((item) => {
@@ -99,7 +109,7 @@ const currentPath = Astro.url.pathname;
           <a
             href={item.href}
             class:list={[
-              'px-4 py-3 text-sm font-medium transition-colors border-l-3',
+              'px-4 py-3 min-h-[44px] flex items-center text-sm font-medium transition-colors border-l-3 active:bg-neutral-100',
               isActive
                 ? 'text-accent border-accent bg-accent-light font-bold'
                 : 'text-neutral-600 border-transparent hover:text-primary hover:bg-base-100',
@@ -113,7 +123,7 @@ const currentPath = Astro.url.pathname;
       <!-- Mobile Doneer -->
       <a
         href="/doneren"
-        class="mt-3 text-center bg-accent hover:bg-accent-hover text-white px-6 py-3 font-bold text-sm transition-all"
+        class="mt-3 text-center bg-accent hover:bg-accent-hover active:brightness-90 text-white px-6 py-3 min-h-[44px] flex items-center justify-center font-bold text-sm transition-all"
       >
         {donateText}
       </a>
@@ -125,48 +135,70 @@ const currentPath = Astro.url.pathname;
 <div class="h-16" />
 
 <script>
-  // Mobile menu toggle
+  // Mobile menu toggle with focus trap, overlay & scroll lock
   const btn = document.getElementById('nav-mobile-btn');
   const menu = document.getElementById('nav-mobile-menu');
+  const overlay = document.getElementById('nav-mobile-overlay');
   const iconOpen = document.getElementById('nav-icon-open');
   const iconClose = document.getElementById('nav-icon-close');
 
+  function openMenu() {
+    menu?.classList.remove('hidden');
+    overlay?.classList.remove('hidden');
+    iconOpen?.classList.add('hidden');
+    iconClose?.classList.remove('hidden');
+    btn?.setAttribute('aria-expanded', 'true');
+    btn?.setAttribute('aria-label', 'Menu sluiten');
+    document.body.style.overflow = 'hidden';
+
+    // Focus first link
+    const firstLink = menu?.querySelector('a') as HTMLAnchorElement | null;
+    if (firstLink) firstLink.focus();
+  }
+
+  function closeMenu() {
+    menu?.classList.add('hidden');
+    overlay?.classList.add('hidden');
+    iconOpen?.classList.remove('hidden');
+    iconClose?.classList.add('hidden');
+    btn?.setAttribute('aria-expanded', 'false');
+    btn?.setAttribute('aria-label', 'Menu openen');
+    document.body.style.overflow = '';
+    btn?.focus();
+  }
+
   btn?.addEventListener('click', () => {
     const isOpen = !menu?.classList.contains('hidden');
-    menu?.classList.toggle('hidden');
-    iconOpen?.classList.toggle('hidden');
-    iconClose?.classList.toggle('hidden');
-    btn.setAttribute('aria-expanded', String(!isOpen));
-    btn.setAttribute('aria-label', isOpen ? 'Menu openen' : 'Menu sluiten');
+    isOpen ? closeMenu() : openMenu();
+  });
 
-    // When menu opens, focus the first link inside
-    if (isOpen === false && menu) {
-      const firstLink = menu.querySelector('a') as HTMLAnchorElement | null;
-      if (firstLink) firstLink.focus();
+  // Click overlay to close
+  overlay?.addEventListener('click', closeMenu);
+
+  // ESC key closes mobile menu
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.classList.contains('hidden')) {
+      closeMenu();
     }
   });
 
-  // ESC key closes mobile menu and returns focus to button
+  // Focus trap: keep Tab within menu when open
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu && !menu.classList.contains('hidden')) {
-      menu.classList.add('hidden');
-      iconOpen?.classList.remove('hidden');
-      iconClose?.classList.add('hidden');
-      btn?.setAttribute('aria-expanded', 'false');
-      btn?.setAttribute('aria-label', 'Menu openen');
-      btn?.focus();
+    if (e.key !== 'Tab' || !menu || menu.classList.contains('hidden')) return;
+    const focusable = [btn, ...menu.querySelectorAll('a, button')].filter(Boolean) as HTMLElement[];
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
     }
   });
 
   // Close mobile menu when a link is clicked
   menu?.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      menu?.classList.add('hidden');
-      iconOpen?.classList.remove('hidden');
-      iconClose?.classList.add('hidden');
-      btn?.setAttribute('aria-expanded', 'false');
-      btn?.setAttribute('aria-label', 'Menu openen');
-    });
+    link.addEventListener('click', closeMenu);
   });
-
 </script>

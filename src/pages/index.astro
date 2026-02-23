@@ -13,6 +13,10 @@ const agendaEvents = await fetchUpcomingAgendaEvents(3);
 const heroImageUrl = homePage?.heroImage
   ? urlFor(homePage.heroImage).width(800).height(900).fit('crop').url()
   : null;
+// Kleinere versie voor mobiel achtergrond (bespaart data op 4G)
+const heroImageMobile = homePage?.heroImage
+  ? urlFor(homePage.heroImage).width(400).height(500).fit('crop').quality(60).url()
+  : null;
 
 const heroTitle = homePage?.heroTitle || 'Welkom bij';
 const heroSubtitle = homePage?.heroSubtitle || settings.description;
@@ -25,8 +29,14 @@ const toonActueel = homePage?.toonActueel ?? true;
 <BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined}>
 
   <!-- Hero Section — Two Column: Text Left + Image Right (Flat Design) -->
-  <section class="bg-primary-dark text-white">
-    <div class="max-w-[1280px] mx-auto px-6 py-16 md:py-24">
+  <section class="bg-primary-dark text-white relative overflow-hidden">
+    <!-- Mobiel: hero afbeelding als achtergrond (geoptimaliseerde kleine versie) -->
+    {heroImageMobile && (
+      <div class="absolute inset-0 lg:hidden">
+        <img src={heroImageMobile} alt="" class="w-full h-full object-cover opacity-15" aria-hidden="true" loading="eager" />
+      </div>
+    )}
+    <div class="max-w-[1280px] mx-auto px-6 py-16 md:py-24 relative z-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
         <!-- Links: Badges + Tekst + CTA's -->
@@ -46,16 +56,17 @@ const toonActueel = homePage?.toonActueel ?? true;
             {heroSubtitle}
           </p>
           <div class="flex flex-wrap gap-4">
-            <a href="/gebedstijden" class="btn-primary inline-flex items-center px-8 py-3 bg-accent hover:bg-accent-hover text-white font-bold transition-all">
+            <a href="/gebedstijden" class="btn-primary inline-flex items-center px-8 py-3 min-h-[44px] bg-accent hover:bg-accent-hover active:brightness-90 text-white font-bold transition-all">
               {heroCta}
             </a>
-            <a href="/doneren" class="inline-flex items-center px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold transition-all border border-white/20">
+            <a href="/doneren" class="inline-flex items-center px-8 py-3 min-h-[44px] bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-semibold transition-all border border-white/20">
               Steun onze moskee
             </a>
           </div>
         </div>
 
         <!-- Rechts: Hero Afbeelding — Flat (no rounded corners) -->
+        <!-- Mobiel: subtiele achtergrond, Desktop: naast tekst -->
         <div class="hidden lg:block animate-scale-in">
           {heroImageUrl ? (
             <img
@@ -180,7 +191,7 @@ const toonActueel = homePage?.toonActueel ?? true;
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings?.address || '')}`}
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-bold text-sm hover:bg-primary-dark transition-all"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] bg-primary text-white font-bold text-sm hover:bg-primary-dark active:brightness-90 transition-all"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
             Open in Google Maps
@@ -190,7 +201,7 @@ const toonActueel = homePage?.toonActueel ?? true;
               href={`https://wa.me/${settings.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-whatsapp text-white font-bold text-sm hover:bg-whatsapp-hover transition-all"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] bg-whatsapp text-white font-bold text-sm hover:bg-whatsapp-hover active:brightness-90 transition-all"
             >
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
               Stuur een WhatsApp
@@ -210,10 +221,10 @@ const toonActueel = homePage?.toonActueel ?? true;
         Of u nu wilt bidden, leren of bijdragen — iedereen is welkom bij {settings.mosqueName}.
       </p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href="/contact" class="btn-primary px-8 py-3 bg-white text-primary-dark font-bold transition-all">
+        <a href="/contact" class="btn-primary px-8 py-3 min-h-[44px] inline-flex items-center bg-white text-primary-dark font-bold transition-all">
           Contact opnemen
         </a>
-        <a href="/doneren" class="btn-primary px-8 py-3 bg-accent text-white font-bold transition-all">
+        <a href="/doneren" class="btn-primary px-8 py-3 min-h-[44px] inline-flex items-center bg-accent text-white font-bold transition-all">
           Doneer nu
         </a>
       </div>
