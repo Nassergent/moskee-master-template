@@ -2,12 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import DonationCard from '../components/DonationCard.astro';
-import { fetchProjecten, fetchSettings, fetchAllQuotes } from '../lib/sanity';
+import { fetchProjecten, fetchSettings, fetchQuote } from '../lib/sanity';
 import { calculateProjectStats } from '../lib/logic/project-utils';
 
 const projecten = await fetchProjecten();
 const settings = await fetchSettings();
-const quotes = await fetchAllQuotes('donaties');
+const quote = await fetchQuote('donaties');
 
 const hasProjects = projecten && projecten.length > 0;
 const { totalRaised, activeCount: activeProjectCount, options: projectOptions } = hasProjects
@@ -18,94 +18,64 @@ const showMollie = settings.menuToggles?.showMollie !== false;
 ---
 
 <BaseLayout title="Doneren" description="Steun onze moskee met een donatie">
-  <!-- Page Header — Dark -->
-  <section class="bg-primary-dark text-white py-16 md:py-20">
+  <!-- Page Header — Dark + Citaat -->
+  <section class="bg-primary-dark text-white py-12 md:py-16">
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
-      <h1 class="text-4xl font-bold mb-4 text-white">Doneren</h1>
-      <p class="text-white/80 max-w-xl mx-auto">
-        Uw steun houdt onze moskee draaiende en helpt de gemeenschap groeien
+      <h1 class="text-3xl md:text-4xl font-bold mb-3 text-white">Steun onze Moskee</h1>
+      <p class="text-white/80 max-w-xl mx-auto text-sm md:text-base">
+        Elke bijdrage, groot of klein, helpt onze gemeenschap groeien
       </p>
+      {quote && (
+        <div class="max-w-2xl mx-auto mt-8 pt-6 border-t border-white/10">
+          {quote.tekstArabisch && (
+            <p class="font-arabic text-2xl md:text-3xl leading-loose mb-3" style="color: #c9a983;" dir="rtl" lang="ar">
+              {quote.tekstArabisch}
+            </p>
+          )}
+          <p class="text-base md:text-lg font-heading text-white/80 italic leading-relaxed">
+            "{quote.tekst}"
+          </p>
+          <p class="text-xs mt-2" style="color: #c9a983;">— {quote.bron}</p>
+        </div>
+      )}
     </div>
   </section>
 
-  <!-- Islamitische Citaten Carousel -->
-  {quotes.length > 0 && (
-    <Section variant="light-100">
-      <div class="max-w-3xl mx-auto text-center py-4">
-        <div id="quote-carousel-doneren" class="relative min-h-[260px] flex items-center justify-center" aria-live="polite">
-          {quotes.map((q: any, i: number) => (
-            <div class:list={['quote-slide-doneren absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-700', i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none']}>
-              {q.tekstArabisch && (
-                <p class="font-arabic text-3xl md:text-4xl leading-loose mb-6 text-primary/70" dir="rtl" lang="ar">
-                  {q.tekstArabisch}
-                </p>
-              )}
-              <p class="text-lg md:text-xl font-heading text-primary/90 italic leading-relaxed max-w-2xl">
-                "{q.tekst}"
-              </p>
-              <p class="text-sm mt-4 mb-4" style="color: var(--color-accent-gold);">— {q.bron}</p>
-            </div>
-          ))}
-        </div>
-        {quotes.length > 1 && (
-          <div class="flex justify-center gap-2 mt-6" role="tablist">
-            {quotes.map((_: any, i: number) => (
-              <button
-                class:list={['quote-dot-doneren w-2 h-2 rounded-full transition-all duration-300', i === 0 ? 'bg-accent w-6' : 'bg-neutral-300']}
-                data-index={i}
-                role="tab"
-                aria-label={`Citaat ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </Section>
-  )}
-
-  <!-- Donatie Sectie: Mollie AAN = formulier links + doelen rechts | Mollie UIT = alleen doelen grid -->
+  <!-- Donatie Sectie: Mollie AAN = formulier links + doelen rechts | Mollie UIT = overschrijving links + doelen rechts -->
   <Section variant="light-50">
     {showMollie ? (
-      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
         <!-- Links: Donatie Formulier (3 kolommen) -->
         <div class="lg:col-span-3">
-          <h2 class="text-2xl font-bold font-heading text-primary mb-4">Direct doneren</h2>
-          {totalRaised > 0 && (
-            <p class="text-sm text-neutral-500 mb-8 flex items-center gap-2">
-              <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-              </svg>
-              Al &euro;{totalRaised.toLocaleString('nl-BE')} opgehaald via {activeProjectCount} {activeProjectCount === 1 ? 'goed doel' : 'goede doelen'}
-            </p>
-          )}
-          <div class="bg-white border border-neutral-200 p-8">
-            <form id="donation-form" class="space-y-8">
+          <h2 class="text-2xl font-bold font-heading text-primary mb-6">Direct doneren</h2>
+          <div class="bg-white border border-neutral-200 p-5 sm:p-8">
+            <form id="donation-form" class="space-y-6">
               <div class="hidden" aria-hidden="true">
                 <input type="text" name="website" tabindex="-1" autocomplete="off" />
               </div>
 
               <fieldset>
-                <legend class="block text-sm font-medium text-slate-800 mb-3">Kies een bedrag</legend>
+                <legend class="block text-sm font-medium text-slate-800 mb-2">Kies een bedrag</legend>
                 <p class="text-xs text-neutral-400 mb-3">&euro;10 = 1 maaltijd &middot; &euro;50 = 1 dag onderhoud &middot; &euro;100 = 1 week educatie</p>
                 <div class="grid grid-cols-2 gap-3">
-                  <button type="button" data-amount="10" aria-pressed="false" aria-label="Doneer &euro;10" class="donation-amount-btn py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
+                  <button type="button" data-amount="10" aria-pressed="false" aria-label="Doneer &euro;10" class="donation-amount-btn py-4 sm:py-5 min-h-[48px] text-xl sm:text-2xl font-heading font-bold transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                     &euro;10
                   </button>
-                  <button type="button" data-amount="25" aria-pressed="true" aria-label="Doneer &euro;25" class="donation-amount-btn active py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary bg-primary text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
+                  <button type="button" data-amount="25" aria-pressed="true" aria-label="Doneer &euro;25" class="donation-amount-btn active py-4 sm:py-5 min-h-[48px] text-xl sm:text-2xl font-heading font-bold transition-all border-2 border-primary bg-primary text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                     &euro;25
                   </button>
-                  <button type="button" data-amount="50" aria-pressed="false" aria-label="Doneer &euro;50" class="donation-amount-btn py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
+                  <button type="button" data-amount="50" aria-pressed="false" aria-label="Doneer &euro;50" class="donation-amount-btn py-4 sm:py-5 min-h-[48px] text-xl sm:text-2xl font-heading font-bold transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                     &euro;50
                   </button>
-                  <button type="button" data-amount="100" aria-pressed="false" aria-label="Doneer &euro;100" class="donation-amount-btn py-5 min-h-[56px] text-2xl font-heading font-bold transition-all border border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
+                  <button type="button" data-amount="100" aria-pressed="false" aria-label="Doneer &euro;100" class="donation-amount-btn py-4 sm:py-5 min-h-[48px] text-xl sm:text-2xl font-heading font-bold transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white active:brightness-90 focus-visible:ring-2 focus-visible:ring-primary/50">
                     &euro;100
                   </button>
                 </div>
               </fieldset>
 
               <div>
-                <label class="block text-sm font-medium text-slate-800 mb-3">Of vul een eigen bedrag in</label>
-                <div id="custom-amount-wrapper" class="relative border-2 border-neutral-200 hover:border-neutral-300 transition-all focus-within:ring-2 focus-within:ring-primary/30">
+                <label class="block text-sm font-medium text-slate-800 mb-2">Of vul een eigen bedrag in</label>
+                <div id="custom-amount-wrapper" class="relative border-2 border-neutral-200 hover:border-neutral-300 transition-all focus-within:border-primary">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-heading font-bold text-2xl sm:text-3xl">&euro;</span>
                   <input
                     type="number"
@@ -115,7 +85,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
                     inputmode="decimal"
                     placeholder=""
                     aria-label="Donatiebedrag in euro"
-                    class="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/30 text-slate-800 font-heading font-bold text-2xl sm:text-3xl"
+                    class="w-full pl-12 pr-4 py-4 bg-transparent focus:outline-none text-slate-800 font-heading font-bold text-2xl sm:text-3xl"
                   />
                 </div>
                 <p class="text-xs text-neutral-400 mt-1">Bedrag tussen &euro;1 en &euro;10.000</p>
@@ -123,10 +93,10 @@ const showMollie = settings.menuToggles?.showMollie !== false;
 
               {hasProjects && (
                 <div>
-                  <label class="block text-sm font-medium text-slate-800 mb-3">Bestemming</label>
+                  <label class="block text-sm font-medium text-slate-800 mb-2">Bestemming</label>
                   <select
                     id="donation-project"
-                    class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none transition-colors"
+                    class="w-full px-4 py-3 min-h-[48px] border-2 border-neutral-200 bg-white text-slate-800 focus:border-primary focus:outline-none transition-colors"
                   >
                     <option value="algemeen">Algemene Sadaqa</option>
                     {projectOptions.map((p: any) => (
@@ -137,37 +107,43 @@ const showMollie = settings.menuToggles?.showMollie !== false;
               )}
 
               <div>
-                <label class="block text-sm font-medium text-slate-800 mb-3">E-mailadres <span class="text-neutral-400 font-normal">(optioneel, voor bevestiging)</span></label>
+                <label class="block text-sm font-medium text-slate-800 mb-2">E-mailadres <span class="text-neutral-400 font-normal">(optioneel, voor bevestiging)</span></label>
                 <input
                   type="email"
                   id="donation-email"
                   placeholder="uw@email.be"
-                  class="w-full px-4 py-3 border border-neutral-200 bg-white text-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none transition-colors"
+                  class="w-full px-4 py-3 min-h-[48px] border-2 border-neutral-200 bg-white text-slate-800 focus:border-primary focus:outline-none transition-colors"
                 />
               </div>
 
               <p id="donation-error" class="text-sm text-red-600 bg-red-50 p-3 text-center hidden" role="alert" aria-live="polite"></p>
 
-              <div class="bg-accent/5 border border-accent/20 p-4 text-center">
-                <p class="text-xs text-neutral-500 flex items-center justify-center gap-2">
-                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                  </svg>
-                  Beveiligd via Mollie &middot; Bancontact &middot; iDEAL &middot; Visa &middot; Mastercard
-                </p>
-                <p class="text-[10px] text-neutral-400 mt-1">100% non-profit — uw donatie gaat direct naar goede doelen</p>
-              </div>
-
+              <!-- CTA: Submit — meest prominente element -->
               <button
                 type="submit"
                 id="donation-submit"
-                class="w-full bg-primary hover:bg-primary-dark active:brightness-90 text-white py-4 min-h-[52px] font-bold text-lg transition-all flex items-center justify-center gap-2"
+                class="w-full bg-primary hover:bg-primary-dark active:brightness-90 text-white py-5 min-h-[56px] font-bold text-lg transition-all flex items-center justify-center gap-2"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                 </svg>
-                Donatie afronden via iDEAL / Bancontact
+                Donatie afronden
               </button>
+
+              <!-- Trust signals onder submit knop -->
+              <div class="text-center space-y-2">
+                <div class="flex items-center justify-center gap-3 flex-wrap">
+                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-neutral-400 bg-neutral-100 px-2.5 py-1">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                    SSL Beveiligd
+                  </span>
+                  <span class="text-[11px] font-semibold text-neutral-400 bg-neutral-100 px-2.5 py-1">iDEAL</span>
+                  <span class="text-[11px] font-semibold text-neutral-400 bg-neutral-100 px-2.5 py-1">Bancontact</span>
+                  <span class="text-[11px] font-semibold text-neutral-400 bg-neutral-100 px-2.5 py-1">Visa</span>
+                  <span class="text-[11px] font-semibold text-neutral-400 bg-neutral-100 px-2.5 py-1">Mastercard</span>
+                </div>
+                <p class="text-[10px] text-neutral-400">100% non-profit — uw donatie gaat direct naar het gekozen goede doel</p>
+              </div>
             </form>
           </div>
         </div>
@@ -175,7 +151,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
         <!-- Rechts: Goede Doelen (2 kolommen) -->
         {hasProjects && (
           <div class="lg:col-span-2">
-            <h2 class="text-2xl font-bold font-heading text-primary mb-8">Goede Doelen</h2>
+            <h2 class="text-2xl font-bold font-heading text-primary mb-6">Goede Doelen</h2>
             <div class="space-y-6">
               {projecten.map((project: any) => (
                 <DonationCard
@@ -185,6 +161,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
                   huidigBedragCents={project.huidigBedragCents || 0}
                   actief={project.actief}
                   afbeelding={project.afbeelding}
+                  clickable={false}
                 />
               ))}
             </div>
@@ -193,11 +170,11 @@ const showMollie = settings.menuToggles?.showMollie !== false;
       </div>
     ) : (
       /* Mollie UIT: overschrijving links + doelen rechts */
-      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
         <div class="lg:col-span-3">
           <h2 class="text-2xl font-bold font-heading text-primary mb-4">Overschrijving</h2>
-          <p class="text-neutral-500 mb-8">Maak uw donatie over via onderstaande bankgegevens</p>
-          <div class="bg-white border border-neutral-200 p-8 md:p-10">
+          <p class="text-neutral-500 mb-6">Maak uw donatie over via onderstaande bankgegevens</p>
+          <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
             <div class="space-y-3">
               <div class="flex justify-between items-center py-3 border-b border-neutral-100">
                 <span class="text-slate-500">Begunstigde</span>
@@ -217,7 +194,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
 
         {hasProjects && (
           <div class="lg:col-span-2">
-            <h2 class="text-2xl font-bold font-heading text-primary mb-8">Goede Doelen</h2>
+            <h2 class="text-2xl font-bold font-heading text-primary mb-6">Goede Doelen</h2>
             <div class="space-y-6">
               {projecten.map((project: any) => (
                 <DonationCard
@@ -227,6 +204,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
                   huidigBedragCents={project.huidigBedragCents || 0}
                   actief={project.actief}
                   afbeelding={project.afbeelding}
+                  clickable={false}
                 />
               ))}
             </div>
@@ -240,9 +218,9 @@ const showMollie = settings.menuToggles?.showMollie !== false;
   {showMollie && (
     <Section variant="light-100">
       <div class="max-w-3xl mx-auto">
-        <div class="bg-white border border-neutral-200 text-center p-8 md:p-10">
+        <div class="bg-white border border-neutral-200 text-center p-6 sm:p-8 md:p-10">
           <h2 class="text-2xl font-bold font-heading mb-2">Overschrijving</h2>
-          <div class="mb-6" />
+          <p class="text-sm text-neutral-500 mb-6">Liever via overschrijving? Gebruik onderstaande gegevens.</p>
           <div class="space-y-3 text-sm">
             <div class="flex justify-between items-center py-3 border-b border-neutral-100">
               <span class="text-slate-500">Begunstigde</span>
@@ -274,58 +252,58 @@ const showMollie = settings.menuToggles?.showMollie !== false;
   </Section>
 </BaseLayout>
 
+<!-- Sticky Mobile CTA — alleen zichtbaar op mobiel als submit knop buiten viewport is -->
+{showMollie && (
+  <div id="sticky-donate-bar" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-primary p-3 hidden lg:!hidden transition-transform">
+    <div class="flex items-center justify-between gap-3 max-w-lg mx-auto">
+      <div class="text-sm">
+        <span class="font-bold text-primary" id="sticky-amount">&euro;25</span>
+        <span class="text-neutral-500 text-xs ml-1" id="sticky-project">Algemene Sadaqa</span>
+      </div>
+      <button
+        type="button"
+        id="sticky-donate-btn"
+        class="bg-primary hover:bg-primary-dark text-white px-6 py-3 min-h-[44px] font-bold text-sm transition-all flex items-center gap-2 shrink-0"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+        </svg>
+        Doneer nu
+      </button>
+    </div>
+  </div>
+)}
+
 <script>
-  // Quote carousel
-  const slidesD = document.querySelectorAll('.quote-slide-doneren');
-  const dotsD = document.querySelectorAll('.quote-dot-doneren');
-  if (slidesD.length > 1) {
-    let currentD = 0;
-    function showSlideD(index: number) {
-      slidesD.forEach((s, i) => {
-        s.classList.toggle('opacity-100', i === index);
-        s.classList.toggle('opacity-0', i !== index);
-        s.classList.toggle('pointer-events-none', i !== index);
-      });
-      dotsD.forEach((d, i) => {
-        d.classList.toggle('bg-accent', i === index);
-        d.classList.toggle('w-6', i === index);
-        d.classList.toggle('bg-neutral-300', i !== index);
-        d.classList.toggle('w-2', i !== index);
-      });
-    }
-    let activeIntervalD: ReturnType<typeof setInterval> | null = null;
-
-    function startAutoplayD() {
-      stopAutoplayD();
-      activeIntervalD = setInterval(() => {
-        currentD = (currentD + 1) % slidesD.length;
-        showSlideD(currentD);
-      }, 5000);
-    }
-
-    function stopAutoplayD() {
-      if (activeIntervalD) { clearInterval(activeIntervalD); activeIntervalD = null; }
-    }
-
-    startAutoplayD();
-
-    // Cleanup interval to prevent memory leaks
-    document.addEventListener('astro:before-preparation', stopAutoplayD);
-    window.addEventListener('beforeunload', stopAutoplayD);
-
-    // Pause on hover
-    const carouselD = document.getElementById('quote-carousel-doneren');
-    carouselD?.addEventListener('mouseenter', stopAutoplayD);
-    carouselD?.addEventListener('mouseleave', startAutoplayD);
-
-    dotsD.forEach((dot) => {
-      dot.addEventListener('click', () => {
-        currentD = parseInt((dot as HTMLElement).dataset.index || '0');
-        showSlideD(currentD);
-      });
+  // ── DonationCard → Form dropdown koppeling ──
+  document.querySelectorAll('.donation-card-select').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const title = (btn as HTMLElement).dataset.projectTitle;
+      const select = document.getElementById('donation-project') as HTMLSelectElement | null;
+      if (select && title) {
+        // Zoek de matching option en selecteer deze
+        for (const option of Array.from(select.options)) {
+          if (option.value === title) {
+            select.value = title;
+            select.dispatchEvent(new Event('change'));
+            break;
+          }
+        }
+      }
+      // Scroll naar het formulier
+      const form = document.getElementById('donation-form');
+      if (form) {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Highlight de dropdown kort
+        if (select) {
+          select.classList.add('border-accent');
+          setTimeout(() => select.classList.remove('border-accent'), 2000);
+        }
+      }
     });
-  }
+  });
 
+  // ── Mollie formulier logica ──
   const form = document.getElementById('donation-form') as HTMLFormElement | null;
   if (!form) {
     // Mollie formulier niet aanwezig (showMollie = false) — skip form logic
@@ -340,6 +318,41 @@ const showMollie = settings.menuToggles?.showMollie !== false;
 
   let selectedAmount: number | 'custom' = 25;
 
+  // Sticky bar elements
+  const stickyBar = document.getElementById('sticky-donate-bar');
+  const stickyAmount = document.getElementById('sticky-amount');
+  const stickyProject = document.getElementById('sticky-project');
+  const stickyBtn = document.getElementById('sticky-donate-btn');
+
+  // Functie om sticky bar te updaten
+  function updateStickyBar() {
+    const amount = selectedAmount === 'custom' ? parseFloat(customInput.value) || 0 : selectedAmount;
+    if (stickyAmount) stickyAmount.textContent = `€${amount}`;
+    if (stickyProject && projectSelect) {
+      const selectedOption = projectSelect.options[projectSelect.selectedIndex];
+      stickyProject.textContent = selectedOption ? selectedOption.text : 'Algemene Sadaqa';
+    }
+  }
+
+  // Sticky CTA: toon/verberg op basis van submit knop visibility
+  if (stickyBar && submitBtn) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          stickyBar.classList.add('hidden');
+        } else {
+          stickyBar.classList.remove('hidden');
+        }
+      });
+    }, { threshold: 0 });
+    observer.observe(submitBtn);
+
+    // Sticky knop triggert het formulier
+    stickyBtn?.addEventListener('click', () => {
+      form.requestSubmit();
+    });
+  }
+
   // Preset amount buttons
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -347,21 +360,20 @@ const showMollie = settings.menuToggles?.showMollie !== false;
       selectedAmount = val;
       customInput.value = '';
 
-      // Reset alle knoppen
       buttons.forEach((b) => {
         b.classList.remove('active', 'bg-primary', 'text-white');
         b.classList.add('text-primary');
         b.setAttribute('aria-pressed', 'false');
       });
 
-      // Activeer deze knop
       btn.classList.add('active', 'bg-primary', 'text-white');
       btn.classList.remove('text-primary');
       btn.setAttribute('aria-pressed', 'true');
 
-      // Custom wrapper reset
       customWrapper.classList.remove('border-primary');
       customWrapper.classList.add('border-neutral-200');
+
+      updateStickyBar();
     });
   });
 
@@ -381,6 +393,12 @@ const showMollie = settings.menuToggles?.showMollie !== false;
 
   customInput.addEventListener('input', () => {
     selectedAmount = 'custom';
+    updateStickyBar();
+  });
+
+  // Project selectie update sticky
+  projectSelect?.addEventListener('change', () => {
+    updateStickyBar();
   });
 
   // Submit
@@ -401,7 +419,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
 
     // Disable submit
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Even geduld...';
+    submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Even geduld...';
 
     const project = projectSelect
       ? (projectSelect.value === 'algemeen' ? 'Algemene Sadaqa' : projectSelect.value)
@@ -434,19 +452,19 @@ const showMollie = settings.menuToggles?.showMollie !== false;
           errorEl.textContent = urlErr.message || 'Ongeldige redirect URL.';
           errorEl.classList.remove('hidden');
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Donatie afronden via iDEAL / Bancontact';
+          submitBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg> Donatie afronden';
         }
       } else {
         errorEl.textContent = data.error || 'Er is een fout opgetreden.';
         errorEl.classList.remove('hidden');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Donatie afronden via iDEAL / Bancontact';
+        submitBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg> Donatie afronden';
       }
     } catch {
       errorEl.textContent = 'Kan geen verbinding maken. Probeer het later opnieuw.';
       errorEl.classList.remove('hidden');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Donatie afronden via iDEAL / Bancontact';
+      submitBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg> Donatie afronden';
     }
   });
   } // end if (form)

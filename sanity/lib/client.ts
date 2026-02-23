@@ -1,5 +1,5 @@
 import { createClient } from '@sanity/client';
-import imageUrlBuilder from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 
 function getEnv(key: string): string | undefined {
   try {
@@ -36,7 +36,7 @@ export const writeClient = createClient({
   token: getEnv('SANITY_WRITE_TOKEN') || getEnv('SANITY_API_TOKEN'),
 });
 
-const builder = imageUrlBuilder(sanityClient);
+const builder = createImageUrlBuilder({ projectId: projectId!, dataset });
 
 export function urlFor(source: any) {
   // Enforce WebP format and max 2000px width for all Sanity images

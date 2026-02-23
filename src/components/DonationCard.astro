@@ -10,9 +10,11 @@ interface Props {
   huidigBedragCents?: number | null;
   actief: boolean;
   afbeelding?: any;
+  /** When false, the CTA button selects the project in the form dropdown (used on donatiepagina) */
+  clickable?: boolean;
 }
 
-const { titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding } = Astro.props;
+const { titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding, clickable = true } = Astro.props;
 const hasProgress = !!(doelbedrag && doelbedrag > 0);
 const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
   ? calculateDonationProgress(huidigBedragCents || 0, doelbedrag)
@@ -29,7 +31,7 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
       loading="lazy"
     />
   )}
-  <div class="p-6">
+  <div class="p-5 sm:p-6">
     <div class="flex items-start justify-between mb-3">
       <h3 class="font-heading text-lg font-bold text-primary">{titel}</h3>
       {actief && (
@@ -56,26 +58,35 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
         </div>
         <div class="flex justify-between items-center mt-1.5">
           <p class="text-xs text-slate-400">{percentage}% bereikt</p>
-          {isUrgent && (
-            <p class="text-xs font-bold text-accent">
-              Nog slechts &euro;{remaining.toLocaleString('nl-BE')} nodig!
-            </p>
-          )}
-          {isComplete && (
+          {isComplete ? (
             <p class="text-xs font-bold text-green-600">Doel bereikt!</p>
+          ) : (
+            <p class:list={['text-xs font-bold', isUrgent ? 'text-accent' : 'text-slate-500']}>
+              Nog &euro;{remaining.toLocaleString('nl-BE')} nodig
+              {isUrgent && '!'}
+            </p>
           )}
         </div>
       </div>
     )}
 
-    <!-- CTA — Primary (Deep Teal) -->
-    {!isComplete && (
+    <!-- CTA -->
+    {!isComplete && clickable && (
       <a
         href="/doneren"
         class="btn-primary block text-center bg-primary hover:bg-primary-dark text-white py-3 font-bold text-sm transition-all mt-4"
       >
         Steun dit doel
       </a>
+    )}
+    {!isComplete && !clickable && (
+      <button
+        type="button"
+        class="donation-card-select w-full block text-center bg-accent hover:bg-accent-hover text-white py-3 font-bold text-sm transition-all mt-4 cursor-pointer"
+        data-project-title={titel}
+      >
+        Selecteer dit doel
+      </button>
     )}
   </div>
 </div>

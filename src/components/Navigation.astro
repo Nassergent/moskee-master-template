@@ -68,7 +68,6 @@ const currentPath = Astro.url.pathname;
 
     <!-- Mobile Menu Button — min 44x44px touch target -->
     <div class="lg:hidden flex items-center gap-2">
-
       <button
         id="nav-mobile-btn"
         class="min-w-[44px] min-h-[44px] flex items-center justify-center text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200 transition-colors"
@@ -86,46 +85,47 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 
-  <!-- Mobile Menu Overlay (click to close) -->
-  <div
-    id="nav-mobile-overlay"
-    class="hidden fixed inset-0 bg-black/20 z-40 lg:hidden"
-    aria-hidden="true"
-  ></div>
-
-  <!-- Mobile Menu Panel -->
+  <!-- Mobile Fullscreen Menu -->
   <div
     id="nav-mobile-menu"
-    class="hidden lg:hidden border-t border-neutral-200 bg-white relative z-50"
+    class="fixed inset-0 top-16 z-50 lg:hidden bg-white flex flex-col translate-y-full transition-transform duration-300 ease-out"
     role="dialog"
     aria-modal="true"
     aria-label="Navigatiemenu"
+    aria-hidden="true"
   >
-    <div class="max-w-[1280px] mx-auto px-6 py-4 flex flex-col gap-0">
-      {visibleItems.map((item) => {
+    <!-- Links — centered, spaced out -->
+    <div class="flex-1 flex flex-col justify-center px-8 -mt-8">
+      {visibleItems.map((item, i) => {
         const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
         return (
           <a
             href={item.href}
             class:list={[
-              'px-4 py-3 min-h-[44px] flex items-center text-sm font-medium transition-colors border-l-3 active:bg-neutral-100',
-              isActive
-                ? 'text-accent border-accent bg-accent-light font-bold'
-                : 'text-neutral-600 border-transparent hover:text-primary hover:bg-base-100',
+              'py-4 text-center text-xl font-heading font-bold transition-colors active:opacity-70',
+              isActive ? 'text-accent' : 'text-primary',
             ]}
+            style={`animation-delay: ${i * 50}ms`}
           >
             {item.name}
           </a>
         );
       })}
+    </div>
 
-      <!-- Mobile Doneer -->
+    <!-- Bottom: Doneer knop + contact info -->
+    <div class="px-8 pb-8 pt-4 border-t border-neutral-100">
       <a
         href="/doneren"
-        class="mt-3 text-center bg-accent hover:bg-accent-hover active:brightness-90 text-white px-6 py-3 min-h-[44px] flex items-center justify-center font-bold text-sm transition-all"
+        class="block w-full text-center bg-accent hover:bg-accent-hover active:brightness-90 text-white px-6 py-4 min-h-[48px] font-bold text-lg font-heading transition-all"
       >
         {donateText}
       </a>
+      {settings?.phone && (
+        <a href={`tel:${settings.phone.replace(/\s/g, '')}`} class="block text-center text-sm text-neutral-400 mt-4 active:text-primary">
+          {settings.phone}
+        </a>
+      )}
     </div>
   </div>
 </nav>
@@ -134,30 +134,33 @@ const currentPath = Astro.url.pathname;
 <div class="h-16" />
 
 <script>
-  // Mobile menu toggle with focus trap, overlay & scroll lock
   const btn = document.getElementById('nav-mobile-btn');
   const menu = document.getElementById('nav-mobile-menu');
-  const overlay = document.getElementById('nav-mobile-overlay');
   const iconOpen = document.getElementById('nav-icon-open');
   const iconClose = document.getElementById('nav-icon-close');
 
+  let isOpen = false;
+
   function openMenu() {
-    menu?.classList.remove('hidden');
-    overlay?.classList.remove('hidden');
+    isOpen = true;
+    menu?.classList.remove('translate-y-full');
+    menu?.classList.add('translate-y-0');
+    menu?.setAttribute('aria-hidden', 'false');
     iconOpen?.classList.add('hidden');
     iconClose?.classList.remove('hidden');
     btn?.setAttribute('aria-expanded', 'true');
     btn?.setAttribute('aria-label', 'Menu sluiten');
     document.body.style.overflow = 'hidden';
 
-    // Focus first link
     const firstLink = menu?.querySelector('a') as HTMLAnchorElement | null;
     if (firstLink) firstLink.focus();
   }
 
   function closeMenu() {
-    menu?.classList.add('hidden');
-    overlay?.classList.add('hidden');
+    isOpen = false;
+    menu?.classList.add('translate-y-full');
+    menu?.classList.remove('translate-y-0');
+    menu?.setAttribute('aria-hidden', 'true');
     iconOpen?.classList.remove('hidden');
     iconClose?.classList.add('hidden');
     btn?.setAttribute('aria-expanded', 'false');
@@ -167,23 +170,17 @@ const currentPath = Astro.url.pathname;
   }
 
   btn?.addEventListener('click', () => {
-    const isOpen = !menu?.classList.contains('hidden');
     isOpen ? closeMenu() : openMenu();
   });
 
-  // Click overlay to close
-  overlay?.addEventListener('click', closeMenu);
-
-  // ESC key closes mobile menu
+  // ESC key closes menu
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu && !menu.classList.contains('hidden')) {
-      closeMenu();
-    }
+    if (e.key === 'Escape' && isOpen) closeMenu();
   });
 
-  // Focus trap: keep Tab within menu when open
+  // Focus trap
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab' || !menu || menu.classList.contains('hidden')) return;
+    if (e.key !== 'Tab' || !isOpen || !menu) return;
     const focusable = [btn, ...menu.querySelectorAll('a, button')].filter(Boolean) as HTMLElement[];
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -196,7 +193,7 @@ const currentPath = Astro.url.pathname;
     }
   });
 
-  // Close mobile menu when a link is clicked
+  // Close on link click
   menu?.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', closeMenu);
   });
