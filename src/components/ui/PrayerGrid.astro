@@ -28,60 +28,52 @@ function formatCompactCountdown(secs: number): string {
 }
 ---
 
-<!-- Prayer Grid — Desktop: 5 kolommen, Mobiel: gestapelde lijst -->
-<div class="grid grid-cols-1 sm:grid-cols-5 gap-0 border border-neutral-200 overflow-hidden">
-  {PRAYER_NAMES.map((name) => {
-    const isCurrent = currentPrayer === name;
-    const isNext = nextPrayer === name;
-    return (
-      <div
-        class:list={[
-          'flex flex-col items-center py-5 sm:py-6 border-b sm:border-b-0 sm:border-r last:border-r-0 last:border-b-0 transition-colors',
-          isCurrent
-            ? 'bg-primary text-white'
-            : 'bg-white hover:bg-base-100',
-        ]}
-      >
-        {/* Mobiel: rij-layout, Desktop: kolom-layout */}
-        <div class="flex sm:flex-col items-center sm:items-center gap-4 sm:gap-0 w-full px-6 sm:px-0">
+<!-- Prayer Grid — Desktop: 5 kolommen, Mobiel: nette rijen -->
+<div class="border border-neutral-200 overflow-hidden">
 
-          {/* Gebedsnaam */}
+  {/* ── Desktop: 5-kolom grid ── */}
+  <div class="hidden sm:grid sm:grid-cols-5 gap-0">
+    {PRAYER_NAMES.map((name) => {
+      const isCurrent = currentPrayer === name;
+      const isNext = nextPrayer === name;
+      return (
+        <div
+          class:list={[
+            'flex flex-col items-center py-6 border-r last:border-r-0 transition-colors',
+            isCurrent
+              ? 'bg-primary text-white'
+              : 'bg-white hover:bg-base-100',
+          ]}
+        >
           <p class:list={[
-            'text-xs font-bold uppercase tracking-[0.15em] sm:mb-3',
+            'text-xs font-bold uppercase tracking-[0.15em] mb-3',
             isCurrent ? 'text-white/80' : 'text-neutral-400',
           ]}>
             {PRAYER_LABELS[name]}
           </p>
 
-          {/* Adhan tijd */}
           <p class:list={[
-            'text-2xl sm:text-3xl font-bold font-heading tabular-nums',
+            'text-3xl font-bold font-heading tabular-nums',
             isCurrent ? 'text-white' : 'text-primary',
           ]}>
             {times.adhan[name]}
           </p>
 
-          {/* Iqama tijd — vaste hoogte voor consistente spacing */}
-          <div class="h-6 flex items-center sm:mt-2">
+          <div class="h-6 flex items-center mt-2">
             {times.iqama[name] ? (
               <div class="flex items-center gap-1.5">
                 <span class:list={[
                   'text-[10px] uppercase tracking-wider font-bold',
-                  isCurrent ? 'text-white/80' : 'text-primary/70',
-                ]}>
-                  Iqama
-                </span>
+                  isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                ]}>Iqama</span>
                 <span class:list={[
                   'text-sm font-bold tabular-nums',
-                  isCurrent ? 'text-white' : 'text-primary/90',
-                ]}>
-                  {times.iqama[name]}
-                </span>
+                  isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                ]}>{times.iqama[name]}</span>
               </div>
             ) : null}
           </div>
 
-          {/* Countdown — subtiel in het vak van het volgende gebed */}
           {isNext && secondsUntilNext > 0 && (
             <p
               id="grid-countdown"
@@ -92,21 +84,84 @@ function formatCompactCountdown(secs: number): string {
             </p>
           )}
 
-          {/* Current indicator — alleen op mobiel zichtbaar */}
           {isCurrent && (
-            <span class="sm:hidden ml-auto text-[10px] uppercase tracking-wider font-bold text-white/70 bg-white/10 px-2 py-1">
-              Nu
-            </span>
+            <div class="w-1.5 h-1.5 bg-accent mt-3" aria-hidden="true" />
           )}
         </div>
+      );
+    })}
+  </div>
 
-        {/* Current indicator — desktop dot */}
-        {isCurrent && (
-          <div class="hidden sm:block w-1.5 h-1.5 bg-accent mt-3" aria-hidden="true" />
-        )}
-      </div>
-    );
-  })}
+  {/* ── Mobiel: nette rij-kaarten ── */}
+  <div class="sm:hidden divide-y divide-neutral-200">
+    {PRAYER_NAMES.map((name) => {
+      const isCurrent = currentPrayer === name;
+      const isNext = nextPrayer === name;
+      return (
+        <div
+          class:list={[
+            'flex items-center px-5 py-4 transition-colors',
+            isCurrent
+              ? 'bg-primary text-white'
+              : 'bg-white',
+          ]}
+        >
+          {/* Links: gebedsnaam + status */}
+          <div class="w-24 shrink-0">
+            <p class:list={[
+              'text-sm font-bold uppercase tracking-wide',
+              isCurrent ? 'text-white' : 'text-primary',
+            ]}>
+              {PRAYER_LABELS[name]}
+            </p>
+            {isCurrent && (
+              <span class="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider text-[#E8CDB5]">
+                Nu
+              </span>
+            )}
+            {isNext && secondsUntilNext > 0 && (
+              <p
+                id="grid-countdown"
+                data-seconds={secondsUntilNext}
+                class="text-[10px] font-bold uppercase tracking-wider text-accent mt-1 tabular-nums"
+              >
+                In {formatCompactCountdown(secondsUntilNext)}
+              </p>
+            )}
+          </div>
+
+          {/* Midden: adhan tijd */}
+          <div class="flex-1 text-center">
+            <p class:list={[
+              'text-2xl font-bold font-heading tabular-nums',
+              isCurrent ? 'text-white' : 'text-primary',
+            ]}>
+              {times.adhan[name]}
+            </p>
+          </div>
+
+          {/* Rechts: iqama tijd */}
+          <div class="w-24 shrink-0 text-right">
+            {times.iqama[name] ? (
+              <div>
+                <p class:list={[
+                  'text-[10px] uppercase tracking-wider font-bold',
+                  isCurrent ? 'text-[#E8CDB5]/70' : 'text-accent/60',
+                ]}>Iqama</p>
+                <p class:list={[
+                  'text-lg font-bold font-heading tabular-nums',
+                  isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                ]}>{times.iqama[name]}</p>
+              </div>
+            ) : (
+              <span class="text-[10px] text-neutral-300">—</span>
+            )}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
 </div>
 
 {/* Meta: berekeningsbron */}
