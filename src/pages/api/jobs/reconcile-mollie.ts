@@ -7,17 +7,23 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request, url }) => {
   // ── Auth: Vercel cron signature OR cron secret header ──
   const cronSecret = import.meta.env.CRON_SECRET;
+
+  if (!cronSecret) {
+    return new Response(JSON.stringify({ error: 'Reconciliation service not configured' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const vercelSig = request.headers.get('x-vercel-cron-signature');
   const headerSecret = request.headers.get('x-cron-secret');
+  const authorized = vercelSig === cronSecret || headerSecret === cronSecret;
 
-  if (cronSecret) {
-    const authorized = vercelSig === cronSecret || headerSecret === cronSecret;
-    if (!authorized) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+  if (!authorized) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const mollieKey = import.meta.env.MOLLIE_API_KEY;

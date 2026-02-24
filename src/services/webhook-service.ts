@@ -133,11 +133,14 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
     const rawMeta = payment.metadata as Record<string, unknown> | null;
     const meta = parseWebhookMetadata(rawMeta);
 
+    // Sanitize metadata for logging (strip PII)
+    const safeMeta = rawMeta ? { ...rawMeta, email: rawMeta.email ? '[REDACTED]' : undefined } : null;
+
     log('info', 'mollie_fetched', {
       tenantId,
       rawAmount: payment.amount?.value,
       rawCurrency: payment.amount?.currency,
-      rawMetadata: JSON.stringify(rawMeta),
+      rawMetadata: JSON.stringify(safeMeta),
     });
 
     const amountCents = stringToCents(payment.amount.value);
@@ -178,7 +181,19 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
       log('info', 'payment_not_paid', { tenantId, note: 'no_project_update', projectId, projectName });
     }
 
-    // ── Email dispatch (non-critical) ──
+    // ── Step F: Mark processed IMMEDIATELY after Sanity commit ──
+    // CRITICAL: Must happen before email dispatch to prevent double-increment on crash
+    if (r) {
+      try {
+        await r.set(`${tenantId}:processed:${paymentId}`, Date.now(), { ex: 604800 }); // 7 days TTL
+        await r.del(`${tenantId}:processing:${paymentId}`);
+        log('info', 'processed_set', { tenantId });
+      } catch (redisErr) {
+        log('warn', 'webhook_error', { tenantId, step: 'mark_processed' }, redisErr);
+      }
+    }
+
+    // ── Email dispatch (non-critical, after processed marker) ──
     try {
       await processSuccessfulPayment({
         amount: payment.amount,
@@ -193,17 +208,6 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
     } catch (emailErr) {
       // Email failure is non-critical
       log('warn', 'webhook_error', { tenantId, step: 'email' }, emailErr);
-    }
-
-    // ── Step F: Mark processed + release lock ──
-    if (r) {
-      try {
-        await r.set(`${tenantId}:processed:${paymentId}`, Date.now(), { ex: 604800 }); // 7 days TTL
-        await r.del(`${tenantId}:processing:${paymentId}`);
-        log('info', 'processed_set', { tenantId });
-      } catch (redisErr) {
-        log('warn', 'webhook_error', { tenantId, step: 'mark_processed' }, redisErr);
-      }
     }
 
     log('info', 'webhook_complete', { tenantId, duration_ms: Date.now() - startTime });
