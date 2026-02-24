@@ -83,14 +83,19 @@ const progress = hasProject && project.doelbedrag
   : null;
 
 // ── Download ──
-const hasDownloadImage = !!downloadBestand;
-const downloadImageUrl = hasDownloadImage ? urlFor(downloadBestand).width(600).url() : null;
+// downloadBestand kan een oud file-asset zijn (pre-migratie) of een nieuw image-asset
+const isImageAsset = downloadBestand?.asset?._ref?.startsWith('image-') || downloadBestand?._type === 'image';
+const hasDownloadImage = !!(downloadBestand && isImageAsset);
+let downloadImageUrl: string | null = null;
+try {
+  downloadImageUrl = hasDownloadImage ? urlFor(downloadBestand).width(600).url() : null;
+} catch { /* file-asset kan niet door urlFor — fallback naar null */ }
 const downloadFileName = downloadUrl ? downloadUrl.split('/').pop()?.split('?')[0] || 'document' : 'document';
 const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
 
 const showCountdown = !!upcoming;
 const showDoneer = hasProject;
-const showDownload = !!(downloadBestand && downloadTitel);
+const showDownload = !!((downloadBestand || downloadUrl) && downloadTitel);
 const cardCount = [showCountdown, showDoneer, showDownload].filter(Boolean).length;
 
 const gridClass = cardCount === 3
@@ -301,7 +306,7 @@ const gridClass = cardCount === 3
   >
     <img
       id="download-lightbox-img"
-      src={downloadImageUrl ? urlFor(downloadBestand).width(1200).url() : ''}
+      src={hasDownloadImage ? (urlFor(downloadBestand).width(1200).url() ?? '') : ''}
       alt={sanitizeAlt(downloadTitel)}
       class="max-w-full max-h-[90vh] object-contain animate-fade-in-up"
     />
