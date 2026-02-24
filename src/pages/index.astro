@@ -15,7 +15,7 @@ const eersteProject = projecten?.find((p: any) => p.toonOpHomepage) || (projecte
 
 // Hero data: alleen uit homePage singleton
 const heroImageUrl = homePage?.heroImage
-  ? urlFor(homePage.heroImage).width(800).height(900).fit('crop').url()
+  ? urlFor(homePage.heroImage).width(800).height(500).fit('crop').url()
   : null;
 // Kleinere versie voor mobiel achtergrond (bespaart data op 4G)
 const heroImageMobile = homePage?.heroImage
@@ -36,8 +36,15 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 
 <BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>
 
+  {/* Kritieke hero CSS inline — elimineert render-blocking voor LCP */}
+  <style is:inline>
+    .hero-critical{position:relative;overflow:hidden;background-color:var(--color-primary-dark,#0f3039);color:#fff;min-height:400px}
+    .hero-critical img.hero-lcp{width:100%;height:500px;object-fit:cover;display:block}
+    @media(max-width:1023px){.hero-critical img.hero-lcp{display:none}}
+  </style>
+
   <!-- Hero Section — Two Column: Text Left + Image Right (Flat Design) -->
-  <section class="bg-primary-dark text-white relative overflow-hidden">
+  <section class="hero-critical bg-primary-dark text-white relative overflow-hidden">
     <!-- Mobiel: hero afbeelding als achtergrond (geoptimaliseerde kleine versie) -->
     {heroImageMobile && (
       <div class="absolute inset-0 lg:hidden">
@@ -82,11 +89,12 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
             <img
               src={heroImageUrl}
               alt={sanitizeAlt(homePage?.heroTitle || settings.mosqueName)}
-              class="w-full h-[500px] object-cover"
+              class="hero-lcp w-full h-[500px] object-cover"
               width={800}
-              height={900}
+              height={500}
               loading="eager"
               fetchpriority="high"
+              decoding="async"
             />
           ) : (
             <div class="w-full h-[500px] bg-white/5 border border-white/10 flex items-center justify-center">

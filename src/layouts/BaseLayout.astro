@@ -72,10 +72,11 @@ const colors = settings?.theme || {
     ) : (
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     )}
-    {preloadImage && <link rel="preload" as="image" href={preloadImage} type="image/webp" />}
     <!-- Preconnect voor Sanity CDN -->
     <link rel="preconnect" href="https://cdn.sanity.io" />
     <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+    {/* LCP preload — boven fonts zodat hero-afbeelding als eerste wordt opgehaald */}
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
     <link rel="preload" as="font" href="/fonts/philosopher-regular.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="/fonts/philosopher-bold.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="/fonts/lato-light.woff2" type="font/woff2" crossorigin />
