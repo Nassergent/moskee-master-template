@@ -3,6 +3,7 @@ import { createMollieClient } from '@mollie/api-client';
 import { fetchSettings } from '../../lib/sanity';
 import { checkRateLimit, getClientIp, checkOrigin, isBot } from '../../lib/security';
 import { validatePaymentAmount } from '../../lib/logic/payment-validators';
+import { generateCorrelationId } from '../../lib/logic/webhook-validators';
 
 export const prerender = false;
 
@@ -40,7 +41,10 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    const { amount, frequency, project, email } = data;
+    const { amount, frequency, projectId, projectName, email } = data;
+    // Legacy compat: accept old 'project' field from cached frontends
+    const resolvedProjectName = projectName || data.project || 'Algemene Sadaqa';
+    const resolvedProjectId = projectId || '';
 
     // Validate via logic compartiment
     const validation = validatePaymentAmount(amount);
@@ -56,7 +60,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     if (!mollieKey || mollieKey === 'test_xxxxxxxxxxxx') {
       const bedanktParams = new URLSearchParams({
         bedrag: numAmount.toFixed(2),
-        bestemming: project || 'Algemene Sadaqa',
+        bestemming: resolvedProjectName,
         demo: 'true',
       });
       return new Response(JSON.stringify({
@@ -74,8 +78,11 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const mollieClient = createMollieClient({ apiKey: mollieKey });
 
-    const description = project
-      ? `Donatie: ${project} — ${mosqueName}`
+    const tenantId = import.meta.env.SANITY_PROJECT_ID || import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'default';
+    const correlationId = generateCorrelationId();
+
+    const description = resolvedProjectId && resolvedProjectId !== 'algemeen'
+      ? `Donatie: ${resolvedProjectName} — ${mosqueName}`
       : `${frequency === 'maandelijks' ? 'Maandelijkse d' : 'D'}onatie — ${mosqueName}`;
 
     const payment = await mollieClient.payments.create({
@@ -84,11 +91,15 @@ export const POST: APIRoute = async ({ request, url }) => {
         value: numAmount.toFixed(2),
       },
       description,
-      redirectUrl: `${siteOrigin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(project || 'Algemene Sadaqa')}`,
+      redirectUrl: `${siteOrigin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(resolvedProjectName)}`,
       webhookUrl: `${siteOrigin}/api/mollie-webhook`,
       metadata: {
+        projectId: resolvedProjectId || undefined,
+        projectName: resolvedProjectName,
+        tenantId,
+        correlationId,
         frequency,
-        project: project || 'Algemeen',
+        project: resolvedProjectName,  // Legacy: kept for in-flight backward compat
         email: email || '',
       },
     });

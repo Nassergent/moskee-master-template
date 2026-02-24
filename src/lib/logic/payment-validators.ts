@@ -38,7 +38,11 @@ export function validatePaymentAmount(rawAmount: unknown): ValidationResult {
   return { valid: true, amount: numAmount };
 }
 
-/** Convert Mollie amount string to integer cents (no float precision loss) */
+/**
+ * Convert Mollie amount string to integer cents.
+ * @deprecated Use `stringToCents` from `webhook-validators.ts` instead (true string-based, no floats).
+ * Kept for backward compatibility (email template uses it via payment-service).
+ */
 export function parseCurrencyAmountCents(value: string): number {
   return Math.round(parseFloat(value) * 100);
 }

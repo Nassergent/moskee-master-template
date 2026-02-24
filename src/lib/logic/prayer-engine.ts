@@ -91,7 +91,7 @@ const METHOD_MAP: Record<string, CalculationParameters> = {
   Tehran: CalculationMethod.Tehran(),
 };
 
-const HIGH_LAT_MAP: Record<string, HighLatitudeRule> = {
+const HIGH_LAT_MAP: Record<string, typeof HighLatitudeRule[keyof typeof HighLatitudeRule]> = {
   middleOfTheNight: HighLatitudeRule.MiddleOfTheNight,
   seventhOfTheNight: HighLatitudeRule.SeventhOfTheNight,
   twilightAngle: HighLatitudeRule.TwilightAngle,

@@ -18,19 +18,22 @@ interface PaymentMetadata {
 
 /**
  * Process a successful Mollie payment:
- * 1. Increment project amount in Sanity
+ * 1. Increment project amount in Sanity (unless skipSanityUpdate)
  * 2. Send confirmation email to donor
  */
 export async function processSuccessfulPayment(payment: {
   amount: { value: string };
   metadata: PaymentMetadata | null;
+  /** When true, skip the Sanity increment (webhook-service already handled it) */
+  skipSanityUpdate?: boolean;
 }): Promise<void> {
   const metadata = payment.metadata;
   const projectName = metadata?.project;
   const paidAmountCents = parseCurrencyAmountCents(payment.amount.value);
 
   // 1. Atomic increment in integer cents (no float precision loss)
-  if (shouldUpdateProject(projectName)) {
+  //    Skip when called from webhook-service (it handles its own commit with retry)
+  if (!payment.skipSanityUpdate && shouldUpdateProject(projectName)) {
     const project = await fetchProjectByTitle(projectName!);
     if (project?._id) {
       await writeClient

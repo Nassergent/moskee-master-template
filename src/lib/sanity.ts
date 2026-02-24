@@ -171,6 +171,29 @@ export async function fetchProjectByTitle(titel: string) {
   }
 }
 
+export async function fetchProjectById(id: string) {
+  try {
+    return await freshClient.fetch(
+      `*[_type == "project" && _id == $id][0]{ _id, titel, huidigBedragCents }`,
+      { id }
+    );
+  } catch (e) {
+    console.error('Sanity fetchProjectById error:', e);
+    return null;
+  }
+}
+
+export async function fetchAllActiveProjectTotals() {
+  try {
+    return await freshClient.fetch(
+      `*[_type == "project" && actief == true]{ _id, titel, huidigBedragCents }`
+    ) || [];
+  } catch (e) {
+    console.error('Sanity fetchAllActiveProjectTotals error:', e);
+    return [];
+  }
+}
+
 // ── Nieuwe fetch helpers (page singletons) ───────────────────────
 
 export async function fetchHomePage() {

@@ -98,9 +98,9 @@ const showMollie = settings.menuToggles?.showMollie !== false;
                     id="donation-project"
                     class="w-full px-4 py-3 min-h-[48px] border-2 border-neutral-200 bg-white text-slate-800 focus:border-primary focus:outline-none transition-colors"
                   >
-                    <option value="algemeen">Algemene Sadaqa</option>
+                    <option value="algemeen" data-name="Algemene Sadaqa">Algemene Sadaqa</option>
                     {projectOptions.map((p: any) => (
-                      <option value={p.titel}>{p.titel}</option>
+                      <option value={p._id} data-name={p.titel}>{p.titel}</option>
                     ))}
                   </select>
                 </div>
@@ -155,6 +155,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
             <div class="space-y-6">
               {projecten.map((project: any) => (
                 <DonationCard
+                  _id={project._id}
                   titel={project.titel}
                   beschrijving={project.beschrijving}
                   doelbedrag={project.doelbedrag}
@@ -198,6 +199,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
             <div class="space-y-6">
               {projecten.map((project: any) => (
                 <DonationCard
+                  _id={project._id}
                   titel={project.titel}
                   beschrijving={project.beschrijving}
                   doelbedrag={project.doelbedrag}
@@ -278,13 +280,13 @@ const showMollie = settings.menuToggles?.showMollie !== false;
   // ── DonationCard → Form dropdown koppeling ──
   document.querySelectorAll('.donation-card-select').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const title = (btn as HTMLElement).dataset.projectTitle;
+      const projectId = (btn as HTMLElement).dataset.projectId;
       const select = document.getElementById('donation-project') as HTMLSelectElement | null;
-      if (select && title) {
-        // Zoek de matching option en selecteer deze
+      if (select && projectId) {
+        // Zoek de matching option op _id value en selecteer deze
         for (const option of Array.from(select.options)) {
-          if (option.value === title) {
-            select.value = title;
+          if (option.value === projectId) {
+            select.value = projectId;
             select.dispatchEvent(new Event('change'));
             break;
           }
@@ -421,9 +423,10 @@ const showMollie = settings.menuToggles?.showMollie !== false;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Even geduld...';
 
-    const project = projectSelect
-      ? (projectSelect.value === 'algemeen' ? 'Algemene Sadaqa' : projectSelect.value)
-      : 'Algemene Sadaqa';
+    // Resolve projectId (Sanity _id) and display name
+    const selectedOption = projectSelect?.options[projectSelect.selectedIndex];
+    const projectId = projectSelect ? projectSelect.value : 'algemeen';
+    const projectName = selectedOption?.dataset.name || 'Algemene Sadaqa';
 
     try {
       const res = await fetch('/api/donate', {
@@ -432,7 +435,8 @@ const showMollie = settings.menuToggles?.showMollie !== false;
         body: JSON.stringify({
           amount: finalAmount,
           frequency: 'eenmalig',
-          project,
+          projectId,
+          projectName,
           email: emailInput?.value || '',
           website: (document.querySelector('input[name="website"]') as HTMLInputElement)?.value || '',
         }),

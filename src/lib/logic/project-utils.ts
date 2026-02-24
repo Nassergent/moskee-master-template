@@ -4,6 +4,7 @@
  */
 
 export interface ProjectOption {
+  _id: string;
   titel: string;
   slug: string;
 }
@@ -28,6 +29,7 @@ export function calculateProjectStats(projecten: any[]): ProjectStats {
     totalRaised: totalCents / 100,
     activeCount: projecten.length,
     options: projecten.map((p: any) => ({
+      _id: p._id,
       titel: p.titel,
       slug: p.slug?.current || p.titel.toLowerCase().replace(/\s+/g, '-'),
     })),

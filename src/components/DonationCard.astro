@@ -3,6 +3,7 @@ import { urlFor } from '../lib/sanity';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
 
 interface Props {
+  _id: string;
   titel: string;
   beschrijving: string;
   doelbedrag?: number | null;
@@ -14,7 +15,7 @@ interface Props {
   clickable?: boolean;
 }
 
-const { titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding, clickable = true } = Astro.props;
+const { _id, titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding, clickable = true } = Astro.props;
 const hasProgress = !!(doelbedrag && doelbedrag > 0);
 const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
   ? calculateDonationProgress(huidigBedragCents || 0, doelbedrag)
@@ -83,6 +84,7 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
       <button
         type="button"
         class="donation-card-select w-full block text-center bg-accent hover:bg-accent-hover text-white py-3 font-bold text-sm transition-all mt-4 cursor-pointer"
+        data-project-id={_id}
         data-project-title={titel}
       >
         Selecteer dit doel

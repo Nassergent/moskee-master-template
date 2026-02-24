@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/jobs/reconcile-mollie?since=24h",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
