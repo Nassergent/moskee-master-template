@@ -113,7 +113,7 @@ const grouped = groupBlocks(value);
       const imgUrl = urlFor(item).width(800).format('webp').url();
       return (
         <figure class="my-8">
-          <img src={imgUrl} alt="" class="w-full" loading="lazy" />
+          <img src={imgUrl} alt="" class="w-full" width={800} loading="lazy" style="aspect-ratio: auto" />
         </figure>
       );
     }

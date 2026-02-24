@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
-import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
+import { fetchAgendaEvents, fetchSettings, urlFor } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
 import { extractCategories, formatDatum, formatTijd } from '../../lib/logic/agenda-utils';
 import { sanitizeAlt } from '../../lib/logic/seo-utils';
@@ -59,9 +59,11 @@ const categorieen = extractCategories(events);
           >
             {event.afbeelding && (
               <img
-                src={event.afbeelding + '?w=600&h=250&fit=crop'}
+                src={urlFor(event.afbeelding).width(600).height(250).fit('crop').url()}
                 alt={sanitizeAlt(event.titel)}
-                class="w-full h-40 object-cover"
+                class="w-full aspect-[12/5] object-cover"
+                width={600}
+                height={250}
                 loading="lazy"
               />
             )}

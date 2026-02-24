@@ -29,7 +29,7 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
     <img
       src={urlFor(afbeelding).width(600).height(250).fit('crop').url()}
       alt={sanitizeAlt(titel)}
-      class="w-full h-40 object-cover"
+      class="w-full aspect-[12/5] object-cover"
       loading="lazy"
     />
   )}

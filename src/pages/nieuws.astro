@@ -31,11 +31,11 @@ const nieuws = await fetchNieuws();
               <img
                 src={urlFor(item.afbeelding).width(600).height(300).fit('crop').url()}
                 alt={sanitizeAlt(item.titel)}
-                class="w-full h-44 object-cover"
+                class="w-full aspect-[2/1] object-cover"
                 loading="lazy"
               />
             ) : (
-              <div class="bg-primary/5 h-44 flex items-center justify-center">
+              <div class="bg-primary/5 aspect-[2/1] flex items-center justify-center">
                 <span class="text-primary/20 text-5xl">✦</span>
               </div>
             )}

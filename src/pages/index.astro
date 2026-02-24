@@ -34,7 +34,7 @@ const toonActueel = homePage?.toonActueel ?? true;
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
 ---
 
-<BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined}>
+<BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>
 
   <!-- Hero Section — Two Column: Text Left + Image Right (Flat Design) -->
   <section class="bg-primary-dark text-white relative overflow-hidden">
@@ -86,6 +86,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
               width={800}
               height={900}
               loading="eager"
+              fetchpriority="high"
             />
           ) : (
             <div class="w-full h-[500px] bg-white/5 border border-white/10 flex items-center justify-center">

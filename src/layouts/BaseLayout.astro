@@ -11,13 +11,14 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   hideFooterMobile?: boolean;
+  preloadImage?: string;
 }
 
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
 const defaultDescription = settings?.description || 'Welkom bij onze moskee — een plek van gebed, gemeenschap en kennis.';
 
-const { title = mosqueName, description, bodyText, ogImage, ogType = 'website', hideFooterMobile = false } = Astro.props;
+const { title = mosqueName, description, bodyText, ogImage, ogType = 'website', hideFooterMobile = false, preloadImage } = Astro.props;
 const autoDescription = description
   || (bodyText ? bodyText.slice(0, 160).trim() + (bodyText.length > 160 ? '...' : '') : defaultDescription);
 const fullTitle = title === mosqueName ? title : `${title} | ${mosqueName}`;
@@ -71,6 +72,7 @@ const colors = settings?.theme || {
     ) : (
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     )}
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} type="image/webp" />}
     <!-- Preconnect voor Sanity CDN -->
     <link rel="preconnect" href="https://cdn.sanity.io" />
     <link rel="dns-prefetch" href="https://maps.googleapis.com" />

@@ -247,7 +247,7 @@ export async function fetchAgendaEvents() {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(startDatum asc) {
       _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
-      "afbeelding": afbeelding.asset->url
+      afbeelding
     }`);
     return result || [];
   } catch (e) {
@@ -260,7 +260,7 @@ export async function fetchUpcomingAgendaEvents(limit = 3) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(startDatum asc)[0...$limit] {
       _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
-      "afbeelding": afbeelding.asset->url
+      afbeelding
     }`, { limit });
     return result || [];
   } catch (e) {
@@ -273,7 +273,7 @@ export async function fetchAgendaEvent(slug: string) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
       _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
-      "afbeelding": afbeelding.asset->url
+      afbeelding
     }`, { slug });
     return result || null;
   } catch (e) {
