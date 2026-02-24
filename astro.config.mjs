@@ -13,6 +13,9 @@ export default defineConfig({
   site: 'https://moskee-master-template.vercel.app',
   output: 'server',
   adapter: vercel(),
+  // Astro 5 CSRF uitgeschakeld — we doen eigen origin-check per route
+  // (donate.ts: checkOrigin, webhook: HMAC verificatie, vrijwilligers: checkOrigin)
+  security: { checkOrigin: false },
   integrations: [
     react(),
     sanity({
