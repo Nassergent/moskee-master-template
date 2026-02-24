@@ -85,11 +85,23 @@ const progress = hasProject && project.doelbedrag
 // ── Download ──
 // downloadBestand kan een oud file-asset zijn (pre-migratie) of een nieuw image-asset
 const isImageAsset = downloadBestand?.asset?._ref?.startsWith('image-') || downloadBestand?._type === 'image';
-const hasDownloadImage = !!(downloadBestand && isImageAsset);
+// File-asset kan ook een afbeelding zijn (jpeg/png/webp) — detecteer via URL extensie
+const imageExtensions = /\.(jpe?g|png|webp|gif|avif|heif)$/i;
+const isFileWithImageUrl = !!(downloadUrl && imageExtensions.test(downloadUrl));
+const hasDownloadImage = !!(downloadBestand && (isImageAsset || isFileWithImageUrl));
 let downloadImageUrl: string | null = null;
+let downloadImageUrlLarge: string | null = null;
 try {
-  downloadImageUrl = hasDownloadImage ? urlFor(downloadBestand).width(600).url() : null;
-} catch { /* file-asset kan niet door urlFor — fallback naar null */ }
+  if (isImageAsset) {
+    // Sanity image-asset: gebruik urlFor voor optimalisatie
+    downloadImageUrl = urlFor(downloadBestand).width(600).url();
+    downloadImageUrlLarge = urlFor(downloadBestand).width(1200).url();
+  } else if (isFileWithImageUrl && downloadUrl) {
+    // File-asset met afbeelding URL: gebruik direct (geen urlFor)
+    downloadImageUrl = downloadUrl;
+    downloadImageUrlLarge = downloadUrl;
+  }
+} catch { /* fallback naar null */ }
 const downloadFileName = downloadUrl ? downloadUrl.split('/').pop()?.split('?')[0] || 'document' : 'document';
 const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
 
@@ -306,7 +318,7 @@ const gridClass = cardCount === 3
   >
     <img
       id="download-lightbox-img"
-      src={hasDownloadImage ? (urlFor(downloadBestand).width(1200).url() ?? '') : ''}
+      src={downloadImageUrlLarge || ''}
       alt={sanitizeAlt(downloadTitel)}
       class="max-w-full max-h-[90vh] object-contain animate-fade-in-up"
     />
