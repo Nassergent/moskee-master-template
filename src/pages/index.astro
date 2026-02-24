@@ -119,27 +119,28 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     <Section variant="light-100">
       <div class="text-center mb-14">
         <h2 class="text-3xl font-bold">Binnenkort in de moskee</h2>
-        <p class="text-neutral-500 mt-3">Aankomende activiteiten en bijeenkomsten</p>
+        <p class="text-neutral-600 mt-3">Aankomende activiteiten en bijeenkomsten</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {agendaEvents.map((event: any) => (
           <a
             href={`/agenda/${event.slug.current}`}
-            class="group bg-white border border-neutral-200 border-l-3 border-l-accent p-6 hover:border-l-primary transition-all"
+            class="group bg-white border border-slate-200 p-6 transition-all hover:bg-primary-light/40"
+            style="border-left: 3px solid #8b6843"
           >
             {event.categorie && (
-              <span class="badge inline-block px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-accent/10 text-accent mb-3">
+              <span class="badge inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-primary text-white mb-3">
                 {event.categorie}
               </span>
             )}
-            <h3 class="font-heading text-lg font-bold text-primary group-hover:text-accent transition-colors mb-1.5">
+            <h3 class="font-heading text-lg font-bold text-primary group-hover:underline group-hover:decoration-accent transition-colors mb-1.5">
               {event.titel}
             </h3>
-            <p class="text-sm text-neutral-500">
+            <p class="text-sm text-neutral-600">
               {new Date(event.startDatum).toLocaleDateString('nl-BE', { weekday: 'short', day: 'numeric', month: 'long', timeZone: settings?.timezone || 'Europe/Brussels' })}
             </p>
             {event.locatie && (
-              <p class="text-xs text-neutral-400 mt-1">{event.locatie}</p>
+              <p class="text-sm text-slate-600 mt-1">{event.locatie}</p>
             )}
           </a>
         ))}
@@ -168,18 +169,18 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
   {toonActueel && <Section variant="light-50">
     <div class="text-center mb-14">
       <h2 class="text-3xl font-bold">Uit onze gemeenschap</h2>
-      <p class="text-neutral-500 mt-3">Artikelen, tips en updates</p>
+      <p class="text-neutral-600 mt-3">Artikelen, tips en updates</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       {actueel.map((item: any) => (
-        <a href={item.href} class="group bg-white border border-neutral-200 border-l-3 border-l-accent p-6 hover:border-l-primary transition-all">
+        <a href={item.href} class="group bg-white border border-slate-200 p-6 transition-all hover:bg-primary-light/40" style="border-left: 3px solid #8b6843">
           <div class="flex items-center gap-3 mb-4">
-            <span class="text-[10px] font-semibold uppercase tracking-widest text-accent">{item.label}</span>
+            <span class="text-xs font-semibold uppercase tracking-widest bg-primary text-white px-3 py-1 badge rounded-full">{item.label}</span>
           </div>
-          <h3 class="font-heading text-lg font-bold text-primary group-hover:text-accent transition-colors mb-2">
+          <h3 class="font-heading text-lg font-bold text-primary group-hover:underline group-hover:decoration-accent transition-colors mb-2">
             {item.titel}
           </h3>
-          <p class="text-sm text-neutral-500 leading-relaxed line-clamp-3">{item.beschrijving}</p>
+          <p class="text-sm text-neutral-600 leading-relaxed line-clamp-3">{item.beschrijving}</p>
         </a>
       ))}
     </div>
