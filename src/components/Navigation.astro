@@ -1,6 +1,7 @@
 ---
 import { fetchSettings, urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
+import { isNavItemActive } from '../lib/logic/nav-utils';
 
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
@@ -41,7 +42,7 @@ const currentPath = Astro.url.pathname;
     <!-- Desktop Menu -->
     <div class="hidden lg:flex items-center gap-0">
       {visibleItems.map((item) => {
-        const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+        const isActive = isNavItemActive(currentPath, item.href);
         return (
           <a
             href={item.href}
@@ -98,7 +99,7 @@ const currentPath = Astro.url.pathname;
     <!-- Links — centered, spaced out -->
     <div class="flex-1 flex flex-col justify-center px-8 -mt-8">
       {visibleItems.map((item, i) => {
-        const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+        const isActive = isNavItemActive(currentPath, item.href);
         return (
           <a
             href={item.href}

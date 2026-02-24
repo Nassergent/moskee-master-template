@@ -1,4 +1,4 @@
-import { urlFor } from '../../../sanity/lib/client';
+import { urlFor } from '../sanity';
 
 interface SmartImageResult {
   src: string;

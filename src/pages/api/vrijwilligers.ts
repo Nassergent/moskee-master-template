@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
-import { writeClient } from '../../../sanity/lib/client';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
+import { sanitizeTakenArray } from '../../lib/logic/volunteer-validators';
+import { createVolunteer } from '../../services/volunteer-service';
 import { sendVolunteerEmails } from '../../services/email-service';
 
 export const prerender = false;
@@ -42,9 +43,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     const email = sanitize(data.email, 200);
     const telefoon = sanitize(data.telefoon, 20);
     const bericht = sanitize(data.bericht, 1000);
-    const taken = Array.isArray(data.taken)
-      ? data.taken.filter((t: string) => typeof t === 'string').slice(0, 10).map((t: string) => sanitize(t, 50))
-      : [];
+    const taken = sanitizeTakenArray(data.taken);
 
     if (!naam || naam.length < 2) {
       return new Response(JSON.stringify({ error: 'Vul een geldige naam in (min. 2 tekens).' }), {
@@ -61,16 +60,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     }
 
     // Sla vrijwilliger op in Sanity
-    await writeClient.create({
-      _type: 'volunteer',
-      naam,
-      email,
-      telefoon,
-      taken,
-      bericht,
-      aanmeldDatum: new Date().toISOString(),
-      status: 'nieuw',
-    });
+    await createVolunteer({ naam, email, telefoon, taken, bericht });
 
     // Delegate email sending to service
     try {

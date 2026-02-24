@@ -10,6 +10,7 @@
  */
 import { fetchIslamicDays, generateGoogleCalendarUrl } from '../lib/hijri';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
+import { resolveDownloadImage, extractFileName } from '../lib/logic/media-utils';
 import { urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 
@@ -83,26 +84,8 @@ const progress = hasProject && project.doelbedrag
   : null;
 
 // ── Download ──
-// downloadBestand kan een oud file-asset zijn (pre-migratie) of een nieuw image-asset
-const isImageAsset = downloadBestand?.asset?._ref?.startsWith('image-') || downloadBestand?._type === 'image';
-// File-asset kan ook een afbeelding zijn (jpeg/png/webp) — detecteer via URL extensie
-const imageExtensions = /\.(jpe?g|png|webp|gif|avif|heif)$/i;
-const isFileWithImageUrl = !!(downloadUrl && imageExtensions.test(downloadUrl));
-const hasDownloadImage = !!(downloadBestand && (isImageAsset || isFileWithImageUrl));
-let downloadImageUrl: string | null = null;
-let downloadImageUrlLarge: string | null = null;
-try {
-  if (isImageAsset) {
-    // Sanity image-asset: gebruik urlFor voor optimalisatie
-    downloadImageUrl = urlFor(downloadBestand).width(600).url();
-    downloadImageUrlLarge = urlFor(downloadBestand).width(1200).url();
-  } else if (isFileWithImageUrl && downloadUrl) {
-    // File-asset met afbeelding URL: gebruik direct (geen urlFor)
-    downloadImageUrl = downloadUrl;
-    downloadImageUrlLarge = downloadUrl;
-  }
-} catch { /* fallback naar null */ }
-const downloadFileName = downloadUrl ? downloadUrl.split('/').pop()?.split('?')[0] || 'document' : 'document';
+const { hasImage: hasDownloadImage, imageUrl: downloadImageUrl, imageUrlLarge: downloadImageUrlLarge } = resolveDownloadImage(downloadBestand, downloadUrl);
+const downloadFileName = extractFileName(downloadUrl);
 const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
 
 const showCountdown = !!upcoming;

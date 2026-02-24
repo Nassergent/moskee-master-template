@@ -10,7 +10,7 @@
  * default         → desktop 5-kolom grid
  */
 
-import { PRAYER_NAMES, PRAYER_LABELS, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
+import { PRAYER_NAMES, PRAYER_LABELS, formatCountdownCompact, getIqamaOffset, type ComputedPrayerTimes, type PrayerName } from '../../lib/logic/prayer-engine';
 
 interface Props {
   times: ComputedPrayerTimes;
@@ -22,25 +22,6 @@ interface Props {
 }
 
 const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, compact = false, fullscreen = false } = Astro.props;
-
-/** Format seconds as "Xu Ym" */
-function formatCompactCountdown(secs: number): string {
-  if (secs <= 0) return '';
-  const h = Math.floor(secs / 3600);
-  const m = Math.floor((secs % 3600) / 60);
-  if (h > 0) return `${h}u ${m}m`;
-  return `${m}m`;
-}
-
-/** Compute iqama offset in minutes from adhan time */
-function getIqamaOffset(adhan: string, iqama: string | null): string | null {
-  if (!iqama) return null;
-  const [ah, am] = adhan.split(':').map(Number);
-  const [ih, im] = iqama.split(':').map(Number);
-  let diff = (ih * 60 + im) - (ah * 60 + am);
-  if (diff < 0) diff += 1440;
-  return `+${diff}`;
-}
 ---
 
 {/* ── Fullscreen mobiel: rijen vullen 100% hoogte ── */}
@@ -74,7 +55,7 @@ function getIqamaOffset(adhan: string, iqama: string | null): string | null {
                 data-seconds={secondsUntilNext}
                 class="text-[10px] font-bold uppercase tracking-wider text-primary/60 tabular-nums"
               >
-                In {formatCompactCountdown(secondsUntilNext)}
+                In {formatCountdownCompact(secondsUntilNext)}
               </p>
             )}
           </div>
@@ -161,7 +142,7 @@ function getIqamaOffset(adhan: string, iqama: string | null): string | null {
                 data-seconds={secondsUntilNext}
                 class="text-[10px] font-bold uppercase tracking-wider text-primary mt-1 tabular-nums"
               >
-                In {formatCompactCountdown(secondsUntilNext)}
+                In {formatCountdownCompact(secondsUntilNext)}
               </p>
             )}
 
@@ -201,7 +182,7 @@ function getIqamaOffset(adhan: string, iqama: string | null): string | null {
                   data-seconds={secondsUntilNext}
                   class="text-[10px] font-bold uppercase tracking-wider text-accent mt-0.5 tabular-nums"
                 >
-                  In {formatCompactCountdown(secondsUntilNext)}
+                  In {formatCountdownCompact(secondsUntilNext)}
                 </p>
               )}
             </div>

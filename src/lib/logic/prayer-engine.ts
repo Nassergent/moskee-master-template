@@ -97,6 +97,36 @@ const HIGH_LAT_MAP: Record<string, typeof HighLatitudeRule[keyof typeof HighLati
   twilightAngle: HighLatitudeRule.TwilightAngle,
 };
 
+// ── Display Formatters ─────────────────────────────────────────────
+
+/** Format seconds as "HH:MM:SS" countdown string */
+export function formatCountdownHMS(secs: number): string {
+  if (secs <= 0) return '00:00:00';
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+/** Format seconds as compact "Xu Ym" countdown string */
+export function formatCountdownCompact(secs: number): string {
+  if (secs <= 0) return '';
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  if (h > 0) return `${h}u ${m}m`;
+  return `${m}m`;
+}
+
+/** Compute iqama offset in minutes from adhan time, e.g. "+15" */
+export function getIqamaOffset(adhan: string, iqama: string | null): string | null {
+  if (!iqama) return null;
+  const [ah, am] = adhan.split(':').map(Number);
+  const [ih, im] = iqama.split(':').map(Number);
+  let diff = (ih * 60 + im) - (ah * 60 + am);
+  if (diff < 0) diff += 1440;
+  return `+${diff}`;
+}
+
 // ── Helpers ────────────────────────────────────────────────────────
 
 /** Format a Date to HH:mm in a specific IANA timezone */
