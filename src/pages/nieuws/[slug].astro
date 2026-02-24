@@ -29,7 +29,7 @@ const newsArticleSchema = JSON.stringify({
 });
 ---
 
-<BaseLayout title={item.titel} description={item.samenvatting} ogImage={ogImage} ogType="article">
+<BaseLayout title={item.titel} description={item.samenvatting} ogImage={ogImage} ogType="article" breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Nieuws', href: '/nieuws' }, { name: item.titel, href: `/nieuws/${slug}` }]}>
   <script type="application/ld+json" set:html={newsArticleSchema} />
   <!-- Page Header — Dark with optional hero image -->
   <section class="bg-primary-dark text-white py-16 md:py-20">

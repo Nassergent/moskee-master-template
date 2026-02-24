@@ -4,6 +4,11 @@ import Footer from '../components/Footer.astro';
 import { fetchSettings, urlFor } from '../lib/sanity';
 import '../styles/global.css';
 
+interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
+
 interface Props {
   title?: string;
   description?: string;
@@ -12,22 +17,24 @@ interface Props {
   ogType?: string;
   hideFooterMobile?: boolean;
   preloadImage?: string;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
 const defaultDescription = settings?.description || 'Welkom bij onze moskee — een plek van gebed, gemeenschap en kennis.';
 
-const { title = mosqueName, description, bodyText, ogImage, ogType = 'website', hideFooterMobile = false, preloadImage } = Astro.props;
+const { title = mosqueName, description, bodyText, ogImage, ogType = 'website', hideFooterMobile = false, preloadImage, breadcrumbs } = Astro.props;
 const autoDescription = description
   || (bodyText ? bodyText.slice(0, 160).trim() + (bodyText.length > 160 ? '...' : '') : defaultDescription);
 const fullTitle = title === mosqueName ? title : `${title} | ${mosqueName}`;
 const canonicalUrl = Astro.url.href;
 
-// OG Image: prop > logo uit CMS > fallback
+// OG Image: prop > logo uit CMS > favicon fallback (altijd een og:image)
 const ogImageUrl = ogImage
   || (settings?.logo ? urlFor(settings.logo).width(1200).height(630).fit('crop').url() : null)
-  || null;
+  || (settings?.favicon ? urlFor(settings.favicon).width(1200).height(630).fit('crop').url() : null)
+  || new URL('/favicon.svg', Astro.site || Astro.url.origin).href;
 
 // 60-30-10 Color System from Sanity CMS
 const colors = settings?.theme || {
@@ -52,14 +59,10 @@ const colors = settings?.theme || {
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content="nl_BE" />
     <meta property="og:site_name" content={mosqueName} />
-    {ogImageUrl && (
-      <>
-        <meta property="og:image" content={ogImageUrl} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content={fullTitle} />
-      </>
-    )}
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
 
     {/* Twitter Card */}
     <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
@@ -184,6 +187,20 @@ const colors = settings?.theme || {
       "email": settings?.email || undefined,
       "image": ogImageUrl || undefined
     })} />
+
+    {/* BreadcrumbList JSON-LD — voor detail-pagina's */}
+    {breadcrumbs && breadcrumbs.length > 0 && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": breadcrumbs.map((item, i) => ({
+          "@type": "ListItem",
+          "position": i + 1,
+          "name": item.name,
+          "item": new URL(item.href, Astro.site || Astro.url.origin).href,
+        })),
+      })} />
+    )}
   </head>
   <body class="min-h-screen flex flex-col bg-base transition-colors relative">
     <!-- Skip to content (a11y) -->

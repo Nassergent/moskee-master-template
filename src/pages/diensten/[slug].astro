@@ -12,7 +12,7 @@ if (!dienst?.titel) return Astro.redirect('/diensten');
 const settings = await fetchSettings();
 ---
 
-<BaseLayout title={dienst.titel} description={dienst.beschrijving || ''} ogImage={dienst.afbeelding ? urlFor(dienst.afbeelding).width(1200).height(630).fit('crop').url() : undefined}>
+<BaseLayout title={dienst.titel} description={dienst.beschrijving || ''} ogImage={dienst.afbeelding ? urlFor(dienst.afbeelding).width(1200).height(630).fit('crop').url() : undefined} breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Diensten', href: '/diensten' }, { name: dienst.titel, href: `/diensten/${slug}` }]}>
   <!-- Page Header — Dark with optional hero image -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6">

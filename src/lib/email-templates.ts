@@ -79,15 +79,15 @@ function emailWrapper(
 
 // ── Data row helper ──
 
-/** @param safeValue — MOET al ge-escaped zijn of veilige HTML bevatten */
-function dataRow(label: string, safeValue: string, accent: string = defaultColors.accent): string {
+/** @param htmlValue — MOET al ge-escaped zijn via escapeHtml() of veilige, gecontroleerde HTML bevatten */
+function dataRow(label: string, htmlValue: string, accent: string = defaultColors.accent): string {
   return `
     <tr>
       <td style="padding: 10px 12px; font-size: 13px; color: #64748B; border-bottom: 1px solid #F1F5F9; width: 120px; vertical-align: top; font-weight: 600;">
         ${escapeHtml(label)}
       </td>
       <td style="padding: 10px 12px; font-size: 14px; color: #1E293B; border-bottom: 1px solid #F1F5F9;">
-        ${safeValue}
+        ${htmlValue}
       </td>
     </tr>`;
 }

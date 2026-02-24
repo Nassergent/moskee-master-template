@@ -28,8 +28,7 @@ if (configComplete) {
   } catch { /* SEO data not critical */ }
 }
 
-// Cache headers: kort tijdens fine-tuning, verhoog later naar s-maxage=3600
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
 ---
 
 <BaseLayout title="Gebedstijden" description="Dagelijkse gebedstijden en Jumu'ah informatie" hideFooterMobile>
@@ -40,7 +39,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       <p class="text-white/80 max-w-xl mx-auto">
         Dagelijkse gebedstijden en Iqamah — altijd actueel
       </p>
-      <p class="text-white/50 font-arabic text-sm mt-3">{hijriToday}</p>
+      <p class="text-white/50 font-arabic text-sm mt-3" lang="ar" dir="rtl">{hijriToday}</p>
     </div>
   </section>
 

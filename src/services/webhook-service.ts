@@ -193,21 +193,31 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
       }
     }
 
-    // ── Email dispatch (non-critical, after processed marker) ──
-    try {
-      await processSuccessfulPayment({
-        amount: payment.amount,
-        metadata: {
-          project: projectName,
-          frequency: meta?.frequency || (rawMeta?.frequency as string),
-          email: meta?.email || (rawMeta?.email as string),
-        },
-        skipSanityUpdate: true,  // We already updated Sanity above
-      });
-      log('info', 'email_sent', { tenantId });
-    } catch (emailErr) {
-      // Email failure is non-critical
-      log('warn', 'webhook_error', { tenantId, step: 'email' }, emailErr);
+    // ── Email dispatch (after processed marker, with retry) ──
+    const emailPayload = {
+      amount: payment.amount,
+      metadata: {
+        project: projectName,
+        frequency: meta?.frequency || (rawMeta?.frequency as string),
+        email: meta?.email || (rawMeta?.email as string),
+      },
+      skipSanityUpdate: true,  // We already updated Sanity above
+    };
+
+    let emailSent = false;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await processSuccessfulPayment(emailPayload);
+        log('info', 'email_sent', { tenantId, attempt });
+        emailSent = true;
+        break;
+      } catch (emailErr) {
+        log('warn', 'webhook_error', { tenantId, step: 'email', attempt }, emailErr);
+        if (attempt < 3) await sleep(attempt * 500);
+      }
+    }
+    if (!emailSent) {
+      log('error', 'webhook_error', { tenantId, step: 'email_failed_all_retries' });
     }
 
     log('info', 'webhook_complete', { tenantId, duration_ms: Date.now() - startTime });

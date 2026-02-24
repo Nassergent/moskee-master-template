@@ -19,13 +19,13 @@ const { taken = [] } = Astro.props;
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
     <div>
       <label for="vol-naam" class="block text-sm font-heading font-semibold text-primary mb-2">Naam *</label>
-      <input type="text" id="vol-naam" name="naam" required
+      <input type="text" id="vol-naam" name="naam" required aria-required="true"
         class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
         placeholder="Uw volledige naam" />
     </div>
     <div>
       <label for="vol-email" class="block text-sm font-heading font-semibold text-primary mb-2">E-mail *</label>
-      <input type="email" id="vol-email" name="email" required
+      <input type="email" id="vol-email" name="email" required aria-required="true"
         class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-sm"
         placeholder="uw@email.be" />
     </div>
@@ -100,12 +100,13 @@ const { taken = [] } = Astro.props;
 
       if (res.ok) {
         statusEl.innerHTML = `
-          <div class="bg-primary/5 border-l-4 border-primary p-4 text-sm">
+          <div class="bg-primary/5 border-l-4 border-primary p-4 text-sm" tabindex="-1" role="status">
             <p class="font-heading font-bold text-primary mb-1">Aanmelding ontvangen</p>
             <p class="text-neutral-600">Jazak Allahu Khairan! Wij nemen zo snel mogelijk contact met u op.</p>
           </div>
         `;
         statusEl.className = '';
+        statusEl.querySelector('[tabindex]')?.focus();
         form.reset();
       } else {
         const result = await res.json().catch(() => ({}));
@@ -122,6 +123,8 @@ const { taken = [] } = Astro.props;
       `;
       statusEl.querySelector('.text-red-600')!.appendChild(msg);
       statusEl.className = '';
+      statusEl.querySelector('[class*="border-l-4"]')?.setAttribute('tabindex', '-1');
+      (statusEl.querySelector('[tabindex]') as HTMLElement)?.focus();
     } finally {
       btn.innerHTML = originalText || 'Aanmelden als vrijwilliger';
       btn.disabled = false;

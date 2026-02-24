@@ -34,14 +34,22 @@ export const freshClient = createClient({
   apiVersion: '2024-01-01',
 });
 
-// Write client for creating documents (volunteer form etc.)
-// Token MOET via env var — geen hardcoded fallback
+// Write client for creating documents (volunteer form, donations etc.)
+// SANITY_WRITE_TOKEN = write-only token met minimale rechten
+// Fallback op SANITY_API_TOKEN alleen in dev — in productie altijd aparte write token gebruiken
+const writeToken = getEnv('SANITY_WRITE_TOKEN');
+const readToken = getEnv('SANITY_API_TOKEN');
+
+if (!writeToken && readToken) {
+  console.warn('[sanity] SANITY_WRITE_TOKEN ontbreekt — fallback op SANITY_API_TOKEN. Gebruik in productie een apart write token met minimale rechten.');
+}
+
 export const writeClient = createClient({
   projectId,
   dataset,
   useCdn: false,
   apiVersion: '2024-01-01',
-  token: getEnv('SANITY_WRITE_TOKEN') || getEnv('SANITY_API_TOKEN'),
+  token: writeToken || readToken,
 });
 
 const builder = createImageUrlBuilder({ projectId: projectId!, dataset });

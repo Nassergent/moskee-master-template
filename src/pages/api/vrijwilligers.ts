@@ -28,7 +28,15 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    const data = await request.json();
+    let data: any;
+    try {
+      data = await request.json();
+    } catch {
+      return new Response(JSON.stringify({ error: 'Ongeldig verzoek.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     // Honeypot check
     if (isBot(data)) {
@@ -62,11 +70,15 @@ export const POST: APIRoute = async ({ request, url }) => {
     // Sla vrijwilliger op in Sanity
     await createVolunteer({ naam, email, telefoon, taken, bericht });
 
-    // Delegate email sending to service
-    try {
-      await sendVolunteerEmails({ naam, email, telefoon, taken, bericht });
-    } catch (emailErr) {
-      console.error('Vrijwilliger e-mail fout:', emailErr);
+    // Delegate email sending to service (retry 2x)
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        await sendVolunteerEmails({ naam, email, telefoon, taken, bericht });
+        break;
+      } catch (emailErr) {
+        console.error(`Vrijwilliger e-mail fout (poging ${attempt}):`, emailErr);
+        if (attempt < 2) await new Promise(r => setTimeout(r, 500));
+      }
     }
 
     return new Response(JSON.stringify({ success: true }), {

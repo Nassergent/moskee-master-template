@@ -18,7 +18,7 @@ export async function fetchSettings() {
 
 export async function fetchDiensten() {
   try {
-    const result = await sanityClient.fetch(`*[_type == "service" && actief != false] | order(volgorde asc) {
+    const result = await sanityClient.fetch(`*[_type == "service" && actief == true] | order(volgorde asc) {
       _id, titel, "slug": slug, beschrijving, inhoud, afbeelding, tijden, volgorde
     }`);
     return result || [];
@@ -80,7 +80,7 @@ export async function fetchActueel() {
   try {
     const result = await sanityClient.fetch(`*[
       (_type == "post" && gepubliceerd == true) ||
-      (_type == "service" && actief != false)
+      (_type == "service" && actief == true)
     ] | order(_createdAt desc) [0...3] {
       _id,
       _type,
@@ -146,7 +146,7 @@ export async function fetchQuote(categorie: string = 'donaties') {
 
 export async function fetchEtiquette() {
   try {
-    const result = await sanityClient.fetch(`*[_type == "etiquette" && gepubliceerd != false] | order(volgorde asc) {
+    const result = await sanityClient.fetch(`*[_type == "etiquette" && gepubliceerd == true] | order(volgorde asc) {
       _id, title, description, volgorde
     }`);
     return result || [];
@@ -272,7 +272,7 @@ export async function fetchUpcomingAgendaEvents(limit = 3) {
 export async function fetchAgendaEvent(slug: string) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
-      _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
+      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie, categorie, beschrijving,
       afbeelding
     }`, { slug });
     return result || null;

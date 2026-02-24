@@ -31,7 +31,15 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    const data = await request.json();
+    let data: any;
+    try {
+      data = await request.json();
+    } catch {
+      return new Response(JSON.stringify({ error: 'Ongeldig verzoek.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     // Honeypot check
     if (isBot(data)) {

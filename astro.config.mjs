@@ -10,7 +10,7 @@ import sitemap from '@astrojs/sitemap';
 const env = loadEnv('', process.cwd(), 'PUBLIC_');
 
 export default defineConfig({
-  site: 'https://moskee-master-template.vercel.app',
+  site: env.PUBLIC_SITE_URL || 'https://moskee-master-template.vercel.app',
   output: 'server',
   adapter: vercel(),
   // Astro 5 CSRF uitgeschakeld — we doen eigen origin-check per route

@@ -39,7 +39,7 @@ const days = await fetchIslamicDays(hijriAdjustment, islamicDays);
                 <span class="text-lg">{day.emoji}</span>
                 <h3 class="font-heading font-bold text-primary text-sm">{day.name}</h3>
               </div>
-              <p class="text-xs text-neutral-400 font-arabic">{day.nameAr}</p>
+              <p class="text-xs text-neutral-400 font-arabic" lang="ar" dir="rtl">{day.nameAr}</p>
               <p class="text-xs text-neutral-500 mt-1.5">
                 {isToday
                   ? 'Vandaag'

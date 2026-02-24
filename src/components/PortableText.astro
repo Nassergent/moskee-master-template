@@ -52,9 +52,13 @@ function renderChildrenWithLinks(block: any): string {
         // Check markDefs for links
         const def = markDefs.find((d: any) => d._key === mark);
         if (def && def._type === 'link') {
-          const href = def.href || '#';
+          const rawHref = def.href || '#';
+          // XSS preventie: blokkeer javascript:, data:, vbscript: links
+          const isSafe = /^(https?:\/\/|\/|#|mailto:|tel:)/.test(rawHref.trim().toLowerCase());
+          const href = isSafe ? rawHref : '#';
+          const escapedHref = href.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
           const rel = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
-          text = `<a href="${href}" class="text-primary hover:opacity-80 underline"${rel}>${text}</a>`;
+          text = `<a href="${escapedHref}" class="text-primary hover:opacity-80 underline"${rel}>${text}</a>`;
         }
       }
     }
@@ -111,9 +115,10 @@ const grouped = groupBlocks(value);
     // Image block
     if (item._type === 'image' && item.asset) {
       const imgUrl = urlFor(item).width(800).url();
+      const altText = item.alt || item.asset?.altText || 'Afbeelding';
       return (
         <figure class="my-8">
-          <img src={imgUrl} alt="" class="w-full" width={800} loading="lazy" style="aspect-ratio: auto" />
+          <img src={imgUrl} alt={altText} class="w-full" width={800} loading="lazy" style="aspect-ratio: auto" />
         </figure>
       );
     }

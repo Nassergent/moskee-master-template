@@ -70,7 +70,7 @@ const gregorianToday = new Date().toLocaleDateString('nl-BE', {
         >
           {new Date().toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: computedTimes.timezone })}
         </p>
-        <p class="text-white/50 font-arabic text-sm mt-2">{hijriToday}</p>
+        <p class="text-white/50 font-arabic text-sm mt-2" lang="ar" dir="rtl">{hijriToday}</p>
         <p class="text-white/40 text-xs mt-0.5 capitalize">{gregorianToday}</p>
       </div>
 

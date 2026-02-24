@@ -44,7 +44,7 @@ const eventSchema = JSON.stringify({
 });
 ---
 
-<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`} ogImage={event.afbeelding ? urlFor(event.afbeelding).width(1200).height(630).fit('crop').url() : undefined}>
+<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`} ogImage={event.afbeelding ? urlFor(event.afbeelding).width(1200).height(630).fit('crop').url() : undefined} breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Agenda', href: '/agenda' }, { name: event.titel, href: `/agenda/${slug}` }]}>
   <script type="application/ld+json" set:html={eventSchema} />
 
   <!-- Page Header -->
@@ -134,7 +134,7 @@ const eventSchema = JSON.stringify({
       )}
 
       {/* Hijri datum */}
-      <p class="text-sm text-neutral-400 font-arabic mb-6">{formatHijriDate(new Date(event.startDatum))}</p>
+      <p class="text-sm text-neutral-400 font-arabic mb-6" lang="ar" dir="rtl">{formatHijriDate(new Date(event.startDatum))}</p>
 
       {/* AddToCalendar */}
       <div class="mb-8">

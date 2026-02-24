@@ -37,7 +37,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
 
           <div>
             <label for="naam" class="block text-sm font-heading font-semibold text-primary mb-2">Naam *</label>
-            <input type="text" id="naam" name="naam" required
+            <input type="text" id="naam" name="naam" required aria-required="true"
               class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-base"
               placeholder="Uw volledige naam" />
           </div>
@@ -45,7 +45,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label for="email" class="block text-sm font-heading font-semibold text-primary mb-2">E-mail *</label>
-              <input type="email" id="email" name="email" required
+              <input type="email" id="email" name="email" required aria-required="true"
                 class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-base"
                 placeholder="uw@email.be" />
             </div>
@@ -59,7 +59,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
 
           <div>
             <label for="onderwerp" class="block text-sm font-heading font-semibold text-primary mb-2">Onderwerp *</label>
-            <select id="onderwerp" name="onderwerp" required
+            <select id="onderwerp" name="onderwerp" required aria-required="true"
               class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all text-base appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
               <option value="">Kies een onderwerp</option>
               {onderwerpen.map((o: string) => (
@@ -70,7 +70,7 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
 
           <div>
             <label for="bericht" class="block text-sm font-heading font-semibold text-primary mb-2">Bericht *</label>
-            <textarea id="bericht" name="bericht" required rows="5"
+            <textarea id="bericht" name="bericht" required aria-required="true" rows="5"
               class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none transition-all resize-y text-base"
               placeholder="Waar kunnen wij u mee helpen?"></textarea>
           </div>
@@ -177,12 +177,13 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
 
       if (res.ok) {
         statusEl.innerHTML = `
-          <div class="bg-primary/5 border-l-4 border-primary p-4 text-sm">
+          <div class="bg-primary/5 border-l-4 border-primary p-4 text-sm" tabindex="-1" role="status">
             <p class="font-heading font-bold text-primary mb-1">Bericht ontvangen</p>
             <p class="text-neutral-600">Bedankt voor uw bericht. Wij reageren zo snel mogelijk, in shaa Allah.</p>
           </div>
         `;
         statusEl.className = '';
+        statusEl.querySelector('[tabindex]')?.focus();
         form.reset();
       } else {
         const result = await res.json().catch(() => ({}));
@@ -199,6 +200,8 @@ const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : 
       `;
       statusEl.querySelector('.text-red-600')!.appendChild(msg);
       statusEl.className = '';
+      statusEl.querySelector('[class*="border-l-4"]')?.setAttribute('tabindex', '-1');
+      (statusEl.querySelector('[tabindex]') as HTMLElement)?.focus();
     } finally {
       btn.innerHTML = originalText || 'Versturen';
       btn.disabled = false;

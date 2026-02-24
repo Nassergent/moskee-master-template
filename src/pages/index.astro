@@ -6,11 +6,13 @@ import PrayerManager from '../components/PrayerManager.astro';
 import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, fetchProjecten, urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 
-const settings = await fetchSettings();
-const actueel = await fetchActueel();
-const homePage = await fetchHomePage();
-const agendaEvents = await fetchUpcomingAgendaEvents(3);
-const projecten = await fetchProjecten();
+const [settings, actueel, homePage, agendaEvents, projecten] = await Promise.all([
+  fetchSettings(),
+  fetchActueel(),
+  fetchHomePage(),
+  fetchUpcomingAgendaEvents(3),
+  fetchProjecten(),
+]);
 const eersteProject = projecten?.find((p: any) => p.toonOpHomepage) || (projecten?.length > 0 ? projecten[0] : null);
 
 // Hero data: alleen uit homePage singleton
@@ -30,8 +32,7 @@ const badges = homePage?.badges?.length ? homePage.badges : ['Allen Welkom', 'TÃ
 const badgeKleur = homePage?.badgeKleur || '#593B1D';
 const toonActueel = homePage?.toonActueel ?? true;
 
-// Cache headers: kort tijdens fine-tuning, verhoog later naar s-maxage=3600
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
 ---
 
 <BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>

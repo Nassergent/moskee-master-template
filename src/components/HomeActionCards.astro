@@ -112,7 +112,7 @@ const gridClass = cardCount === 3
               <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-1">
                 {upcoming.name}
               </h2>
-              <p class="font-arabic text-base text-neutral-400 mb-3" dir="rtl">
+              <p class="font-arabic text-base text-neutral-400 mb-3" lang="ar" dir="rtl">
                 {upcoming.nameAr}
               </p>
               {betekenis && (
@@ -165,7 +165,7 @@ const gridClass = cardCount === 3
                     <div class="flex items-center justify-between py-2 border-t border-neutral-100">
                       <div class="flex items-center gap-2 min-w-0">
                         <span class="text-sm font-bold text-primary truncate">{day.name}</span>
-                        <span class="font-arabic text-xs text-neutral-300 shrink-0" dir="rtl">{day.nameAr}</span>
+                        <span class="font-arabic text-xs text-neutral-300 shrink-0" lang="ar" dir="rtl">{day.nameAr}</span>
                       </div>
                       <div class="flex items-center gap-3 shrink-0">
                         <span class="text-xs text-neutral-400">{dayDate}</span>

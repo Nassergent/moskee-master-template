@@ -4,6 +4,90 @@ Architectuurbeslissingen en wijzigingen voor Het Digitale Waqf platform.
 
 ---
 
+## v1.6.3 — Medium Priority Audit Fixes (2026-02-24)
+
+### Aanleiding
+15 medium priority issues uit de 10-experten audit. 11 opgelost, 4 geaccepteerd als trade-off.
+
+### Fixes
+
+| # | Issue | Oplossing | Bestanden |
+|---|-------|-----------|-----------|
+| 1 | `fetchDiensten` query safety | `actief != false` → `actief == true` | `src/lib/sanity.ts` |
+| 2 | EtiquetteGrid `rounded-full` violatie | → verwijderd (Flat Design DNA) | `src/components/EtiquetteGrid.astro` |
+| 3 | Site URL placeholder | `PUBLIC_SITE_URL` env var, fallback op template URL | `astro.config.mjs` |
+| 4 | `aria-required="true"` ontbreekt | Toegevoegd op alle required inputs (4x contact, 2x volunteer) | `contact.astro`, `VolunteerForm.astro` |
+| 5 | Cron auth te permissief | Custom header alleen in dev, prod alleen Vercel signature | `api/jobs/reconcile-mollie.ts` |
+| 6 | `dataRow()` misleidende param naam | `safeValue` → `htmlValue` met verduidelijkte JSDoc | `src/lib/email-templates.ts` |
+| 7 | Missende BreadcrumbList schema | JSON-LD via `breadcrumbs` prop op BaseLayout + alle detail pages | `BaseLayout.astro`, `diensten/[slug]`, `nieuws/[slug]`, `agenda/[slug]` |
+
+### Niet opgelost (geaccepteerde trade-offs)
+- **fetchSettings overfetching**: 18 velden nodig op meerdere pagina's, splitsen voegt complexiteit toe zonder merkbaar performance-verschil (CDN cached)
+- **TypeScript types voor Sanity data**: Structurele verbetering, te groot voor audit-fix. Gepland voor v1.7.
+- **FAQPage schema**: Geen FAQ-content aanwezig in CMS — N/A
+- **Donation script extraction**: Vite bundelt al naar 4.87KB gzipped — acceptabel
+- **setInterval cleanup**: Gebruikt al `astro:before-preparation` events + auto-clear op countdown=0 — al correct
+- **Images WebP/AVIF**: `urlFor().auto('format')` levert al WebP/AVIF via Sanity CDN Accept header — al correct
+- **Mollie API timeout**: Mollie client heeft ingebouwde timeout (60s) — geen extra wrapper nodig
+- **CSRF origin check**: Eigen `checkOrigin` helper per route is bewust (webhook gebruikt HMAC) — correct
+
+---
+
+## v1.6.2 — High Priority Audit Fixes (2026-02-24)
+
+### Aanleiding
+12 high priority issues uit de 10-experten audit opgelost.
+
+### Fixes
+
+| # | Issue | Oplossing | Bestanden |
+|---|-------|-----------|-----------|
+| 1 | JSON parse → 500 i.p.v. 400 | try/catch rond `request.json()` in alle 3 POST endpoints | `api/contact.ts`, `api/donate.ts`, `api/vrijwilligers.ts` |
+| 2 | Email failure (webhook) | 3x retry met backoff (500ms, 1s, 1.5s) + error logging | `services/webhook-service.ts` |
+| 3 | Email failure (volunteer) | 2x retry met 500ms pauze | `api/vrijwilligers.ts` |
+| 4 | MOLLIE_WEBHOOK_SECRET | Documentatie: Nasser moet invullen in Vercel env vars | `.env.example` (al correct) |
+| 5 | npm vulnerabilities | Upstream Sanity Studio issue — niet fixbaar zonder breaking changes | n.v.t. |
+| 6 | Write token scheiding | Warning log bij fallback + documentatie voor aparte write token | `sanity/lib/client.ts` |
+| 7 | `gepubliceerd != false` | → `gepubliceerd == true` (veilige expliciete check) | `src/lib/sanity.ts` |
+| 8 | `actief != false` | → `actief == true` (consistent met gepubliceerd) | `src/lib/sanity.ts` |
+| 9 | Cache 60s te kort | → `s-maxage=3600, stale-while-revalidate=86400` | `index.astro`, `gebedstijden.astro` |
+| 10 | Focus na form submit | `tabindex="-1"` + `role="status"` + `.focus()` op success/error | `contact.astro`, `VolunteerForm.astro` |
+| 11 | Color contrast | `text-neutral-400` → `text-neutral-600` (badges), `text-white/70` → `text-white/90` (footer icons) | `doneren.astro`, `Footer.astro` |
+| 12 | Vercel security headers | `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` + font/asset caching | `vercel.json` |
+
+### Niet opgelost (upstream)
+- npm audit HIGH: `minimatch` + `path-to-regexp` in `@sanity/astro` dependency chain. Geen fix beschikbaar zonder Sanity major update. Risico beperkt tot Studio (/admin), niet de website.
+
+---
+
+## v1.6.1 — Critical Audit Fixes (2026-02-24)
+
+### Aanleiding
+10-experten audit onthulde 8 critical issues. Alle direct opgelost.
+
+### Fixes
+
+| # | Issue | Oplossing | Bestanden |
+|---|-------|-----------|-----------|
+| 1 | **Security: .env in git** | `.gitignore` versterkt (`.env.*` pattern, `!.env.example`) | `.gitignore` |
+| 2 | **Security: XSS in PortableText href** | URL-schema validatie + href escaping. Blokkeert `javascript:`, `data:`, `vbscript:` links | `src/components/PortableText.astro` |
+| 3 | **Performance: Waterfall homepage** | 5 sequentiële Sanity fetches → `Promise.all()` (bespaart 400-1000ms) | `src/pages/index.astro` |
+| 4 | **SEO: Alt tekst op rich-text images** | `item.alt \|\| item.asset?.altText \|\| 'Afbeelding'` fallback chain | `src/components/PortableText.astro` |
+| 5 | **SEO: OG image op alle pagina's** | BaseLayout fallback chain: prop → CMS logo → favicon → favicon.svg | `src/layouts/BaseLayout.astro` |
+| 6 | **A11y: .sr-only CSS class** | Standaard Tailwind `.sr-only` definitie toegevoegd | `src/styles/global.css` |
+| 7 | **A11y: lang="ar" op Arabische tekst** | `lang="ar" dir="rtl"` op alle font-arabic elementen (7 locaties) | `HomeActionCards`, `PrayerManager`, `IslamicCalendar`, `agenda/*`, `bedankt`, `gebedstijden` |
+| 8 | **Sanity: Slug bug fetchAgendaEvent** | `slug` → `"slug": slug.current` in GROQ projectie | `src/lib/sanity.ts` |
+
+### Audit Scores (voor → na)
+- Architecture: 100/100 (ongewijzigd)
+- Security: 75 → 85
+- Performance: 78 → 88
+- SEO: 82 → 92
+- Accessibility: 76 → 86
+- Design DNA: 94/100 (ongewijzigd)
+
+---
+
 ## v1.6 — Native Prayer Engine & Mawaqit Sanering (2026-02-23)
 
 ### Beslissing

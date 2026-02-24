@@ -16,8 +16,12 @@ export const POST: APIRoute = async ({ request, url }) => {
   }
 
   const vercelSig = request.headers.get('x-vercel-cron-signature');
-  const headerSecret = request.headers.get('x-cron-secret');
-  const authorized = vercelSig === cronSecret || headerSecret === cronSecret;
+  const isProduction = import.meta.env.PROD;
+  // In production: alleen Vercel cron signature accepteren
+  // In dev: ook custom header voor lokale tests
+  const authorized = isProduction
+    ? vercelSig === cronSecret
+    : (vercelSig === cronSecret || request.headers.get('x-cron-secret') === cronSecret);
 
   if (!authorized) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
