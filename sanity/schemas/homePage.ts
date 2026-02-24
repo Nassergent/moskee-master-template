@@ -77,12 +77,12 @@ export const homePage = defineType({
     }),
     defineField({
       name: 'downloadBestand',
-      title: 'Download Kaart — Bestand',
-      type: 'file',
+      title: 'Download Kaart — Afbeelding',
+      type: 'image',
       options: {
-        accept: '.pdf,.jpg,.jpeg,.png,.webp',
+        hotspot: true,
       },
-      description: 'Upload een PDF, afbeelding of ander document. Als er geen bestand is geüpload, wordt de downloadkaart niet getoond.',
+      description: 'Upload een afbeelding (bijv. Ramadan Programma poster). Als dit leeg is, wordt de downloadkaart niet getoond.',
     }),
 
     // ── SEO ──

@@ -110,7 +110,7 @@ const grouped = groupBlocks(value);
 
     // Image block
     if (item._type === 'image' && item.asset) {
-      const imgUrl = urlFor(item).width(800).format('webp').url();
+      const imgUrl = urlFor(item).width(800).url();
       return (
         <figure class="my-8">
           <img src={imgUrl} alt="" class="w-full" width={800} loading="lazy" style="aspect-ratio: auto" />

@@ -15,7 +15,7 @@ const heroSubtitle = aboutPage?.heroSubtitle || `Ontdek wie wij zijn en wat ons 
 
 const missieTitle = aboutPage?.missieTitle || 'Onze Missie';
 const missieImageUrl = aboutPage?.missieImage
-  ? urlFor(aboutPage.missieImage).width(800).height(600).format('webp').url()
+  ? urlFor(aboutPage.missieImage).width(800).height(600).url()
   : null;
 const hasMissieImage = !!missieImageUrl;
 

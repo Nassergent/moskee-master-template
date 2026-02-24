@@ -47,6 +47,7 @@ export const writeClient = createClient({
 const builder = createImageUrlBuilder({ projectId: projectId!, dataset });
 
 export function urlFor(source: any) {
-  // Enforce WebP format and max 2000px width for all Sanity images
-  return builder.image(source).format('webp').quality(80);
+  // auto('format') → Sanity serves WebP/AVIF based on Accept header
+  // Default width 1200 prevents full-resolution downloads; callers can override with .width()
+  return builder.image(source).auto('format').quality(80).width(1200);
 }

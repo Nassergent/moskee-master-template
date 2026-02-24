@@ -29,7 +29,9 @@ const nieuws = await fetchNieuws();
           >
             {item.afbeelding ? (
               <img
-                src={urlFor(item.afbeelding).width(600).height(300).fit('crop').url()}
+                src={urlFor(item.afbeelding).width(400).height(200).fit('crop').url()}
+                width={400}
+                height={200}
                 alt={sanitizeAlt(item.titel)}
                 class="w-full aspect-[2/1] object-cover"
                 loading="lazy"

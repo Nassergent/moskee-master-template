@@ -54,6 +54,7 @@ export const settings = defineType({
       title: 'Favicon',
       type: 'image',
       group: 'general',
+      options: { hotspot: true },
       description: 'Het kleine icoontje in het browsertabblad. Gebruik bij voorkeur een vierkante afbeelding (bijv. 64×64 of 128×128 pixels).',
     }),
     // heroImage → verplaatst naar homePage singleton

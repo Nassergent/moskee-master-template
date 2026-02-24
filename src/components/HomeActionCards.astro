@@ -31,6 +31,7 @@ interface Props {
   downloadTitel?: string;
   downloadBeschrijving?: string;
   downloadUrl?: string;
+  downloadBestand?: any;
 }
 
 const {
@@ -41,6 +42,7 @@ const {
   downloadTitel,
   downloadBeschrijving,
   downloadUrl,
+  downloadBestand,
 } = Astro.props;
 
 // ── Islamic Countdown — alle aankomende dagen ──
@@ -81,13 +83,14 @@ const progress = hasProject && project.doelbedrag
   : null;
 
 // ── Download ──
-const isImage = downloadUrl ? /\.(jpe?g|png|webp|gif)$/i.test(downloadUrl) : false;
+const hasDownloadImage = !!downloadBestand;
+const downloadImageUrl = hasDownloadImage ? urlFor(downloadBestand).width(600).url() : null;
 const downloadFileName = downloadUrl ? downloadUrl.split('/').pop()?.split('?')[0] || 'document' : 'document';
 const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
 
 const showCountdown = !!upcoming;
 const showDoneer = hasProject;
-const showDownload = !!(downloadUrl && downloadTitel);
+const showDownload = !!(downloadBestand && downloadTitel);
 const cardCount = [showCountdown, showDoneer, showDownload].filter(Boolean).length;
 
 const gridClass = cardCount === 3
@@ -185,6 +188,8 @@ const gridClass = cardCount === 3
                 src={urlFor(project.afbeelding).width(600).height(250).fit('crop').url()}
                 alt={sanitizeAlt(project.titel)}
                 class="w-full aspect-[12/5] object-cover"
+                width={600}
+                height={250}
                 loading="lazy"
               />
             )}
@@ -239,15 +244,16 @@ const gridClass = cardCount === 3
         )}
 
         {/* ── Kaart 3: Document Download (met afbeelding preview) ── */}
-        {showDownload && downloadUrl && (
+        {showDownload && (
           <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col overflow-hidden" style="animation-delay: 200ms">
-            {/* Afbeelding preview als het een image is — klik opent lightbox */}
-            {isImage && (
+            {/* Afbeelding preview — klik opent lightbox */}
+            {hasDownloadImage && downloadImageUrl && (
               <button type="button" data-lightbox-trigger class="block w-full cursor-zoom-in">
                 <img
-                  src={downloadUrl}
+                  src={downloadImageUrl}
                   alt={sanitizeAlt(downloadTitel)}
                   class="w-full h-auto max-h-[300px] object-contain bg-neutral-50"
+                  width={600}
                   loading="lazy"
                 />
               </button>
@@ -286,7 +292,7 @@ const gridClass = cardCount === 3
 )}
 
 {/* Lightbox overlay */}
-{showDownload && isImage && (
+{showDownload && hasDownloadImage && (
   <div
     id="download-lightbox"
     class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-zoom-out"
@@ -295,7 +301,7 @@ const gridClass = cardCount === 3
   >
     <img
       id="download-lightbox-img"
-      src={downloadUrl}
+      src={downloadImageUrl ? urlFor(downloadBestand).width(1200).url() : ''}
       alt={sanitizeAlt(downloadTitel)}
       class="max-w-full max-h-[90vh] object-contain animate-fade-in-up"
     />
