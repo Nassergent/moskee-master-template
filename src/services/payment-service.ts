@@ -5,7 +5,8 @@
 
 import { writeClient } from '../../sanity/lib/client';
 import { fetchProjectByTitle, fetchSettings } from '../lib/sanity';
-import { parseCurrencyAmountCents, centsToEuros, shouldUpdateProject } from '../lib/logic/payment-validators';
+import { centsToEuros, shouldUpdateProject } from '../lib/logic/payment-validators';
+import { stringToCents } from '../lib/logic/webhook-validators';
 import { escapeHtml } from '../lib/security';
 import { donationConfirmationEmail } from '../lib/email-templates';
 import { Resend } from 'resend';
@@ -29,7 +30,7 @@ export async function processSuccessfulPayment(payment: {
 }): Promise<void> {
   const metadata = payment.metadata;
   const projectName = metadata?.project;
-  const paidAmountCents = parseCurrencyAmountCents(payment.amount.value);
+  const paidAmountCents = stringToCents(payment.amount.value);
 
   // 1. Atomic increment in integer cents (no float precision loss)
   //    Skip when called from webhook-service (it handles its own commit with retry)
