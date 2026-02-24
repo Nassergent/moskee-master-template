@@ -48,10 +48,10 @@ const settings = await fetchSettings();
   <Section variant="light-50">
     <div class="max-w-3xl mx-auto">
       <div class="prose prose-neutral prose-lg max-w-none">
-        <p class="text-lg text-neutral-700 leading-relaxed">{dienst.beschrijving}</p>
-
-        {dienst.inhoud && dienst.inhoud.length > 0 && (
+        {dienst.inhoud && dienst.inhoud.length > 0 ? (
           <PortableText value={dienst.inhoud} />
+        ) : (
+          <p class="text-lg text-neutral-700 leading-relaxed">{dienst.beschrijving}</p>
         )}
 
         <h2>Praktische Informatie</h2>
