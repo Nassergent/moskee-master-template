@@ -17,7 +17,15 @@ export const agendaEvent = defineType({
       title: 'Slug',
       type: 'slug',
       description: 'URL-pad voor de detailpagina.',
-      options: { source: 'titel', maxLength: 96 },
+      options: {
+        source: 'titel',
+        maxLength: 96,
+        slugify: (input: string) =>
+          input.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .slice(0, 96),
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -73,9 +81,7 @@ export const agendaEvent = defineType({
       type: 'array',
       of: [
         { type: 'block' },
-        { type: 'image', options: { hotspot: true }, fields: [
-          defineField({ name: 'alt', title: 'Alt-tekst', type: 'string' }),
-        ]},
+        { type: 'image', options: { hotspot: true } },
       ],
       description: 'Uitgebreide beschrijving van het evenement (rich text met afbeeldingen).',
     }),

@@ -17,7 +17,15 @@ export const post = defineType({
       title: 'Slug',
       type: 'slug',
       description: 'URL-pad voor het artikel. Klik op "Generate" om automatisch aan te maken.',
-      options: { source: 'titel', maxLength: 96 },
+      options: {
+        source: 'titel',
+        maxLength: 96,
+        slugify: (input: string) =>
+          input.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .slice(0, 96),
+      },
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -40,9 +48,6 @@ export const post = defineType({
       type: 'image',
       description: 'Hoofdafbeelding van het artikel. Aanbevolen: liggend formaat, min. 600px breed.',
       options: { hotspot: true },
-      fields: [
-        defineField({ name: 'alt', title: 'Alt-tekst (SEO)', type: 'string', description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.' }),
-      ],
     }),
     defineField({
       name: 'inhoud',

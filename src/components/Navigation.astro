@@ -1,5 +1,6 @@
 ---
 import { fetchSettings, urlFor } from '../lib/sanity';
+import { sanitizeAlt } from '../lib/logic/seo-utils';
 
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
@@ -28,7 +29,7 @@ const currentPath = Astro.url.pathname;
       {settings?.logo ? (
         <img
           src={urlFor(settings.logo).width(40).height(40).fit('crop').url()}
-          alt={mosqueName}
+          alt={sanitizeAlt(mosqueName)}
           class="w-8 h-8 object-contain"
         />
       ) : null}

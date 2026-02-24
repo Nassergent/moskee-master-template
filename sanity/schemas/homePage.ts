@@ -38,9 +38,6 @@ export const homePage = defineType({
       type: 'image',
       options: { hotspot: true },
       description: 'De grote afbeelding rechts in de hero sectie',
-      fields: [
-        defineField({ name: 'alt', title: 'Alt-tekst (SEO)', type: 'string', description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.' }),
-      ],
     }),
     defineField({
       name: 'toonActueel',

@@ -5,6 +5,7 @@ import AddToCalendar from '../../components/AddToCalendar.astro';
 import PortableText from '../../components/PortableText.astro';
 import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
+import { sanitizeAlt } from '../../lib/logic/seo-utils';
 
 const { slug } = Astro.params;
 const events = await fetchAgendaEvents();
@@ -43,7 +44,7 @@ const eventSchema = JSON.stringify({
 });
 ---
 
-<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`}>
+<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`} ogImage={event.afbeelding ? `${event.afbeelding}?w=1200&h=630&fit=crop` : undefined}>
   <script type="application/ld+json" set:html={eventSchema} />
 
   <!-- Page Header -->
@@ -109,7 +110,7 @@ const eventSchema = JSON.stringify({
         <div class="overflow-hidden mb-8 border border-neutral-200">
           <img
             src={event.afbeelding + '?w=800&h=450&fit=crop'}
-            alt={event.titel}
+            alt={sanitizeAlt(event.titel)}
             class="w-full h-auto"
             loading="lazy"
           />

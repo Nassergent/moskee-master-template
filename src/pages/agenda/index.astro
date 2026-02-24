@@ -4,6 +4,7 @@ import Section from '../../components/Section.astro';
 import { fetchAgendaEvents, fetchSettings } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
 import { extractCategories, formatDatum, formatTijd } from '../../lib/logic/agenda-utils';
+import { sanitizeAlt } from '../../lib/logic/seo-utils';
 
 const settings = await fetchSettings();
 const events = await fetchAgendaEvents();
@@ -59,7 +60,7 @@ const categorieen = extractCategories(events);
             {event.afbeelding && (
               <img
                 src={event.afbeelding + '?w=600&h=250&fit=crop'}
-                alt={event.titel}
+                alt={sanitizeAlt(event.titel)}
                 class="w-full h-40 object-cover"
                 loading="lazy"
               />

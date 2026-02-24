@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import { fetchNieuws, urlFor } from '../lib/sanity';
+import { sanitizeAlt } from '../lib/logic/seo-utils';
 
 const nieuws = await fetchNieuws();
 ---
@@ -29,7 +30,7 @@ const nieuws = await fetchNieuws();
             {item.afbeelding ? (
               <img
                 src={urlFor(item.afbeelding).width(600).height(300).fit('crop').url()}
-                alt={`${item.titel} — nieuws`}
+                alt={sanitizeAlt(item.titel)}
                 class="w-full h-44 object-cover"
                 loading="lazy"
               />

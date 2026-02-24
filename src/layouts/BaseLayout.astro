@@ -7,6 +7,7 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  bodyText?: string;
   ogImage?: string;
   ogType?: string;
   hideFooterMobile?: boolean;
@@ -16,7 +17,9 @@ const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
 const defaultDescription = settings?.description || 'Welkom bij onze moskee — een plek van gebed, gemeenschap en kennis.';
 
-const { title = mosqueName, description = defaultDescription, ogImage, ogType = 'website', hideFooterMobile = false } = Astro.props;
+const { title = mosqueName, description, bodyText, ogImage, ogType = 'website', hideFooterMobile = false } = Astro.props;
+const autoDescription = description
+  || (bodyText ? bodyText.slice(0, 160).trim() + (bodyText.length > 160 ? '...' : '') : defaultDescription);
 const fullTitle = title === mosqueName ? title : `${title} | ${mosqueName}`;
 const canonicalUrl = Astro.url.href;
 
@@ -38,12 +41,12 @@ const colors = settings?.theme || {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
+    <meta name="description" content={autoDescription} />
     <link rel="canonical" href={canonicalUrl} />
 
     {/* OpenGraph — Facebook, WhatsApp, LinkedIn */}
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={autoDescription} />
     <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content="nl_BE" />
@@ -60,7 +63,7 @@ const colors = settings?.theme || {
     {/* Twitter Card */}
     <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={autoDescription} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
     {settings?.favicon ? (
@@ -167,7 +170,7 @@ const colors = settings?.theme || {
       "@context": "https://schema.org",
       "@type": "Mosque",
       "name": mosqueName,
-      "description": description,
+      "description": autoDescription,
       "url": canonicalUrl,
       "address": settings?.address ? {
         "@type": "PostalAddress",

@@ -57,14 +57,6 @@ export const aboutPage = defineType({
       options: { hotspot: true },
       group: 'missie',
       description: 'Wordt getoond in 4:3 verhouding naast de missietekst. Tip: upload een liggende foto.',
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alt-tekst (SEO)',
-          type: 'string',
-          description: 'Beschrijf de afbeelding voor zoekmachines en slechtzienden.',
-        }),
-      ],
     }),
 
     // ── Kengetallen ─────────────────────────────────────────
@@ -271,13 +263,6 @@ export const aboutPage = defineType({
               type: 'image',
               options: { hotspot: true },
               description: 'Vierkante foto werkt het best',
-              fields: [
-                defineField({
-                  name: 'alt',
-                  title: 'Alt-tekst',
-                  type: 'string',
-                }),
-              ],
             }),
           ],
           preview: {

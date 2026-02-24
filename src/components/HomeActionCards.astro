@@ -11,6 +11,7 @@
 import { fetchIslamicDays, generateGoogleCalendarUrl } from '../lib/hijri';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
 import { urlFor } from '../lib/sanity';
+import { sanitizeAlt } from '../lib/logic/seo-utils';
 
 interface Props {
   hijriAdjustment?: number;
@@ -182,7 +183,7 @@ const gridClass = cardCount === 3
             {project.afbeelding && (
               <img
                 src={urlFor(project.afbeelding).width(600).height(250).fit('crop').url()}
-                alt={project.titel}
+                alt={sanitizeAlt(project.titel)}
                 class="w-full h-40 object-cover"
                 loading="lazy"
               />
@@ -245,7 +246,7 @@ const gridClass = cardCount === 3
               <button type="button" data-lightbox-trigger class="block w-full cursor-zoom-in">
                 <img
                   src={downloadUrl}
-                  alt={downloadTitel || 'Document preview'}
+                  alt={sanitizeAlt(downloadTitel)}
                   class="w-full h-auto max-h-[300px] object-contain bg-neutral-50"
                   loading="lazy"
                 />
@@ -295,7 +296,7 @@ const gridClass = cardCount === 3
     <img
       id="download-lightbox-img"
       src={downloadUrl}
-      alt={downloadTitel || 'Document'}
+      alt={sanitizeAlt(downloadTitel)}
       class="max-w-full max-h-[90vh] object-contain animate-fade-in-up"
     />
     <button

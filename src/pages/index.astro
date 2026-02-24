@@ -4,6 +4,7 @@ import Section from '../components/Section.astro';
 import HomeActionCards from '../components/HomeActionCards.astro';
 import PrayerManager from '../components/PrayerManager.astro';
 import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, fetchProjecten, urlFor } from '../lib/sanity';
+import { sanitizeAlt } from '../lib/logic/seo-utils';
 
 const settings = await fetchSettings();
 const actueel = await fetchActueel();
@@ -80,7 +81,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           {heroImageUrl ? (
             <img
               src={heroImageUrl}
-              alt={`${settings.mosqueName} — Moskee`}
+              alt={sanitizeAlt(homePage?.heroTitle || settings.mosqueName)}
               class="w-full h-[500px] object-cover"
               width={800}
               height={900}

@@ -1,6 +1,7 @@
 ---
 import { urlFor } from '../lib/sanity';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
+import { sanitizeAlt } from '../lib/logic/seo-utils';
 
 interface Props {
   _id: string;
@@ -27,7 +28,7 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
   {afbeelding && (
     <img
       src={urlFor(afbeelding).width(600).height(250).fit('crop').url()}
-      alt={titel}
+      alt={sanitizeAlt(titel)}
       class="w-full h-40 object-cover"
       loading="lazy"
     />

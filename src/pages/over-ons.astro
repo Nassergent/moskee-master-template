@@ -4,6 +4,7 @@ import Section from '../components/Section.astro';
 import VolunteerForm from '../components/VolunteerForm.astro';
 import PortableText from '../components/PortableText.astro';
 import { fetchSettings, fetchAboutPage, urlFor } from '../lib/sanity';
+import { sanitizeAlt } from '../lib/logic/seo-utils';
 
 const settings = await fetchSettings();
 const aboutPage = await fetchAboutPage();
@@ -75,7 +76,7 @@ function teamGridClass(count: number): string {
 }
 ---
 
-<BaseLayout title={aboutPage?.seoTitle || "Over Ons"} description={aboutPage?.seoDescription || `Leer meer over ${settings?.mosqueName || 'onze moskee'} en onze missie`}>
+<BaseLayout title={aboutPage?.seoTitle || "Over Ons"} description={aboutPage?.seoDescription || `Leer meer over ${settings?.mosqueName || 'onze moskee'} en onze missie`} ogImage={aboutPage?.missieImage ? urlFor(aboutPage.missieImage).width(1200).height(630).fit('crop').url() : undefined}>
 
   <!-- 1. Hero (altijd) — Dark -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
@@ -104,7 +105,7 @@ function teamGridClass(count: number): string {
         </div>
         <img
           src={missieImageUrl}
-          alt={aboutPage?.missieImage?.alt || `${settings?.mosqueName || 'Moskee'} - Onze Missie`}
+          alt={sanitizeAlt(missieTitle)}
           class="w-full aspect-[4/3] object-cover"
           loading="lazy"
         />
@@ -195,7 +196,7 @@ function teamGridClass(count: number): string {
                 <div class="w-24 h-24 mx-auto mb-4 overflow-hidden">
                   <img
                     src={urlFor(lid.foto).width(192).height(192).url()}
-                    alt={lid.foto?.alt || lid.naam}
+                    alt={sanitizeAlt(lid.naam)}
                     class="w-full h-full object-cover"
                     loading="lazy"
                   />
