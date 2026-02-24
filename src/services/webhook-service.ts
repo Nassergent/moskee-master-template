@@ -152,19 +152,22 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
 
     if (projectId && shouldUpdateProject(projectName)) {
       await retryWithBackoff(async (attempt) => {
-        log('info', attempt > 1 ? 'sanity_commit_retry' : 'sanity_commit_ok', {
-          tenantId,
-          projectId: projectId!,
-          amountCents,
-          attempt,
-        });
-        await writeClient
+        if (attempt > 1) {
+          log('info', 'sanity_commit_retry', { tenantId, projectId: projectId!, amountCents, attempt });
+        }
+        const result = await writeClient
           .patch(projectId!)
           .inc({ huidigBedragCents: amountCents })
           .commit();
+        log('info', 'sanity_commit_ok', {
+          tenantId,
+          projectId: projectId!,
+          amountCents,
+          newTotalCents: result?.huidigBedragCents,
+        });
       }, 3, logs, paymentId, tenantId);
-
-      log('info', 'sanity_commit_ok', { tenantId, projectId, amountCents });
+    } else {
+      log('info', 'payment_not_paid', { tenantId, note: 'no_project_update', projectId, projectName });
     }
 
     // ── Email dispatch (non-critical) ──

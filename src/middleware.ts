@@ -22,6 +22,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     );
   }
 
+  // Pagina's met real-time donatie data: nooit cachen
+  const noCachePaths = ['/doneren', '/projecten', '/bedankt'];
+  if (noCachePaths.some((path) => url.pathname.startsWith(path))) {
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+  }
+
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
