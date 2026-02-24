@@ -57,14 +57,18 @@ export const POST: APIRoute = async ({ request }) => {
     // ── Delegate to webhook service ──
     const result = await processWebhook(paymentId);
 
-    // Output structured logs
+    // Output structured logs (always, even on error)
     for (const line of result.logs) {
-      console.log(line);
+      if (result.status >= 400) {
+        console.error(line);
+      } else {
+        console.log(line);
+      }
     }
 
     return new Response(result.body, { status: result.status });
   } catch (error) {
-    console.error('[webhook] Unhandled error:', error);
+    console.error('[webhook] Unhandled error:', error instanceof Error ? error.stack : error);
     return new Response('Webhook error', { status: 500 });
   }
 };

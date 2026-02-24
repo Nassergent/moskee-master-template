@@ -132,6 +132,14 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
     // ── Parse metadata ──
     const rawMeta = payment.metadata as Record<string, unknown> | null;
     const meta = parseWebhookMetadata(rawMeta);
+
+    log('info', 'mollie_fetched', {
+      tenantId,
+      rawAmount: payment.amount?.value,
+      rawCurrency: payment.amount?.currency,
+      rawMetadata: JSON.stringify(rawMeta),
+    });
+
     const amountCents = stringToCents(payment.amount.value);
 
     // ── Sanity commit with retry ──
