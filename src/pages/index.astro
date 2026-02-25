@@ -28,7 +28,7 @@ const heroTagline = homePage?.heroTagline || null;
 const heroTitle = homePage?.heroTitle || `Welkom bij ${settings.mosqueName}`;
 const heroSubtitle = homePage?.heroSubtitle || settings.description;
 const heroCta = homePage?.heroCta || 'Gebedstijden bekijken';
-const badges = homePage?.badges?.length ? homePage.badges : ['Allen Welkom', 'Të gjithë të mirëpritur', 'All Welcome', 'الجميع مرحب به'];
+const badges = homePage?.badges?.length ? homePage.badges : [];
 const badgeKleur = homePage?.badgeKleur || '#593B1D';
 const toonActueel = homePage?.toonActueel ?? true;
 
@@ -58,11 +58,13 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-
         <!-- Links: Badges + Tekst + CTA's -->
         <div class="animate-fade-in-up">
           <!-- Meertalige badges uit CMS -->
-          <div class="flex flex-wrap gap-3 mb-6">
-            {badges.map((badge: string) => (
-              <span class="badge px-5 py-2 text-base font-semibold rounded-full border" style={`border-color: ${badgeKleur}40; background-color: ${badgeKleur}20; color: ${badgeKleur}`}>{badge}</span>
-            ))}
-          </div>
+          {badges.length > 0 && (
+            <div class="flex flex-wrap gap-3 mb-6">
+              {badges.map((badge: string) => (
+                <span class="badge px-5 py-2 text-base font-semibold rounded-full border" style={`border-color: ${badgeKleur}40; background-color: ${badgeKleur}20; color: ${badgeKleur}`}>{badge}</span>
+              ))}
+            </div>
+          )}
 
           {heroTagline && (
             <p class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-accent-light mb-2">{heroTagline}</p>
@@ -215,7 +217,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-
       <div class="bg-white p-10 lg:p-14 flex flex-col justify-center">
         <h2 class="text-3xl md:text-4xl font-bold font-heading text-primary mb-3">Kom langs</h2>
         <p class="text-neutral-500 text-sm mb-8 leading-relaxed">
-          {settings?.address || 'Bezoek ons op het adres van de moskee'}
+          {settings?.address || ''}
         </p>
         <div class="flex flex-col sm:flex-row gap-3">
           <a

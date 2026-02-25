@@ -5,7 +5,7 @@ import { fetchSettings } from '../lib/sanity';
 
 const settings = await fetchSettings();
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
-const email = settings?.email || 'info@moskee.be';
+const email = settings?.email || '';
 ---
 
 <BaseLayout title="Privacyverklaring" description={`Privacybeleid van ${mosqueName}`}>

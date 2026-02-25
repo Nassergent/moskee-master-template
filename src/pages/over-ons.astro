@@ -19,10 +19,7 @@ const missieImageUrl = aboutPage?.missieImage
   : null;
 const hasMissieImage = !!missieImageUrl;
 
-const fallbackMissieText = [
-  `${settings?.mosqueName || 'Onze moskee'} is een huis van gebed, onderwijs en gemeenschap. Wij streven ernaar een veilige en gastvrije ruimte te bieden voor alle moslims in de regio.`,
-  'Onze moskee organiseert dagelijkse gebeden, wekelijkse lessen en seizoensgebonden activiteiten die families en individuen samenbrengen.',
-];
+const hasMissieText = aboutPage?.missieText && aboutPage.missieText.length > 0;
 
 const showKengetallen = aboutPage?.kengetallenTonen && aboutPage?.kengetallen?.length > 0;
 const kengetallen = aboutPage?.kengetallen || [];
@@ -41,8 +38,8 @@ const team = aboutPage?.team || [];
 
 const showVrijwilliger = aboutPage?.vrijwilligerTonen !== false;
 const vrijwilligerTitle = aboutPage?.vrijwilligerTitle || 'Word Vrijwilliger';
-const vrijwilligerText = aboutPage?.vrijwilligerText || 'Wil je bijdragen aan onze gemeenschap? Meld je aan als vrijwilliger en help mee met activiteiten, onderhoud en meer.';
-const vrijwilligerTaken = settings?.volunteerTasks?.length ? settings.volunteerTasks : ['Koken', 'Kuisen', 'Onderhoud', 'Evenementen', 'Educatie', 'Administratie'];
+const vrijwilligerText = aboutPage?.vrijwilligerText || '';
+const vrijwilligerTaken = settings?.volunteerTasks?.length ? settings.volunteerTasks : [];
 
 // ── Dynamische zebra-striping ───────────────────────────────────
 // Bouw een lijst van zichtbare secties, elk krijgt afwisselend light-50 / light-100
@@ -95,12 +92,8 @@ function teamGridClass(count: number): string {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
         <div>
           <h2 class="text-3xl font-bold mb-6">{missieTitle}</h2>
-          {aboutPage?.missieText && aboutPage.missieText.length > 0 ? (
+          {hasMissieText && (
             <PortableText value={aboutPage.missieText} />
-          ) : (
-            fallbackMissieText.map((text) => (
-              <p class="text-neutral-600 leading-relaxed mb-4">{text}</p>
-            ))
           )}
         </div>
         <img
@@ -116,12 +109,8 @@ function teamGridClass(count: number): string {
       <!-- 1-kolom centered layout zonder afbeelding -->
       <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-3xl font-bold mb-6">{missieTitle}</h2>
-        {aboutPage?.missieText && aboutPage.missieText.length > 0 ? (
+        {hasMissieText && (
           <PortableText value={aboutPage.missieText} />
-        ) : (
-          fallbackMissieText.map((text) => (
-            <p class="text-neutral-600 leading-relaxed mb-4">{text}</p>
-          ))
         )}
       </div>
     )}
@@ -223,7 +212,7 @@ function teamGridClass(count: number): string {
       <div class="max-w-3xl mx-auto">
         <div class="text-center mb-10">
           <h2 class="text-2xl font-bold mb-3">{vrijwilligerTitle}</h2>
-          <p class="text-neutral-600">{vrijwilligerText}</p>
+          {vrijwilligerText && <p class="text-neutral-600">{vrijwilligerText}</p>}
         </div>
         <VolunteerForm taken={vrijwilligerTaken} />
       </div>

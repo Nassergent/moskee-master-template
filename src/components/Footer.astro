@@ -24,9 +24,11 @@ const settings = await fetchSettings();
           ) : null}
           <h3 class="text-white text-xl font-heading font-bold">{settings?.mosqueName}</h3>
         </div>
-        <p class="text-sm leading-relaxed mb-5 text-white/85">
-          {settings?.description || 'Een plek van aanbidding, educatie en gemeenschap. Samen bouwen we aan een sterke toekomst voor de Ummah.'}
-        </p>
+        {settings?.description && (
+          <p class="text-sm leading-relaxed mb-5 text-white/85">
+            {settings.description}
+          </p>
+        )}
         <!-- Social Icons — Flat squares -->
         <div class="flex gap-2">
           {settings?.socials?.facebook && (
@@ -142,7 +144,7 @@ const settings = await fetchSettings();
         </p>
         <div class="bg-white/5 p-4 border border-white/10 mb-4">
           <p class="text-[10px] uppercase mb-1 tracking-wider" class="text-accent">IBAN Nummer</p>
-          <p class="text-sm font-mono text-white tracking-wider">{settings?.iban || 'Nog niet ingesteld'}</p>
+          <p class="text-sm font-mono text-white tracking-wider">{settings?.iban || ''}</p>
         </div>
         <p class="text-[10px] text-white/60">
           KVK/VZW: {settings?.legal?.kvk || '---'}

@@ -37,7 +37,7 @@ export async function sendContactNotification(opts: {
 
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
-  const contactEmail = settings?.email || 'info@moskee.be';
+  const contactEmail = settings?.email || '';
 
   const resend = new Resend(apiKey);
   await resend.emails.send({
