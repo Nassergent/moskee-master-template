@@ -76,7 +76,7 @@ function teamGridClass(count: number): string {
 }
 ---
 
-<BaseLayout title={aboutPage?.seoTitle || "Over Ons"} description={aboutPage?.seoDescription || `Leer meer over ${settings?.mosqueName || 'onze moskee'} en onze missie`} ogImage={aboutPage?.missieImage ? urlFor(aboutPage.missieImage).width(1200).height(630).fit('crop').url() : undefined}>
+<BaseLayout title="Over Ons" description={`Leer meer over ${settings?.mosqueName || 'onze moskee'} en onze missie`} ogImage={aboutPage?.missieImage ? urlFor(aboutPage.missieImage).width(1200).height(630).fit('crop').url() : undefined}>
 
   <!-- 1. Hero (altijd) — Dark -->
   <section class="bg-primary-dark text-white py-16 md:py-20">

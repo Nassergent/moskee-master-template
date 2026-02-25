@@ -35,7 +35,7 @@ const toonActueel = homePage?.toonActueel ?? true;
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
 ---
 
-<BaseLayout title={homePage?.seoTitle || settings.mosqueName} description={homePage?.seoDescription || settings.description} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>
+<BaseLayout title={settings.mosqueName} description={settings.description} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>
 
   {/* Kritieke hero CSS inline — elimineert render-blocking voor LCP */}
   <style is:inline>

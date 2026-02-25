@@ -11,7 +11,7 @@ const openingstijden = contactPage.openingstijden?.length ? contactPage.openings
 const onderwerpen = contactPage.onderwerpen?.length ? contactPage.onderwerpen : [];
 ---
 
-<BaseLayout title={contactPage?.seoTitle || "Contact"} description={contactPage?.seoDescription || "Neem contact op met onze moskee"}>
+<BaseLayout title="Contact" description={`Neem contact op met ${settings?.mosqueName || 'onze moskee'}`}>
   <!-- Page Header — Dark -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">

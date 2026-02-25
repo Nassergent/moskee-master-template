@@ -200,8 +200,7 @@ export async function fetchHomePage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "homePage"][0]{
       heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur,
-      downloadTitel, downloadBeschrijving, downloadBestand, "downloadUrl": downloadBestand.asset->url,
-      seoTitle, seoDescription
+      downloadTitel, downloadBeschrijving, downloadBestand, "downloadUrl": downloadBestand.asset->url
     }`);
     return result || null;
   } catch (e) {
@@ -219,8 +218,7 @@ export async function fetchAboutPage() {
       geschiedenisTonen, geschiedenisTitle, tijdlijn,
       waardenTonen, waardenTitle, waarden,
       teamTonen, teamTitle, team,
-      vrijwilligerTonen, vrijwilligerTitle, vrijwilligerText,
-      seoTitle, seoDescription
+      vrijwilligerTonen, vrijwilligerTitle, vrijwilligerText
     }`);
     return result || null;
   } catch (e) {
@@ -232,7 +230,7 @@ export async function fetchAboutPage() {
 export async function fetchContactPage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "contactPage"][0]{
-      introText, openingstijden, onderwerpen, seoTitle, seoDescription
+      introText, openingstijden, onderwerpen
     }`);
     return result || null;
   } catch (e) {
