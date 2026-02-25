@@ -16,7 +16,7 @@ export const agendaEvent = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      description: 'URL-pad voor de detailpagina.',
+      hidden: true,
       options: {
         source: 'titel',
         maxLength: 96,

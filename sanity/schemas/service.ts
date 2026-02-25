@@ -16,7 +16,7 @@ export const service = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      description: 'URL-pad voor de detailpagina. Klik op "Generate" om automatisch aan te maken.',
+      hidden: true,
       options: {
         source: 'titel',
         maxLength: 96,

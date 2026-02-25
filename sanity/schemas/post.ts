@@ -16,7 +16,7 @@ export const post = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      description: 'URL-pad voor het artikel. Klik op "Generate" om automatisch aan te maken.',
+      hidden: true,
       options: {
         source: 'titel',
         maxLength: 96,
