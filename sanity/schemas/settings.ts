@@ -65,12 +65,12 @@ export const settings = defineType({
       type: 'string',
       group: 'general',
       description: 'Kies de hoofdkleur van uw moskee-website. Deze kleur wordt gebruikt voor navigatie, titels en headers.',
-      initialValue: 'midnight-navy',
+      initialValue: 'deep-bordeaux',
       options: {
         list: [
           { title: 'Slate Indigo', value: 'slate-indigo' },
           { title: 'Warm Umber', value: 'warm-umber' },
-          { title: 'Midnight Navy', value: 'midnight-navy' },
+          { title: 'Deep Bordeaux', value: 'deep-bordeaux' },
           { title: 'Charcoal Sage', value: 'charcoal-sage' },
         ],
         layout: 'radio',

@@ -16,13 +16,13 @@ interface SettingsColors {
 const primaryThemeMap: Record<string, string> = {
   'slate-indigo': '#2F3E6B',
   'warm-umber': '#4A3728',
-  'midnight-navy': '#1B2A4A',
+  'deep-bordeaux': '#5B2334',
   'charcoal-sage': '#374940',
 };
 
 function getColors(primaryTheme: string | undefined): SettingsColors {
   return {
-    primary: primaryThemeMap[primaryTheme || ''] || '#1B2A4A',
+    primary: primaryThemeMap[primaryTheme || ''] || '#5B2334',
     accent: '#C9A983',
     base: '#FBF9F7',
   };
