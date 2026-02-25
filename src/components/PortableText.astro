@@ -126,7 +126,7 @@ const grouped = groupBlocks(value);
     // Text block
     if (item._type === 'block') {
       const html = renderChildrenWithLinks(item);
-      if (!html.trim()) return null;
+      if (!html.trim()) return <span class="rich-text-spacer" aria-hidden="true" />;
 
       if (item.style === 'h2') return <h2 set:html={html} />;
       if (item.style === 'h3') return <h3 set:html={html} />;
