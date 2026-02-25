@@ -8,15 +8,15 @@
  *
  * Grid past zich automatisch aan: 1, 2, of 3 kolommen.
  */
-import { fetchIslamicDays, generateGoogleCalendarUrl } from '../lib/hijri';
+import { generateGoogleCalendarUrl } from '../lib/hijri';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
 import { resolveDownloadImage, extractFileName } from '../lib/logic/media-utils';
 import { urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 
 interface Props {
-  hijriAdjustment?: number;
-  islamicDays?: Record<string, boolean>;
+  /** Pre-fetched Islamic days from parent page */
+  islamicDaysData?: any[];
   mosqueName?: string;
   // Project (eerste actieve) voor doneer kaart
   project?: {
@@ -36,8 +36,7 @@ interface Props {
 }
 
 const {
-  hijriAdjustment = 0,
-  islamicDays,
+  islamicDaysData = [],
   mosqueName,
   project,
   downloadTitel,
@@ -46,10 +45,9 @@ const {
   downloadBestand,
 } = Astro.props;
 
-// ── Islamic Countdown — alle aankomende dagen ──
-const allDays = await fetchIslamicDays(hijriAdjustment, islamicDays);
-const upcoming = allDays.length > 0 ? allDays[0] : null;
-const nextDays = allDays.slice(1); // alle volgende dagen als vooruitblik
+// ── Islamic Countdown — data komt van parent page ──
+const upcoming = islamicDaysData.length > 0 ? islamicDaysData[0] : null;
+const nextDays = islamicDaysData.slice(1);
 
 const BETEKENIS: Record<string, string> = {
   'Start Ramadan': 'De heilige vastenmaand waarin de Quran werd geopenbaard',

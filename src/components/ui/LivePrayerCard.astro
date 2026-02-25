@@ -72,34 +72,16 @@ const nextTime = times.adhan[nextPrayer];
 </div>
 
 <script>
-  // Desktop countdown
-  const el = document.getElementById('prayer-countdown');
-  const display = document.getElementById('countdown-display');
-  if (el && display) {
-    let remaining = parseInt(el.dataset.seconds || '0', 10);
+  import { startCountdownTicker } from '../../lib/countdown-ticker';
 
-    function formatCountdown(secs: number): string {
-      if (secs <= 0) return '00:00:00';
-      const h = Math.floor(secs / 3600);
-      const m = Math.floor((secs % 3600) / 60);
-      const s = secs % 60;
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    }
+  const cleanup = startCountdownTicker({
+    elementId: 'prayer-countdown',
+    displayId: 'countdown-display',
+    format: 'hms',
+    reloadOnZero: true,
+    reloadDelay: 5000,
+  });
 
-    display.textContent = formatCountdown(remaining);
-
-    const interval = setInterval(() => {
-      remaining--;
-      if (remaining <= 0) {
-        display.textContent = '00:00:00';
-        setTimeout(() => window.location.reload(), 5000);
-        clearInterval(interval);
-        return;
-      }
-      display.textContent = formatCountdown(remaining);
-    }, 1000);
-
-    document.addEventListener('astro:before-preparation', () => clearInterval(interval));
-    window.addEventListener('beforeunload', () => clearInterval(interval));
-  }
+  document.addEventListener('astro:before-preparation', cleanup);
+  window.addEventListener('beforeunload', cleanup);
 </script>

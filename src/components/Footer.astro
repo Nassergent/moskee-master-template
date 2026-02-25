@@ -1,8 +1,12 @@
 ---
-import { fetchSettings, urlFor } from '../lib/sanity';
+import { urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 
-const settings = await fetchSettings();
+interface Props {
+  settings: any;
+}
+
+const { settings } = Astro.props;
 ---
 
 <!-- Flat Design Footer — no rounded corners, no shadows -->

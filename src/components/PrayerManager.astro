@@ -9,41 +9,25 @@
  *   fullscreen=true → gebedstijden mobiel (Mawaqit-stijl layout)
  *   default         → gebedstijden desktop (LivePrayerCard + PrayerGrid)
  */
-import { fetchPrayerTimes } from '../lib/sanity';
 import {
-  isEngineConfigComplete,
-  buildConfigFromSanity,
-  computeFullPrayerTimes,
-  getPrayerStatus,
   formatCountdownHMS,
 } from '../lib/logic/prayer-engine';
 import { formatHijriDate } from '../lib/hijri';
 import PrayerGrid from './ui/PrayerGrid.astro';
 import LivePrayerCard from './ui/LivePrayerCard.astro';
+import type { ComputedPrayerTimes, PrayerStatus } from '../lib/logic/prayer-engine';
 
 interface Props {
   compact?: boolean;
   fullscreen?: boolean;
   mosqueName?: string;
+  /** Pre-computed prayer times from parent page */
+  computedTimes?: ComputedPrayerTimes | null;
+  /** Pre-computed prayer status from parent page */
+  prayerStatus?: PrayerStatus | null;
 }
 
-const { compact = false, fullscreen = false, mosqueName = '' } = Astro.props;
-const prayer = await fetchPrayerTimes();
-
-const configComplete = isEngineConfigComplete(prayer);
-let computedTimes = null;
-let prayerStatus = null;
-
-if (configComplete) {
-  try {
-    const config = buildConfigFromSanity(prayer);
-    const now = new Date();
-    computedTimes = computeFullPrayerTimes(now, config, prayer.jumuahShifts || []);
-    prayerStatus = getPrayerStatus(now, computedTimes);
-  } catch (e) {
-    console.error('Prayer engine computation failed:', e);
-  }
-}
+const { compact = false, fullscreen = false, mosqueName = '', computedTimes = null, prayerStatus = null } = Astro.props;
 
 const hijriToday = formatHijriDate();
 const gregorianToday = new Date().toLocaleDateString('nl-BE', {
@@ -132,29 +116,17 @@ const gregorianToday = new Date().toLocaleDateString('nl-BE', {
       }
 
       // Countdown
-      const countdownBar = document.getElementById('mawaqit-countdown-bar');
-      const countdownEl = document.getElementById('mawaqit-countdown');
-      if (countdownBar && countdownEl) {
-        let secs = parseInt(countdownBar.dataset.seconds || '0', 10);
-        function fmtCountdown(s: number): string {
-          if (s <= 0) return '00:00:00';
-          const h = Math.floor(s / 3600);
-          const m = Math.floor((s % 3600) / 60);
-          const sec = s % 60;
-          return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-        }
-        const countdownTick = setInterval(() => {
-          secs--;
-          if (secs <= 0) {
-            countdownEl!.textContent = '00:00:00';
-            setTimeout(() => window.location.reload(), 3000);
-            clearInterval(countdownTick);
-            return;
-          }
-          countdownEl!.textContent = fmtCountdown(secs);
-        }, 1000);
-        document.addEventListener('astro:before-preparation', () => clearInterval(countdownTick));
-      }
+      import { startCountdownTicker } from '../lib/countdown-ticker';
+
+      const countdownCleanup = startCountdownTicker({
+        elementId: 'mawaqit-countdown-bar',
+        displayId: 'mawaqit-countdown',
+        format: 'hms',
+        reloadOnZero: true,
+        reloadDelay: 3000,
+      });
+
+      document.addEventListener('astro:before-preparation', countdownCleanup);
     </script>
   ) : (
     <div class="space-y-6">

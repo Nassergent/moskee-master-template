@@ -233,17 +233,15 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
 {/* Live countdown ticker */}
 {nextPrayer && secondsUntilNext > 0 && (
   <script>
-    const el = document.getElementById('grid-countdown');
-    if (el) {
-      let secs = parseInt(el.dataset.seconds || '0', 10);
-      const tick = setInterval(() => {
-        secs--;
-        if (secs <= 0) { clearInterval(tick); el.textContent = 'Nu'; return; }
-        const h = Math.floor(secs / 3600);
-        const m = Math.floor((secs % 3600) / 60);
-        el.textContent = h > 0 ? `In ${h}u ${m}m` : `In ${m}m`;
-      }, 60000);
-      document.addEventListener('astro:before-preparation', () => clearInterval(tick));
-    }
+    import { startCountdownTicker } from '../../lib/countdown-ticker';
+
+    const cleanup = startCountdownTicker({
+      elementId: 'grid-countdown',
+      format: 'compact',
+      intervalMs: 60000,
+      zeroText: 'Nu',
+    });
+
+    document.addEventListener('astro:before-preparation', cleanup);
   </script>
 )}
