@@ -8,7 +8,8 @@ export { sanityClient, freshClient, urlFor };
 
 export async function fetchSettings() {
   try {
-    const result = await sanityClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst }`);
+    // freshClient: theme/menu wijzigingen moeten direct zichtbaar zijn, geen CDN cache
+    const result = await freshClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst }`);
     return result || null;
   } catch (e) {
     console.error('Sanity fetchSettings error:', e);
