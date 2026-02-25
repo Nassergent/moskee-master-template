@@ -11,14 +11,14 @@
   --color-base-100: var(--theme-base-100, #F5F1ED);
 
   /* Primary (30%) — Nav, headers, identity */
-  --color-primary: var(--theme-primary, #1D5C6B);
-  --color-primary-light: var(--theme-primary-light, #e8f2f5);
-  --color-primary-dark: var(--theme-primary-dark, #0f3039);
+  --color-primary: var(--theme-primary, #1B2A4A);
+  --color-primary-light: var(--theme-primary-light, #e8edf5);
+  --color-primary-dark: var(--theme-primary-dark, #0f1a2e);
 
   /* Accent (10%) — Donate button, CTAs, highlights */
-  --color-accent: var(--theme-accent, #593B1D);
+  --color-accent: var(--theme-accent, #C9A983);
   --color-accent-light: var(--theme-accent-light, #f5ede4);
-  --color-accent-hover: var(--theme-accent-hover, #7a5229);
+  --color-accent-hover: var(--theme-accent-hover, #d4b999);
 
   /* WhatsApp */
   --color-whatsapp: #25D366;
@@ -128,7 +128,7 @@ h2.text-center::after {
 
 /* ─── Design Token: accent-gold for subheadings ─── */
 :root {
-  --color-accent-gold: #b8935e;
+  --color-accent-gold: #C9A983;
 }
 
 /* ─── Animations ─── */

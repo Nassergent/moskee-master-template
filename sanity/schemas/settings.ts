@@ -60,37 +60,21 @@ export const settings = defineType({
     // heroImage → verplaatst naar homePage singleton
     // overOnsAfbeelding → verplaatst naar aboutPage singleton
     defineField({
-      name: 'theme',
-      title: 'Huisstijl Kleuren (60-30-10 Regel)',
-      type: 'object',
+      name: 'primaryTheme',
+      title: 'Huisstijl Kleur',
+      type: 'string',
       group: 'general',
-      description: 'Pas de kleuren van uw website aan. Kies 3 kleuren die uw moskee vertegenwoordigen.',
-      fields: [
-        defineField({
-          name: 'baseColor',
-          title: 'Basis Kleur (60%) — Achtergronden',
-          type: 'string',
-          initialValue: '#FBF9F7',
-          description: 'De rustige achtergrondkleur. Gebruik een lichte, zachte kleur (bijv. gebroken wit, licht zand). Formaat: #RRGGBB',
-          validation: (rule) => rule.regex(/^#[0-9A-Fa-f]{6}$/, { name: 'hex kleur', invert: false }).error('Voer een geldige hex kleur in (bijv. #FBF9F7)'),
-        }),
-        defineField({
-          name: 'primaryColor',
-          title: 'Hoofdkleur (30%) — Navigatie & Titels',
-          type: 'string',
-          initialValue: '#1D5C6B',
-          description: 'De identiteitskleur van uw moskee. Voor navigatiebalk, titels en headers. Formaat: #RRGGBB',
-          validation: (rule) => rule.regex(/^#[0-9A-Fa-f]{6}$/, { name: 'hex kleur', invert: false }).error('Voer een geldige hex kleur in (bijv. #1D5C6B)'),
-        }),
-        defineField({
-          name: 'accentColor',
-          title: 'Accentkleur (10%) — Doneerknop & Details',
-          type: 'string',
-          initialValue: '#593B1D',
-          description: 'De opvallende kleur voor actie-knoppen (Doneer), iconen en highlights. Formaat: #RRGGBB',
-          validation: (rule) => rule.regex(/^#[0-9A-Fa-f]{6}$/, { name: 'hex kleur', invert: false }).error('Voer een geldige hex kleur in (bijv. #593B1D)'),
-        }),
-      ],
+      description: 'Kies de hoofdkleur van uw moskee-website. Deze kleur wordt gebruikt voor navigatie, titels en headers.',
+      initialValue: 'midnight-navy',
+      options: {
+        list: [
+          { title: 'Slate Indigo', value: 'slate-indigo' },
+          { title: 'Warm Umber', value: 'warm-umber' },
+          { title: 'Midnight Navy', value: 'midnight-navy' },
+          { title: 'Charcoal Sage', value: 'charcoal-sage' },
+        ],
+        layout: 'radio',
+      },
     }),
 
     // === NAVIGATIE ===

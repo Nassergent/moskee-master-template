@@ -36,11 +36,17 @@ const ogImageUrl = ogImage
   || (settings?.favicon ? urlFor(settings.favicon).width(1200).height(630).fit('crop').url() : null)
   || new URL('/favicon.svg', Astro.site || Astro.url.origin).href;
 
-// 60-30-10 Color System from Sanity CMS
-const colors = settings?.theme || {
+// 60-30-10 Color System — base & accent fixed, primary from Sanity dropdown
+const primaryThemeMap: Record<string, string> = {
+  'slate-indigo': '#2F3E6B',
+  'warm-umber': '#4A3728',
+  'midnight-navy': '#1B2A4A',
+  'charcoal-sage': '#374940',
+};
+const colors = {
   baseColor: '#FBF9F7',
-  primaryColor: '#1D5C6B',
-  accentColor: '#593B1D',
+  primaryColor: primaryThemeMap[settings?.primaryTheme] || '#1B2A4A',
+  accentColor: '#C9A983',
 };
 ---
 

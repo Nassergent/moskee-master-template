@@ -13,12 +13,18 @@ interface SettingsColors {
   base?: string;
 }
 
-function getColors(theme: any): SettingsColors | undefined {
-  if (!theme) return undefined;
+const primaryThemeMap: Record<string, string> = {
+  'slate-indigo': '#2F3E6B',
+  'warm-umber': '#4A3728',
+  'midnight-navy': '#1B2A4A',
+  'charcoal-sage': '#374940',
+};
+
+function getColors(primaryTheme: string | undefined): SettingsColors {
   return {
-    primary: theme.primaryColor,
-    accent: theme.accentColor,
-    base: theme.baseColor,
+    primary: primaryThemeMap[primaryTheme || ''] || '#1B2A4A',
+    accent: '#C9A983',
+    base: '#FBF9F7',
   };
 }
 
@@ -53,7 +59,7 @@ export async function sendContactNotification(opts: {
       telefoon: opts.telefoon,
       onderwerp: opts.onderwerp,
       bericht: opts.bericht,
-      colors: getColors(settings?.theme),
+      colors: getColors(settings?.primaryTheme),
     }),
   });
 }
@@ -74,7 +80,7 @@ export async function sendVolunteerEmails(opts: {
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
   const mosqueEmail = settings?.email;
-  const colors = getColors(settings?.theme);
+  const colors = getColors(settings?.primaryTheme);
 
   const resend = new Resend(resendKey);
 
