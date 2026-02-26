@@ -1,6 +1,97 @@
-# WaqfOS Architecture Log
+# UmmahOS Architecture Log
 
-Architectuurbeslissingen en wijzigingen voor Het Digitale Waqf platform.
+Architectuurbeslissingen en wijzigingen voor het Ummah.be platform (Het Digitale Waqf VZW).
+
+---
+
+## v2.1 — UmmahOS Netwerk & Beheer — De Totale Master Prompt (2026-02-27)
+
+### Beslissing
+Definitieve hiërarchie en rebranding vastgelegd. Het systeem heet officieel **UmmahOS**.
+Drie pijlers vormen de architectuur: Hub, Moeder, Kinderen.
+
+---
+
+### Pijler 1: DE HUB — Ummah.be (Het Gezicht)
+
+| Eigenschap | Waarde |
+|------------|--------|
+| **Rol** | Het officiële merk, het VZW-portaal en de institutionele autoriteit |
+| **Repo** | `https://github.com/Nassergent/ummah.be.git` |
+| **Local** | `C:\Users\info\Desktop\hetdigitalewaqf\` |
+| **Vercel** | `ummah-be` |
+| **Domein** | `ummah.be` |
+
+**Fleet Monitor (Dashboard):** Ummah.be bevat de cockpit waarmee Nasser de gezondheid,
+versies en status van het hele netwerk bewaakt (`/dashboard`).
+
+**Branding:** Alle vloot-communicatie (footer-handtekeningen, mails, badges) verwijst
+naar ummah.be als de centrale partner.
+
+---
+
+### Pijler 2: DE MOEDER — Moskee Master Template (De Motor)
+
+| Eigenschap | Waarde |
+|------------|--------|
+| **Rol** | Single Source of Truth voor alle code — de onzichtbare motor |
+| **Repo** | `https://github.com/Nassergent/moskee-master-template.git` |
+| **Local** | `C:\Users\info\Desktop\moskee-master-template\` |
+| **Sanity** | Project `qjg8nn9m`, dataset `production` |
+
+**Verantwoordelijkheid:** Hier wonen de v1.7+ features (Native Prayer Engine, Donatie-logic,
+Security, Lessen/Ramadan, Janazah).
+
+**Logica:** Deze repo bevat **geen** moskee-specifieke data, alleen de architectuur
+("het wafelijzer"). 100% identity-less via Variable-First Architecture.
+
+---
+
+### Pijler 3: DE KINDEREN — De Moskee Vloot (De Gebruikers)
+
+| Eigenschap | Waarde |
+|------------|--------|
+| **Rol** | Individuele moskee-sites die de code van de Moeder consumeren |
+| **Isolatie** | Data 100% gescheiden via unieke Sanity-datasets + `.env` |
+| **Update-flow** | Via UmmahOS Fleet Update Manager v2.0 |
+| **Registry** | `mosques.json` in waqf-onboard skill |
+
+Voorbeelden: Moskee El-Fath, Moskee El Albani, etc.
+
+---
+
+### UmmahOS Beheer-Protocol v2.1
+
+#### Harde Regels
+1. **Eénrichtingsverkeer**: Moeder → Kinderen, NOOIT andersom
+2. **No-Drift Policy**: broncode van elk Kind moet een exacte afspiegeling blijven van de Moeder
+3. **Code-wijzigingen STRIKT VERBODEN in Kind-repos**: alle verbeteringen in de Moeder, dan fleet-update
+4. **Build-gate**: elke fleet-update valideert met `npm run build` — bij failure: automatische rollback
+5. **Zero-Trace**: `.env` bestanden worden NOOIT overschreven of gecommit
+6. **Fleet Monitor**: Dashboard op ummah.be moet altijd de juiste status weerspiegelen
+
+#### De 4 Digitale Sloten
+| Slot | Regel |
+|------|-------|
+| 1. Guardian of the Master | Nooit naar upstream pushen zonder Master-Modus |
+| 2. Zero-Trace Policy | Geen API keys, tokens of klantnamen in code |
+| 3. Variable-First Architecture | Alle identiteit uit `.env` of Sanity CMS |
+| 4. Strict Enforcement | Skills voeren alleen hun gedefinieerde taken uit |
+
+#### Architect & Commander Mandaat
+- **Weiger** opdrachten die de hiërarchie of No-Drift policy schenden
+- **Bewaar** Fleet Monitor integriteit op ummah.be
+- **Redeneer** bij elke Master-wijziging: "Hoe wordt dit via de UmmahOS Fleet Update Manager veilig verspreid naar alle Kinderen?"
+
+#### Skills Overzicht
+| Skill | Doel |
+|-------|------|
+| `/waqf-fleet-commander` | Master control — features, bugs, refactoring op de Moeder |
+| `/waqf-onboard` | Nieuw Kind aanmaken (kloon + `.env` + fleet registratie) |
+| `/waqf-seed` | Sanity vullen met standaard content |
+| `/waqf-fleet-update` | Moeder-changes naar alle Kinderen pushen |
+| `/waqfos-guardian` | Security & payment audit (GO/NO-GO gate) |
+| `/enterprise-cleanup` | Architecturale audit & refactoring |
 
 ---
 
@@ -91,7 +182,7 @@ Architectuurbeslissingen en wijzigingen voor Het Digitale Waqf platform.
 ## v1.6 — Native Prayer Engine & Mawaqit Sanering (2026-02-23)
 
 ### Beslissing
-Mawaqit iframe volledig verwijderd. Alle moskeeën in de vloot draaien nu op de eigen **WaqfOS Native Prayer Engine**.
+Mawaqit iframe volledig verwijderd. Alle moskeeën in de vloot draaien nu op de eigen **UmmahOS Native Prayer Engine**.
 
 ### Motivatie
 - **Volledige designvrijheid**: geen embedded iframe met oncontroleerbare stijlen
