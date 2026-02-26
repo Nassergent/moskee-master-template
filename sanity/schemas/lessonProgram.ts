@@ -36,7 +36,6 @@ export const lessonProgram = defineType({
             .replace(/\s+/g, '-')
             .slice(0, 96),
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'beschrijving',
