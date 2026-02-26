@@ -12,10 +12,26 @@ export const janazahAlert = defineType({
       description: 'Wordt alleen getoond als de familie toestemming geeft (zie vinkje hieronder).',
     }),
     defineField({
-      name: 'gebedstijdstip',
-      title: 'Tijdstip Janazah-gebed',
+      name: 'naGebed',
+      title: 'Na welk gebed?',
       type: 'string',
-      description: 'Bijv. "Na het Dhuhr-gebed" of "14:00".',
+      description: 'Het gebed waarna de janazah plaatsvindt.',
+      options: {
+        list: [
+          { title: 'Fajr-gebed', value: 'Fajr-gebed' },
+          { title: 'Dhuhr-gebed', value: 'Dhuhr-gebed' },
+          { title: 'Asr-gebed', value: 'Asr-gebed' },
+          { title: 'Maghrib-gebed', value: 'Maghrib-gebed' },
+          { title: 'Isha-gebed', value: 'Isha-gebed' },
+          { title: "Jumu'ah-gebed", value: "Jumu'ah-gebed" },
+        ],
+      },
+    }),
+    defineField({
+      name: 'gebedstijdstip',
+      title: 'Tijdstip',
+      type: 'string',
+      description: 'Kloktijd, bijv. 14:00.',
     }),
     defineField({
       name: 'gebeddatum',

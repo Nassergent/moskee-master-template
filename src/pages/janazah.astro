@@ -4,7 +4,7 @@ import Section from '../components/Section.astro';
 import PortableText from '../components/PortableText.astro';
 import JanazahProcedureSteps from '../components/ui/janazah/JanazahProcedureSteps.astro';
 import { fetchJanazahProcedure, fetchActiveJanazahAlert, fetchSettings } from '../lib/sanity';
-import { isJanazahActive, getDisplayName } from '../lib/logic/janazah';
+import { isJanazahActive, getDisplayName, buildGebedZin } from '../lib/logic/janazah';
 
 const [procedure, alert, settings] = await Promise.all([
   fetchJanazahProcedure(),
@@ -58,11 +58,8 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-r
         <p class="text-sm text-neutral-500 uppercase tracking-widest mb-2">Actieve melding</p>
         <p class="text-lg text-neutral-900">
           <strong>{getDisplayName(alert)}</strong>
-          {alert.gebedstijdstip && (
-            <span> — Janazah-gebed: <strong>{alert.gebedstijdstip}</strong></span>
-          )}
-          {alert.gebeddatum && (
-            <span> op <strong>{new Date(alert.gebeddatum + 'T00:00:00').toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long' })}</strong></span>
+          {buildGebedZin(alert) && (
+            <span> — {buildGebedZin(alert)}</span>
           )}
         </p>
       </div>

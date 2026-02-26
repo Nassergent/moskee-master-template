@@ -347,7 +347,7 @@ export async function fetchJanazahProcedure() {
 export async function fetchActiveJanazahAlert() {
   try {
     const result = await freshClient.fetch(`*[_type == "janazahAlert" && actief == true] | order(gebeddatum desc) [0]{
-      _id, naamOverledene, gebedstijdstip, gebeddatum, duaArabisch, familyConsent, actief
+      _id, naamOverledene, naGebed, gebedstijdstip, gebeddatum, duaArabisch, familyConsent, actief
     }`);
     return result || null;
   } catch (e) {

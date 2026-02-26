@@ -4,12 +4,14 @@
  *
  * Elite UI v1.7.2: Gecentreerd blok — Arabisch en Nederlands als één geheel.
  * Schone zinnen, automatische naam-capitalisatie, subtiele link met pijltje.
+ * Gebedsinfo via buildGebedZin() uit logic layer (geen inline string-bouw).
  */
-import { getDisplayName } from '../../../lib/logic/janazah';
+import { getDisplayName, buildGebedZin } from '../../../lib/logic/janazah';
 
 interface Props {
   alert: {
     naamOverledene?: string;
+    naGebed?: string;
     gebedstijdstip?: string;
     gebeddatum?: string;
     duaArabisch?: string;
@@ -20,23 +22,7 @@ interface Props {
 const { alert } = Astro.props;
 
 const displayName = getDisplayName(alert as any);
-const datumStr = alert.gebeddatum
-  ? new Date(alert.gebeddatum + 'T00:00:00').toLocaleDateString('nl-BE', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    })
-  : null;
-
-// Bouw de gebedsinfo-zin op: "Janazah-gebed op vrijdag 27 februari om 14:00."
-let gebedZin = '';
-if (datumStr && alert.gebedstijdstip) {
-  gebedZin = `Janazah-gebed op ${datumStr} om ${alert.gebedstijdstip}.`;
-} else if (datumStr) {
-  gebedZin = `Janazah-gebed op ${datumStr}.`;
-} else if (alert.gebedstijdstip) {
-  gebedZin = `Janazah-gebed om ${alert.gebedstijdstip}.`;
-}
+const gebedZin = buildGebedZin(alert as any);
 ---
 
 <div class="relative bg-primary-dark border-t border-white/10">
