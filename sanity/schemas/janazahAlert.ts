@@ -31,7 +31,7 @@ export const janazahAlert = defineType({
       name: 'gebedstijdstip',
       title: 'Tijdstip',
       type: 'string',
-      description: 'Kloktijd, bijv. 14:00.',
+      description: 'Alleen het uur, bijv. 14:00',
     }),
     defineField({
       name: 'gebeddatum',
@@ -49,7 +49,7 @@ export const janazahAlert = defineType({
       name: 'familyConsent',
       title: 'Toestemming Familie',
       type: 'boolean',
-      description: 'AAN = naam van de overledene wordt getoond. UIT = anonieme melding ("een gemeentelid").',
+      description: 'AAN = naam wordt getoond op de website. UIT = anonieme melding.',
       initialValue: false,
     }),
     defineField({
