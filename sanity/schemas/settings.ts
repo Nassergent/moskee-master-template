@@ -91,6 +91,12 @@ export const settings = defineType({
           initialValue: true,
         }),
         defineField({
+          name: 'showLessen',
+          title: 'Toon Lessen',
+          type: 'boolean',
+          initialValue: true,
+        }),
+        defineField({
           name: 'showProjects',
           title: 'Toon Projecten',
           type: 'boolean',

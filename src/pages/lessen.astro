@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import LessonHero from '../components/ui/education/LessonHero.astro';
+import ScheduleGrid from '../components/ui/education/ScheduleGrid.astro';
+import PracticalInfo from '../components/ui/education/PracticalInfo.astro';
+import { fetchLessonPrograms, fetchRamadanOverride } from '../lib/sanity';
+import { getEffectiveSchedule, sortByDay } from '../lib/logic/education';
+
+const [programs, ramadanOverride] = await Promise.all([
+  fetchLessonPrograms(),
+  fetchRamadanOverride(),
+]);
+
+const variants = ['light-50', 'light-100'] as const;
+---
+
+<BaseLayout title="Lessen" description="Overzicht van alle lesprogramma's bij onze moskee — Koranles, Arabisch en meer.">
+  <!-- Page Header — Dark -->
+  <section class="bg-primary-dark text-white py-16 md:py-20">
+    <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
+      <h1 class="text-4xl font-bold mb-4 text-white">Onze Lessen</h1>
+      <p class="text-white/80 max-w-xl mx-auto">
+        Van Koranles tot Arabisch — ontdek ons educatief aanbod voor alle leeftijden
+      </p>
+    </div>
+  </section>
+
+  {programs.length > 0 ? (
+    programs.map((program: any, i: number) => {
+      const schedule = getEffectiveSchedule(program.rooster, ramadanOverride);
+      const variant = variants[i % 2];
+      return (
+        <Section variant={variant}>
+          <LessonHero
+            titel={program.titel}
+            beschrijving={program.beschrijving}
+            afbeelding={program.afbeelding}
+          />
+
+          {schedule.items.length > 0 && (
+            <div class="mt-10">
+              <h3 class="font-heading text-xl font-bold mb-4">
+                {schedule.type === 'ramadan' ? 'Ramadan Rooster' : 'Lesrooster'}
+              </h3>
+              <ScheduleGrid schedule={schedule} />
+            </div>
+          )}
+
+          <PracticalInfo
+            leeftijdsgroep={program.leeftijdsgroep}
+            niveaus={program.niveaus}
+            maxCapaciteit={program.maxCapaciteit}
+            inschrijvingOpen={program.inschrijvingOpen}
+            inschrijvingLink={program.inschrijvingLink}
+          />
+        </Section>
+      );
+    })
+  ) : (
+    <!-- Empty state -->
+    <Section variant="light-50">
+      <div class="max-w-xl mx-auto text-center py-12">
+        <svg class="w-16 h-16 mx-auto mb-6 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <h2 class="text-2xl font-bold mb-3">Nog geen lessen gepubliceerd</h2>
+        <p class="text-neutral-500 mb-6">
+          Binnenkort voegen we ons educatief aanbod toe. Neem contact op voor meer informatie.
+        </p>
+        <a href="/contact" class="inline-flex items-center px-8 py-3 bg-accent hover:bg-accent-hover text-white font-bold transition-all">
+          Contact opnemen
+        </a>
+      </div>
+    </Section>
+  )}
+
+  <!-- CTA -->
+  <Section variant={programs.length % 2 === 0 ? 'light-50' : 'light-100'}>
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Vragen over onze lessen?</h2>
+      <p class="text-neutral-600 mb-8">Neem gerust contact met ons op voor meer informatie of inschrijvingen.</p>
+      <a href="/contact" class="btn-primary inline-flex items-center px-8 py-3 bg-accent hover:bg-accent-hover text-white font-bold transition-all">
+        Contact opnemen
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

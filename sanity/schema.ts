@@ -10,6 +10,8 @@ import { aboutPage } from './schemas/aboutPage';
 import { contactPage } from './schemas/contactPage';
 import { volunteer } from './schemas/volunteer';
 import { agendaEvent } from './schemas/agendaEvent';
+import { lessonProgram } from './schemas/lessonProgram';
+import { ramadanOverride } from './schemas/ramadanOverride';
 
 export const schema = {
   types: [
@@ -20,6 +22,8 @@ export const schema = {
     project,
     post,
     agendaEvent,
+    lessonProgram,
+    ramadanOverride,
     aboutPage,
     contactPage,
     quote,

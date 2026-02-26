@@ -172,10 +172,61 @@ const prayerTimesDoc = {
   footerNote: 'Gebedstijden worden berekend op basis van uw locatie en methode. Controleer bij twijfel altijd de tijden bij de moskee.',
 };
 
+// ── Lesson Programs (2 items) ──
+
+const lessonProgramItems = [
+  {
+    _id: 'lesson-koranles',
+    _type: 'lessonProgram',
+    titel: 'Koranles',
+    slug: { _type: 'slug', current: 'koranles' },
+    beschrijving: 'Wekelijkse Koranlessen voor kinderen. Leer Koran lezen met correcte tajweed onder begeleiding van ervaren docenten.',
+    leeftijdsgroep: '6-14 jaar',
+    niveaus: ['Beginners', 'Gevorderden'],
+    maxCapaciteit: 25,
+    inschrijvingOpen: true,
+    rooster: [
+      { _key: 'koran-za', dag: 'zaterdag', startTijd: '10:00', eindTijd: '12:00', actief: true },
+      { _key: 'koran-zo', dag: 'zondag', startTijd: '10:00', eindTijd: '12:00', actief: true },
+    ],
+    volgorde: 1,
+    actief: true,
+  },
+  {
+    _id: 'lesson-arabisch',
+    _type: 'lessonProgram',
+    titel: 'Arabische Taal',
+    slug: { _type: 'slug', current: 'arabische-taal' },
+    beschrijving: 'Arabisch leren lezen, schrijven en spreken. Geschikt voor volwassenen die de taal van de Koran willen begrijpen.',
+    leeftijdsgroep: 'Volwassenen (16+)',
+    niveaus: ['Beginners'],
+    inschrijvingOpen: true,
+    rooster: [
+      { _key: 'arab-wo', dag: 'woensdag', startTijd: '19:00', eindTijd: '20:30', actief: true },
+    ],
+    volgorde: 2,
+    actief: true,
+  },
+];
+
+// ── Ramadan Override (singleton) ──
+
+const ramadanOverrideDoc = {
+  _id: 'ramadanOverride',
+  _type: 'ramadanOverride',
+  ingeschakeld: false,
+  omschrijving: 'Tijdens de Ramadan gelden aangepaste lestijden. Raadpleeg onderstaand rooster.',
+  rooster: [
+    { _key: 'ram-1', datum: '2026-03-15', startTijd: '10:00', eindTijd: '11:30', notitie: 'Koranles (verkort)' },
+    { _key: 'ram-2', datum: '2026-03-16', startTijd: '10:00', eindTijd: '11:30', notitie: 'Koranles (verkort)' },
+    { _key: 'ram-3', datum: '2026-03-18', startTijd: '19:30', eindTijd: '20:30', notitie: 'Arabisch (na iftar)' },
+  ],
+};
+
 // ── Seed alles ──
 
 async function seed() {
-  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems];
+  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems, ...lessonProgramItems, ramadanOverrideDoc];
 
   console.log(`Seeding ${allDocs.length} documenten naar Sanity...`);
 

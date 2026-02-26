@@ -1,0 +1,73 @@
+---
+/**
+ * ScheduleGrid.astro — Displays normal schedule (cards) or Ramadan schedule (table)
+ *
+ * Flat Design: border-l-[3px] border-l-accent on cards, no rounded/shadow.
+ */
+import { capitalizeDag } from '../../../lib/logic/education';
+import type { EffectiveSchedule, ScheduleEntry, RamadanEntry } from '../../../lib/logic/education';
+
+interface Props {
+  schedule: EffectiveSchedule;
+}
+
+const { schedule } = Astro.props;
+---
+
+{schedule.type === 'ramadan' ? (
+  <!-- Ramadan Table -->
+  <div>
+    {schedule.omschrijving && (
+      <p class="text-neutral-600 mb-6 border-l-[3px] border-l-accent pl-4">{schedule.omschrijving}</p>
+    )}
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-primary-dark text-white">
+            <th class="px-4 py-3 font-heading font-bold text-sm">Datum</th>
+            <th class="px-4 py-3 font-heading font-bold text-sm">Start</th>
+            <th class="px-4 py-3 font-heading font-bold text-sm">Einde</th>
+            <th class="px-4 py-3 font-heading font-bold text-sm">Notitie</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(schedule.items as RamadanEntry[]).map((item, i) => {
+            const datumStr = item.datum
+              ? new Date(item.datum + 'T00:00:00').toLocaleDateString('nl-BE', {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'long',
+                })
+              : '—';
+            return (
+              <tr class={i % 2 === 0 ? 'bg-base' : 'bg-base-100'}>
+                <td class="px-4 py-3 text-sm font-medium">{datumStr}</td>
+                <td class="px-4 py-3 text-sm">{item.startTijd}</td>
+                <td class="px-4 py-3 text-sm">{item.eindTijd}</td>
+                <td class="px-4 py-3 text-sm text-neutral-500">{item.notitie || '—'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+) : (
+  <!-- Normal Schedule Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {(schedule.items as ScheduleEntry[]).map((item, i) => (
+      <div
+        class="bg-white border border-neutral-200 border-l-[3px] border-l-accent p-5 animate-slide-up"
+        style={`animation-delay: ${i * 80}ms`}
+      >
+        <div class="font-heading font-bold text-lg mb-1">{capitalizeDag(item.dag)}</div>
+        <div class="text-neutral-600 text-sm">
+          <svg class="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {item.startTijd} – {item.eindTijd}
+        </div>
+      </div>
+    ))}
+  </div>
+)}

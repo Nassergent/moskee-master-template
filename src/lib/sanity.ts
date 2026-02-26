@@ -240,6 +240,33 @@ export async function fetchContactPage() {
   }
 }
 
+// ── Lessen & Ramadan ──
+
+export async function fetchLessonPrograms() {
+  try {
+    const result = await sanityClient.fetch(`*[_type == "lessonProgram" && actief == true] | order(volgorde asc) {
+      _id, titel, "slug": slug.current, beschrijving, afbeelding, leeftijdsgroep, niveaus,
+      maxCapaciteit, inschrijvingOpen, inschrijvingLink, rooster, volgorde
+    }`);
+    return result || [];
+  } catch (e) {
+    console.error('Sanity fetchLessonPrograms error:', e);
+    return [];
+  }
+}
+
+export async function fetchRamadanOverride() {
+  try {
+    const result = await sanityClient.fetch(`*[_id == "ramadanOverride"][0]{
+      ingeschakeld, omschrijving, rooster
+    }`);
+    return result || null;
+  } catch (e) {
+    console.error('Sanity fetchRamadanOverride error:', e);
+    return null;
+  }
+}
+
 // ── Agenda Evenementen ──
 
 export async function fetchAgendaEvents() {

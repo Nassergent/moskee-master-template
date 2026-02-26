@@ -1,7 +1,7 @@
 import type { StructureBuilder } from 'sanity/structure';
 
 // Singleton types — no "+" button, single document only
-const singletonTypes = ['settings', 'homePage', 'prayerTimes', 'aboutPage', 'contactPage'];
+const singletonTypes = ['settings', 'homePage', 'prayerTimes', 'aboutPage', 'contactPage', 'ramadanOverride'];
 
 function singleton(S: StructureBuilder, typeName: string, title: string, icon: string) {
   return S.listItem()
@@ -196,6 +196,50 @@ function dienstenManagement(S: StructureBuilder) {
     );
 }
 
+// ── Lessen Beheer met Aan/Uit secties + Ramadan ──
+function lessenManagement(S: StructureBuilder) {
+  return S.listItem()
+    .title('Lessen')
+    .icon(() => '📚')
+    .child(
+      S.list()
+        .title('Lessen')
+        .items([
+          S.listItem()
+            .title('🟢 Actief op website')
+            .icon(() => '🟢')
+            .child(
+              S.documentList()
+                .title('Actieve lesprogramma\'s')
+                .schemaType('lessonProgram')
+                .filter('_type == "lessonProgram" && actief != false')
+                .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
+            ),
+          S.listItem()
+            .title('⚫ Uitgeschakeld')
+            .icon(() => '⚫')
+            .child(
+              S.documentList()
+                .title('Uitgeschakelde lesprogramma\'s')
+                .schemaType('lessonProgram')
+                .filter('_type == "lessonProgram" && actief == false')
+                .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
+            ),
+          S.divider(),
+          S.listItem()
+            .title('Alle lesprogramma\'s')
+            .icon(() => '📚')
+            .child(
+              S.documentTypeList('lessonProgram')
+                .title('Alle lesprogramma\'s')
+                .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
+            ),
+          S.divider(),
+          singleton(S, 'ramadanOverride', 'Ramadan Lesrooster', '🌙'),
+        ])
+    );
+}
+
 // ── Islamitische Citaten met Aan/Uit secties ──
 function quoteManagement(S: StructureBuilder) {
   return S.listItem()
@@ -376,6 +420,7 @@ export function structure(S: StructureBuilder) {
       S.divider(),
 
       dienstenManagement(S),
+      lessenManagement(S),
       projectenManagement(S),
       nieuwsManagement(S),
       agendaManagement(S),

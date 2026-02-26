@@ -1,0 +1,40 @@
+---
+/**
+ * LessonHero.astro — Hero section for a lesson program (Flat Design)
+ *
+ * Desktop: 60/40 split (text left, image right)
+ * Mobile: stacked
+ */
+import { urlFor } from '../../../lib/sanity';
+
+interface Props {
+  titel: string;
+  beschrijving?: string;
+  afbeelding?: any;
+}
+
+const { titel, beschrijving, afbeelding } = Astro.props;
+const imageUrl = afbeelding ? urlFor(afbeelding).width(640).height(480).fit('crop').url() : null;
+---
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+  <div class="lg:col-span-3 animate-fade-in-up">
+    <h2 class="font-heading text-3xl md:text-4xl font-bold mb-4">{titel}</h2>
+    {beschrijving && (
+      <p class="text-neutral-600 text-lg leading-relaxed">{beschrijving}</p>
+    )}
+  </div>
+  {imageUrl && (
+    <div class="lg:col-span-2 animate-scale-in">
+      <img
+        src={imageUrl}
+        alt={titel}
+        width="640"
+        height="480"
+        loading="lazy"
+        decoding="async"
+        class="w-full h-auto object-cover"
+      />
+    </div>
+  )}
+</div>
