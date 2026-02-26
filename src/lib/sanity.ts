@@ -46,7 +46,7 @@ export async function fetchProjecten() {
 
 export async function fetchNieuws() {
   try {
-    const result = await sanityClient.fetch(`*[_type == "post" && gepubliceerd == true] | order(datum desc) {
+    const result = await sanityClient.fetch(`*[_type == "post" && gepubliceerd == true && !defined(onderwerpHub)] | order(datum desc) {
       _id, titel, "slug": slug, datum, samenvatting, inhoud, afbeelding
     }`);
     return result || [];
