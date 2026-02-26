@@ -1,0 +1,32 @@
+---
+/**
+ * SmartFilterBar.astro — Sticky horizontal filter bar with anchor links per category.
+ *
+ * Only rendered when shouldShowFilter() returns true (>1 unique category).
+ * Flat Design: border-b-2 border-accent, no rounded, no shadow.
+ */
+import { capitalizeCategorie, categoryToAnchor } from '../../../lib/logic/education';
+
+interface Props {
+  categories: string[];
+}
+
+const { categories } = Astro.props;
+---
+
+<nav class="sticky top-0 z-30 bg-base border-b-2 border-accent py-3">
+  <div class="max-w-[1280px] mx-auto px-6">
+    <ul class="flex flex-wrap gap-3">
+      {categories.map((cat) => (
+        <li>
+          <a
+            href={`#${categoryToAnchor(cat)}`}
+            class="inline-block px-5 py-2 text-sm font-bold border border-neutral-200 border-l-[3px] border-l-accent bg-white hover:bg-accent hover:text-white transition-all"
+          >
+            {capitalizeCategorie(cat)}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>

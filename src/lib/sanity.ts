@@ -240,13 +240,48 @@ export async function fetchContactPage() {
   }
 }
 
+// ── Topic Hub (Nieuws ↔ Agenda koppeling) ──
+
+export async function fetchPost(slug: string) {
+  try {
+    const result = await sanityClient.fetch(`*[_type == "post" && slug.current == $slug && gepubliceerd == true][0]{
+      _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding,
+      onderwerpHub->{ _id, titel, "slug": slug.current }
+    }`, { slug });
+    return result || null;
+  } catch (e) {
+    console.error('Sanity fetchPost error:', e);
+    return null;
+  }
+}
+
+export async function fetchTopicHubRelated(hubId: string) {
+  try {
+    const [relatedPosts, relatedEvents] = await Promise.all([
+      sanityClient.fetch(`*[_type == "post" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(datum desc) {
+        _id, titel, "slug": slug.current, datum, samenvatting, afbeelding
+      }`, { hubId }),
+      sanityClient.fetch(`*[_type == "agendaEvent" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(startDatum asc) {
+        _id, titel, "slug": slug.current, startDatum, eindDatum, locatie, categorie, afbeelding
+      }`, { hubId }),
+    ]);
+    return {
+      posts: relatedPosts || [],
+      events: relatedEvents || [],
+    };
+  } catch (e) {
+    console.error('Sanity fetchTopicHubRelated error:', e);
+    return { posts: [], events: [] };
+  }
+}
+
 // ── Lessen & Ramadan ──
 
 export async function fetchLessonPrograms() {
   try {
     const result = await sanityClient.fetch(`*[_type == "lessonProgram" && actief == true] | order(volgorde asc) {
-      _id, titel, "slug": slug.current, beschrijving, inhoud, afbeelding, leeftijdsgroep, niveaus,
-      maxCapaciteit, inschrijvingOpen, inschrijvingLink, rooster, volgorde
+      _id, titel, categorie, beschrijving, inhoud, afbeelding,
+      maxCapaciteit, inschrijvingOpen, vrijwilligersLink, rooster, volgorde
     }`);
     return result || [];
   } catch (e) {
@@ -299,7 +334,7 @@ export async function fetchAgendaEvent(slug: string) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
       _id, titel, "slug": slug.current, startDatum, eindDatum, locatie, categorie, beschrijving,
-      afbeelding
+      afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current }
     }`, { slug });
     return result || null;
   } catch (e) {

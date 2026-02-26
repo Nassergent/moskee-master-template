@@ -172,6 +172,164 @@ const prayerTimesDoc = {
   footerNote: 'Gebedstijden worden berekend op basis van uw locatie en methode. Controleer bij twijfel altijd de tijden bij de moskee.',
 };
 
+// ── Topic Hub: Ramadan 2026 (1 hoofdartikel + 1 sub-artikel + 1 agenda-item) ──
+
+const topicHubItems = [
+  // Hoofdartikel (de "hub")
+  {
+    _id: 'post-ramadan-2026',
+    _type: 'post',
+    titel: 'Ramadan 2026 — Programma & Activiteiten',
+    slug: { _type: 'slug', current: 'ramadan-2026' },
+    datum: '2026-02-20T10:00:00Z',
+    samenvatting: 'Alles over onze Ramadan-activiteiten: gezamenlijke iftars, nachtgebeden, Koranlezingen en speciale programma\'s voor de hele gemeenschap.',
+    inhoud: [
+      {
+        _type: 'block',
+        _key: 'ram-hub-1',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'rh1a', text: 'Ramadan is de heiligste maand in de islamitische kalender. Onze moskee organiseert een uitgebreid programma met activiteiten voor de hele gemeenschap.', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'ram-hub-2',
+        style: 'h3',
+        children: [
+          { _type: 'span', _key: 'rh2a', text: 'Wat kunt u verwachten?', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'ram-hub-3',
+        style: 'normal',
+        listItem: 'bullet',
+        children: [
+          { _type: 'span', _key: 'rh3a', text: 'Dagelijkse Taraweeh-gebeden na Isha', marks: ['strong'] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'ram-hub-4',
+        style: 'normal',
+        listItem: 'bullet',
+        children: [
+          { _type: 'span', _key: 'rh4a', text: 'Wekelijkse gezamenlijke iftar (elke vrijdag)', marks: ['strong'] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'ram-hub-5',
+        style: 'normal',
+        listItem: 'bullet',
+        children: [
+          { _type: 'span', _key: 'rh5a', text: 'Speciale lezingen over de laatste 10 nachten', marks: ['strong'] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'ram-hub-6',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'rh6a', text: 'Volg dit programma voor alle updates en bekijk de agenda voor specifieke data en tijden.', marks: [] },
+        ],
+        markDefs: [],
+      },
+    ],
+    gepubliceerd: true,
+  },
+  // Sub-artikel (gekoppeld aan hub)
+  {
+    _id: 'post-laatste-10-nachten',
+    _type: 'post',
+    titel: 'De waarde van de laatste 10 nachten',
+    slug: { _type: 'slug', current: 'de-waarde-van-de-laatste-10-nachten' },
+    datum: '2026-03-10T08:00:00Z',
+    samenvatting: 'Een verdieping in de spirituele betekenis van de laatste tien nachten van de Ramadan en hoe u het meeste uit Laylat al-Qadr kunt halen.',
+    onderwerpHub: { _type: 'reference', _ref: 'post-ramadan-2026' },
+    inhoud: [
+      {
+        _type: 'block',
+        _key: 'l10-1',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'l10-1a', text: 'De laatste tien nachten van de Ramadan zijn de meest gezegende nachten van het jaar. De Profeet (vrede zij met hem) verdubbelde zijn aanbidding in deze periode.', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'l10-2',
+        style: 'h3',
+        children: [
+          { _type: 'span', _key: 'l10-2a', text: 'Laylat al-Qadr', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'l10-3',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'l10-3a', text: '"De Nacht van de Bestemming is beter dan duizend maanden" (Quran 97:3). Zoek deze nacht in de ', marks: [] },
+          { _type: 'span', _key: 'l10-3b', text: 'oneven nachten', marks: ['strong'] },
+          { _type: 'span', _key: 'l10-3c', text: ' van de laatste tien: de 21e, 23e, 25e, 27e en 29e nacht.', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'l10-4',
+        style: 'blockquote',
+        children: [
+          { _type: 'span', _key: 'l10-4a', text: 'Wie bidt tijdens Laylat al-Qadr met geloof en in de hoop op beloning, diens voorgaande zonden worden vergeven. — Sahih al-Bukhari', marks: [] },
+        ],
+        markDefs: [],
+      },
+    ],
+    gepubliceerd: true,
+  },
+  // Agenda-item (gekoppeld aan hub)
+  {
+    _id: 'agenda-iftar-ramadan',
+    _type: 'agendaEvent',
+    titel: 'Gezamenlijke Iftar',
+    slug: { _type: 'slug', current: 'gezamenlijke-iftar' },
+    startDatum: '2026-03-20T18:30:00+01:00',
+    eindDatum: '2026-03-20T20:30:00+01:00',
+    locatie: 'Grote zaal',
+    categorie: 'Iftar',
+    onderwerpHub: { _type: 'reference', _ref: 'post-ramadan-2026' },
+    beschrijving: [
+      {
+        _type: 'block',
+        _key: 'iftar-1',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'iftar-1a', text: 'Iedere vrijdag tijdens de Ramadan organiseren wij een gezamenlijke iftar in de grote zaal. Iedereen is welkom — breng gerust familie en vrienden mee!', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'iftar-2',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'iftar-2a', text: 'Na de iftar bidden we samen het Maghrib-gebed, gevolgd door de Taraweeh.', marks: [] },
+        ],
+        markDefs: [],
+      },
+    ],
+    gepubliceerd: true,
+  },
+];
+
 // ── Lesson Programs (2 items) ──
 
 const lessonProgramItems = [
@@ -180,9 +338,58 @@ const lessonProgramItems = [
     _type: 'lessonProgram',
     titel: 'Koranles',
     slug: { _type: 'slug', current: 'koranles' },
+    categorie: 'kinderen',
     beschrijving: 'Wekelijkse Koranlessen voor kinderen. Leer Koran lezen met correcte tajweed onder begeleiding van ervaren docenten.',
-    leeftijdsgroep: '6-14 jaar',
-    niveaus: ['Beginners', 'Gevorderden'],
+    inhoud: [
+      {
+        _type: 'block',
+        _key: 'koran-blk1',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'k1a', text: 'Onze Koranlessen worden gegeven door ervaren docenten met jarenlange ervaring in het onderwijzen van tajweed aan kinderen. De lessen zijn opgebouwd van beginnersniveau tot gevorderd.', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'koran-blk2',
+        style: 'h3',
+        children: [
+          { _type: 'span', _key: 'k2a', text: 'Wat leren de kinderen?', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'koran-blk3',
+        style: 'normal',
+        listItem: 'bullet',
+        children: [
+          { _type: 'span', _key: 'k3a', text: 'Correcte uitspraak van Arabische letters', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'koran-blk4',
+        style: 'normal',
+        listItem: 'bullet',
+        children: [
+          { _type: 'span', _key: 'k4a', text: 'Tajweed regels stap voor stap', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'koran-blk5',
+        style: 'normal',
+        listItem: 'bullet',
+        children: [
+          { _type: 'span', _key: 'k5a', text: 'Memorisatie van korte soerah\'s', marks: [] },
+        ],
+        markDefs: [],
+      },
+    ],
     maxCapaciteit: 25,
     inschrijvingOpen: true,
     rooster: [
@@ -197,9 +404,39 @@ const lessonProgramItems = [
     _type: 'lessonProgram',
     titel: 'Arabische Taal',
     slug: { _type: 'slug', current: 'arabische-taal' },
-    beschrijving: 'Arabisch leren lezen, schrijven en spreken. Geschikt voor volwassenen die de taal van de Koran willen begrijpen.',
-    leeftijdsgroep: 'Volwassenen (16+)',
-    niveaus: ['Beginners'],
+    categorie: 'vrouwen',
+    beschrijving: 'Arabisch leren lezen, schrijven en spreken. Geschikt voor vrouwen die de taal van de Koran willen begrijpen.',
+    inhoud: [
+      {
+        _type: 'block',
+        _key: 'arab-blk1',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'a1a', text: 'Deze cursus richt zich op het aanleren van de Arabische taal, met aandacht voor zowel ', marks: [] },
+          { _type: 'span', _key: 'a1b', text: 'lezen, schrijven als spreken', marks: ['strong'] },
+          { _type: 'span', _key: 'a1c', text: '. De lessen worden gegeven in een rustige omgeving, exclusief voor vrouwen.', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'arab-blk2',
+        style: 'h3',
+        children: [
+          { _type: 'span', _key: 'a2a', text: 'Programma', marks: [] },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'arab-blk3',
+        style: 'normal',
+        children: [
+          { _type: 'span', _key: 'a3a', text: 'Het programma loopt van september tot juni en is geschikt voor beginners. Er wordt gewerkt met professioneel lesmateriaal.', marks: [] },
+        ],
+        markDefs: [],
+      },
+    ],
     inschrijvingOpen: true,
     rooster: [
       { _key: 'arab-wo', dag: 'woensdag', startTijd: '19:00', eindTijd: '20:30', actief: true },
@@ -226,7 +463,7 @@ const ramadanOverrideDoc = {
 // ── Seed alles ──
 
 async function seed() {
-  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems, ...lessonProgramItems, ramadanOverrideDoc];
+  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems, ...topicHubItems, ...lessonProgramItems, ramadanOverrideDoc];
 
   console.log(`Seeding ${allDocs.length} documenten naar Sanity...`);
 

@@ -18,6 +18,14 @@ const weekDays = [
   { title: 'Zondag', value: 'zondag' },
 ];
 
+const categorieOptions = [
+  { title: 'Kinderen', value: 'kinderen' },
+  { title: 'Jongeren', value: 'jongeren' },
+  { title: 'Vrouwen', value: 'vrouwen' },
+  { title: 'Mannen', value: 'mannen' },
+  { title: 'Algemeen', value: 'algemeen' },
+];
+
 export const lessonProgram = defineType({
   name: 'lessonProgram',
   title: 'Lesprogramma',
@@ -46,11 +54,20 @@ export const lessonProgram = defineType({
       },
     }),
     defineField({
+      name: 'categorie',
+      title: 'Categorie',
+      type: 'string',
+      description: 'Doelgroep van dit lesprogramma. Bepaalt de groepering op de website.',
+      options: { list: categorieOptions, layout: 'dropdown' },
+      initialValue: 'algemeen',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'beschrijving',
       title: 'Beschrijving',
       type: 'text',
       rows: 4,
-      description: 'Korte beschrijving van het lesprogramma.',
+      description: 'Korte beschrijving van het lesprogramma (plain text).',
     }),
     defineField({
       name: 'inhoud',
@@ -70,19 +87,6 @@ export const lessonProgram = defineType({
       description: 'Optionele afbeelding bij het lesprogramma.',
     }),
     defineField({
-      name: 'leeftijdsgroep',
-      title: 'Leeftijdsgroep',
-      type: 'string',
-      description: 'Bijv. "6-12 jaar", "Volwassenen", "Alle leeftijden".',
-    }),
-    defineField({
-      name: 'niveaus',
-      title: 'Niveaus',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'Bijv. "Beginners", "Gevorderden". Laat leeg als niet van toepassing.',
-    }),
-    defineField({
       name: 'maxCapaciteit',
       title: 'Maximale Capaciteit',
       type: 'number',
@@ -97,10 +101,10 @@ export const lessonProgram = defineType({
       initialValue: true,
     }),
     defineField({
-      name: 'inschrijvingLink',
-      title: 'Inschrijvingslink',
+      name: 'vrijwilligersLink',
+      title: 'Vrijwilligerslink',
       type: 'url',
-      description: 'Optionele externe link voor inschrijving (bijv. Google Forms). Als leeg, wordt doorverwezen naar /contact.',
+      description: 'Optionele link naar vrijwilligers- of inschrijfformulier (bijv. Google Forms). Als leeg → /contact.',
     }),
     defineField({
       name: 'rooster',
@@ -180,15 +184,16 @@ export const lessonProgram = defineType({
   preview: {
     select: {
       title: 'titel',
-      leeftijd: 'leeftijdsgroep',
+      categorie: 'categorie',
       actief: 'actief',
       media: 'afbeelding',
     },
-    prepare({ title, leeftijd, actief, media }) {
+    prepare({ title, categorie, actief, media }) {
       const prefix = actief === false ? '[UIT] ' : '';
+      const cat = categorie ? categorie.charAt(0).toUpperCase() + categorie.slice(1) : '';
       return {
         title: `${prefix}${title || 'Zonder titel'}`,
-        subtitle: leeftijd || '',
+        subtitle: cat,
         media,
       };
     },

@@ -60,6 +60,13 @@ export const post = defineType({
       ],
     }),
     defineField({
+      name: 'onderwerpHub',
+      title: 'Hoofdartikel (Topic Hub)',
+      type: 'reference',
+      to: [{ type: 'post' }],
+      description: 'Optioneel: koppel dit artikel aan een hoofdartikel. Het hoofdartikel toont dan automatisch alle gekoppelde berichten en agenda-items.',
+    }),
+    defineField({
       name: 'gepubliceerd',
       title: 'Gepubliceerd',
       type: 'boolean',

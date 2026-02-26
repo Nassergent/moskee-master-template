@@ -1,35 +1,30 @@
 ---
 /**
- * PracticalInfo.astro — 3-column grid: Leeftijd & Niveaus / Inschrijving / Contact
+ * PracticalInfo.astro — 3-column grid: Capaciteit / Inschrijving / Contact
  *
  * Flat Design: border-l-[3px] border-l-accent on all cards.
  */
+import { capitalizeCategorie } from '../../../lib/logic/education';
 
 interface Props {
-  leeftijdsgroep?: string;
-  niveaus?: string[];
+  categorie?: string;
   maxCapaciteit?: number;
   inschrijvingOpen?: boolean;
-  inschrijvingLink?: string;
+  vrijwilligersLink?: string;
 }
 
-const { leeftijdsgroep, niveaus, maxCapaciteit, inschrijvingOpen, inschrijvingLink } = Astro.props;
-const hasInfo = leeftijdsgroep || (niveaus && niveaus.length > 0) || maxCapaciteit || inschrijvingOpen;
+const { categorie, maxCapaciteit, inschrijvingOpen, vrijwilligersLink } = Astro.props;
+const hasInfo = categorie || maxCapaciteit || inschrijvingOpen;
 ---
 
 {hasInfo && (
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <!-- Leeftijd & Niveaus -->
+    <!-- Doelgroep & Capaciteit -->
     <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent p-5">
-      <h3 class="font-heading font-bold text-sm uppercase tracking-wider text-neutral-400 mb-3">Leeftijd & Niveaus</h3>
-      {leeftijdsgroep && (
+      <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-neutral-400 mb-3">Doelgroep & Capaciteit</h4>
+      {categorie && (
         <p class="text-neutral-700 mb-2">
-          <span class="font-bold">Leeftijd:</span> {leeftijdsgroep}
-        </p>
-      )}
-      {niveaus && niveaus.length > 0 && (
-        <p class="text-neutral-700 mb-2">
-          <span class="font-bold">Niveaus:</span> {niveaus.join(', ')}
+          <span class="font-bold">Doelgroep:</span> {capitalizeCategorie(categorie)}
         </p>
       )}
       {maxCapaciteit && (
@@ -37,19 +32,22 @@ const hasInfo = leeftijdsgroep || (niveaus && niveaus.length > 0) || maxCapacite
           <span class="font-bold">Max. plaatsen:</span> {maxCapaciteit}
         </p>
       )}
+      {!categorie && !maxCapaciteit && (
+        <p class="text-neutral-500">Geen beperkingen</p>
+      )}
     </div>
 
     <!-- Inschrijving -->
     <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent p-5">
-      <h3 class="font-heading font-bold text-sm uppercase tracking-wider text-neutral-400 mb-3">Inschrijving</h3>
+      <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-neutral-400 mb-3">Inschrijving</h4>
       {inschrijvingOpen ? (
         <div>
           <p class="text-neutral-700 mb-3">Inschrijvingen zijn momenteel open.</p>
           <a
-            href={inschrijvingLink || '/contact'}
+            href={vrijwilligersLink || '/contact'}
             class="inline-flex items-center px-5 py-2 bg-accent hover:bg-accent-hover text-white font-bold text-sm transition-all"
-            target={inschrijvingLink ? '_blank' : undefined}
-            rel={inschrijvingLink ? 'noopener noreferrer' : undefined}
+            target={vrijwilligersLink ? '_blank' : undefined}
+            rel={vrijwilligersLink ? 'noopener noreferrer' : undefined}
           >
             Schrijf je in
           </a>
@@ -61,7 +59,7 @@ const hasInfo = leeftijdsgroep || (niveaus && niveaus.length > 0) || maxCapacite
 
     <!-- Contact -->
     <div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent p-5">
-      <h3 class="font-heading font-bold text-sm uppercase tracking-wider text-neutral-400 mb-3">Vragen?</h3>
+      <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-neutral-400 mb-3">Vragen?</h4>
       <p class="text-neutral-700 mb-3">Neem contact met ons op voor meer informatie over dit programma.</p>
       <a
         href="/contact"

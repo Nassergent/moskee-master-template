@@ -92,6 +92,13 @@ export const agendaEvent = defineType({
       options: { hotspot: true },
     }),
     defineField({
+      name: 'onderwerpHub',
+      title: 'Hoofdartikel (Topic Hub)',
+      type: 'reference',
+      to: [{ type: 'post' }],
+      description: 'Optioneel: koppel dit evenement aan een hoofdartikel. Het artikel toont dan dit evenement in de "Gerelateerd" sectie.',
+    }),
+    defineField({
       name: 'gepubliceerd',
       title: 'Gepubliceerd',
       type: 'boolean',

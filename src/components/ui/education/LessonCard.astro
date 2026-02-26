@@ -1,9 +1,10 @@
 ---
 /**
- * LessonHero.astro — Hero section for a lesson program (Flat Design)
+ * LessonCard.astro — Card for a lesson program (Flat Design)
  *
  * Desktop: 60/40 split (text left, image right)
  * Mobile: stacked
+ * Shows titel, beschrijving (plain text) + inhoud (rich text via PortableText)
  */
 import { urlFor } from '../../../lib/sanity';
 import PortableText from '../../PortableText.astro';
@@ -19,14 +20,14 @@ const { titel, beschrijving, inhoud, afbeelding } = Astro.props;
 const imageUrl = afbeelding ? urlFor(afbeelding).width(640).height(480).fit('crop').url() : null;
 ---
 
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
   <div class="lg:col-span-3 animate-fade-in-up">
-    <h2 class="font-heading text-3xl md:text-4xl font-bold mb-4">{titel}</h2>
+    <h3 class="font-heading text-2xl md:text-3xl font-bold mb-4">{titel}</h3>
     {beschrijving && (
       <p class="text-neutral-600 text-lg leading-relaxed mb-4">{beschrijving}</p>
     )}
     {inhoud && inhoud.length > 0 && (
-      <div class="prose prose-neutral max-w-none">
+      <div class="mt-4">
         <PortableText value={inhoud} />
       </div>
     )}
