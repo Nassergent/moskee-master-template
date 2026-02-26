@@ -1,9 +1,10 @@
 ---
 /**
- * JanazahBanner.astro — Sobere homepage-banner bij actief janazah-gebed
+ * JanazahBanner.astro — Sobere 'Eerbied Band' bij actief janazah-gebed
  *
- * Stijl: bg-primary-dark, border-l-[6px] border-accent, geen animaties,
- * geen iconen, geen uppercase. Privacy-aware naam (familyConsent).
+ * Elite UI v1.7.1: Overspannende band onder de Hero. Donkerder dan primary,
+ * subtiele border-t scheiding. Arabisch prominent, Nederlands rustig.
+ * Geen animaties, geen iconen, geen uppercase. Privacy-aware.
  */
 import { getDisplayName } from '../../../lib/logic/janazah';
 
@@ -29,39 +30,44 @@ const datumStr = alert.gebeddatum
   : null;
 ---
 
-<div class="bg-primary-dark border-l-[6px] border-accent">
-  <div class="max-w-[1280px] mx-auto px-6 py-6 md:py-8">
-    <!-- Arabische dua -->
-    <p class="font-amiri text-accent-light text-xl md:text-2xl mb-3 leading-relaxed" dir="rtl" lang="ar">
-      إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
-    </p>
+<div class="relative bg-primary-dark border-t border-white/10">
+  <!-- Donkere overlay voor extra diepte -->
+  <div class="absolute inset-0 bg-black/15"></div>
 
-    <!-- Nederlandse melding -->
-    <p class="text-white text-base md:text-lg leading-relaxed">
-      Wij hebben vernomen dat <strong class="text-white">{displayName}</strong> is teruggekeerd naar Allah.
-      {alert.gebedstijdstip && datumStr && (
-        <span>
-          {' '}Het janazah-gebed vindt plaats op <strong>{datumStr}</strong>, <strong>{alert.gebedstijdstip}</strong>.
-        </span>
-      )}
-      {alert.gebedstijdstip && !datumStr && (
-        <span> Het janazah-gebed vindt plaats om <strong>{alert.gebedstijdstip}</strong>.</span>
-      )}
-      {!alert.gebedstijdstip && datumStr && (
-        <span> Het janazah-gebed vindt plaats op <strong>{datumStr}</strong>.</span>
-      )}
-    </p>
+  <div class="relative max-w-[1280px] mx-auto px-6 py-4 md:py-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">
 
-    <!-- Optionele extra dua -->
-    {alert.duaArabisch && (
-      <p class="font-amiri text-white/70 text-lg mt-3" dir="rtl" lang="ar">
-        {alert.duaArabisch}
+      <!-- Links: Arabische dua — prominent -->
+      <p class="font-amiri text-accent-light text-2xl md:text-3xl tracking-wide leading-relaxed shrink-0" dir="rtl" lang="ar">
+        إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
       </p>
-    )}
 
-    <!-- Link naar janazah-pagina -->
-    <a href="/janazah" class="inline-block mt-4 text-sm text-accent-light hover:text-accent transition-colors">
-      Meer info over de janazah-procedure →
-    </a>
+      <!-- Rechts: Nederlandse melding + link -->
+      <div class="flex-1 min-w-0">
+        <p class="text-white/90 text-sm md:text-base leading-relaxed">
+          Wij hebben vernomen dat <strong class="text-white font-semibold">{displayName}</strong> is teruggekeerd naar Allah.{' '}
+          {alert.gebedstijdstip && datumStr && (
+            <span class="text-white/70">
+              Janazah-gebed op {datumStr}, {alert.gebedstijdstip}.
+            </span>
+          )}
+          {alert.gebedstijdstip && !datumStr && (
+            <span class="text-white/70">Janazah-gebed om {alert.gebedstijdstip}.</span>
+          )}
+          {!alert.gebedstijdstip && datumStr && (
+            <span class="text-white/70">Janazah-gebed op {datumStr}.</span>
+          )}
+        </p>
+
+        <!-- Elegante tekstlink met accent-onderlijn -->
+        <a
+          href="/janazah"
+          class="inline-block mt-2 text-xs text-white/50 hover:text-accent-light border-b border-accent/40 hover:border-accent pb-px transition-colors"
+        >
+          Meer info over de janazah-procedure
+        </a>
+      </div>
+
+    </div>
   </div>
 </div>
