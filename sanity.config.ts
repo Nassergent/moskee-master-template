@@ -5,7 +5,7 @@ import { schema } from './sanity/schema';
 import { structure, newDocumentOptions } from './sanity/structure';
 
 // Types die een automatische slug hebben (hidden veld, gegenereerd uit titel)
-const SLUG_TYPES = ['post', 'agendaEvent', 'service'];
+const SLUG_TYPES = ['post', 'agendaEvent', 'service', 'lessonProgram'];
 
 function slugify(input: string): string {
   return input.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').slice(0, 96);
