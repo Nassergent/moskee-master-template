@@ -26,11 +26,12 @@ try {
   }
 } catch { /* .env niet gevonden — gebruik bestaande env vars */ }
 
-// ── Versie uit package.json ──
+// ── Versie uit package.json (altijd met v-prefix) ──
 let version = 'unknown';
 try {
   const pkg = JSON.parse(readFileSync(resolve(__dirname, '..', 'package.json'), 'utf-8'));
-  version = pkg.version || 'unknown';
+  const raw = pkg.version || 'unknown';
+  version = raw.startsWith('v') ? raw : `v${raw}`;
 } catch { /* package.json niet leesbaar */ }
 
 // ── Vereiste env vars ──
@@ -63,7 +64,7 @@ try {
   });
 
   if (response.ok) {
-    console.log(`✓ Fleet Hub melding verstuurd (${tenantId}, v${version}, ${status})`);
+    console.log(`✓ Fleet Hub melding verstuurd (${tenantId}, ${version}, ${status})`);
   } else {
     console.warn(`⚠ Fleet Hub antwoordde met ${response.status} — melding niet verwerkt`);
   }
