@@ -1,7 +1,7 @@
 import type { StructureBuilder } from 'sanity/structure';
 
 // Singleton types — no "+" button, single document only
-const singletonTypes = ['settings', 'homePage', 'prayerTimes', 'aboutPage', 'contactPage', 'ramadanOverride'];
+const singletonTypes = ['settings', 'homePage', 'prayerTimes', 'aboutPage', 'contactPage', 'ramadanOverride', 'janazahProcedure'];
 
 function singleton(S: StructureBuilder, typeName: string, title: string, icon: string) {
   return S.listItem()
@@ -408,6 +408,39 @@ function agendaManagement(S: StructureBuilder) {
     );
 }
 
+// ── Janazah Beheer ──
+function janazahManagement(S: StructureBuilder) {
+  return S.listItem()
+    .title('Janazah & Overlijden')
+    .icon(() => '🕊️')
+    .child(
+      S.list()
+        .title('Janazah & Overlijden')
+        .items([
+          singleton(S, 'janazahProcedure', 'Janazah Gids', '📖'),
+          S.divider(),
+          S.listItem()
+            .title('🟢 Actieve Meldingen')
+            .icon(() => '🟢')
+            .child(
+              S.documentList()
+                .title('Actieve Janazah Meldingen')
+                .schemaType('janazahAlert')
+                .filter('_type == "janazahAlert" && actief == true')
+                .defaultOrdering([{ field: 'gebeddatum', direction: 'desc' }])
+            ),
+          S.listItem()
+            .title('Alle Meldingen')
+            .icon(() => '🕊️')
+            .child(
+              S.documentTypeList('janazahAlert')
+                .title('Alle Janazah Meldingen')
+                .defaultOrdering([{ field: 'gebeddatum', direction: 'desc' }])
+            ),
+        ])
+    );
+}
+
 // ── DE GOUDEN LIJST ──
 export function structure(S: StructureBuilder) {
   return S.list()
@@ -429,6 +462,7 @@ export function structure(S: StructureBuilder) {
 
       singleton(S, 'aboutPage', 'Over Ons', '📜'),
       singleton(S, 'contactPage', 'Contact', '📞'),
+      janazahManagement(S),
 
       S.divider(),
 

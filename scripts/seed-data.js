@@ -460,10 +460,60 @@ const ramadanOverrideDoc = {
   ],
 };
 
+// ── Janazah Procedure (singleton) ──
+
+const janazahProcedureDoc = {
+  _id: 'janazahProcedure',
+  _type: 'janazahProcedure',
+  titel: 'Hulp bij Overlijden',
+  noodnummer: '+32 470 00 00 00',
+  introductie: 'Bij het overlijden van een dierbare staat de moskee klaar om u te begeleiden. Neem zo snel mogelijk contact met ons op via het noodnummer.',
+  stappen: [
+    {
+      _key: 'stap-1',
+      _type: 'stapItem',
+      icoon: 'water',
+      titelNL: 'Rituele wassing (Ghusl)',
+      titelAR: 'الغسل',
+      tekst: 'De overledene wordt gewassen volgens de islamitische traditie. De moskee beschikt over een waskamer en begeleidt de familie hierbij.',
+    },
+    {
+      _key: 'stap-2',
+      _type: 'stapItem',
+      icoon: 'gebed',
+      titelNL: 'Janazah-gebed (Salat al-Janazah)',
+      titelAR: 'صلاة الجنازة',
+      tekst: 'Het gemeenschapsgebed voor de overledene wordt verricht in de moskee. De imam leidt het gebed en de gemeente wordt uitgenodigd om deel te nemen.',
+    },
+    {
+      _key: 'stap-3',
+      _type: 'stapItem',
+      icoon: 'begrafenis',
+      titelNL: 'Begrafenis (Dafn)',
+      titelAR: 'الدفن',
+      tekst: 'De begrafenis vindt plaats op een islamitische begraafplaats. De moskee helpt bij de coördinatie met de gemeente en het uitvaartcentrum.',
+    },
+  ],
+  seoDescription: 'Hulp bij overlijden en janazah-procedure. De moskee staat klaar om u te begeleiden bij de rituele wassing, het janazah-gebed en de begrafenis.',
+};
+
+// ── Janazah Alert (voorbeeld, uitgeschakeld) ──
+
+const janazahAlertDoc = {
+  _id: 'janazah-voorbeeld',
+  _type: 'janazahAlert',
+  naamOverledene: 'Voorbeeld Naam',
+  gebedstijdstip: 'Na het Dhuhr-gebed',
+  gebeddatum: '2026-01-01',
+  duaArabisch: 'اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ',
+  familyConsent: false,
+  actief: false,
+};
+
 // ── Seed alles ──
 
 async function seed() {
-  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems, ...topicHubItems, ...lessonProgramItems, ramadanOverrideDoc];
+  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems, ...topicHubItems, ...lessonProgramItems, ramadanOverrideDoc, janazahProcedureDoc, janazahAlertDoc];
 
   console.log(`Seeding ${allDocs.length} documenten naar Sanity...`);
 

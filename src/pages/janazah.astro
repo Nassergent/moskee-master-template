@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import JanazahProcedureSteps from '../components/ui/janazah/JanazahProcedureSteps.astro';
+import { fetchJanazahProcedure, fetchActiveJanazahAlert, fetchSettings } from '../lib/sanity';
+import { isJanazahActive, getDisplayName } from '../lib/logic/janazah';
+
+const [procedure, alert, settings] = await Promise.all([
+  fetchJanazahProcedure(),
+  fetchActiveJanazahAlert(),
+  fetchSettings(),
+]);
+
+const hasAlert = isJanazahActive(alert);
+const titel = procedure?.titel || 'Hulp bij Overlijden';
+const seoDesc = procedure?.seoDescription || `Janazah-procedure en hulp bij overlijden. Neem contact op met ${settings?.mosqueName || 'de moskee'}.`;
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+---
+
+<BaseLayout title={`${titel} — ${settings?.mosqueName || ''}`} description={seoDesc}>
+
+  <!-- Hero: sober, donker -->
+  <section class="bg-primary-dark text-white py-16 md:py-24">
+    <div class="max-w-[1280px] mx-auto px-6">
+      <p class="font-amiri text-accent-light text-2xl md:text-3xl mb-4" dir="rtl" lang="ar">
+        إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
+      </p>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">{titel}</h1>
+      {procedure?.introductie && (
+        <p class="text-white/80 text-lg max-w-2xl leading-relaxed">{procedure.introductie}</p>
+      )}
+
+      <!-- Noodnummer: groot, vetgedrukt, klikbaar -->
+      {procedure?.noodnummer && (
+        <div class="mt-8 border-l-[6px] border-accent pl-6 py-4">
+          <p class="text-sm text-white/60 uppercase tracking-widest mb-2">Noodnummer</p>
+          <a
+            href={`tel:${procedure.noodnummer.replace(/\s/g, '')}`}
+            class="text-3xl md:text-4xl font-bold text-white hover:text-accent transition-colors"
+          >
+            {procedure.noodnummer}
+          </a>
+          <p class="text-sm text-white/60 mt-2">24 uur bereikbaar bij overlijden</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Actieve melding (als er een is) -->
+  {hasAlert && alert && (
+    <div class="bg-base border-l-[6px] border-accent">
+      <div class="max-w-[1280px] mx-auto px-6 py-6">
+        <p class="text-sm text-neutral-500 uppercase tracking-widest mb-2">Actieve melding</p>
+        <p class="text-lg text-neutral-900">
+          <strong>{getDisplayName(alert)}</strong>
+          {alert.gebedstijdstip && (
+            <span> — Janazah-gebed: <strong>{alert.gebedstijdstip}</strong></span>
+          )}
+          {alert.gebeddatum && (
+            <span> op <strong>{new Date(alert.gebeddatum + 'T00:00:00').toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long' })}</strong></span>
+          )}
+        </p>
+      </div>
+    </div>
+  )}
+
+  <!-- Procedure stappen -->
+  {procedure?.stappen && procedure.stappen.length > 0 && (
+    <Section variant="light-50">
+      <h2 class="text-2xl md:text-3xl font-bold mb-10">De Janazah-procedure</h2>
+      <div class="max-w-3xl">
+        <JanazahProcedureSteps stappen={procedure.stappen} />
+      </div>
+    </Section>
+  )}
+
+  <!-- Contact CTA -->
+  <Section variant="light-100">
+    <div class="text-center max-w-xl mx-auto">
+      <h2 class="text-2xl font-bold mb-4">Hulp nodig?</h2>
+      <p class="text-neutral-600 mb-8">
+        Neem direct contact op met de moskee. Wij staan klaar om u bij te staan in deze moeilijke tijd.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        {procedure?.noodnummer && (
+          <a
+            href={`tel:${procedure.noodnummer.replace(/\s/g, '')}`}
+            class="inline-flex items-center px-8 py-3 min-h-[44px] bg-primary hover:bg-primary-dark text-white font-bold transition-all"
+          >
+            Bel nu: {procedure.noodnummer}
+          </a>
+        )}
+        <a
+          href="/contact"
+          class="inline-flex items-center px-8 py-3 min-h-[44px] bg-white border border-slate-200 hover:bg-base-100 text-neutral-900 font-semibold transition-all"
+        >
+          Contactformulier
+        </a>
+      </div>
+    </div>
+  </Section>
+
+</BaseLayout>

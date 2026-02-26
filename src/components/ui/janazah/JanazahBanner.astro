@@ -1,0 +1,67 @@
+---
+/**
+ * JanazahBanner.astro — Sobere homepage-banner bij actief janazah-gebed
+ *
+ * Stijl: bg-primary-dark, border-l-[6px] border-accent, geen animaties,
+ * geen iconen, geen uppercase. Privacy-aware naam (familyConsent).
+ */
+import { getDisplayName } from '../../../lib/logic/janazah';
+
+interface Props {
+  alert: {
+    naamOverledene?: string;
+    gebedstijdstip?: string;
+    gebeddatum?: string;
+    duaArabisch?: string;
+    familyConsent?: boolean;
+  };
+}
+
+const { alert } = Astro.props;
+
+const displayName = getDisplayName(alert as any);
+const datumStr = alert.gebeddatum
+  ? new Date(alert.gebeddatum + 'T00:00:00').toLocaleDateString('nl-BE', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    })
+  : null;
+---
+
+<div class="bg-primary-dark border-l-[6px] border-accent">
+  <div class="max-w-[1280px] mx-auto px-6 py-6 md:py-8">
+    <!-- Arabische dua -->
+    <p class="font-amiri text-accent-light text-xl md:text-2xl mb-3 leading-relaxed" dir="rtl" lang="ar">
+      إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
+    </p>
+
+    <!-- Nederlandse melding -->
+    <p class="text-white text-base md:text-lg leading-relaxed">
+      Wij hebben vernomen dat <strong class="text-white">{displayName}</strong> is teruggekeerd naar Allah.
+      {alert.gebedstijdstip && datumStr && (
+        <span>
+          {' '}Het janazah-gebed vindt plaats op <strong>{datumStr}</strong>, <strong>{alert.gebedstijdstip}</strong>.
+        </span>
+      )}
+      {alert.gebedstijdstip && !datumStr && (
+        <span> Het janazah-gebed vindt plaats om <strong>{alert.gebedstijdstip}</strong>.</span>
+      )}
+      {!alert.gebedstijdstip && datumStr && (
+        <span> Het janazah-gebed vindt plaats op <strong>{datumStr}</strong>.</span>
+      )}
+    </p>
+
+    <!-- Optionele extra dua -->
+    {alert.duaArabisch && (
+      <p class="font-amiri text-white/70 text-lg mt-3" dir="rtl" lang="ar">
+        {alert.duaArabisch}
+      </p>
+    )}
+
+    <!-- Link naar janazah-pagina -->
+    <a href="/janazah" class="inline-block mt-4 text-sm text-accent-light hover:text-accent transition-colors">
+      Meer info over de janazah-procedure →
+    </a>
+  </div>
+</div>

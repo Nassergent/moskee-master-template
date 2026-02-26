@@ -1,0 +1,36 @@
+---
+/**
+ * JanazahProcedureSteps.astro — Stappen van het janazah-proces
+ *
+ * Tweetalig (NL + AR), sober design, border-l accent.
+ */
+import { getStepIcon } from '../../../lib/logic/janazah';
+import type { JanazahStep } from '../../../lib/logic/janazah';
+
+interface Props {
+  stappen: JanazahStep[];
+}
+
+const { stappen } = Astro.props;
+---
+
+<div class="space-y-6">
+  {stappen.map((stap, index) => (
+    <div class="border-l-[3px] border-accent pl-6 py-4">
+      <div class="flex items-start gap-4">
+        <span class="text-2xl shrink-0 mt-1">{getStepIcon(stap.icoon) || `${index + 1}.`}</span>
+        <div class="flex-1">
+          <h3 class="text-xl font-bold text-primary-dark">{stap.titelNL}</h3>
+          {stap.titelAR && (
+            <p class="font-amiri text-lg text-neutral-500 mt-1" dir="rtl" lang="ar">
+              {stap.titelAR}
+            </p>
+          )}
+          {stap.tekst && (
+            <p class="text-neutral-700 mt-3 leading-relaxed">{stap.tekst}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  ))}
+</div>

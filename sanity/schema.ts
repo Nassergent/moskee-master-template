@@ -12,6 +12,8 @@ import { volunteer } from './schemas/volunteer';
 import { agendaEvent } from './schemas/agendaEvent';
 import { lessonProgram } from './schemas/lessonProgram';
 import { ramadanOverride } from './schemas/ramadanOverride';
+import { janazahProcedure } from './schemas/janazahProcedure';
+import { janazahAlert } from './schemas/janazahAlert';
 
 export const schema = {
   types: [
@@ -24,6 +26,8 @@ export const schema = {
     agendaEvent,
     lessonProgram,
     ramadanOverride,
+    janazahProcedure,
+    janazahAlert,
     aboutPage,
     contactPage,
     quote,

@@ -330,6 +330,32 @@ export async function fetchUpcomingAgendaEvents(limit = 3) {
   }
 }
 
+// ── Janazah & Overlijden ──
+
+export async function fetchJanazahProcedure() {
+  try {
+    const result = await freshClient.fetch(`*[_id == "janazahProcedure"][0]{
+      titel, noodnummer, introductie, stappen, seoDescription
+    }`);
+    return result || null;
+  } catch (e) {
+    console.error('Sanity fetchJanazahProcedure error:', e);
+    return null;
+  }
+}
+
+export async function fetchActiveJanazahAlert() {
+  try {
+    const result = await freshClient.fetch(`*[_type == "janazahAlert" && actief == true] | order(gebeddatum desc) [0]{
+      _id, naamOverledene, gebedstijdstip, gebeddatum, duaArabisch, familyConsent, actief
+    }`);
+    return result || null;
+  } catch (e) {
+    console.error('Sanity fetchActiveJanazahAlert error:', e);
+    return null;
+  }
+}
+
 export async function fetchAgendaEvent(slug: string) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {

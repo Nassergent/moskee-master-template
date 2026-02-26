@@ -3,18 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import HomeActionCards from '../components/HomeActionCards.astro';
 import PrayerManager from '../components/PrayerManager.astro';
-import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, fetchProjecten, fetchPrayerTimes, urlFor } from '../lib/sanity';
+import JanazahBanner from '../components/ui/janazah/JanazahBanner.astro';
+import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, fetchProjecten, fetchPrayerTimes, fetchActiveJanazahAlert, urlFor } from '../lib/sanity';
 import { fetchIslamicDays } from '../lib/hijri';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 import { computePrayerTimesFromSanity } from '../lib/logic/prayer-compute';
+import { isJanazahActive } from '../lib/logic/janazah';
 
-const [settings, actueel, homePage, agendaEvents, projecten, prayer] = await Promise.all([
+const [settings, actueel, homePage, agendaEvents, projecten, prayer, janazahAlert] = await Promise.all([
   fetchSettings(),
   fetchActueel(),
   fetchHomePage(),
   fetchUpcomingAgendaEvents(3),
   fetchProjecten(),
   fetchPrayerTimes(),
+  fetchActiveJanazahAlert(),
 ]);
 
 // Islamic days for HomeActionCards — fetched at page level
@@ -117,6 +120,11 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-
       </div>
     </div>
   </section>
+
+  <!-- Janazah Banner — alleen zichtbaar als er een actieve melding is -->
+  {isJanazahActive(janazahAlert) && janazahAlert && (
+    <JanazahBanner alert={janazahAlert} />
+  )}
 
   <!-- Sectie 1: Light-50 — Gebedstijden (compact) -->
   <Section variant="light-50">
