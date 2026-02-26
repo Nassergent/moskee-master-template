@@ -18,7 +18,7 @@ const [settings, prayer] = await Promise.all([
 const { computedTimes, prayerStatus } = computePrayerTimesFromSanity(prayer);
 const prayerTimesForSeo = computedTimes?.adhan ?? null;
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
 ---
 
 <BaseLayout title="Gebedstijden" description="Dagelijkse gebedstijden en Jumu'ah informatie" hideFooterMobile>
