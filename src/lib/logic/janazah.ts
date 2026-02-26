@@ -15,13 +15,13 @@ export interface JanazahStep {
   icoon?: string;
   titelNL: string;
   titelAR?: string;
-  tekst?: string;
+  tekst?: any[]; // Portable Text blocks
 }
 
 export interface JanazahProcedure {
   titel?: string;
   noodnummer?: string;
-  introductie?: string;
+  introductie?: any[]; // Portable Text blocks
   stappen?: JanazahStep[];
   seoDescription?: string;
 }

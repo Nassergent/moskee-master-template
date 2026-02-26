@@ -29,9 +29,9 @@ export const janazahProcedure = defineType({
     defineField({
       name: 'introductie',
       title: 'Introductie',
-      type: 'text',
-      rows: 4,
-      description: 'Inleidende tekst boven de stappen.',
+      type: 'array',
+      of: [{ type: 'block' }],
+      description: 'Inleidende tekst boven de stappen (rich text).',
     }),
     defineField({
       name: 'stappen',
@@ -64,9 +64,10 @@ export const janazahProcedure = defineType({
             }),
             defineField({
               name: 'tekst',
-              title: 'Korte uitleg',
-              type: 'text',
-              rows: 3,
+              title: 'Uitleg',
+              type: 'array',
+              of: [{ type: 'block' }],
+              description: 'Rich text uitleg van deze stap.',
             }),
           ],
           preview: {

@@ -467,7 +467,18 @@ const janazahProcedureDoc = {
   _type: 'janazahProcedure',
   titel: 'Hulp bij Overlijden',
   noodnummer: '+32 470 00 00 00',
-  introductie: 'Bij het overlijden van een dierbare staat de moskee klaar om u te begeleiden. Neem zo snel mogelijk contact met ons op via het noodnummer.',
+  introductie: [
+    {
+      _type: 'block',
+      _key: 'intro-1',
+      style: 'normal',
+      children: [
+        { _type: 'span', _key: 'i1a', text: 'Bij het overlijden van een dierbare staat de moskee klaar om u te begeleiden. ', marks: [] },
+        { _type: 'span', _key: 'i1b', text: 'Neem zo snel mogelijk contact met ons op via het noodnummer.', marks: ['strong'] },
+      ],
+      markDefs: [],
+    },
+  ],
   stappen: [
     {
       _key: 'stap-1',
@@ -475,7 +486,13 @@ const janazahProcedureDoc = {
       icoon: 'water',
       titelNL: 'Rituele wassing (Ghusl)',
       titelAR: 'الغسل',
-      tekst: 'De overledene wordt gewassen volgens de islamitische traditie. De moskee beschikt over een waskamer en begeleidt de familie hierbij.',
+      tekst: [
+        {
+          _type: 'block', _key: 's1b1', style: 'normal',
+          children: [{ _type: 'span', _key: 's1a', text: 'De overledene wordt gewassen volgens de islamitische traditie. De moskee beschikt over een waskamer en begeleidt de familie hierbij.', marks: [] }],
+          markDefs: [],
+        },
+      ],
     },
     {
       _key: 'stap-2',
@@ -483,7 +500,13 @@ const janazahProcedureDoc = {
       icoon: 'gebed',
       titelNL: 'Janazah-gebed (Salat al-Janazah)',
       titelAR: 'صلاة الجنازة',
-      tekst: 'Het gemeenschapsgebed voor de overledene wordt verricht in de moskee. De imam leidt het gebed en de gemeente wordt uitgenodigd om deel te nemen.',
+      tekst: [
+        {
+          _type: 'block', _key: 's2b1', style: 'normal',
+          children: [{ _type: 'span', _key: 's2a', text: 'Het gemeenschapsgebed voor de overledene wordt verricht in de moskee. De imam leidt het gebed en de gemeente wordt uitgenodigd om deel te nemen.', marks: [] }],
+          markDefs: [],
+        },
+      ],
     },
     {
       _key: 'stap-3',
@@ -491,7 +514,13 @@ const janazahProcedureDoc = {
       icoon: 'begrafenis',
       titelNL: 'Begrafenis (Dafn)',
       titelAR: 'الدفن',
-      tekst: 'De begrafenis vindt plaats op een islamitische begraafplaats. De moskee helpt bij de coördinatie met de gemeente en het uitvaartcentrum.',
+      tekst: [
+        {
+          _type: 'block', _key: 's3b1', style: 'normal',
+          children: [{ _type: 'span', _key: 's3a', text: 'De begrafenis vindt plaats op een islamitische begraafplaats. De moskee helpt bij de coördinatie met de gemeente en het uitvaartcentrum.', marks: [] }],
+          markDefs: [],
+        },
+      ],
     },
   ],
   seoDescription: 'Hulp bij overlijden en janazah-procedure. De moskee staat klaar om u te begeleiden bij de rituele wassing, het janazah-gebed en de begrafenis.',

@@ -6,6 +6,7 @@
  */
 import { getStepIcon } from '../../../lib/logic/janazah';
 import type { JanazahStep } from '../../../lib/logic/janazah';
+import PortableText from '../../PortableText.astro';
 
 interface Props {
   stappen: JanazahStep[];
@@ -26,8 +27,10 @@ const { stappen } = Astro.props;
               {stap.titelAR}
             </p>
           )}
-          {stap.tekst && (
-            <p class="text-neutral-700 mt-3 leading-relaxed">{stap.tekst}</p>
+          {stap.tekst && stap.tekst.length > 0 && (
+            <div class="text-neutral-700 mt-3 leading-relaxed prose prose-sm max-w-none">
+              <PortableText value={stap.tekst} />
+            </div>
           )}
         </div>
       </div>
