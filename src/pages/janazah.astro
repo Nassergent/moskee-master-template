@@ -14,7 +14,8 @@ const [procedure, alert, settings] = await Promise.all([
 
 const hasAlert = isJanazahActive(alert);
 const titel = procedure?.titel || 'Hulp bij Overlijden';
-const seoDesc = procedure?.seoDescription || `Janazah-procedure en hulp bij overlijden. Neem contact op met ${settings?.mosqueName || 'de moskee'}.`;
+const moskeeName = settings?.mosqueName || 'de moskee';
+const seoDesc = `${titel} — ${moskeeName}. Hulp bij overlijden, rituele wassing, janazah-gebed en begrafenis.`;
 
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
 ---

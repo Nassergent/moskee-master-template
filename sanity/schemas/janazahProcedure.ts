@@ -82,14 +82,6 @@ export const janazahProcedure = defineType({
         },
       ],
     }),
-    defineField({
-      name: 'seoDescription',
-      title: 'SEO Beschrijving',
-      type: 'text',
-      rows: 2,
-      description: 'Meta-description voor zoekmachines (max 160 tekens).',
-      validation: (Rule) => Rule.max(160),
-    }),
   ],
   preview: {
     prepare() {

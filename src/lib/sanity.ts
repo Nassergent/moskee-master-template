@@ -335,7 +335,7 @@ export async function fetchUpcomingAgendaEvents(limit = 3) {
 export async function fetchJanazahProcedure() {
   try {
     const result = await freshClient.fetch(`*[_id == "janazahProcedure"][0]{
-      titel, noodnummer, introductie, stappen, seoDescription
+      titel, noodnummer, introductie, stappen
     }`);
     return result || null;
   } catch (e) {

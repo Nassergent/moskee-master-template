@@ -23,7 +23,6 @@ export interface JanazahProcedure {
   noodnummer?: string;
   introductie?: any[]; // Portable Text blocks
   stappen?: JanazahStep[];
-  seoDescription?: string;
 }
 
 /** Check if a janazah alert is currently active */

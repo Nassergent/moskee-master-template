@@ -523,7 +523,6 @@ const janazahProcedureDoc = {
       ],
     },
   ],
-  seoDescription: 'Hulp bij overlijden en janazah-procedure. De moskee staat klaar om u te begeleiden bij de rituele wassing, het janazah-gebed en de begrafenis.',
 };
 
 // ── Janazah Alert (voorbeeld, uitgeschakeld) ──
