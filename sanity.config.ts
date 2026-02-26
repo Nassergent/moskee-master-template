@@ -1,4 +1,4 @@
-import { defineConfig, type DocumentActionComponent } from 'sanity';
+import { defineConfig, type DocumentActionComponent, useDocumentOperation } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { schema } from './sanity/schema';
@@ -14,6 +14,7 @@ function slugify(input: string): string {
 /** Wrapt de standaard publish action: vult slug automatisch in als die ontbreekt */
 function autoSlugPublishAction(originalAction: DocumentActionComponent): DocumentActionComponent {
   return (props) => {
+    const { patch } = useDocumentOperation(props.id, props.type);
     const original = originalAction(props);
     if (!original) return null;
     return {
@@ -24,7 +25,7 @@ function autoSlugPublishAction(originalAction: DocumentActionComponent): Documen
         const titel = (doc as any)?.titel;
         const slug = (doc as any)?.slug?.current;
         if (titel && !slug) {
-          props.patch.execute([
+          patch.execute([
             { set: { slug: { _type: 'slug', current: slugify(titel) } } },
           ]);
         }
