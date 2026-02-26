@@ -245,7 +245,7 @@ export async function fetchContactPage() {
 export async function fetchLessonPrograms() {
   try {
     const result = await sanityClient.fetch(`*[_type == "lessonProgram" && actief == true] | order(volgorde asc) {
-      _id, titel, "slug": slug.current, beschrijving, afbeelding, leeftijdsgroep, niveaus,
+      _id, titel, "slug": slug.current, beschrijving, inhoud, afbeelding, leeftijdsgroep, niveaus,
       maxCapaciteit, inschrijvingOpen, inschrijvingLink, rooster, volgorde
     }`);
     return result || [];

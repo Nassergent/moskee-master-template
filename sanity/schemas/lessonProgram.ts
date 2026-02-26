@@ -46,6 +46,16 @@ export const lessonProgram = defineType({
       description: 'Korte beschrijving van het lesprogramma.',
     }),
     defineField({
+      name: 'inhoud',
+      title: 'Inhoud',
+      description: 'Uitgebreide tekst voor het lesprogramma. Gebruik koppen, lijsten en afbeeldingen.',
+      type: 'array',
+      of: [
+        { type: 'block' },
+        { type: 'image', options: { hotspot: true } },
+      ],
+    }),
+    defineField({
       name: 'afbeelding',
       title: 'Afbeelding',
       type: 'image',
