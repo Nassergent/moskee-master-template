@@ -26,7 +26,6 @@ export const post = defineType({
             .replace(/\s+/g, '-')
             .slice(0, 96),
       },
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'datum',

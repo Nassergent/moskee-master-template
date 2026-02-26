@@ -26,7 +26,6 @@ export const service = defineType({
             .replace(/\s+/g, '-')
             .slice(0, 96),
       },
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'beschrijving',

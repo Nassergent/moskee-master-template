@@ -26,7 +26,6 @@ export const agendaEvent = defineType({
             .replace(/\s+/g, '-')
             .slice(0, 96),
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'startDatum',
