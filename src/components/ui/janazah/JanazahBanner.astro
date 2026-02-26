@@ -2,9 +2,8 @@
 /**
  * JanazahBanner.astro — Sobere 'Eerbied Band' bij actief janazah-gebed
  *
- * Elite UI v1.7.1: Overspannende band onder de Hero. Donkerder dan primary,
- * subtiele border-t scheiding. Arabisch prominent, Nederlands rustig.
- * Geen animaties, geen iconen, geen uppercase. Privacy-aware.
+ * Elite UI v1.7.2: Gecentreerd blok — Arabisch en Nederlands als één geheel.
+ * Schone zinnen, automatische naam-capitalisatie, subtiele link met pijltje.
  */
 import { getDisplayName } from '../../../lib/logic/janazah';
 
@@ -28,45 +27,45 @@ const datumStr = alert.gebeddatum
       month: 'long',
     })
   : null;
+
+// Bouw de gebedsinfo-zin op: "Janazah-gebed op vrijdag 27 februari om 14:00."
+let gebedZin = '';
+if (datumStr && alert.gebedstijdstip) {
+  gebedZin = `Janazah-gebed op ${datumStr} om ${alert.gebedstijdstip}.`;
+} else if (datumStr) {
+  gebedZin = `Janazah-gebed op ${datumStr}.`;
+} else if (alert.gebedstijdstip) {
+  gebedZin = `Janazah-gebed om ${alert.gebedstijdstip}.`;
+}
 ---
 
 <div class="relative bg-primary-dark border-t border-white/10">
-  <!-- Donkere overlay voor extra diepte -->
   <div class="absolute inset-0 bg-black/15"></div>
 
-  <div class="relative max-w-[1280px] mx-auto px-6 py-4 md:py-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">
+  <div class="relative max-w-[1280px] mx-auto px-6 py-5 md:py-7">
+    <div class="flex flex-col items-center text-center gap-3">
 
-      <!-- Links: Arabische dua — prominent -->
-      <p class="font-amiri text-accent-light text-2xl md:text-3xl tracking-wide leading-relaxed shrink-0" dir="rtl" lang="ar">
+      <!-- Arabische dua -->
+      <p class="font-amiri text-accent-light text-2xl md:text-3xl tracking-wide leading-relaxed" dir="rtl" lang="ar">
         إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ
       </p>
 
-      <!-- Rechts: Nederlandse melding + link -->
-      <div class="flex-1 min-w-0">
-        <p class="text-white/90 text-sm md:text-base leading-relaxed">
-          Wij hebben vernomen dat <strong class="text-white font-semibold">{displayName}</strong> is teruggekeerd naar Allah.{' '}
-          {alert.gebedstijdstip && datumStr && (
-            <span class="text-white/70">
-              Janazah-gebed op {datumStr}, {alert.gebedstijdstip}.
-            </span>
-          )}
-          {alert.gebedstijdstip && !datumStr && (
-            <span class="text-white/70">Janazah-gebed om {alert.gebedstijdstip}.</span>
-          )}
-          {!alert.gebedstijdstip && datumStr && (
-            <span class="text-white/70">Janazah-gebed op {datumStr}.</span>
-          )}
-        </p>
+      <!-- Nederlandse melding -->
+      <p class="text-white/90 text-sm md:text-base leading-relaxed max-w-2xl">
+        {alert.familyConsent && alert.naamOverledene
+          ? <>Onze broeder <strong class="text-white font-semibold">{displayName}</strong> is teruggekeerd tot Allah.</>
+          : <>Wij hebben vernomen dat <strong class="text-white font-semibold">{displayName}</strong> is teruggekeerd tot Allah.</>
+        }
+        {gebedZin && <span class="text-white/70">{` ${gebedZin}`}</span>}
+      </p>
 
-        <!-- Elegante tekstlink met accent-onderlijn -->
-        <a
-          href="/janazah"
-          class="inline-block mt-2 text-xs text-white/50 hover:text-accent-light border-b border-accent/40 hover:border-accent pb-px transition-colors"
-        >
-          Meer info over de janazah-procedure
-        </a>
-      </div>
+      <!-- Subtiele link met pijltje -->
+      <a
+        href="/janazah"
+        class="inline-flex items-center gap-1 text-[11px] text-white/40 hover:text-accent-light transition-colors mt-1"
+      >
+        Meer info <span aria-hidden="true">&rarr;</span>
+      </a>
 
     </div>
   </div>

@@ -30,10 +30,15 @@ export function isJanazahActive(alert: JanazahAlert | null): boolean {
   return alert?.actief === true;
 }
 
-/** Get display name respecting family consent */
+/** Capitalize each word: "abdel ali" → "Abdel Ali" */
+function capitalizeWords(name: string): string {
+  return name.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Get display name respecting family consent, auto-capitalized */
 export function getDisplayName(alert: JanazahAlert): string {
   if (alert.familyConsent && alert.naamOverledene) {
-    return alert.naamOverledene;
+    return capitalizeWords(alert.naamOverledene.trim());
   }
   return 'een gemeentelid';
 }
