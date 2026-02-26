@@ -1,5 +1,13 @@
 import { defineType, defineField } from 'sanity';
 
+// Tijdslots: elk half uur van 06:00 tot 23:00
+const timeSlots = Array.from({ length: 35 }, (_, i) => {
+  const h = Math.floor(i / 2) + 6;
+  const m = i % 2 === 0 ? '00' : '30';
+  const val = `${String(h).padStart(2, '0')}:${m}`;
+  return { title: val, value: val };
+});
+
 const weekDays = [
   { title: 'Maandag', value: 'maandag' },
   { title: 'Dinsdag', value: 'dinsdag' },
@@ -116,15 +124,15 @@ export const lessonProgram = defineType({
               name: 'startTijd',
               title: 'Starttijd',
               type: 'string',
-              description: 'Formaat: HH:MM (bijv. 10:00)',
-              validation: (Rule) => Rule.required().regex(/^\d{2}:\d{2}$/, { name: 'tijd', invert: false }),
+              options: { list: timeSlots, layout: 'dropdown' },
+              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'eindTijd',
               title: 'Eindtijd',
               type: 'string',
-              description: 'Formaat: HH:MM (bijv. 12:00)',
-              validation: (Rule) => Rule.required().regex(/^\d{2}:\d{2}$/, { name: 'tijd', invert: false }),
+              options: { list: timeSlots, layout: 'dropdown' },
+              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'actief',
