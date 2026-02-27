@@ -58,7 +58,7 @@ function renderChildrenWithLinks(block: any): string {
           const href = isSafe ? rawHref : '#';
           const escapedHref = href.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
           const rel = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
-          text = `<a href="${escapedHref}" class="text-primary hover:opacity-80 underline"${rel}>${text}</a>`;
+          text = `<a href="${escapedHref}" class="text-primary hover:opacity-80 underline break-words"${rel}>${text}</a>`;
         }
       }
     }
