@@ -143,12 +143,12 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </Section>
 
-  <!-- Sectie 2: Light-100 — Binnenkort in de moskee (Agenda, verborgen als leeg) -->
+  <!-- Sectie 2: Light-100 — Activiteiten (verborgen als leeg) -->
   {agendaEvents.length > 0 && (
     <Section variant="light-100">
       <div class="text-center mb-14">
-        <h2 class="text-3xl font-bold">Binnenkort in de moskee</h2>
-        <p class="text-neutral-600 mt-3">Aankomende activiteiten en bijeenkomsten</p>
+        <h2 class="text-3xl font-bold">Activiteiten</h2>
+        <p class="text-neutral-600 mt-3">Wat er binnenkort gepland staat</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {agendaEvents.map((event: any) => (
@@ -193,11 +193,11 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     downloadBestand={homePage?.downloadBestand}
   />
 
-  <!-- Sectie 4: Light-50 — Uit onze gemeenschap (conditioneel via CMS) -->
+  <!-- Sectie 4: Light-50 — Artikelen & Updates (conditioneel via CMS) -->
   {toonActueel && <Section variant="light-50">
     <div class="text-center mb-14">
-      <h2 class="text-3xl font-bold">Uit onze gemeenschap</h2>
-      <p class="text-neutral-600 mt-3">Artikelen, tips en updates</p>
+      <h2 class="text-3xl font-bold">Artikelen & Updates</h2>
+      <p class="text-neutral-600 mt-3">Verhalen, tips en nieuws uit de moskee</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       {actueel.map((item: any) => (
