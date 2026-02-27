@@ -9,6 +9,7 @@ import { fetchIslamicDays } from '../lib/hijri';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 import { computePrayerTimesFromSanity } from '../lib/logic/prayer-compute';
 import { isJanazahActive } from '../lib/logic/janazah';
+import { buildSiteConfig } from '../lib/logic/config';
 
 const [settings, actueel, homePage, homeCards, agendaEvents, prayer, janazahAlert] = await Promise.all([
   fetchSettings(),
@@ -19,6 +20,8 @@ const [settings, actueel, homePage, homeCards, agendaEvents, prayer, janazahAler
   fetchPrayerTimes(),
   fetchActiveJanazahAlert(),
 ]);
+
+const config = buildSiteConfig(settings);
 
 // Islamic days for countdown card — fetched at page level
 const islamicDaysData = await fetchIslamicDays(settings?.hijriAdjustment ?? 0, settings?.islamicDays);
@@ -35,8 +38,8 @@ const heroImageMobile = homePage?.heroImage
   : null;
 
 const heroTagline = homePage?.heroTagline || null;
-const heroTitle = homePage?.heroTitle || `Welkom bij ${settings.mosqueName}`;
-const heroSubtitle = homePage?.heroSubtitle || settings.description;
+const heroTitle = homePage?.heroTitle || `Welkom bij ${settings?.mosqueName || 'Moskee'}`;
+const heroSubtitle = homePage?.heroSubtitle || settings?.description || '';
 const heroCta = homePage?.heroCta || 'Gebedstijden bekijken';
 const badges = homePage?.badges?.length ? homePage.badges : [];
 const badgeKleur = homePage?.badgeKleur || '#593B1D';
@@ -46,7 +49,7 @@ const toonActueel = homePage?.toonActueel ?? true;
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 ---
 
-<BaseLayout title={settings.mosqueName} description={settings.description} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>
+<BaseLayout title={settings?.mosqueName || 'Moskee'} description={settings?.description || ''} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>
 
   {/* Kritieke hero CSS inline — elimineert render-blocking voor LCP */}
   <style is:inline>
@@ -102,7 +105,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           {heroImageUrl ? (
             <img
               src={heroImageUrl}
-              alt={sanitizeAlt(homePage?.heroTitle || settings.mosqueName)}
+              alt={sanitizeAlt(homePage?.heroTitle || settings?.mosqueName || 'Moskee')}
               class="hero-lcp w-full h-[500px] object-cover"
               width={800}
               height={500}
@@ -132,7 +135,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       <p class="text-neutral-500 mt-3">Inclusief Iqamah-tijden</p>
     </div>
     <div class="max-w-4xl mx-auto">
-      <PrayerManager compact computedTimes={computedTimes} prayerStatus={prayerStatus} />
+      <PrayerManager compact computedTimes={computedTimes} prayerStatus={prayerStatus} locale={config.locale} />
     </div>
     <div class="text-center mt-8">
       <a href="/gebedstijden" class="inline-flex items-center gap-1 text-primary hover:text-accent font-bold text-sm transition-colors">
@@ -151,7 +154,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {agendaEvents.map((event: any) => (
           <a
-            href={`/agenda/${event.slug.current}`}
+            href={`/agenda/${event.slug}`}
             class="group bg-white border border-slate-200 p-6 transition-all hover:bg-primary-light/40"
             style={`border-left: 3px solid ${event.categorieKleur || '#8b6843'}`}
           >
@@ -174,7 +177,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
               {event.titel}
             </h3>
             <p class="text-sm text-neutral-600">
-              {new Date(event.startDatum).toLocaleDateString('nl-BE', { weekday: 'short', day: 'numeric', month: 'long', timeZone: settings?.timezone || 'Europe/Brussels' })}
+              {new Date(event.startDatum).toLocaleDateString(config.locale, { weekday: 'short', day: 'numeric', month: 'long', timeZone: config.timezone })}
             </p>
             {event.locatie && (
               <p class="text-sm text-slate-600 mt-1">{event.locatie}</p>
@@ -225,6 +228,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
                 islamicDaysData={islamicDaysData}
                 mosqueName={settings?.mosqueName}
                 homePageDownload={homePageDownload}
+                locale={config.locale}
               />
             ))}
           </div>
@@ -305,7 +309,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Samen bouwen aan onze gemeenschap</h2>
       <p class="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
-        Of u nu wilt bidden, leren of bijdragen — iedereen is welkom bij {settings.mosqueName}.
+        Of u nu wilt bidden, leren of bijdragen — iedereen is welkom bij {settings?.mosqueName || 'Moskee'}.
       </p>
       <div class="flex flex-wrap justify-center gap-4">
         <a href="/contact" class="btn-primary px-8 py-3 min-h-[44px] inline-flex items-center bg-white text-primary-dark font-bold transition-all">

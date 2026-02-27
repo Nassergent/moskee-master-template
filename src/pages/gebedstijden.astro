@@ -6,6 +6,7 @@ import EtiquetteGrid from '../components/EtiquetteGrid.astro';
 import { fetchSettings, fetchPrayerTimes } from '../lib/sanity';
 import { formatHijriDate } from '../lib/hijri';
 import { computePrayerTimesFromSanity } from '../lib/logic/prayer-compute';
+import { buildSiteConfig } from '../lib/logic/config';
 
 const hijriToday = formatHijriDate();
 
@@ -13,6 +14,7 @@ const [settings, prayer] = await Promise.all([
   fetchSettings(),
   fetchPrayerTimes(),
 ]);
+const config = buildSiteConfig(settings);
 
 // Prayer computation at page level — shared between PrayerManager and SEO data
 const { computedTimes, prayerStatus } = computePrayerTimesFromSanity(prayer);
@@ -35,7 +37,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-r
 
   <!-- Mobiel: fullscreen gebedstijden, geen scroll -->
   <div class="sm:hidden fixed inset-0 top-16 flex flex-col overflow-hidden z-20 bg-white">
-    <PrayerManager fullscreen mosqueName={settings?.mosqueName} computedTimes={computedTimes} prayerStatus={prayerStatus} />
+    <PrayerManager fullscreen mosqueName={settings?.mosqueName} locale={config.locale} computedTimes={computedTimes} prayerStatus={prayerStatus} />
   </div>
   <Section variant="light-50" class="hidden sm:block">
     <div class="text-center mb-10">
@@ -43,7 +45,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-r
       <p class="text-neutral-500 mt-2 text-sm">Adhan- en Iqamah-tijden</p>
     </div>
     <div class="max-w-4xl mx-auto">
-      <PrayerManager computedTimes={computedTimes} prayerStatus={prayerStatus} />
+      <PrayerManager locale={config.locale} computedTimes={computedTimes} prayerStatus={prayerStatus} />
       <p class="sr-only">
         Dagelijkse gebedstijden voor {settings?.mosqueName}: Fajr, Dhuhr, Asr, Maghrib en Isha.
         Inclusief Iqamah-tijden. Voor het Vrijdaggebed (Jumu'ah), zie de sectie hieronder.

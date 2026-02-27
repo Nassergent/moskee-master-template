@@ -7,6 +7,12 @@ import { Resend } from 'resend';
 import { fetchSettings } from '../lib/sanity';
 import { contactNotificationEmail, volunteerNotificationEmail, volunteerConfirmationEmail } from '../lib/email-templates';
 
+const FROM_DOMAIN = import.meta.env.FROM_EMAIL_DOMAIN || 'onboarding@resend.dev';
+
+export function buildFromAddress(mosqueName: string) {
+  return `${mosqueName} <${FROM_DOMAIN}>`;
+}
+
 interface SettingsColors {
   primary?: string;
   accent?: string;
@@ -47,7 +53,7 @@ export async function sendContactNotification(opts: {
 
   const resend = new Resend(apiKey);
   await resend.emails.send({
-    from: `${mosqueName} <onboarding@resend.dev>`,
+    from: buildFromAddress(mosqueName),
     to: [contactEmail],
     replyTo: opts.email,
     subject: `\uD83D\uDCE9 Contactformulier: ${opts.onderwerp || 'Algemeen'} — ${opts.naam}`,
@@ -87,7 +93,7 @@ export async function sendVolunteerEmails(opts: {
   // 1. Notification to mosque
   if (mosqueEmail) {
     await resend.emails.send({
-      from: `${mosqueName} <onboarding@resend.dev>`,
+      from: buildFromAddress(mosqueName),
       to: [mosqueEmail],
       replyTo: opts.email,
       subject: `\uD83D\uDC65 Nieuwe vrijwilliger: ${opts.naam}`,
@@ -106,7 +112,7 @@ export async function sendVolunteerEmails(opts: {
 
   // 2. Confirmation to volunteer
   await resend.emails.send({
-    from: `${mosqueName} <onboarding@resend.dev>`,
+    from: buildFromAddress(mosqueName),
     to: [opts.email],
     replyTo: mosqueEmail || undefined,
     subject: `Welkom als vrijwilliger bij ${mosqueName}`,

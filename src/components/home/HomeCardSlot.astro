@@ -23,20 +23,21 @@ interface Props {
     downloadUrl?: string;
     downloadBestand?: any;
   };
+  locale?: string;
 }
 
-const { card, delay = 0, islamicDaysData, mosqueName, homePageDownload } = Astro.props;
+const { card, delay = 0, islamicDaysData, mosqueName, homePageDownload, locale = 'nl-BE' } = Astro.props;
 
 // Skip rendering if card is disabled or has no variant
 if (!card?.ingeschakeld || !card?.variant) return;
 ---
 
 {card.variant === 'evenementCountdown' && (
-  <EvenementCountdownCard card={card} delay={delay} islamicDaysData={islamicDaysData} mosqueName={mosqueName} />
+  <EvenementCountdownCard card={card} delay={delay} islamicDaysData={islamicDaysData} mosqueName={mosqueName} locale={locale} />
 )}
 
 {card.variant === 'donatieCampagne' && (
-  <DonatieCampagneCard card={card} delay={delay} />
+  <DonatieCampagneCard card={card} delay={delay} locale={locale} />
 )}
 
 {card.variant === 'download' && (

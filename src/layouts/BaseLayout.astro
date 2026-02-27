@@ -2,6 +2,7 @@
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import { fetchSettings, urlFor } from '../lib/sanity';
+import { buildSiteConfig } from '../lib/logic/config';
 import '../styles/global.css';
 
 interface BreadcrumbItem {
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const settings = await fetchSettings();
+const siteConfig = buildSiteConfig(settings);
 const mosqueName = settings?.mosqueName || 'Onze Moskee';
 const defaultDescription = settings?.description || 'Welkom bij onze moskee — een plek van gebed, gemeenschap en kennis.';
 
@@ -187,7 +189,7 @@ const colors = {
       "address": settings?.address ? {
         "@type": "PostalAddress",
         "streetAddress": settings.address,
-        "addressCountry": "BE"
+        "addressCountry": siteConfig.country
       } : undefined,
       "telephone": settings?.phone || undefined,
       "email": settings?.email || undefined,

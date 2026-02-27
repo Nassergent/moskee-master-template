@@ -2,10 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import PostTypeBadge from '../components/ui/PostTypeBadge.astro';
-import { fetchNieuws, urlFor } from '../lib/sanity';
+import { fetchNieuws, fetchSettings, urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
+import { buildSiteConfig } from '../lib/logic/config';
 
-const nieuws = await fetchNieuws();
+const [nieuws, settings] = await Promise.all([fetchNieuws(), fetchSettings()]);
+const config = buildSiteConfig(settings);
 ---
 
 <BaseLayout title="Nieuws uit de moskee" description="Recente berichten en aankondigingen uit onze moskee-gemeenschap">
@@ -23,9 +25,9 @@ const nieuws = await fetchNieuws();
   <Section variant="light-50">
     <div class="max-w-5xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {nieuws.filter((item) => item.slug?.current).map((item) => (
+        {nieuws.filter((item) => item.slug).map((item) => (
           <a
-            href={`/nieuws/${item.slug.current}`}
+            href={`/nieuws/${item.slug}`}
             class="group bg-white border border-neutral-200 border-l-3 border-l-accent overflow-hidden hover:border-l-primary transition-all"
           >
             {item.afbeelding ? (
@@ -46,7 +48,7 @@ const nieuws = await fetchNieuws();
               <div class="flex items-center gap-2 mb-2">
                 <PostTypeBadge postType={item.postType} />
                 <time class="text-xs text-neutral-400" datetime={item.datum}>
-                  {new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  {new Date(item.datum).toLocaleDateString(config.locale, { year: 'numeric', month: 'long', day: 'numeric' })}
                 </time>
               </div>
               <h2 class="font-heading text-lg font-bold group-hover:text-primary transition-colors mb-3">

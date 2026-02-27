@@ -14,9 +14,10 @@ interface Props {
   afbeelding?: any;
   /** When false, the CTA button selects the project in the form dropdown (used on donatiepagina) */
   clickable?: boolean;
+  locale?: string;
 }
 
-const { _id, titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding, clickable = true } = Astro.props;
+const { _id, titel, beschrijving, doelbedrag, huidigBedragCents, actief, afbeelding, clickable = true, locale = locale } = Astro.props;
 const hasProgress = !!(doelbedrag && doelbedrag > 0);
 const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
   ? calculateDonationProgress(huidigBedragCents || 0, doelbedrag)
@@ -48,8 +49,8 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
     {hasProgress && doelbedrag && (
       <div class="mb-3">
         <div class="flex justify-between text-xs text-slate-500 mb-1.5">
-          <span>&euro;{huidigEuros.toLocaleString('nl-BE', { minimumFractionDigits: 2 })}</span>
-          <span>&euro;{doelbedrag.toLocaleString('nl-BE')}</span>
+          <span>&euro;{huidigEuros.toLocaleString(locale, { minimumFractionDigits: 2 })}</span>
+          <span>&euro;{doelbedrag.toLocaleString(locale)}</span>
         </div>
         <div class:list={['w-full h-3 overflow-hidden', isUrgent ? 'bg-accent/20' : 'bg-accent/10']}>
           <div
@@ -66,7 +67,7 @@ const { percentage, remaining, huidigEuros, isUrgent, isComplete } = hasProgress
             <p class="text-xs font-bold text-green-600">Doel bereikt!</p>
           ) : (
             <p class:list={['text-xs font-bold', isUrgent ? 'text-accent' : 'text-slate-500']}>
-              Nog &euro;{remaining.toLocaleString('nl-BE')} nodig
+              Nog &euro;{remaining.toLocaleString(locale)} nodig
               {isUrgent && '!'}
             </p>
           )}

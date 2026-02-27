@@ -7,13 +7,15 @@ import { fetchAgendaEvent, fetchSettings, urlFor } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
 import { formatDatum, formatTijd } from '../../lib/logic/agenda-utils';
 import { sanitizeAlt } from '../../lib/logic/seo-utils';
+import { buildSiteConfig } from '../../lib/logic/config';
 
 const { slug } = Astro.params;
 const event = await fetchAgendaEvent(slug!);
 if (!event) return Astro.redirect('/agenda');
 
 const settings = await fetchSettings();
-const tz = settings?.timezone || 'Europe/Brussels';
+const config = buildSiteConfig(settings);
+const tz = config.timezone;
 
 // Wrapper functies met detail-pagina opmaak (jaar + dynamische timezone)
 const fmtDatum = (d: string) => formatDatum(d, { year: true, tz });
@@ -37,7 +39,7 @@ const eventSchema = JSON.stringify({
 });
 ---
 
-<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`} ogImage={event.afbeelding ? urlFor(event.afbeelding).width(1200).height(630).fit('crop').url() : undefined} breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Activiteiten', href: '/agenda' }, { name: event.titel, href: `/agenda/${slug}` }]}>
+<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings?.mosqueName || 'Moskee'}.`} ogImage={event.afbeelding ? urlFor(event.afbeelding).width(1200).height(630).fit('crop').url() : undefined} breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Activiteiten', href: '/agenda' }, { name: event.titel, href: `/agenda/${slug}` }]}>
   <script type="application/ld+json" set:html={eventSchema} />
 
   <!-- Page Header -->
@@ -119,7 +121,7 @@ const eventSchema = JSON.stringify({
                 <p class="text-xs text-neutral-400 uppercase tracking-wider mb-0.5">Locatie</p>
                 <p class="font-medium text-neutral-800">{event.locatie}</p>
                 {settings?.address && (
-                  <p class="text-xs text-neutral-400">{settings.mosqueName}, {settings.address}</p>
+                  <p class="text-xs text-neutral-400">{settings?.mosqueName}, {settings?.address}</p>
                 )}
               </div>
             </div>

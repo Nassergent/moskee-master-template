@@ -3,13 +3,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import { fetchSettings } from '../lib/sanity';
 import { parseDonationParams } from '../lib/logic/donation-utils';
+import { buildSiteConfig } from '../lib/logic/config';
 
 export const prerender = false;
 
 const settings = await fetchSettings();
+const config = buildSiteConfig(settings);
 const { bedrag, bestemming, isDemo } = parseDonationParams(Astro.url);
 
-const bedanktTekst = settings.bedanktTekst
+const bedanktTekst = settings?.bedanktTekst
   || 'Bedankt voor je gulle bijdrage. We hebben je donatie in goede orde ontvangen.';
 ---
 
@@ -39,7 +41,7 @@ const bedanktTekst = settings.bedanktTekst
             {bedrag && (
               <div class="flex justify-between items-center py-3 border-b border-neutral-100">
                 <span class="text-slate-500">Bedrag</span>
-                <span class="font-heading font-bold text-2xl text-primary">&euro;{parseFloat(bedrag).toLocaleString('nl-BE', { minimumFractionDigits: 2 })}</span>
+                <span class="font-heading font-bold text-2xl text-primary">&euro;{parseFloat(bedrag).toLocaleString(config.locale, { minimumFractionDigits: 2 })}</span>
               </div>
             )}
             {bestemming && (

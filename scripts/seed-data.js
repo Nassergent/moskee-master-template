@@ -42,45 +42,40 @@ const etiquetteItems = [
     _type: 'etiquette',
     title: 'Kom op tijd',
     description: 'Probeer minimaal 15 minuten voor de Iqamah aanwezig te zijn.',
-    icon: 'ster-8',
     volgorde: 1,
-    isPublished: true,
+    gepubliceerd: true,
   },
   {
     _id: 'etiquette-telefoon-stil',
     _type: 'etiquette',
     title: 'Telefoon op stil',
     description: 'Zet uw telefoon op stil of vliegtuigmodus tijdens het gebed.',
-    icon: 'maan',
     volgorde: 2,
-    isPublished: true,
+    gepubliceerd: true,
   },
   {
     _id: 'etiquette-schoenen-uit',
     _type: 'etiquette',
     title: 'Schoenen uit',
     description: 'Plaats uw schoenen netjes in het rek bij de ingang.',
-    icon: 'ruit',
     volgorde: 3,
-    isPublished: true,
+    gepubliceerd: true,
   },
   {
     _id: 'etiquette-stilte',
     _type: 'etiquette',
     title: 'Stilte in de gebedsruimte',
     description: 'Respecteer de rust en vermijd luide gesprekken in de gebedsruimte.',
-    icon: 'rozet',
     volgorde: 4,
-    isPublished: true,
+    gepubliceerd: true,
   },
   {
     _id: 'etiquette-netheid',
     _type: 'etiquette',
     title: 'Netheid',
     description: 'Help mee de moskee schoon te houden. Ruim afval op en houd de wudhu-ruimte droog.',
-    icon: 'hexagon',
     volgorde: 5,
-    isPublished: true,
+    gepubliceerd: true,
   },
 ];
 
@@ -539,10 +534,47 @@ const janazahAlertDoc = {
   actief: false,
 };
 
+// ── Settings singleton (onboarding-critical) ──
+
+const settingsDoc = {
+  _id: 'settings',
+  _type: 'settings',
+  mosqueName: 'Nieuwe Moskee',
+  description: 'Welkom bij uw moskee — een plek van gebed, kennis en gemeenschap.',
+  primaryTheme: 'deep-bordeaux',
+  timezone: 'Europe/Brussels',
+  hijriAdjustment: 0,
+  menuToggles: {
+    showServices: true,
+    showLessen: true,
+    showProjects: true,
+    showAbout: true,
+    showMollie: true,
+  },
+  islamicDays: {
+    enabled: true,
+    showRamadan: true,
+    showEidFitr: true,
+    showEidAdha: true,
+    showArafah: true,
+    showLailatAlQadr: true,
+    showAshura: true,
+    showIsraMiraj: true,
+  },
+};
+
+// ── Contact Page singleton (onboarding-critical) ──
+
+const contactPageDoc = {
+  _id: 'contactPage',
+  _type: 'contactPage',
+  introText: 'Neem gerust contact met ons op.',
+};
+
 // ── Seed alles ──
 
 async function seed() {
-  const allDocs = [prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems, ...topicHubItems, ...lessonProgramItems, ramadanOverrideDoc, janazahProcedureDoc, janazahAlertDoc];
+  const allDocs = [settingsDoc, contactPageDoc, prayerTimesDoc, ...etiquetteItems, ...serviceItems, ...quoteItems, ...topicHubItems, ...lessonProgramItems, ramadanOverrideDoc, janazahProcedureDoc, janazahAlertDoc];
 
   console.log(`Seeding ${allDocs.length} documenten naar Sanity...`);
 

@@ -16,11 +16,11 @@ export interface JanazahAlert {
  * Bouw een schone gebedsinfo-zin op.
  * Resultaat: "Janazah-gebed op vrijdag 27 februari na het Dhuhr-gebed om 14:00."
  */
-export function buildGebedZin(alert: JanazahAlert): string {
+export function buildGebedZin(alert: JanazahAlert, locale: string = 'nl-BE'): string {
   const parts: string[] = ['Janazah-gebed'];
 
   if (alert.gebeddatum) {
-    const datum = new Date(alert.gebeddatum + 'T00:00:00').toLocaleDateString('nl-BE', {
+    const datum = new Date(alert.gebeddatum + 'T00:00:00').toLocaleDateString(locale, {
       weekday: 'long',
       day: 'numeric',
       month: 'long',

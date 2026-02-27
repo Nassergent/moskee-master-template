@@ -35,8 +35,8 @@ export function buildFilterCategories(
   return [...eventCats].map((cat) => ({ titel: cat }));
 }
 
-export function formatDatum(datum: string, options?: { year?: boolean; tz?: string }): string {
-  return new Date(datum).toLocaleDateString('nl-BE', {
+export function formatDatum(datum: string, options?: { year?: boolean; tz?: string; locale?: string }): string {
+  return new Date(datum).toLocaleDateString(options?.locale || 'nl-BE', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -45,8 +45,8 @@ export function formatDatum(datum: string, options?: { year?: boolean; tz?: stri
   });
 }
 
-export function formatTijd(datum: string, tz?: string): string {
-  const str = new Date(datum).toLocaleTimeString('nl-BE', {
+export function formatTijd(datum: string, tz?: string, locale?: string): string {
+  const str = new Date(datum).toLocaleTimeString(locale || 'nl-BE', {
     hour: '2-digit',
     minute: '2-digit',
     timeZone: tz || 'Europe/Brussels',

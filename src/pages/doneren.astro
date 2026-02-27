@@ -6,6 +6,7 @@ import BankQrCard from '../components/ui/donation/BankQrCard.astro';
 import { fetchProjecten, fetchSettings, fetchQuote, urlFor } from '../lib/sanity';
 import { calculateProjectStats } from '../lib/logic/project-utils';
 import { generateEpcQrCode } from '../lib/logic/qr-service';
+import { buildSiteConfig } from '../lib/logic/config';
 
 const projecten = await fetchProjecten();
 const settings = await fetchSettings();
@@ -16,7 +17,8 @@ const { totalRaised, activeCount: activeProjectCount, options: projectOptions } 
   ? calculateProjectStats(projecten)
   : { totalRaised: 0, activeCount: 0, options: [] };
 
-const showMollie = settings.menuToggles?.showMollie !== false;
+const config = buildSiteConfig(settings);
+const showMollie = settings?.menuToggles?.showMollie !== false;
 
 // QR tonen = simpel: IBAN bestaat?
 const showQR = !!settings?.iban;
@@ -24,7 +26,7 @@ const cleanIban = settings?.iban?.replace(/\s/g, '').toUpperCase();
 
 // QR genereren (server-side)
 const qrResult = showQR && cleanIban
-  ? await generateEpcQrCode(cleanIban, settings.mosqueName)
+  ? await generateEpcQrCode(cleanIban, settings?.mosqueName || 'Moskee')
   : null;
 
 // Payconiq met crash protection (F2)
@@ -185,6 +187,7 @@ try {
                   actief={project.actief}
                   afbeelding={project.afbeelding}
                   clickable={false}
+                  locale={config.locale}
                 />
               ))}
             </div>
@@ -200,7 +203,7 @@ try {
           {showQR && qrResult?.success ? (
             <BankQrCard
               iban={cleanIban!}
-              bankName={settings.mosqueName || ''}
+              bankName={settings?.mosqueName || ''}
               qrSvg={qrResult.svg}
               payconiqImage={payconiqImageUrl}
             />
@@ -209,7 +212,7 @@ try {
               <div class="space-y-3">
                 <div class="flex justify-between items-center py-3 border-b border-neutral-100">
                   <span class="text-slate-500">Begunstigde</span>
-                  <span class="font-medium text-slate-800">{settings.mosqueName}</span>
+                  <span class="font-medium text-slate-800">{settings?.mosqueName || 'Moskee'}</span>
                 </div>
                 <div class="flex justify-between items-center py-3 border-b border-neutral-100">
                   <span class="text-slate-500">IBAN</span>
@@ -242,6 +245,7 @@ try {
                   actief={project.actief}
                   afbeelding={project.afbeelding}
                   clickable={false}
+                  locale={config.locale}
                 />
               ))}
             </div>
@@ -260,7 +264,7 @@ try {
         {showQR && qrResult?.success ? (
           <BankQrCard
             iban={cleanIban!}
-            bankName={settings.mosqueName || ''}
+            bankName={settings?.mosqueName || ''}
             qrSvg={qrResult.svg}
             payconiqImage={payconiqImageUrl}
           />
@@ -269,7 +273,7 @@ try {
             <div class="space-y-3">
               <div class="flex justify-between items-center py-3 border-b border-neutral-100">
                 <span class="text-slate-500">Begunstigde</span>
-                <span class="font-medium text-slate-800">{settings.mosqueName}</span>
+                <span class="font-medium text-slate-800">{settings?.mosqueName || 'Moskee'}</span>
               </div>
               <div class="flex justify-between items-center py-3 border-b border-neutral-100">
                 <span class="text-slate-500">IBAN</span>

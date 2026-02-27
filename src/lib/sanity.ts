@@ -20,7 +20,7 @@ export async function fetchSettings() {
 export async function fetchDiensten() {
   try {
     const result = await sanityClient.fetch(`*[_type == "service" && actief == true] | order(volgorde asc) {
-      _id, titel, "slug": slug, beschrijving, inhoud, afbeelding, tijden, volgorde
+      _id, titel, "slug": slug.current, beschrijving, inhoud, afbeelding, tijden, volgorde
     }`);
     return result || [];
   } catch (e) {
@@ -47,7 +47,7 @@ export async function fetchProjecten() {
 export async function fetchNieuws() {
   try {
     const result = await sanityClient.fetch(`*[_type == "post" && gepubliceerd == true && !defined(onderwerpHub)] | order(datum desc) {
-      _id, titel, "slug": slug, datum, samenvatting, inhoud, afbeelding, postType
+      _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding, postType
     }`);
     return result || [];
   } catch (e) {
@@ -322,7 +322,7 @@ export async function fetchEventCategories() {
 export async function fetchAgendaEvents() {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
-      _id, titel, slug, startDatum, eindDatum, locatie,
+      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
       "categorie": coalesce(categorieRef->titel, categorie),
       "categorieKleur": categorieRef->kleur,
       featured, prioriteit, doelgroep,
@@ -338,7 +338,7 @@ export async function fetchAgendaEvents() {
 export async function fetchUpcomingAgendaEvents(limit = 3) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
-      _id, titel, slug, startDatum, eindDatum, locatie,
+      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
       "categorie": coalesce(categorieRef->titel, categorie),
       "categorieKleur": categorieRef->kleur,
       featured, prioriteit, doelgroep,

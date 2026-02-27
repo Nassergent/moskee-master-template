@@ -9,9 +9,10 @@ import type { EffectiveSchedule, ScheduleEntry, RamadanEntry } from '../../../li
 
 interface Props {
   schedule: EffectiveSchedule;
+  locale?: string;
 }
 
-const { schedule } = Astro.props;
+const { schedule, locale = locale } = Astro.props;
 ---
 
 {schedule.type === 'ramadan' ? (
@@ -33,7 +34,7 @@ const { schedule } = Astro.props;
         <tbody>
           {(schedule.items as RamadanEntry[]).map((item, i) => {
             const datumStr = item.datum
-              ? new Date(item.datum + 'T00:00:00').toLocaleDateString('nl-BE', {
+              ? new Date(item.datum + 'T00:00:00').toLocaleDateString(locale, {
                   weekday: 'short',
                   day: 'numeric',
                   month: 'long',

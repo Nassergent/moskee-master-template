@@ -5,16 +5,18 @@ import PortableText from '../../components/PortableText.astro';
 import PostTypeBadge from '../../components/ui/PostTypeBadge.astro';
 import { fetchPost, fetchTopicHubRelated, fetchSettings, urlFor } from '../../lib/sanity';
 import { sanitizeAlt } from '../../lib/logic/seo-utils';
+import { buildSiteConfig } from '../../lib/logic/config';
 
 const { slug } = Astro.params;
 const item = await fetchPost(slug!);
 if (!item?.titel) return Astro.redirect('/nieuws');
 
 const settings = await fetchSettings();
-const tz = settings?.timezone || 'Europe/Brussels';
+const config = buildSiteConfig(settings);
+const tz = config.timezone;
 
 const datum = item.datum
-  ? new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric', month: 'long', day: 'numeric' })
+  ? new Date(item.datum).toLocaleDateString(config.locale, { year: 'numeric', month: 'long', day: 'numeric' })
   : '';
 const ogImage = item.afbeelding ? urlFor(item.afbeelding).width(1200).height(630).fit('crop').url() : undefined;
 
@@ -126,7 +128,7 @@ const newsArticleSchema = JSON.stringify({
                   <h4 class="font-heading font-bold text-base mb-1 group-hover:text-primary transition-colors">{post.titel}</h4>
                   {post.datum && (
                     <time class="text-xs text-neutral-400" datetime={post.datum}>
-                      {new Date(post.datum).toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      {new Date(post.datum).toLocaleDateString(config.locale, { day: 'numeric', month: 'long', year: 'numeric' })}
                     </time>
                   )}
                   {post.samenvatting && (
@@ -145,13 +147,13 @@ const newsArticleSchema = JSON.stringify({
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {hubRelated.events.map((evt: any) => {
                 const evtDatum = evt.startDatum
-                  ? new Date(evt.startDatum).toLocaleDateString('nl-BE', {
+                  ? new Date(evt.startDatum).toLocaleDateString(config.locale, {
                       weekday: 'short', day: 'numeric', month: 'long',
                       timeZone: tz,
                     })
                   : '';
                 const evtTijd = evt.startDatum
-                  ? new Date(evt.startDatum).toLocaleTimeString('nl-BE', {
+                  ? new Date(evt.startDatum).toLocaleTimeString(config.locale, {
                       hour: '2-digit', minute: '2-digit',
                       timeZone: tz,
                     })

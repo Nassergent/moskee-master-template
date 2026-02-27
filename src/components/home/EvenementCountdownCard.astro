@@ -14,9 +14,10 @@ interface Props {
   delay?: number;
   islamicDaysData?: any[];
   mosqueName?: string;
+  locale?: string;
 }
 
-const { card, delay = 0, islamicDaysData = [], mosqueName } = Astro.props;
+const { card, delay = 0, islamicDaysData = [], mosqueName, locale = locale } = Astro.props;
 
 const BETEKENIS: Record<string, string> = {
   'Start Ramadan': 'De heilige vastenmaand waarin de Quran werd geopenbaard',
@@ -64,7 +65,7 @@ const betekenis = hasCmsOverride
   ? (card.evenementBeschrijving || '')
   : (BETEKENIS[upcoming.name] || '');
 
-const formattedDate = new Date(upcoming.gregorianDate).toLocaleDateString('nl-BE', {
+const formattedDate = new Date(upcoming.gregorianDate).toLocaleDateString(locale, {
   weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
 });
 
@@ -130,7 +131,7 @@ const calendarUrl = card.agendaLink || generateGoogleCalendarUrl({
     <div class="px-7 pb-5 space-y-0">
       <p class="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-2">Daarna</p>
       {nextDays.map((day: any) => {
-        const dayDate = new Date(day.gregorianDate).toLocaleDateString('nl-BE', {
+        const dayDate = new Date(day.gregorianDate).toLocaleDateString(locale, {
           day: 'numeric', month: 'short',
         });
         return (

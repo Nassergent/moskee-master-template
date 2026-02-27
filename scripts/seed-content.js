@@ -60,7 +60,7 @@ const projects = [
     titel: 'Renovatie Gebedsruimte',
     beschrijving: 'Help ons de gebedsruimte te voorzien van nieuw tapijt en duurzame verlichting.',
     doelbedrag: 25000,
-    huidigBedrag: 17500,
+    huidigBedragCents: 1750000,
     actief: true,
   },
   {
@@ -69,7 +69,7 @@ const projects = [
     titel: 'Ramadan Voedselpakketten',
     beschrijving: 'Samen zorgen we dat elke behoeftige familie in onze stad een gezonde Iftar heeft.',
     doelbedrag: 5000,
-    huidigBedrag: 2100,
+    huidigBedragCents: 210000,
     actief: true,
   },
 ];

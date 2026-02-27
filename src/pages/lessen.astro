@@ -5,7 +5,8 @@ import SmartFilterBar from '../components/ui/education/SmartFilterBar.astro';
 import LessonCard from '../components/ui/education/LessonCard.astro';
 import ScheduleGrid from '../components/ui/education/ScheduleGrid.astro';
 import PracticalInfo from '../components/ui/education/PracticalInfo.astro';
-import { fetchLessonPrograms, fetchRamadanOverride } from '../lib/sanity';
+import { fetchLessonPrograms, fetchRamadanOverride, fetchSettings } from '../lib/sanity';
+import { buildSiteConfig } from '../lib/logic/config';
 import {
   getEffectiveSchedule,
   getUniqueCategories,
@@ -15,10 +16,12 @@ import {
 } from '../lib/logic/education';
 import type { LessonProgram } from '../lib/logic/education';
 
-const [programs, ramadanOverride] = await Promise.all([
+const [programs, ramadanOverride, settings] = await Promise.all([
   fetchLessonPrograms(),
   fetchRamadanOverride(),
+  fetchSettings(),
 ]);
+const config = buildSiteConfig(settings);
 
 const categories = getUniqueCategories(programs as LessonProgram[]);
 const showFilter = shouldShowFilter(programs as LessonProgram[]);
@@ -89,7 +92,7 @@ const variants = ['light-50', 'light-100'] as const;
                       <h4 class="font-heading text-xl font-bold mb-4">
                         {isRamadan ? 'Ramadan Rooster' : 'Lesrooster'}
                       </h4>
-                      <ScheduleGrid schedule={schedule} />
+                      <ScheduleGrid schedule={schedule} locale={config.locale} />
                     </div>
                   )}
 

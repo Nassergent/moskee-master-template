@@ -39,7 +39,7 @@ const filterCategories = buildFilterCategories(cmsCategories, allEvents);
       <div class="grid grid-cols-1 gap-6">
         {featuredEvents.map((event: any) => (
           <a
-            href={`/agenda/${event.slug.current}`}
+            href={`/agenda/${event.slug}`}
             class="agenda-event-card group bg-white border border-slate-200 transition-all block hover:bg-primary-light/40 md:grid md:grid-cols-[1fr_2fr]"
             style={`border-left: 4px solid ${event.categorieKleur || '#8b6843'}`}
             data-categorie={event.categorie || 'Overig'}
@@ -138,7 +138,7 @@ const filterCategories = buildFilterCategories(cmsCategories, allEvents);
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="agenda-grid">
         {regularEvents.map((event: any) => (
           <a
-            href={`/agenda/${event.slug.current}`}
+            href={`/agenda/${event.slug}`}
             class="agenda-event-card group bg-white border border-slate-200 transition-all block hover:bg-primary-light/40"
             style={`border-left: 3px solid ${event.categorieKleur || '#8b6843'}`}
             data-categorie={event.categorie || 'Overig'}

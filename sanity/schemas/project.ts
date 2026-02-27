@@ -30,7 +30,8 @@ export const project = defineType({
       name: 'doelbedrag',
       title: 'Doelbedrag (€)',
       type: 'number',
-      description: 'Het totaalbedrag dat u wilt inzamelen voor dit goede doel.',
+      description: 'Het totaalbedrag dat u wilt inzamelen.',
+      validation: (rule) => rule.min(1).error('Doelbedrag moet minimaal €1 zijn'),
     }),
     defineField({
       name: 'huidigBedragCents',

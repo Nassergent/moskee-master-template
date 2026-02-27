@@ -12,9 +12,10 @@ import { sanitizeAlt } from '../../lib/logic/seo-utils';
 interface Props {
   card: any;
   delay?: number;
+  locale?: string;
 }
 
-const { card, delay = 0 } = Astro.props;
+const { card, delay = 0, locale = locale } = Astro.props;
 const project = card.donatieProject;
 
 // Skip if no project linked or project inactive
@@ -59,8 +60,8 @@ const ctaLabel = card.donatieCtaLabelOverride || 'Steun dit doel';
     {progress && project.doelbedrag && (
       <div>
         <div class="flex justify-between text-xs text-neutral-500 mb-1.5">
-          <span>&euro;{progress.huidigEuros.toLocaleString('nl-BE', { minimumFractionDigits: 2 })}</span>
-          <span>&euro;{project.doelbedrag.toLocaleString('nl-BE')}</span>
+          <span>&euro;{progress.huidigEuros.toLocaleString(locale, { minimumFractionDigits: 2 })}</span>
+          <span>&euro;{project.doelbedrag.toLocaleString(locale)}</span>
         </div>
         <div class:list={['w-full h-2.5 overflow-hidden', progress.isUrgent ? 'bg-accent/20' : 'bg-accent/10']}>
           <div

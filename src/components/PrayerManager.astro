@@ -21,16 +21,17 @@ interface Props {
   compact?: boolean;
   fullscreen?: boolean;
   mosqueName?: string;
+  locale?: string;
   /** Pre-computed prayer times from parent page */
   computedTimes?: ComputedPrayerTimes | null;
   /** Pre-computed prayer status from parent page */
   prayerStatus?: PrayerStatus | null;
 }
 
-const { compact = false, fullscreen = false, mosqueName = '', computedTimes = null, prayerStatus = null } = Astro.props;
+const { compact = false, fullscreen = false, mosqueName = '', locale = 'nl-BE', computedTimes = null, prayerStatus = null } = Astro.props;
 
 const hijriToday = formatHijriDate();
-const gregorianToday = new Date().toLocaleDateString('nl-BE', {
+const gregorianToday = new Date().toLocaleDateString(locale, {
   weekday: 'long',
   day: 'numeric',
   month: 'short',
@@ -51,8 +52,9 @@ const gregorianToday = new Date().toLocaleDateString('nl-BE', {
           id="mawaqit-clock"
           class="text-5xl font-bold font-heading tabular-nums text-white leading-none"
           data-tz={computedTimes.timezone}
+          data-locale={locale}
         >
-          {new Date().toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: computedTimes.timezone })}
+          {new Date().toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: computedTimes.timezone })}
         </p>
         <p class="text-white/50 font-arabic text-sm mt-2" lang="ar" dir="rtl">{hijriToday}</p>
         <p class="text-white/40 text-xs mt-0.5 capitalize">{gregorianToday}</p>
@@ -105,8 +107,9 @@ const gregorianToday = new Date().toLocaleDateString('nl-BE', {
       const clockEl = document.getElementById('mawaqit-clock');
       if (clockEl) {
         const tz = clockEl.dataset.tz || 'Europe/Brussels';
+        const clockLocale = clockEl.dataset.locale || 'nl-BE';
         function updateClock() {
-          clockEl!.textContent = new Date().toLocaleTimeString('nl-BE', {
+          clockEl!.textContent = new Date().toLocaleTimeString(clockLocale, {
             hour: '2-digit', minute: '2-digit', second: '2-digit',
             hour12: false, timeZone: tz,
           });

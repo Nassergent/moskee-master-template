@@ -6,6 +6,7 @@
 import { writeClient } from '../../sanity/lib/client';
 import { fetchProjectByTitle, fetchSettings } from '../lib/sanity';
 import { centsToEuros, shouldUpdateProject } from '../lib/logic/payment-validators';
+import { buildFromAddress } from './email-service';
 import { stringToCents } from '../lib/logic/webhook-validators';
 import { escapeHtml } from '../lib/security';
 import { donationConfirmationEmail } from '../lib/email-templates';
@@ -56,7 +57,7 @@ export async function processSuccessfulPayment(payment: {
 
       const resend = new Resend(resendKey);
       await resend.emails.send({
-        from: `${settings?.mosqueName || 'Onze Moskee'} <onboarding@resend.dev>`,
+        from: buildFromAddress(settings?.mosqueName || 'Onze Moskee'),
         to: [donorEmail],
         replyTo: settings?.email || undefined,
         subject: `Jazak Allahu Khairan — Bedankt voor uw donatie`,
