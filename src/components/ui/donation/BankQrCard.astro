@@ -91,6 +91,7 @@ const cleanIban = iban.replace(/\s/g, '').toUpperCase();
       var checkIcon = btn.querySelector('.check-icon');
 
       function showSuccess() {
+        if (navigator.vibrate) navigator.vibrate(50);
         if (copyIcon) copyIcon.classList.add('hidden');
         if (checkIcon) checkIcon.classList.remove('hidden');
         setTimeout(function() {

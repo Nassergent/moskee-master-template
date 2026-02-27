@@ -132,7 +132,7 @@ const grouped = groupBlocks(value);
       if (item.style === 'h3') return <h3 set:html={html} />;
       if (item.style === 'h4') return <h4 set:html={html} />;
       if (item.style === 'blockquote') return (
-        <blockquote class="border-l-3 border-l-accent pl-6 italic text-neutral-600" set:html={html} />
+        <blockquote class="border-l-3 border-l-accent pl-6 italic text-neutral-600 break-words" set:html={html} />
       );
       return <p class="text-neutral-600 leading-relaxed" set:html={html} />;
     }
