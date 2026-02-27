@@ -3,10 +3,6 @@
  * No side effects, no fetch, no env vars.
  */
 
-export function extractCategories(events: any[]): string[] {
-  return [...new Set(events.map((e: any) => e.categorie).filter(Boolean))];
-}
-
 export interface FilterCategory {
   titel: string;
   kleur?: string;
@@ -39,20 +35,21 @@ export function buildFilterCategories(
   return [...eventCats].map((cat) => ({ titel: cat }));
 }
 
-export function formatDatum(datum: string): string {
+export function formatDatum(datum: string, options?: { year?: boolean; tz?: string }): string {
   return new Date(datum).toLocaleDateString('nl-BE', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-    timeZone: 'Europe/Brussels',
+    ...(options?.year && { year: 'numeric' }),
+    timeZone: options?.tz || 'Europe/Brussels',
   });
 }
 
-export function formatTijd(datum: string): string {
+export function formatTijd(datum: string, tz?: string): string {
   const str = new Date(datum).toLocaleTimeString('nl-BE', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Europe/Brussels',
+    timeZone: tz || 'Europe/Brussels',
   });
   return str === '00:00' ? '' : str;
 }

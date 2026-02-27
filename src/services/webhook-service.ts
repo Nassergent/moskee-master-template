@@ -69,35 +69,40 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
   const r = getRedis();
   const tenantId = import.meta.env.SANITY_PROJECT_ID || import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'default';
 
+  // ── Redis is VERPLICHT in productie ──
+  // Zonder Redis geen idempotency → risico op dubbele betalingen.
+  // Op Vercel serverless werkt in-memory fallback niet (elke invocation = nieuw geheugen).
+  // Strategie: weiger webhook gracefully, Mollie herprobeert automatisch.
+  if (!r) {
+    log('error', 'webhook_error', { tenantId, step: 'redis_required' });
+    return { status: 503, body: 'Service temporarily unavailable', logs };
+  }
+
   // ── Step B: Idempotency check ──
-  if (r) {
-    try {
-      const exists = await r.exists(`${tenantId}:processed:${paymentId}`);
-      if (exists) {
-        log('info', 'already_processed', { tenantId });
-        return { status: 200, body: 'Already processed', logs };
-      }
-    } catch (redisErr) {
-      // Redis unavailable → return 500 so Mollie retries
-      log('error', 'webhook_error', { tenantId, step: 'idempotency_check' }, redisErr);
-      return { status: 500, body: 'Redis unavailable', logs };
+  try {
+    const exists = await r.exists(`${tenantId}:processed:${paymentId}`);
+    if (exists) {
+      log('info', 'already_processed', { tenantId });
+      return { status: 200, body: 'Already processed', logs };
     }
+  } catch (redisErr) {
+    // Redis tijdelijk onbereikbaar → 503, Mollie herprobeert
+    log('error', 'webhook_error', { tenantId, step: 'idempotency_check' }, redisErr);
+    return { status: 503, body: 'Service temporarily unavailable', logs };
   }
 
   // ── Step C: Processing lock ──
-  if (r) {
-    try {
-      const lockKey = `${tenantId}:processing:${paymentId}`;
-      const locked = await r.set(lockKey, Date.now(), { nx: true, ex: 300 });
-      if (!locked) {
-        log('info', 'lock_exists', { tenantId });
-        return { status: 200, body: 'Already processing', logs };
-      }
-      log('info', 'lock_acquired', { tenantId });
-    } catch (redisErr) {
-      log('error', 'webhook_error', { tenantId, step: 'lock_acquire' }, redisErr);
-      return { status: 500, body: 'Redis unavailable', logs };
+  try {
+    const lockKey = `${tenantId}:processing:${paymentId}`;
+    const locked = await r.set(lockKey, Date.now(), { nx: true, ex: 300 });
+    if (!locked) {
+      log('info', 'lock_exists', { tenantId });
+      return { status: 200, body: 'Already processing', logs };
     }
+    log('info', 'lock_acquired', { tenantId });
+  } catch (redisErr) {
+    log('error', 'webhook_error', { tenantId, step: 'lock_acquire' }, redisErr);
+    return { status: 503, body: 'Service temporarily unavailable', logs };
   }
 
   try {

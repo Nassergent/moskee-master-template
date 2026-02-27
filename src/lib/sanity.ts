@@ -97,18 +97,6 @@ export async function fetchActueel() {
   }
 }
 
-export async function fetchAllQuotes(categorie: string = 'donaties') {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "quote" && actief == true && categorie == $categorie] {
-      _id, tekst, tekstArabisch, bron
-    }`, { categorie });
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchAllQuotes error:', e);
-    return [];
-  }
-}
-
 export async function fetchQuote(categorie: string = 'donaties') {
   try {
     const result = await sanityClient.fetch(`*[_type == "quote" && actief == true && categorie == $categorie] {

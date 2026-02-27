@@ -122,46 +122,10 @@ export function checkOrigin(request: Request, siteUrl: string): Response | null 
     return null;
   }
 
-  console.log('[CSRF] BLOCKED — origin:', origin, '| host:', host, '| allowed:', allowed);
   return new Response(JSON.stringify({ error: 'Forbidden' }), {
     status: 403,
     headers: { 'Content-Type': 'application/json' },
   });
-}
-
-// ── Idempotency helpers (webhook deduplication) ──
-
-// Tenant prefix voor multi-tenant Redis isolatie
-const tenantId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'default';
-
-const processedPayments = new Map<string, number>();
-
-/**
- * Check of een payment al is verwerkt. Gebruikt Redis (productie) of in-memory (dev).
- * Redis keys zijn tenant-prefixed om cross-tenant collisions te voorkomen.
- * Returns true als het payment NIEUW is en verwerkt mag worden.
- * Returns false als het al verwerkt is (skip).
- */
-export async function claimPayment(paymentId: string): Promise<boolean> {
-  const key = `${tenantId}:processed:${paymentId}`;
-
-  // Redis: atomic SET NX met 24h TTL
-  if (redis) {
-    const result = await redis.set(key, Date.now(), { nx: true, ex: 86400 });
-    return result !== null;
-  }
-
-  // In-memory fallback (dev)
-  if (processedPayments.has(paymentId)) return false;
-  processedPayments.set(paymentId, Date.now());
-
-  // Cleanup: verwijder entries ouder dan 24 uur
-  const cutoff = Date.now() - 86_400_000;
-  for (const [id, ts] of processedPayments) {
-    if (ts < cutoff) processedPayments.delete(id);
-  }
-
-  return true;
 }
 
 /**

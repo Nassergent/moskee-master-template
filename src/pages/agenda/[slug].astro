@@ -5,6 +5,7 @@ import AddToCalendar from '../../components/AddToCalendar.astro';
 import PortableText from '../../components/PortableText.astro';
 import { fetchAgendaEvent, fetchSettings, urlFor } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
+import { formatDatum, formatTijd } from '../../lib/logic/agenda-utils';
 import { sanitizeAlt } from '../../lib/logic/seo-utils';
 
 const { slug } = Astro.params;
@@ -14,19 +15,9 @@ if (!event) return Astro.redirect('/agenda');
 const settings = await fetchSettings();
 const tz = settings?.timezone || 'Europe/Brussels';
 
-function formatDatum(datum: string): string {
-  return new Date(datum).toLocaleDateString('nl-BE', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-    timeZone: tz,
-  });
-}
-
-function formatTijd(datum: string): string {
-  const str = new Date(datum).toLocaleTimeString('nl-BE', {
-    hour: '2-digit', minute: '2-digit', timeZone: tz,
-  });
-  return str === '00:00' ? '' : str;
-}
+// Wrapper functies met detail-pagina opmaak (jaar + dynamische timezone)
+const fmtDatum = (d: string) => formatDatum(d, { year: true, tz });
+const fmtTijd = (d: string) => formatTijd(d, tz);
 
 // Topic Hub: link naar hoofdartikel als dit evenement eraan gekoppeld is
 const parentHub = event.onderwerpHub;
@@ -107,10 +98,10 @@ const eventSchema = JSON.stringify({
             </div>
             <div>
               <p class="text-xs text-neutral-400 uppercase tracking-wider mb-0.5">Datum & Tijd</p>
-              <p class="font-medium text-neutral-800">{formatDatum(event.startDatum)}</p>
-              {formatTijd(event.startDatum) && (
+              <p class="font-medium text-neutral-800">{fmtDatum(event.startDatum)}</p>
+              {fmtTijd(event.startDatum) && (
                 <p class="text-sm text-accent font-semibold">
-                  {formatTijd(event.startDatum)}{event.eindDatum && formatTijd(event.eindDatum) ? ` – ${formatTijd(event.eindDatum)}` : ''}
+                  {fmtTijd(event.startDatum)}{event.eindDatum && fmtTijd(event.eindDatum) ? ` – ${fmtTijd(event.eindDatum)}` : ''}
                 </p>
               )}
             </div>
