@@ -168,8 +168,7 @@ export async function fetchAllActiveProjectTotals() {
 export async function fetchHomePage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "homePage"][0]{
-      heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur,
-      downloadTitel, downloadBeschrijving, downloadBestand, "downloadUrl": downloadBestand.asset->url
+      heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur
     }`);
     return result || null;
   } catch (e) {
@@ -185,10 +184,10 @@ const CARD_PROJECTION = `{
   komendeDatumsFallback[]{ naam, naamArabisch, datum },
   donatieProject->{ _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, prijsPerEenheid, eenheid, actief },
   donatieCtaLabelOverride,
-  downloadBron, eigenDownloadTitel, eigenDownloadBeschrijving,
-  "eigenDownloadAfbeeldingUrl": eigenDownloadAfbeelding.asset->url,
-  "eigenDownloadBestandUrl": eigenDownloadBestand.asset->url,
-  eigenDownloadCtaLabel,
+  downloadTitel, downloadBeschrijving,
+  "downloadAfbeeldingUrl": downloadAfbeelding.asset->url,
+  "downloadBestandUrl": downloadBestand.asset->url,
+  downloadCtaLabel,
   aangepastTitel, aangepastBeschrijving, aangepastCtaLabel, aangepastCtaUrl,
   "aangepastAfbeeldingUrl": aangepastAfbeelding.asset->url
 }`;

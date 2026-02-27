@@ -61,29 +61,6 @@ export const homePage = defineType({
       of: [{ type: 'string' }],
       description: 'Welkomstwoorden in verschillende talen (bijv. "Allen Welkom", "All Welcome")',
     }),
-    // ── Document Download (homepage) ──
-    defineField({
-      name: 'downloadTitel',
-      title: 'Download Kaart — Titel',
-      type: 'string',
-      description: 'Titel van het document (bijv. "Ramadan Programma 2026", "Gebedskalender")',
-    }),
-    defineField({
-      name: 'downloadBeschrijving',
-      title: 'Download Kaart — Beschrijving',
-      type: 'text',
-      rows: 2,
-      description: 'Korte beschrijving (bijv. "Download het volledige programma voor de heilige maand")',
-    }),
-    defineField({
-      name: 'downloadBestand',
-      title: 'Download Kaart — Afbeelding',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-      description: 'Upload een afbeelding (bijv. Ramadan Programma poster). Als dit leeg is, wordt de downloadkaart niet getoond.',
-    }),
   ],
   preview: {
     prepare() {

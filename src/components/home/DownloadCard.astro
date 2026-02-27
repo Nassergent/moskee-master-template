@@ -2,9 +2,7 @@
 /**
  * DownloadCard.astro — Document download met preview lightbox
  *
- * Data bronnen:
- * 1. downloadBron === 'homePage' → leest uit homePage singleton (pass-through)
- * 2. downloadBron === 'eigen' → eigen velden in homeCards
+ * Alle data komt direct uit de homeCards card-velden.
  */
 import { resolveDownloadImage, extractFileName } from '../../lib/logic/media-utils';
 import { sanitizeAlt } from '../../lib/logic/seo-utils';
@@ -12,47 +10,23 @@ import { sanitizeAlt } from '../../lib/logic/seo-utils';
 interface Props {
   card: any;
   delay?: number;
-  homePageDownload?: {
-    downloadTitel?: string;
-    downloadBeschrijving?: string;
-    downloadUrl?: string;
-    downloadBestand?: any;
-  };
 }
 
-const { card, delay = 0, homePageDownload } = Astro.props;
+const { card, delay = 0 } = Astro.props;
 
-// Resolve data source
-let titel: string | undefined;
-let beschrijving: string | undefined;
-let downloadUrl: string | undefined;
-let downloadBestand: any;
-let ctaLabel = 'Download';
-
-let eigenAfbeeldingUrl: string | undefined;
-
-if (card.downloadBron === 'eigen') {
-  titel = card.eigenDownloadTitel;
-  beschrijving = card.eigenDownloadBeschrijving;
-  downloadUrl = card.eigenDownloadBestandUrl;
-  eigenAfbeeldingUrl = card.eigenDownloadAfbeeldingUrl;
-  downloadBestand = null;
-  ctaLabel = card.eigenDownloadCtaLabel || 'Download';
-} else {
-  // Default: homePage data
-  titel = homePageDownload?.downloadTitel;
-  beschrijving = homePageDownload?.downloadBeschrijving;
-  downloadUrl = homePageDownload?.downloadUrl;
-  downloadBestand = homePageDownload?.downloadBestand;
-}
+const titel = card.downloadTitel;
+const beschrijving = card.downloadBeschrijving;
+const downloadUrl = card.downloadBestandUrl;
+const afbeeldingUrl = card.downloadAfbeeldingUrl;
+const ctaLabel = card.downloadCtaLabel || 'Download';
 
 // Skip if no title or no downloadable content
-if (!titel || !(downloadBestand || downloadUrl)) return;
+if (!titel || !downloadUrl) return;
 
-// Eigen preview afbeelding heeft voorrang op bestand-detectie
-const { hasImage, imageUrl: downloadImageUrl, imageUrlLarge: downloadImageUrlLarge } = eigenAfbeeldingUrl
-  ? { hasImage: true, imageUrl: eigenAfbeeldingUrl, imageUrlLarge: eigenAfbeeldingUrl }
-  : resolveDownloadImage(downloadBestand, downloadUrl);
+// Preview afbeelding heeft voorrang op bestand-URL detectie
+const { hasImage, imageUrl: downloadImageUrl, imageUrlLarge: downloadImageUrlLarge } = afbeeldingUrl
+  ? { hasImage: true, imageUrl: afbeeldingUrl, imageUrlLarge: afbeeldingUrl }
+  : resolveDownloadImage(null, downloadUrl);
 const downloadFileName = extractFileName(downloadUrl);
 const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
 

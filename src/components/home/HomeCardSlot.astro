@@ -16,17 +16,10 @@ interface Props {
   islamicDaysData?: any[];
   /** Mosque name for Google Calendar */
   mosqueName?: string;
-  /** Download data from homePage singleton (for download variant with downloadBron=homePage) */
-  homePageDownload?: {
-    downloadTitel?: string;
-    downloadBeschrijving?: string;
-    downloadUrl?: string;
-    downloadBestand?: any;
-  };
   locale?: string;
 }
 
-const { card, delay = 0, islamicDaysData, mosqueName, homePageDownload, locale = 'nl-BE' } = Astro.props;
+const { card, delay = 0, islamicDaysData, mosqueName, locale = 'nl-BE' } = Astro.props;
 
 // Skip rendering if card is disabled or has no variant
 if (!card?.ingeschakeld || !card?.variant) return;
@@ -41,7 +34,7 @@ if (!card?.ingeschakeld || !card?.variant) return;
 )}
 
 {card.variant === 'download' && (
-  <DownloadCard card={card} delay={delay} homePageDownload={homePageDownload} />
+  <DownloadCard card={card} delay={delay} />
 )}
 
 {card.variant === 'aangepast' && (

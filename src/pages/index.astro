@@ -199,7 +199,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     const defaultCards = {
       card1: { variant: 'evenementCountdown', ingeschakeld: true },
       card2: { variant: 'donatieCampagne', ingeschakeld: false },
-      card3: { variant: 'download', ingeschakeld: true, downloadBron: 'homePage' },
+      card3: { variant: 'download', ingeschakeld: true },
     };
     const src = homeCards || defaultCards;
     const cards = [src.card1, src.card2, src.card3];
@@ -211,12 +211,6 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       : cardCount === 2
         ? 'grid-cols-1 md:grid-cols-2'
         : 'grid-cols-1 max-w-lg mx-auto';
-    const homePageDownload = {
-      downloadTitel: homePage?.downloadTitel,
-      downloadBeschrijving: homePage?.downloadBeschrijving,
-      downloadUrl: homePage?.downloadUrl,
-      downloadBestand: homePage?.downloadBestand,
-    };
     return (
       <section class="py-14 sm:py-20 md:py-24 bg-base-100 text-neutral-900">
         <div class="max-w-[1280px] mx-auto px-6">
@@ -227,7 +221,6 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
                 delay={i * 100}
                 islamicDaysData={islamicDaysData}
                 mosqueName={settings?.mosqueName}
-                homePageDownload={homePageDownload}
                 locale={config.locale}
               />
             ))}

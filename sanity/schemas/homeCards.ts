@@ -90,52 +90,38 @@ const cardSlotFields = (position: string) => [
     hidden: ({ parent }) => parent?.variant !== 'donatieCampagne',
   }),
 
-  // ── Variant: Download (cross-reference homePage of eigen) ──
+  // ── Variant: Download ──
   defineField({
-    name: 'downloadBron',
-    title: 'Download bron',
+    name: 'downloadTitel',
+    title: 'Download titel',
     type: 'string',
-    options: {
-      list: [
-        { title: 'Gebruik data uit Homepage instellingen', value: 'homePage' },
-        { title: 'Eigen download opgeven', value: 'eigen' },
-      ],
-      layout: 'radio',
-    },
-    initialValue: 'homePage',
     hidden: ({ parent }) => parent?.variant !== 'download',
   }),
   defineField({
-    name: 'eigenDownloadTitel',
-    title: 'Download titel',
-    type: 'string',
-    hidden: ({ parent }) => parent?.variant !== 'download' || parent?.downloadBron !== 'eigen',
-  }),
-  defineField({
-    name: 'eigenDownloadBeschrijving',
+    name: 'downloadBeschrijving',
     title: 'Download beschrijving',
     type: 'text',
     rows: 2,
-    hidden: ({ parent }) => parent?.variant !== 'download' || parent?.downloadBron !== 'eigen',
+    hidden: ({ parent }) => parent?.variant !== 'download',
   }),
   defineField({
-    name: 'eigenDownloadAfbeelding',
+    name: 'downloadAfbeelding',
     title: 'Preview afbeelding',
     type: 'image',
-    hidden: ({ parent }) => parent?.variant !== 'download' || parent?.downloadBron !== 'eigen',
+    hidden: ({ parent }) => parent?.variant !== 'download',
   }),
   defineField({
-    name: 'eigenDownloadBestand',
+    name: 'downloadBestand',
     title: 'Bestand (PDF/afbeelding)',
     type: 'file',
-    hidden: ({ parent }) => parent?.variant !== 'download' || parent?.downloadBron !== 'eigen',
+    hidden: ({ parent }) => parent?.variant !== 'download',
   }),
   defineField({
-    name: 'eigenDownloadCtaLabel',
+    name: 'downloadCtaLabel',
     title: 'Knop tekst',
     type: 'string',
     initialValue: 'Download',
-    hidden: ({ parent }) => parent?.variant !== 'download' || parent?.downloadBron !== 'eigen',
+    hidden: ({ parent }) => parent?.variant !== 'download',
   }),
 
   // ── Variant: Aangepast (vrij) ──
