@@ -80,36 +80,15 @@ export async function fetchPrayerTimes() {
 export async function fetchActueel() {
   try {
     const result = await sanityClient.fetch(`*[
-      (_type == "post" && gepubliceerd == true) ||
-      (_type == "service" && actief == true)
+      _type == "post" && gepubliceerd == true
     ] | order(_createdAt desc) [0...3] {
       _id,
       _type,
       _createdAt,
-      "titel": select(
-        _type == "post" => titel,
-        _type == "service" => titel
-      ),
-      "slug": select(
-        _type == "post" => slug.current,
-        _type == "service" => slug.current
-      ),
-      "beschrijving": select(
-        _type == "post" => samenvatting,
-        _type == "service" => beschrijving
-      ),
-      "icoon": select(
-        _type == "post" => "ster-4",
-        _type == "service" => icoon
-      ),
-      "label": select(
-        _type == "post" => "Artikel",
-        _type == "service" => "Dienst"
-      ),
-      "href": select(
-        _type == "post" => "/nieuws/" + slug.current,
-        _type == "service" => "/diensten/" + slug.current
-      )
+      "titel": titel,
+      "slug": slug.current,
+      "beschrijving": samenvatting,
+      "href": "/nieuws/" + slug.current
     }`);
     return result || [];
   } catch (e) {
