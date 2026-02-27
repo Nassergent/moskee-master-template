@@ -117,10 +117,10 @@ const lightboxId = `download-lightbox-${Math.random().toString(36).slice(2, 8)}`
     />
     <button
       data-lightbox-close={lightboxId}
-      class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2"
+      class="absolute top-4 right-4 min-w-[44px] min-h-[44px] flex items-center justify-center bg-black/60 text-white hover:bg-black/80 transition-colors"
       aria-label="Sluiten"
     >
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
