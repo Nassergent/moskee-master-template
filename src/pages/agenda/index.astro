@@ -32,14 +32,14 @@ const categorieen = extractCategories(events);
     {categorieen.length > 1 && (
       <div class="flex flex-wrap gap-2 mb-10 justify-center" id="agenda-filters">
         <button
-          class="agenda-filter-btn active badge px-4 py-1.5 text-sm font-semibold bg-primary text-white cursor-pointer transition-all"
+          class="agenda-filter-btn active badge px-4 py-1.5 min-h-[44px] text-sm font-semibold bg-primary text-white cursor-pointer transition-all"
           data-categorie="alle"
         >
           Alle
         </button>
         {categorieen.map((cat: string) => (
           <button
-            class="agenda-filter-btn badge px-4 py-1.5 text-sm font-semibold bg-neutral-100 text-neutral-600 cursor-pointer transition-all"
+            class="agenda-filter-btn badge px-4 py-1.5 min-h-[44px] text-sm font-semibold bg-neutral-100 text-neutral-600 cursor-pointer transition-all"
             data-categorie={cat}
           >
             {cat}

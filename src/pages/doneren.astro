@@ -2,8 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import DonationCard from '../components/DonationCard.astro';
-import { fetchProjecten, fetchSettings, fetchQuote } from '../lib/sanity';
+import BankQrCard from '../components/ui/donation/BankQrCard.astro';
+import { fetchProjecten, fetchSettings, fetchQuote, urlFor } from '../lib/sanity';
 import { calculateProjectStats } from '../lib/logic/project-utils';
+import { generateEpcQrCode } from '../lib/logic/qr-service';
 
 const projecten = await fetchProjecten();
 const settings = await fetchSettings();
@@ -15,6 +17,26 @@ const { totalRaised, activeCount: activeProjectCount, options: projectOptions } 
   : { totalRaised: 0, activeCount: 0, options: [] };
 
 const showMollie = settings.menuToggles?.showMollie !== false;
+
+// QR tonen = simpel: IBAN bestaat?
+const showQR = !!settings?.iban;
+const cleanIban = settings?.iban?.replace(/\s/g, '').toUpperCase();
+
+// QR genereren (server-side)
+const qrResult = showQR && cleanIban
+  ? await generateEpcQrCode(cleanIban, settings.mosqueName)
+  : null;
+
+// Payconiq met crash protection (F2)
+let payconiqImageUrl: string | undefined;
+try {
+  payconiqImageUrl = settings?.payconiqQr
+    ? urlFor(settings.payconiqQr).url()
+    : undefined;
+} catch (error) {
+  console.error('Payconiq image rendering failed:', error);
+  payconiqImageUrl = undefined;
+}
 ---
 
 <BaseLayout title="Doneren" description="Steun onze moskee met een donatie">
@@ -175,22 +197,35 @@ const showMollie = settings.menuToggles?.showMollie !== false;
         <div class="lg:col-span-3">
           <h2 class="text-2xl font-bold font-heading text-primary mb-4">Overschrijving</h2>
           <p class="text-neutral-500 mb-6">Maak uw donatie over via onderstaande bankgegevens</p>
-          <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
-            <div class="space-y-3">
-              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-                <span class="text-slate-500">Begunstigde</span>
-                <span class="font-medium text-slate-800">{settings.mosqueName}</span>
-              </div>
-              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-                <span class="text-slate-500">IBAN</span>
-                <span class="font-mono font-medium text-slate-800 text-lg">{settings.iban || ''}</span>
-              </div>
-              <div class="flex justify-between items-center py-3">
-                <span class="text-slate-500">Mededeling</span>
-                <span class="font-medium text-slate-800">Donatie + projectnaam</span>
+          {showQR && qrResult?.success ? (
+            <BankQrCard
+              iban={cleanIban!}
+              bankName={settings.mosqueName || ''}
+              qrSvg={qrResult.svg}
+              payconiqImage={payconiqImageUrl}
+            />
+          ) : showQR && cleanIban ? (
+            <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
+              <div class="space-y-3">
+                <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+                  <span class="text-slate-500">Begunstigde</span>
+                  <span class="font-medium text-slate-800">{settings.mosqueName}</span>
+                </div>
+                <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+                  <span class="text-slate-500">IBAN</span>
+                  <span class="font-mono font-medium text-slate-800 text-lg">{cleanIban}</span>
+                </div>
+                <div class="flex justify-between items-center py-3">
+                  <span class="text-slate-500">Mededeling</span>
+                  <span class="font-medium text-slate-800">Donatie + projectnaam</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
+              <p class="text-neutral-500">Geen bankgegevens beschikbaar.</p>
+            </div>
+          )}
         </div>
 
         {hasProjects && (
@@ -220,24 +255,37 @@ const showMollie = settings.menuToggles?.showMollie !== false;
   {showMollie && (
     <Section variant="light-100">
       <div class="max-w-3xl mx-auto">
-        <div class="bg-white border border-neutral-200 text-center p-6 sm:p-8 md:p-10">
-          <h2 class="text-2xl font-bold font-heading mb-2">Overschrijving</h2>
-          <p class="text-sm text-neutral-500 mb-6">Liever via overschrijving? Gebruik onderstaande gegevens.</p>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-              <span class="text-slate-500">Begunstigde</span>
-              <span class="font-medium text-slate-800">{settings.mosqueName}</span>
-            </div>
-            <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-              <span class="text-slate-500">IBAN</span>
-              <span class="font-mono font-medium text-slate-800">{settings.iban || ''}</span>
-            </div>
-            <div class="flex justify-between items-center py-3">
-              <span class="text-slate-500">Mededeling</span>
-              <span class="font-medium text-slate-800">Donatie + projectnaam</span>
+        <h2 class="text-2xl font-bold font-heading text-center mb-2">Overschrijving</h2>
+        <p class="text-sm text-neutral-500 text-center mb-6">Liever via overschrijving? Gebruik onderstaande gegevens.</p>
+        {showQR && qrResult?.success ? (
+          <BankQrCard
+            iban={cleanIban!}
+            bankName={settings.mosqueName || ''}
+            qrSvg={qrResult.svg}
+            payconiqImage={payconiqImageUrl}
+          />
+        ) : showQR && cleanIban ? (
+          <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+                <span class="text-slate-500">Begunstigde</span>
+                <span class="font-medium text-slate-800">{settings.mosqueName}</span>
+              </div>
+              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
+                <span class="text-slate-500">IBAN</span>
+                <span class="font-mono font-medium text-slate-800 text-lg">{cleanIban}</span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="text-slate-500">Mededeling</span>
+                <span class="font-medium text-slate-800">Donatie + projectnaam</span>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div class="bg-white border border-neutral-200 text-center p-6 sm:p-8 md:p-10">
+            <p class="text-neutral-500">Geen bankgegevens beschikbaar.</p>
+          </div>
+        )}
       </div>
     </Section>
   )}
@@ -256,7 +304,7 @@ const showMollie = settings.menuToggles?.showMollie !== false;
 
 <!-- Sticky Mobile CTA — alleen zichtbaar op mobiel als submit knop buiten viewport is -->
 {showMollie && (
-  <div id="sticky-donate-bar" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-primary p-3 hidden lg:!hidden transition-transform">
+  <div id="sticky-donate-bar" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-primary p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] hidden lg:!hidden transition-transform">
     <div class="flex items-center justify-between gap-3 max-w-lg mx-auto">
       <div class="text-sm">
         <span class="font-bold text-primary" id="sticky-amount">&euro;25</span>

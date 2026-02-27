@@ -21,7 +21,7 @@ const { categories } = Astro.props;
         <li>
           <a
             href={`#${categoryToAnchor(cat)}`}
-            class="inline-block px-5 py-2 text-sm font-bold border border-neutral-200 border-l-[3px] border-l-accent bg-white hover:bg-accent hover:text-white transition-all"
+            class="inline-flex items-center px-5 py-2 min-h-[44px] text-sm font-bold border border-neutral-200 border-l-[3px] border-l-accent bg-white hover:bg-accent hover:text-white transition-all"
           >
             {capitalizeCategorie(cat)}
           </a>
