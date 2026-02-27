@@ -202,6 +202,9 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       {actueel.map((item: any) => (
         <a href={item.href} class="group bg-white border border-slate-200 p-6 transition-all hover:bg-primary-light/40" style="border-left: 3px solid #8b6843">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-xs font-semibold uppercase tracking-widest bg-primary text-white px-3 py-1 badge rounded-full">{item.label}</span>
+          </div>
           <h3 class="font-heading text-lg font-bold text-primary group-hover:underline group-hover:decoration-accent transition-colors mb-2">
             {item.titel}
           </h3>
