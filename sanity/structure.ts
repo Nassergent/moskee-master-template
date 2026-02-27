@@ -112,14 +112,14 @@ function statusFilter(S: StructureBuilder, status: string, title: string) {
     );
 }
 
-// ── Artikelen & Updates met Aan/Uit secties ──
+// ── Nieuws uit de moskee met Aan/Uit secties ──
 function nieuwsManagement(S: StructureBuilder) {
   return S.listItem()
-    .title('Artikelen & Updates')
+    .title('Nieuws uit de moskee')
     .icon(() => '📰')
     .child(
       S.list()
-        .title('Artikelen & Updates')
+        .title('Nieuws uit de moskee')
         .items([
           S.listItem()
             .title('🟢 Gepubliceerd')
