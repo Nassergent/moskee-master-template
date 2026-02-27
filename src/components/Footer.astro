@@ -148,7 +148,7 @@ const { settings } = Astro.props;
         </p>
         <div class="bg-white/5 p-4 border border-white/10 mb-4">
           <p class="text-[10px] uppercase mb-1 tracking-wider" class="text-accent">IBAN Nummer</p>
-          <p class="text-sm font-mono text-white tracking-wider">{settings?.iban || ''}</p>
+          <p class="text-sm font-mono text-white tracking-wider break-all">{settings?.iban || ''}</p>
         </div>
         <p class="text-[10px] text-white/60">
           KVK/VZW: {settings?.legal?.kvk || '---'}
