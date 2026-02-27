@@ -106,24 +106,28 @@ const lightboxId = `download-lightbox-${Math.random().toString(36).slice(2, 8)}`
 {hasImage && downloadImageUrlLarge && (
   <div
     id={lightboxId}
-    class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-zoom-out"
+    class="fixed inset-0 z-[999] hidden bg-black/80 backdrop-blur-sm cursor-zoom-out"
     role="dialog"
     aria-label="Afbeelding vergroten"
   >
-    <img
-      src={downloadImageUrlLarge}
-      alt={sanitizeAlt(titel)}
-      class="max-w-full max-h-[90vh] object-contain animate-fade-in-up"
-    />
+    {/* Sluitknop — fixed positie, altijd bovenop */}
     <button
       data-lightbox-close={lightboxId}
-      class="absolute top-4 right-4 z-10 min-w-[44px] min-h-[44px] flex items-center justify-center bg-black/70 text-white hover:bg-black/90 transition-colors border border-white/30"
+      class="fixed top-4 right-4 z-[1000] min-w-[48px] min-h-[48px] flex items-center justify-center bg-black/80 text-white border-2 border-white/50 hover:bg-white hover:text-black transition-colors"
       aria-label="Sluiten"
     >
       <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
+    {/* Afbeelding gecentreerd */}
+    <div class="w-full h-full flex items-center justify-center p-4 pt-16">
+      <img
+        src={downloadImageUrlLarge}
+        alt={sanitizeAlt(titel)}
+        class="max-w-full max-h-[85vh] object-contain animate-fade-in-up"
+      />
+    </div>
   </div>
 )}
 
@@ -141,18 +145,19 @@ const lightboxId = `download-lightbox-${Math.random().toString(36).slice(2, 8)}`
 
       trigger.addEventListener('click', () => {
         lightbox.classList.remove('hidden');
-        lightbox.classList.add('flex');
         document.body.style.overflow = 'hidden';
       });
 
       const closeLightbox = () => {
         lightbox.classList.add('hidden');
-        lightbox.classList.remove('flex');
         document.body.style.overflow = '';
       };
 
       lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
+        // Sluit bij klik op achtergrond (niet op de afbeelding zelf)
+        if (e.target === lightbox || (e.target as HTMLElement).closest('[data-lightbox-close]')) return;
+        const img = lightbox.querySelector('img');
+        if (e.target !== img) closeLightbox();
       });
       closeBtn?.addEventListener('click', closeLightbox);
       document.addEventListener('keydown', (e) => {
