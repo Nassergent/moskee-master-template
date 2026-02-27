@@ -46,7 +46,7 @@ const eventSchema = JSON.stringify({
 });
 ---
 
-<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`} ogImage={event.afbeelding ? urlFor(event.afbeelding).width(1200).height(630).fit('crop').url() : undefined} breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Agenda', href: '/agenda' }, { name: event.titel, href: `/agenda/${slug}` }]}>
+<BaseLayout title={event.titel} description={event.beschrijving || `${event.titel} bij ${settings.mosqueName}.`} ogImage={event.afbeelding ? urlFor(event.afbeelding).width(1200).height(630).fit('crop').url() : undefined} breadcrumbs={[{ name: 'Home', href: '/' }, { name: 'Activiteiten', href: '/agenda' }, { name: event.titel, href: `/agenda/${slug}` }]}>
   <script type="application/ld+json" set:html={eventSchema} />
 
   <!-- Page Header -->

@@ -366,14 +366,14 @@ function projectenManagement(S: StructureBuilder) {
     );
 }
 
-// ── Agenda met Aan/Uit secties ──
+// ── Activiteiten met Aan/Uit secties ──
 function agendaManagement(S: StructureBuilder) {
   return S.listItem()
-    .title('Agenda')
+    .title('Activiteiten')
     .icon(() => '📅')
     .child(
       S.list()
-        .title('Agenda')
+        .title('Activiteiten')
         .items([
           S.listItem()
             .title('🟢 Actief op website')

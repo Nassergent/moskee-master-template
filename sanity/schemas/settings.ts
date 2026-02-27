@@ -103,20 +103,8 @@ export const settings = defineType({
           initialValue: true,
         }),
         defineField({
-          name: 'showNews',
-          title: 'Toon Nieuws (Artikelen)',
-          type: 'boolean',
-          initialValue: true,
-        }),
-        defineField({
           name: 'showAbout',
           title: 'Toon Over Ons',
-          type: 'boolean',
-          initialValue: true,
-        }),
-        defineField({
-          name: 'showAgenda',
-          title: 'Toon Agenda',
           type: 'boolean',
           initialValue: true,
         }),
