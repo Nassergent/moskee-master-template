@@ -178,6 +178,36 @@ export async function fetchHomePage() {
   }
 }
 
+// Card projectie — herbruikt voor card1, card2, card3
+const CARD_PROJECTION = `{
+  ingeschakeld, variant,
+  evenementTitel, evenementTitelArabisch, evenementBeschrijving, evenementDatum, agendaLink,
+  komendeDatumsFallback[]{ naam, naamArabisch, datum },
+  donatieProject->{ _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, prijsPerEenheid, eenheid, actief },
+  donatieCtaLabelOverride,
+  downloadBron, eigenDownloadTitel, eigenDownloadBeschrijving,
+  "eigenDownloadAfbeeldingUrl": eigenDownloadAfbeelding.asset->url,
+  "eigenDownloadBestandUrl": eigenDownloadBestand.asset->url,
+  eigenDownloadCtaLabel,
+  aangepastTitel, aangepastBeschrijving, aangepastCtaLabel, aangepastCtaUrl,
+  "aangepastAfbeeldingUrl": aangepastAfbeelding.asset->url
+}`;
+
+export async function fetchHomeCards() {
+  try {
+    const result = await freshClient.fetch(`*[_id == "homeCards"][0]{
+      ingeschakeld,
+      card1 ${CARD_PROJECTION},
+      card2 ${CARD_PROJECTION},
+      card3 ${CARD_PROJECTION}
+    }`);
+    return result || null;
+  } catch (e) {
+    console.error('Sanity fetchHomeCards error:', e);
+    return null;
+  }
+}
+
 export async function fetchAboutPage() {
   try {
     const result = await sanityClient.fetch(`*[_id == "aboutPage"][0]{

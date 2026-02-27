@@ -1,0 +1,153 @@
+---
+/**
+ * EvenementCountdownCard.astro — Islamitische countdown + komende datums
+ *
+ * Data bronnen (prioriteit):
+ * 1. Aladhan API via islamicDaysData (automatisch)
+ * 2. CMS fallback via card.komendeDatumsFallback (handmatig)
+ * 3. CMS override via card.evenementTitel/Datum (handmatig hoofdevenement)
+ */
+import { generateGoogleCalendarUrl } from '../../lib/hijri';
+
+interface Props {
+  card: any;
+  delay?: number;
+  islamicDaysData?: any[];
+  mosqueName?: string;
+}
+
+const { card, delay = 0, islamicDaysData = [], mosqueName } = Astro.props;
+
+const BETEKENIS: Record<string, string> = {
+  'Start Ramadan': 'De heilige vastenmaand waarin de Quran werd geopenbaard',
+  'Laylat al-Qadr': 'De Nacht van de Bestemming — beter dan duizend maanden',
+  'Eid al-Fitr': 'Het feest van het verbreken van het vasten',
+  'Eid al-Adha': 'Het offerfeest — herdenking van Ibrahim\'s overgave',
+  'Dag van Arafah': 'De belangrijkste dag van de Hadj',
+  'Ashura': 'Dag van bezinning en vasten',
+  "Isra' & Mi'raj": 'De nachtelijke reis en hemelvaart van de Profeet ﷺ',
+};
+
+// Determine primary event: CMS override OR first from API
+const apiUpcoming = islamicDaysData.length > 0 ? islamicDaysData[0] : null;
+
+// CMS override: if evenementTitel + evenementDatum are set, use those
+const hasCmsOverride = !!(card.evenementTitel && card.evenementDatum);
+const cmsDate = hasCmsOverride ? new Date(card.evenementDatum) : null;
+const cmsDaysUntil = cmsDate ? Math.ceil((cmsDate.getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24)) : null;
+
+const upcoming = hasCmsOverride
+  ? {
+      name: card.evenementTitel,
+      nameAr: card.evenementTitelArabisch || '',
+      gregorianDate: card.evenementDatum,
+      daysUntil: cmsDaysUntil!,
+    }
+  : apiUpcoming;
+
+// "Daarna" list: API data or CMS fallback
+const nextDays = !hasCmsOverride && islamicDaysData.length > 1
+  ? islamicDaysData.slice(1)
+  : (card.komendeDatumsFallback || []).map((d: any) => {
+      const dt = new Date(d.datum);
+      return {
+        name: d.naam,
+        nameAr: d.naamArabisch || '',
+        gregorianDate: d.datum,
+        daysUntil: Math.ceil((dt.getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24)),
+      };
+    }).filter((d: any) => d.daysUntil >= 0);
+
+if (!upcoming) return;
+
+const betekenis = hasCmsOverride
+  ? (card.evenementBeschrijving || '')
+  : (BETEKENIS[upcoming.name] || '');
+
+const formattedDate = new Date(upcoming.gregorianDate).toLocaleDateString('nl-BE', {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+});
+
+const calendarUrl = card.agendaLink || generateGoogleCalendarUrl({
+  titel: upcoming.name,
+  startDatum: `${upcoming.gregorianDate}T00:00:00`,
+  eindDatum: `${upcoming.gregorianDate}T23:59:00`,
+  beschrijving: `${upcoming.nameAr} — ${betekenis}`,
+  mosqueName: mosqueName || undefined,
+});
+---
+
+<div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col overflow-hidden" style={delay ? `animation-delay: ${delay}ms` : undefined}>
+  <div class="p-7 flex-1">
+    <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-1">
+      {upcoming.name}
+    </h2>
+    {upcoming.nameAr && (
+      <p class="font-arabic text-base text-neutral-400 mb-3" lang="ar" dir="rtl">
+        {upcoming.nameAr}
+      </p>
+    )}
+    {betekenis && (
+      <p class="text-neutral-600 text-sm leading-relaxed mb-4">
+        {betekenis}
+      </p>
+    )}
+  </div>
+  <div class="px-7 pb-7 pt-0 border-t border-neutral-100">
+    <div class="flex items-end justify-between pt-5">
+      <div>
+        {upcoming.daysUntil === 0 ? (
+          <span class="text-xl font-bold text-accent">Vandaag</span>
+        ) : upcoming.daysUntil > 0 ? (
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl md:text-5xl font-black text-primary leading-none">
+              {upcoming.daysUntil}
+            </span>
+            <span class="text-sm font-semibold text-neutral-500">
+              {upcoming.daysUntil === 1 ? 'dag' : 'dagen'}
+            </span>
+          </div>
+        ) : null}
+        <p class="text-xs text-neutral-400 mt-1 capitalize">{formattedDate}</p>
+      </div>
+      <a
+        href={calendarUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-primary transition-colors"
+        title="Voeg toe aan Google Agenda"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+        </svg>
+        Agenda
+      </a>
+    </div>
+  </div>
+
+  {/* Vooruitblik: volgende datums */}
+  {nextDays.length > 0 && (
+    <div class="px-7 pb-5 space-y-0">
+      <p class="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-2">Daarna</p>
+      {nextDays.map((day: any) => {
+        const dayDate = new Date(day.gregorianDate).toLocaleDateString('nl-BE', {
+          day: 'numeric', month: 'short',
+        });
+        return (
+          <div class="flex items-center justify-between py-2 border-t border-neutral-100">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-sm font-bold text-primary truncate">{day.name}</span>
+              {day.nameAr && (
+                <span class="font-arabic text-xs text-neutral-300 shrink-0" lang="ar" dir="rtl">{day.nameAr}</span>
+              )}
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <span class="text-xs text-neutral-400">{dayDate}</span>
+              <span class="text-sm font-black text-primary">{day.daysUntil}<span class="text-[10px] font-semibold text-neutral-400 ml-0.5">d</span></span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</div>

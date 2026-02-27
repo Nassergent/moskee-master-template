@@ -1,0 +1,88 @@
+---
+/**
+ * DonatieCampagneCard.astro — Donatie project card met live progressiebalk
+ *
+ * Data komt via reference naar bestaand `project` document (card.donatieProject).
+ * Behoudt huidigBedragCents tracking voor real-time voortgang.
+ */
+import { calculateDonationProgress } from '../../lib/logic/donation-utils';
+import { urlFor } from '../../lib/sanity';
+import { sanitizeAlt } from '../../lib/logic/seo-utils';
+
+interface Props {
+  card: any;
+  delay?: number;
+}
+
+const { card, delay = 0 } = Astro.props;
+const project = card.donatieProject;
+
+// Skip if no project linked or project inactive
+if (!project?.titel) return;
+
+const progress = project.doelbedrag
+  ? calculateDonationProgress(project.huidigBedragCents || 0, project.doelbedrag)
+  : null;
+
+const ctaLabel = card.donatieCtaLabelOverride || 'Steun dit doel';
+---
+
+<div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col overflow-hidden" style={delay ? `animation-delay: ${delay}ms` : undefined}>
+  {project.afbeelding && (
+    <img
+      src={urlFor(project.afbeelding).width(600).height(250).fit('crop').url()}
+      alt={sanitizeAlt(project.titel)}
+      class="w-full aspect-[12/5] object-cover"
+      width={600}
+      height={250}
+      loading="lazy"
+    />
+  )}
+  <div class="p-7 flex-1">
+    <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-2">
+      {project.titel}
+    </h2>
+    {project.beschrijving && (
+      <p class="text-neutral-600 text-sm leading-relaxed mb-4">
+        {project.beschrijving}
+      </p>
+    )}
+
+    {/* Prijs per eenheid */}
+    {project.prijsPerEenheid && project.eenheid && (
+      <p class="text-sm font-semibold text-accent mb-4">
+        &euro;{project.prijsPerEenheid} per {project.eenheid}
+      </p>
+    )}
+
+    {/* Voortgangsbalk */}
+    {progress && project.doelbedrag && (
+      <div>
+        <div class="flex justify-between text-xs text-neutral-500 mb-1.5">
+          <span>&euro;{progress.huidigEuros.toLocaleString('nl-BE', { minimumFractionDigits: 2 })}</span>
+          <span>&euro;{project.doelbedrag.toLocaleString('nl-BE')}</span>
+        </div>
+        <div class:list={['w-full h-2.5 overflow-hidden', progress.isUrgent ? 'bg-accent/20' : 'bg-accent/10']}>
+          <div
+            class:list={['h-full transition-all duration-500', progress.isUrgent ? 'bg-accent animate-pulse' : 'bg-accent']}
+            style={`width: ${progress.percentage}%`}
+          />
+        </div>
+        <p class="text-xs text-neutral-400 mt-1.5">{progress.percentage}% bereikt</p>
+      </div>
+    )}
+  </div>
+  <div class="px-7 pb-7 pt-0 border-t border-neutral-100">
+    <div class="pt-5">
+      <a
+        href="/doneren"
+        class="inline-flex items-center gap-2 px-6 py-2.5 min-h-[44px] bg-accent text-white font-bold text-sm hover:bg-accent-hover active:brightness-90 transition-all w-full sm:w-auto justify-center sm:justify-start"
+      >
+        {ctaLabel}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>

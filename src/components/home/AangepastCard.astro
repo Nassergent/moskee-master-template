@@ -1,0 +1,56 @@
+---
+/**
+ * AangepastCard.astro — Vrije card met optionele afbeelding + titel + tekst + CTA
+ */
+import { urlFor } from '../../lib/sanity';
+import { sanitizeAlt } from '../../lib/logic/seo-utils';
+
+interface Props {
+  card: any;
+  delay?: number;
+}
+
+const { card, delay = 0 } = Astro.props;
+
+if (!card.aangepastTitel) return;
+
+const imageUrl = card.aangepastAfbeeldingUrl || null;
+---
+
+<div class="bg-white border border-neutral-200 border-l-[3px] border-l-accent animate-fade-in-up flex flex-col overflow-hidden" style={delay ? `animation-delay: ${delay}ms` : undefined}>
+  {imageUrl && (
+    <img
+      src={imageUrl}
+      alt={sanitizeAlt(card.aangepastTitel)}
+      class="w-full aspect-[12/5] object-cover"
+      width={600}
+      height={250}
+      loading="lazy"
+    />
+  )}
+  <div class="p-7 flex-1">
+    <h2 class="font-heading text-xl md:text-2xl font-bold text-primary mb-2">
+      {card.aangepastTitel}
+    </h2>
+    {card.aangepastBeschrijving && (
+      <p class="text-neutral-600 text-sm leading-relaxed">
+        {card.aangepastBeschrijving}
+      </p>
+    )}
+  </div>
+  {card.aangepastCtaLabel && card.aangepastCtaUrl && (
+    <div class="px-7 pb-7 pt-0 border-t border-neutral-100">
+      <div class="pt-5">
+        <a
+          href={card.aangepastCtaUrl}
+          class="inline-flex items-center gap-2 px-6 py-2.5 min-h-[44px] bg-accent text-white font-bold text-sm hover:bg-accent-hover active:brightness-90 transition-all w-full sm:w-auto justify-center sm:justify-start"
+        >
+          {card.aangepastCtaLabel}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  )}
+</div>

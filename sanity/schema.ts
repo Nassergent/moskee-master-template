@@ -6,6 +6,7 @@ import { post } from './schemas/post';
 import { etiquette } from './schemas/etiquette';
 import { quote } from './schemas/quote';
 import { homePage } from './schemas/homePage';
+import { homeCards } from './schemas/homeCards';
 import { aboutPage } from './schemas/aboutPage';
 import { contactPage } from './schemas/contactPage';
 import { volunteer } from './schemas/volunteer';
@@ -20,6 +21,7 @@ export const schema = {
   types: [
     settings,
     homePage,
+    homeCards,
     prayerTimes,
     service,
     project,

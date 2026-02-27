@@ -1,7 +1,7 @@
 import type { StructureBuilder } from 'sanity/structure';
 
 // Singleton types — no "+" button, single document only
-const singletonTypes = ['settings', 'homePage', 'prayerTimes', 'aboutPage', 'contactPage', 'ramadanOverride', 'janazahProcedure'];
+const singletonTypes = ['settings', 'homePage', 'homeCards', 'prayerTimes', 'aboutPage', 'contactPage', 'ramadanOverride', 'janazahProcedure'];
 
 function singleton(S: StructureBuilder, typeName: string, title: string, icon: string) {
   return S.listItem()
@@ -469,6 +469,7 @@ export function structure(S: StructureBuilder) {
     .items([
       singleton(S, 'settings', 'Site Instellingen', '⚙️'),
       singleton(S, 'homePage', 'Home Pagina', '🏠'),
+      singleton(S, 'homeCards', 'Home Kaarten', '🃏'),
       singleton(S, 'prayerTimes', 'Gebedstijden', '🕒'),
 
       S.divider(),

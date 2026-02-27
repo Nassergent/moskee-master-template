@@ -1,32 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import HomeActionCards from '../components/HomeActionCards.astro';
+import HomeCardSlot from '../components/home/HomeCardSlot.astro';
 import PrayerManager from '../components/PrayerManager.astro';
 import JanazahBanner from '../components/ui/janazah/JanazahBanner.astro';
-import { fetchActueel, fetchSettings, fetchHomePage, fetchUpcomingAgendaEvents, fetchProjecten, fetchPrayerTimes, fetchActiveJanazahAlert, urlFor } from '../lib/sanity';
+import { fetchActueel, fetchSettings, fetchHomePage, fetchHomeCards, fetchUpcomingAgendaEvents, fetchPrayerTimes, fetchActiveJanazahAlert, urlFor } from '../lib/sanity';
 import { fetchIslamicDays } from '../lib/hijri';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 import { computePrayerTimesFromSanity } from '../lib/logic/prayer-compute';
 import { isJanazahActive } from '../lib/logic/janazah';
 
-const [settings, actueel, homePage, agendaEvents, projecten, prayer, janazahAlert] = await Promise.all([
+const [settings, actueel, homePage, homeCards, agendaEvents, prayer, janazahAlert] = await Promise.all([
   fetchSettings(),
   fetchActueel(),
   fetchHomePage(),
+  fetchHomeCards(),
   fetchUpcomingAgendaEvents(3),
-  fetchProjecten(),
   fetchPrayerTimes(),
   fetchActiveJanazahAlert(),
 ]);
 
-// Islamic days for HomeActionCards — fetched at page level
+// Islamic days for countdown card — fetched at page level
 const islamicDaysData = await fetchIslamicDays(settings?.hijriAdjustment ?? 0, settings?.islamicDays);
 
 // Prayer times for PrayerManager — computed at page level
 const { computedTimes, prayerStatus } = computePrayerTimesFromSanity(prayer);
-const eersteProject = projecten?.find((p: any) => p.toonOpHomepage) || (projecten?.length > 0 ? projecten[0] : null);
-
 // Hero data: alleen uit homePage singleton
 const heroImageUrl = homePage?.heroImage
   ? urlFor(homePage.heroImage).width(800).height(500).fit('crop').url()
@@ -192,16 +190,48 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </Section>
   )}
 
-  <!-- Sectie 3: Actiekaarten — Countdown + Doneer + Download -->
-  <HomeActionCards
-    islamicDaysData={islamicDaysData}
-    mosqueName={settings?.mosqueName}
-    project={eersteProject}
-    downloadTitel={homePage?.downloadTitel}
-    downloadBeschrijving={homePage?.downloadBeschrijving}
-    downloadUrl={homePage?.downloadUrl}
-    downloadBestand={homePage?.downloadBestand}
-  />
+  <!-- Sectie 3: Actiekaarten — CMS-bestuurbaar 3-slot systeem -->
+  {(homeCards?.ingeschakeld ?? true) && (() => {
+    // Fleet fallback: als homeCards document niet bestaat, toon defaults
+    const defaultCards = {
+      card1: { variant: 'evenementCountdown', ingeschakeld: true },
+      card2: { variant: 'donatieCampagne', ingeschakeld: false },
+      card3: { variant: 'download', ingeschakeld: true, downloadBron: 'homePage' },
+    };
+    const src = homeCards || defaultCards;
+    const cards = [src.card1, src.card2, src.card3];
+    const activeCards = cards.filter((c: any) => c?.ingeschakeld && c?.variant);
+    const cardCount = activeCards.length;
+    if (cardCount === 0) return null;
+    const gridClass = cardCount === 3
+      ? 'grid-cols-1 md:grid-cols-3'
+      : cardCount === 2
+        ? 'grid-cols-1 md:grid-cols-2'
+        : 'grid-cols-1 max-w-lg mx-auto';
+    const homePageDownload = {
+      downloadTitel: homePage?.downloadTitel,
+      downloadBeschrijving: homePage?.downloadBeschrijving,
+      downloadUrl: homePage?.downloadUrl,
+      downloadBestand: homePage?.downloadBestand,
+    };
+    return (
+      <section class="py-14 sm:py-20 md:py-24 bg-base-100 text-neutral-900">
+        <div class="max-w-[1280px] mx-auto px-6">
+          <div class={`grid ${gridClass} gap-6`}>
+            {cards.map((card: any, i: number) => (
+              <HomeCardSlot
+                card={card}
+                delay={i * 100}
+                islamicDaysData={islamicDaysData}
+                mosqueName={settings?.mosqueName}
+                homePageDownload={homePageDownload}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  })()}
 
   <!-- Sectie 4: Light-50 — Nieuws uit de moskee (conditioneel via CMS) -->
   {toonActueel && <Section variant="light-50">
