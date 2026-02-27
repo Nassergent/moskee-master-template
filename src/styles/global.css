@@ -117,7 +117,7 @@ h2.text-center::after {
 
 /* ─── Flat Design Overrides (via @layer for correct specificity) ─── */
 @layer base {
-  *:not(.badge):not([class*="rounded-full"]) {
+  * {
     border-radius: 0;
   }
 
