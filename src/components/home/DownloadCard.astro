@@ -29,11 +29,14 @@ let downloadUrl: string | undefined;
 let downloadBestand: any;
 let ctaLabel = 'Download';
 
+let eigenAfbeeldingUrl: string | undefined;
+
 if (card.downloadBron === 'eigen') {
   titel = card.eigenDownloadTitel;
   beschrijving = card.eigenDownloadBeschrijving;
   downloadUrl = card.eigenDownloadBestandUrl;
-  downloadBestand = null; // eigen uses file, not image
+  eigenAfbeeldingUrl = card.eigenDownloadAfbeeldingUrl;
+  downloadBestand = null;
   ctaLabel = card.eigenDownloadCtaLabel || 'Download';
 } else {
   // Default: homePage data
@@ -46,7 +49,10 @@ if (card.downloadBron === 'eigen') {
 // Skip if no title or no downloadable content
 if (!titel || !(downloadBestand || downloadUrl)) return;
 
-const { hasImage, imageUrl: downloadImageUrl, imageUrlLarge: downloadImageUrlLarge } = resolveDownloadImage(downloadBestand, downloadUrl);
+// Eigen preview afbeelding heeft voorrang op bestand-detectie
+const { hasImage, imageUrl: downloadImageUrl, imageUrlLarge: downloadImageUrlLarge } = eigenAfbeeldingUrl
+  ? { hasImage: true, imageUrl: eigenAfbeeldingUrl, imageUrlLarge: eigenAfbeeldingUrl }
+  : resolveDownloadImage(downloadBestand, downloadUrl);
 const downloadFileName = extractFileName(downloadUrl);
 const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
 
