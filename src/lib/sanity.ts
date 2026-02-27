@@ -241,7 +241,10 @@ export async function fetchTopicHubRelated(hubId: string) {
         _id, titel, "slug": slug.current, datum, samenvatting, afbeelding
       }`, { hubId }),
       sanityClient.fetch(`*[_type == "agendaEvent" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(startDatum asc) {
-        _id, titel, "slug": slug.current, startDatum, eindDatum, locatie, categorie, afbeelding
+        _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
+        "categorie": coalesce(categorieRef->titel, categorie),
+        "categorieKleur": categorieRef->kleur,
+        afbeelding
       }`, { hubId }),
     ]);
     return {
@@ -281,13 +284,30 @@ export async function fetchRamadanOverride() {
   }
 }
 
+// ── Event Categorieën ──
+
+export async function fetchEventCategories() {
+  try {
+    const result = await sanityClient.fetch(`*[_type == "eventCategorie"] | order(volgorde asc) {
+      _id, titel, "slug": slug.current, kleur, icoon, volgorde
+    }`);
+    return result || [];
+  } catch (e) {
+    console.error('Sanity fetchEventCategories error:', e);
+    return [];
+  }
+}
+
 // ── Agenda Evenementen ──
 
 export async function fetchAgendaEvents() {
   try {
-    const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(startDatum asc) {
-      _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
-      afbeelding
+    const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
+      _id, titel, slug, startDatum, eindDatum, locatie,
+      "categorie": coalesce(categorieRef->titel, categorie),
+      "categorieKleur": categorieRef->kleur,
+      featured, prioriteit, doelgroep,
+      beschrijving, afbeelding
     }`);
     return result || [];
   } catch (e) {
@@ -298,9 +318,12 @@ export async function fetchAgendaEvents() {
 
 export async function fetchUpcomingAgendaEvents(limit = 3) {
   try {
-    const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(startDatum asc)[0...$limit] {
-      _id, titel, slug, startDatum, eindDatum, locatie, categorie, beschrijving,
-      afbeelding
+    const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
+      _id, titel, slug, startDatum, eindDatum, locatie,
+      "categorie": coalesce(categorieRef->titel, categorie),
+      "categorieKleur": categorieRef->kleur,
+      featured, prioriteit, doelgroep,
+      beschrijving, afbeelding
     }`, { limit });
     return result || [];
   } catch (e) {
@@ -338,8 +361,11 @@ export async function fetchActiveJanazahAlert() {
 export async function fetchAgendaEvent(slug: string) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
-      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie, categorie, beschrijving,
-      afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current }
+      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
+      "categorie": coalesce(categorieRef->titel, categorie),
+      "categorieKleur": categorieRef->kleur,
+      featured, doelgroep,
+      beschrijving, afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current }
     }`, { slug });
     return result || null;
   } catch (e) {

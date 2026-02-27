@@ -9,6 +9,7 @@ import { homePage } from './schemas/homePage';
 import { aboutPage } from './schemas/aboutPage';
 import { contactPage } from './schemas/contactPage';
 import { volunteer } from './schemas/volunteer';
+import { eventCategorie } from './schemas/eventCategorie';
 import { agendaEvent } from './schemas/agendaEvent';
 import { lessonProgram } from './schemas/lessonProgram';
 import { ramadanOverride } from './schemas/ramadanOverride';
@@ -23,6 +24,7 @@ export const schema = {
     service,
     project,
     post,
+    eventCategorie,
     agendaEvent,
     lessonProgram,
     ramadanOverride,

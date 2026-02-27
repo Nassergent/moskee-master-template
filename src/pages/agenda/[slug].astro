@@ -52,11 +52,21 @@ const eventSchema = JSON.stringify({
   <!-- Page Header -->
   <section class="bg-primary-dark text-white py-16 md:py-20">
     <div class="max-w-[1280px] mx-auto px-6 text-center animate-fade-in-up">
-      {event.categorie && (
-        <span class="badge inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-accent/20 text-accent-light mb-4">
-          {event.categorie}
-        </span>
-      )}
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
+        {event.categorie && (
+          <span
+            class="badge inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white"
+            style={`background-color: ${event.categorieKleur || 'rgba(201, 169, 131, 0.3)'}`}
+          >
+            {event.categorie}
+          </span>
+        )}
+        {event.doelgroep && event.doelgroep !== 'Iedereen' && (
+          <span class="badge inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-white/20 text-white">
+            {event.doelgroep}
+          </span>
+        )}
+      </div>
       <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 text-white">
         {event.titel}
       </h1>

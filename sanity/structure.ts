@@ -376,6 +376,27 @@ function agendaManagement(S: StructureBuilder) {
         .title('Activiteiten')
         .items([
           S.listItem()
+            .title('🏷️ Categorieën')
+            .icon(() => '🏷️')
+            .child(
+              S.documentTypeList('eventCategorie')
+                .title('Categorieën')
+                .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
+            ),
+
+          S.divider(),
+
+          S.listItem()
+            .title('⭐ Uitgelicht')
+            .icon(() => '⭐')
+            .child(
+              S.documentList()
+                .title('Uitgelichte evenementen')
+                .schemaType('agendaEvent')
+                .filter('_type == "agendaEvent" && featured == true && gepubliceerd == true')
+                .defaultOrdering([{ field: 'prioriteit', direction: 'asc' }])
+            ),
+          S.listItem()
             .title('🟢 Actief op website')
             .icon(() => '🟢')
             .child(
