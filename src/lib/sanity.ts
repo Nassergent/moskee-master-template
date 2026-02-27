@@ -47,7 +47,7 @@ export async function fetchProjecten() {
 export async function fetchNieuws() {
   try {
     const result = await sanityClient.fetch(`*[_type == "post" && gepubliceerd == true && !defined(onderwerpHub)] | order(datum desc) {
-      _id, titel, "slug": slug, datum, samenvatting, inhoud, afbeelding
+      _id, titel, "slug": slug, datum, samenvatting, inhoud, afbeelding, postType
     }`);
     return result || [];
   } catch (e) {
@@ -88,7 +88,8 @@ export async function fetchActueel() {
       "titel": titel,
       "slug": slug.current,
       "beschrijving": samenvatting,
-      "href": "/nieuws/" + slug.current
+      "href": "/nieuws/" + slug.current,
+      postType
     }`);
     return result || [];
   } catch (e) {
@@ -212,7 +213,7 @@ export async function fetchContactPage() {
 export async function fetchPost(slug: string) {
   try {
     const result = await sanityClient.fetch(`*[_type == "post" && slug.current == $slug && gepubliceerd == true][0]{
-      _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding,
+      _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding, postType,
       onderwerpHub->{ _id, titel, "slug": slug.current }
     }`, { slug });
     return result || null;
@@ -226,7 +227,7 @@ export async function fetchTopicHubRelated(hubId: string) {
   try {
     const [relatedPosts, relatedEvents] = await Promise.all([
       sanityClient.fetch(`*[_type == "post" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(datum desc) {
-        _id, titel, "slug": slug.current, datum, samenvatting, afbeelding
+        _id, titel, "slug": slug.current, datum, samenvatting, afbeelding, postType
       }`, { hubId }),
       sanityClient.fetch(`*[_type == "agendaEvent" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(startDatum asc) {
         _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,

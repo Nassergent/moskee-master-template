@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
+import PostTypeBadge from '../components/ui/PostTypeBadge.astro';
 import { fetchNieuws, urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 
@@ -42,10 +43,13 @@ const nieuws = await fetchNieuws();
               </div>
             )}
             <div class="p-6">
-              <time class="text-xs text-neutral-400" datetime={item.datum}>
-                {new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric', month: 'long', day: 'numeric' })}
-              </time>
-              <h2 class="font-heading text-lg font-bold group-hover:text-primary transition-colors mt-2 mb-3">
+              <div class="flex items-center gap-2 mb-2">
+                <PostTypeBadge postType={item.postType} />
+                <time class="text-xs text-neutral-400" datetime={item.datum}>
+                  {new Date(item.datum).toLocaleDateString('nl-BE', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </time>
+              </div>
+              <h2 class="font-heading text-lg font-bold group-hover:text-primary transition-colors mb-3">
                 {item.titel}
               </h2>
               <p class="text-neutral-600 text-sm leading-relaxed">{item.samenvatting}</p>

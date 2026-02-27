@@ -13,6 +13,21 @@ export const post = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'postType',
+      title: 'Type',
+      type: 'string',
+      description: 'Bepaalt het type badge op de website.',
+      options: {
+        list: [
+          { title: 'Nieuws', value: 'nieuws' },
+          { title: 'Mededeling', value: 'mededeling' },
+          { title: 'Artikel', value: 'artikel' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'nieuws',
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -77,6 +92,10 @@ export const post = defineType({
     { title: 'Datum (nieuwste)', name: 'datumDesc', by: [{ field: 'datum', direction: 'desc' }] },
   ],
   preview: {
-    select: { title: 'titel', subtitle: 'datum', media: 'afbeelding' },
+    select: { title: 'titel', subtitle: 'datum', media: 'afbeelding', postType: 'postType' },
+    prepare({ title, subtitle, media, postType }) {
+      const typeLabel = postType === 'mededeling' ? '📢' : postType === 'artikel' ? '📄' : '📰';
+      return { title: `${typeLabel} ${title || 'Zonder titel'}`, subtitle, media };
+    },
   },
 });
