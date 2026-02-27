@@ -95,6 +95,45 @@ Voorbeelden: Moskee El-Fath, Moskee El Albani, etc.
 
 ---
 
+## v1.7.2 — Smart QR & Finance Hardening (2026-02-27)
+
+### Beslissing
+Automatische EPC-compliant QR-codes op de donatiepagina, MOD97 IBAN-validatie in Sanity, en optioneel Payconiq-support. Doel: minder typefouten bij overschrijvingen, hogere conversie.
+
+### Compartiment-Model
+
+| Compartiment | Bestand | Rol |
+|---|---|---|
+| LOGICA | `src/lib/logic/payment-validators.ts` | `validateIban()` — MOD97 digit-stream, SEPA whitelist |
+| LOGICA | `src/lib/logic/qr-service.ts` | `generateEpcQrCode()` — EPC069-12 payload + SVG via `qrcode` |
+| SCHEMA | `sanity/schemas/settings.ts` | IBAN MOD97 inline validatie + `enableBankQr` + `payconiqQr` |
+| DATA | `src/lib/sanity.ts` | `fetchSettings()` projectie: +`enableBankQr`, +`payconiqQr` |
+| UI | `src/components/ui/donation/BankQrCard.astro` | Flat design bankkaart, inline SVG QR, kopieer-knop, Payconiq |
+| ORCHESTRATIE | `src/pages/doneren.astro` | Server-side QR generatie, conditionele rendering |
+
+### Architectuurbeslissingen
+
+| Beslissing | Keuze | Reden |
+|---|---|---|
+| QR activatie | Automatisch als IBAN bestaat | Geen extra toggle nodig — 1 toggle minder voor de imam |
+| QR format | SVG string via `QRCode.toString()` | Vector, schaalbaar, inline via `set:html` |
+| QR rendering | Server-side (zero client JS) | `<div aria-hidden="true" set:html={svg}>` |
+| MOD97 methode | Digit-stream iteratie (geen BigInt) | Simpel, geen overflow |
+| Payconiq | Static image upload in Sanity, altijd zichtbaar als geüpload | Geen API-koppeling nodig, onafhankelijk van EPC QR |
+| MOD97 in Sanity | Inline (niet geïmporteerd uit src/) | Sanity Studio draait apart |
+| IBAN in UI | Altijd `replace(/\s/g, '').toUpperCase()` | Spaties in CMS → clean in output |
+| Quiet zone | margin: 4 modules | Banking app compatibility |
+| urlFor crash protection | try/catch rond Payconiq image URL | Voorkomt pagina-crash bij corrupt Sanity asset |
+| QR fallback | Bij QR-fout → tekstuele bankgegevens | Donatiepagina nooit onbruikbaar |
+
+### Fleet Impact
+- **Breaking changes**: Geen
+- **Automatisch actief**: Elke moskee met een IBAN in Sanity toont automatisch een QR-code
+- **Dependency**: `qrcode` + `@types/qrcode` toegevoegd aan package.json
+- **Payconiq**: Optionele image upload in Sanity > Donaties. Toont altijd als geüpload.
+
+---
+
 ## v1.6.3 — Medium Priority Audit Fixes (2026-02-24)
 
 ### Aanleiding

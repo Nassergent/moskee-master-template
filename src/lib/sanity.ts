@@ -9,7 +9,7 @@ export { sanityClient, freshClient, urlFor };
 export async function fetchSettings() {
   try {
     // freshClient: theme/menu wijzigingen moeten direct zichtbaar zijn, geen CDN cache
-    const result = await freshClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst }`);
+    const result = await freshClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst, payconiqQr }`);
     return result || null;
   } catch (e) {
     console.error('Sanity fetchSettings error:', e);

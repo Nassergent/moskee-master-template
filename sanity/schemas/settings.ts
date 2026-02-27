@@ -249,6 +249,14 @@ export const settings = defineType({
       description: 'De tekst die bezoekers zien na een succesvolle donatie. Laat leeg voor standaardtekst.',
       initialValue: 'Bedankt voor je gulle bijdrage. We hebben je donatie in goede orde ontvangen.',
     }),
+    defineField({
+      name: 'payconiqQr',
+      title: 'Payconiq QR Code (optioneel)',
+      type: 'image',
+      group: 'donaties',
+      description: 'Upload hier de Payconiq QR-code afbeelding. Download deze vanuit uw Payconiq-account.',
+      options: { hotspot: false },
+    }),
 
     // === VRIJWILLIGERS ===
     defineField({
@@ -306,6 +314,55 @@ export const settings = defineType({
       type: 'string',
       group: 'legal',
       description: 'Wordt getoond in de footer voor transparantie',
+      validation: (rule) =>
+        rule.custom((value) => {
+          if (!value) return true; // optional field
+
+          if (typeof value !== 'string') return 'Ongeldige waarde';
+
+          const clean = value.replace(/\s/g, '').toUpperCase();
+
+          // Format check
+          if (!/^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$/.test(clean)) {
+            return 'Ongeldig IBAN-formaat.';
+          }
+
+          // Length check (ISO 13616)
+          if (clean.length < 15 || clean.length > 34) {
+            return 'IBAN-lengte is ongeldig (15-34 tekens).';
+          }
+
+          // SEPA country whitelist
+          const sepaCountries = new Set([
+            'BE', 'NL', 'DE', 'FR', 'LU', 'IT', 'ES', 'PT', 'AT', 'IE',
+            'FI', 'GR', 'SI', 'SK', 'EE', 'LV', 'LT', 'CY', 'MT',
+          ]);
+          const country = clean.slice(0, 2);
+          if (!sepaCountries.has(country)) {
+            return `Landcode "${country}" is geen SEPA-land.`;
+          }
+
+          // MOD97 digit-stream (inline, no BigInt)
+          const rearranged = clean.slice(4) + clean.slice(0, 4);
+          let numericString = '';
+          for (const ch of rearranged) {
+            const code = ch.charCodeAt(0);
+            if (code >= 65 && code <= 90) {
+              numericString += (code - 55).toString();
+            } else {
+              numericString += ch;
+            }
+          }
+          let remainder = 0;
+          for (const ch of numericString) {
+            remainder = (remainder * 10 + (ch.charCodeAt(0) - 48)) % 97;
+          }
+          if (remainder !== 1) {
+            return 'Dit IBAN-nummer is ongeldig. Controleer de landcode en cijferreeks.';
+          }
+
+          return true;
+        }),
     }),
     defineField({
       name: 'legal',
