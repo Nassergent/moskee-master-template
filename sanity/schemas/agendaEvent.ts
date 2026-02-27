@@ -63,9 +63,18 @@ export const agendaEvent = defineType({
           { title: 'Parking', value: 'Parking' },
           { title: 'Online', value: 'Online' },
           { title: 'Vrouwenruimte', value: 'Vrouwenruimte' },
+          { title: 'Anders (vul hieronder in)', value: 'anders' },
         ],
         layout: 'dropdown',
       },
+      group: 'basis',
+    }),
+    defineField({
+      name: 'locatieAnders',
+      title: 'Locatie (vrij invullen)',
+      type: 'string',
+      description: 'Bijv. "Grote Moskee van Keulen – Duitsland" of een adres.',
+      hidden: ({ parent }) => parent?.locatie !== 'anders',
       group: 'basis',
     }),
     defineField({

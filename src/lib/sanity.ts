@@ -259,7 +259,7 @@ export async function fetchTopicHubRelated(hubId: string) {
         _id, titel, "slug": slug.current, datum, samenvatting, afbeelding, postType
       }`, { hubId }),
       sanityClient.fetch(`*[_type == "agendaEvent" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(startDatum asc) {
-        _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
+        _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
         "categorie": coalesce(categorieRef->titel, categorie),
         "categorieKleur": categorieRef->kleur,
         afbeelding
@@ -321,7 +321,7 @@ export async function fetchEventCategories() {
 export async function fetchAgendaEvents() {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
-      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
+      _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
       "categorie": coalesce(categorieRef->titel, categorie),
       "categorieKleur": categorieRef->kleur,
       featured, prioriteit, doelgroep,
@@ -337,7 +337,7 @@ export async function fetchAgendaEvents() {
 export async function fetchUpcomingAgendaEvents(limit = 3) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && startDatum >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
-      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
+      _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
       "categorie": coalesce(categorieRef->titel, categorie),
       "categorieKleur": categorieRef->kleur,
       featured, prioriteit, doelgroep,
@@ -379,7 +379,7 @@ export async function fetchActiveJanazahAlert() {
 export async function fetchAgendaEvent(slug: string) {
   try {
     const result = await sanityClient.fetch(`*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
-      _id, titel, "slug": slug.current, startDatum, eindDatum, locatie,
+      _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
       "categorie": coalesce(categorieRef->titel, categorie),
       "categorieKleur": categorieRef->kleur,
       featured, doelgroep,
