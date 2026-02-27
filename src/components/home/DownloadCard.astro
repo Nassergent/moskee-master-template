@@ -102,26 +102,27 @@ const lightboxId = `download-lightbox-${Math.random().toString(36).slice(2, 8)}`
   )}
 </div>
 
-{/* Lightbox overlay */}
+{/* Lightbox — wordt via JS naar document.body verplaatst om stacking context van <main z-10> te ontsnappen */}
 {hasImage && downloadImageUrlLarge && (
   <div
     id={lightboxId}
     class="fixed inset-0 z-[999] hidden bg-black/80 backdrop-blur-sm cursor-zoom-out"
     role="dialog"
     aria-label="Afbeelding vergroten"
+    data-lightbox-image={downloadImageUrlLarge}
+    data-lightbox-alt={sanitizeAlt(titel)}
   >
-    {/* Sluitknop — fixed positie, altijd bovenop */}
     <button
       data-lightbox-close={lightboxId}
-      class="fixed top-4 right-4 z-[1000] min-w-[48px] min-h-[48px] flex items-center justify-center bg-black/80 text-white border-2 border-white/50 hover:bg-white hover:text-black transition-colors"
+      class="fixed z-[1000] right-4 min-w-[48px] min-h-[48px] flex items-center justify-center bg-black/80 text-white border-2 border-white/50 hover:bg-white hover:text-black transition-colors"
+      style="top: calc(1rem + env(safe-area-inset-top, 0px))"
       aria-label="Sluiten"
     >
       <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
-    {/* Afbeelding gecentreerd */}
-    <div class="w-full h-full flex items-center justify-center p-4 pt-16">
+    <div class="w-full h-full flex items-center justify-center p-4" style="padding-top: calc(5rem + env(safe-area-inset-top, 0px))">
       <img
         src={downloadImageUrlLarge}
         alt={sanitizeAlt(titel)}
@@ -144,6 +145,8 @@ const lightboxId = `download-lightbox-${Math.random().toString(36).slice(2, 8)}`
       const closeBtn = lightbox.querySelector('[data-lightbox-close]');
 
       trigger.addEventListener('click', () => {
+        // Teleport naar body — ontsnapt uit <main class="relative z-10"> stacking context
+        document.body.appendChild(lightbox);
         lightbox.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
       });
@@ -153,11 +156,11 @@ const lightboxId = `download-lightbox-${Math.random().toString(36).slice(2, 8)}`
         document.body.style.overflow = '';
       };
 
+      // Klik op achtergrond sluit, klik op afbeelding of knop niet
       lightbox.addEventListener('click', (e) => {
-        // Sluit bij klik op achtergrond (niet op de afbeelding zelf)
-        if (e.target === lightbox || (e.target as HTMLElement).closest('[data-lightbox-close]')) return;
-        const img = lightbox.querySelector('img');
-        if (e.target !== img) closeLightbox();
+        const target = e.target as HTMLElement;
+        if (target.closest('img') || target.closest('[data-lightbox-close]')) return;
+        closeLightbox();
       });
       closeBtn?.addEventListener('click', closeLightbox);
       document.addEventListener('keydown', (e) => {
