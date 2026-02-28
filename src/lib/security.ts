@@ -19,6 +19,7 @@ try {
       redis,
       limiter: Ratelimit.slidingWindow(5, '60 s'),
       analytics: false,
+      timeout: 500, // ms — caps Redis latency per RATE-05
     });
   }
 } catch {
@@ -28,36 +29,76 @@ try {
 // In-memory fallback (voor local development)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
-/**
- * Rate limiter: Upstash Redis in productie, in-memory lokaal.
- * Returns true als het request is toegestaan, false als gelimiteerd.
- */
-export async function checkRateLimit(
-  ip: string,
-  maxRequests: number = 5,
-  windowMs: number = 60_000
-): Promise<boolean> {
-  // Upstash Redis (productie)
-  if (ratelimit) {
-    const { success } = await ratelimit.limit(ip);
-    return success;
-  }
+export type FailStrategy = 'hard-fail' | 'in-memory-fallback';
 
-  // In-memory fallback (development)
+export interface RateLimitResult {
+  allowed: boolean;
+  source: 'redis' | 'memory' | 'hard-fail';
+}
+
+/**
+ * In-memory rate limiting fallback.
+ * Used when Redis is unavailable (strategy = in-memory-fallback) or no Redis configured.
+ */
+function checkInMemoryFallback(
+  ip: string,
+  maxRequests: number,
+  windowMs: number
+): RateLimitResult {
   const now = Date.now();
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
-    return true;
+    return { allowed: true, source: 'memory' };
   }
 
   if (entry.count >= maxRequests) {
-    return false;
+    return { allowed: false, source: 'memory' };
   }
 
   entry.count++;
-  return true;
+  return { allowed: true, source: 'memory' };
+}
+
+/**
+ * Rate limiter: Upstash Redis in productie, in-memory lokaal.
+ * failStrategy bepaalt gedrag wanneer Redis onbereikbaar is:
+ *   - 'hard-fail': geeft { allowed: false, source: 'hard-fail' } → caller retourneert HTTP 503
+ *   - 'in-memory-fallback': valt terug op in-memory rate limiting → geen 503
+ */
+export async function checkRateLimit(
+  ip: string,
+  failStrategy: FailStrategy,
+  maxRequests: number = 5,
+  windowMs: number = 60_000
+): Promise<RateLimitResult> {
+  // Upstash Redis (productie)
+  if (ratelimit) {
+    let response: Awaited<ReturnType<typeof ratelimit.limit>>;
+    try {
+      response = await ratelimit.limit(ip);
+    } catch {
+      // Redis threw (connection refused or similar) — apply fail strategy
+      if (failStrategy === 'hard-fail') {
+        return { allowed: false, source: 'hard-fail' };
+      }
+      return checkInMemoryFallback(ip, maxRequests, windowMs);
+    }
+
+    if (response.reason === 'timeout') {
+      // Redis did not respond within timeout — library allowed by default, we override
+      if (failStrategy === 'hard-fail') {
+        return { allowed: false, source: 'hard-fail' };
+      }
+      return checkInMemoryFallback(ip, maxRequests, windowMs);
+    }
+
+    return { allowed: response.success, source: 'redis' };
+  }
+
+  // No Redis configured (local dev / missing env) — in-memory only
+  return checkInMemoryFallback(ip, maxRequests, windowMs);
 }
 
 /**

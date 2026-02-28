@@ -11,9 +11,11 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    // Rate limiting: max 20 req/min per IP
+    // Rate limiting: max 20 req/min per IP — in-memory-fallback wanneer Redis onbereikbaar
     const ip = getClientIp(request);
-    if (!(await checkRateLimit(ip, 20, 60_000))) {
+    const rl = await checkRateLimit(ip, 'in-memory-fallback', 20, 60_000);
+
+    if (!rl.allowed) {
       return new Response('Rate limited', { status: 429 });
     }
 

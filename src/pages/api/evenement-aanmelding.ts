@@ -52,9 +52,11 @@ export const POST: APIRoute = async ({ request, url }) => {
     const originError = checkOrigin(request, siteOrigin);
     if (originError) return originError;
 
-    // Rate limiting: max 3 per IP per minuut
+    // Rate limiting: max 3 per IP per minuut — in-memory-fallback wanneer Redis onbereikbaar
     const ip = getClientIp(request);
-    if (!(await checkRateLimit(ip, 3, 60_000))) {
+    const rl = await checkRateLimit(ip, 'in-memory-fallback', 3, 60_000);
+
+    if (!rl.allowed) {
       return new Response(JSON.stringify({ error: 'Te veel aanvragen. Probeer het over een minuut opnieuw.' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' },

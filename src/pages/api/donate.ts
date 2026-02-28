@@ -22,9 +22,18 @@ export const POST: APIRoute = async ({ request, url }) => {
     const originError = checkOrigin(request, siteOrigin);
     if (originError) return originError;
 
-    // Rate limiting: max 5 donaties per IP per minuut
+    // Rate limiting: max 5 donaties per IP per minuut — hard-fail wanneer Redis onbereikbaar
     const ip = getClientIp(request);
-    if (!(await checkRateLimit(ip, 5, 60_000))) {
+    const rl = await checkRateLimit(ip, 'hard-fail', 5, 60_000);
+
+    if (!rl.allowed && rl.source === 'hard-fail') {
+      return new Response(JSON.stringify({ error: 'Betalingsservice tijdelijk niet beschikbaar.' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!rl.allowed) {
       return new Response(JSON.stringify({ error: 'Te veel aanvragen. Probeer het over een minuut opnieuw.' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' },
