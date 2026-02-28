@@ -13,7 +13,7 @@ This milestone closes two specific production security gaps in the moskee-master
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: FailStrategy Foundation** - Harden `checkRateLimit()` with typed per-route fail strategies and update all callers
-- [ ] **Phase 2: In-Memory LRU + Observability** - Replace unbounded Map with bounded LRU cache and add structured fallback logging
+- [x] **Phase 2: In-Memory LRU + Observability** - Replace unbounded Map with bounded LRU cache and add structured fallback logging (completed 2026-02-28)
 - [ ] **Phase 3: Webhook Idempotency Test Suite** - Cover all four critical Redis failure scenarios with Vitest
 
 ## Phase Details
@@ -40,7 +40,7 @@ Plans:
   1. The existing `rateLimitMap` (plain `Map`) is replaced by an `LRUCache` instance with a configured `max` entries cap and per-entry `ttl`
   2. When the in-memory fallback path activates, a structured log entry is emitted containing `source` (`memory` or `hard-fail`), route identifier, and hashed IP
   3. When the donate route returns 503 due to Redis unavailability, a structured log entry is emitted containing `source: 'hard-fail'`, route, and hashed IP
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 02-01-PLAN.md — Replace Map with LRUCache, add structured fallback/hard-fail logging, update all 5 callers with route param
@@ -65,5 +65,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. FailStrategy Foundation | 1/1 | Complete | 2026-02-28 |
-| 2. In-Memory LRU + Observability | 0/1 | Not started | - |
+| 2. In-Memory LRU + Observability | 1/1 | Complete   | 2026-02-28 |
 | 3. Webhook Idempotency Test Suite | 0/? | Not started | - |

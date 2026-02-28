@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-28T07:22:32.174Z"
+status: in-progress
+last_updated: "2026-02-28T07:37:25Z"
 progress:
-  total_phases: 1
+  total_phases: 3
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 2
+  completed_plans: 2
 ---
 
 # Project State
@@ -18,32 +18,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Betalingen en API-bescherming mogen nooit stil falen — elke failure moet detecteerbaar en herstelbaar zijn.
-**Current focus:** Phase 1 — FailStrategy Foundation
+**Current focus:** Phase 2 — In-Memory LRU + Observability (complete)
 
 ## Current Position
 
-Phase: 1 of 3 (FailStrategy Foundation)
+Phase: 2 of 3 (In-Memory LRU + Observability)
 Plan: 1 of 1 in current phase
-Status: Phase 1 complete — ready for Phase 2
-Last activity: 2026-02-28 — Plan 01-01 complete (FailStrategy Foundation)
+Status: Phase 2 complete — ready for Phase 3
+Last activity: 2026-02-28 — Plan 02-01 complete (LRU cache + structured rate-limit logging)
 
-Progress: [██░░░░░░░░] 33%
+Progress: [████░░░░░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: ~10min
-- Total execution time: ~10min
+- Total plans completed: 2
+- Average duration: ~7min
+- Total execution time: ~13min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-failstrategy-foundation | 1 | ~10min | ~10min |
+| 02-in-memory-lru-observability | 1 | ~3min | ~3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~10min)
+- Last 5 plans: 01-01 (~10min), 02-01 (~3min)
 - Trend: —
 
 *Updated after each plan completion*
@@ -65,6 +66,13 @@ Recent decisions affecting current work:
 - timeout: 500ms on Ratelimit constructor: caps Redis latency per RATE-05
 - evenement-aanmelding.ts and mollie-webhook.ts were undiscovered callers — both updated with 'in-memory-fallback'
 
+**Phase 2 Plan 01 decisions (2026-02-28):**
+- LRUCache constructor-level TTL (ttl: 60_000) — not per-entry set() TTL — since all entries share the same window
+- emitLog=false for local dev (no Redis configured) — prevents log noise in development; emitLog=true only on genuine Redis failure
+- Log on every fallback activation (allowed AND denied) — RATE-06 requires visibility of all in-memory usage
+- hashIp sliced to 16 hex chars — sufficient for correlation, not enough to reverse the original IP
+- No ttlAutopurge on LRUCache — unnecessary in serverless context (Vercel cold-start resets module state)
+
 ### Pending Todos
 
 None yet.
@@ -77,5 +85,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 01-01-PLAN.md (FailStrategy Foundation — checkRateLimit typed fail-strategy)
+Stopped at: Completed 02-01-PLAN.md (In-Memory LRU + Observability — LRU cache + structured rate-limit logging)
 Resume file: None

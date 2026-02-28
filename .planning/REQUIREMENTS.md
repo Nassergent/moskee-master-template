@@ -10,9 +10,9 @@
 - [x] **RATE-01**: `checkRateLimit()` accepteert een `failStrategy` parameter (`hard-fail` | `in-memory-fallback`) die bepaalt wat er gebeurt als Redis onbereikbaar is
 - [x] **RATE-02**: `/api/donate` route gebruikt `hard-fail` strategie — retourneert 503 als rate limiting niet werkt
 - [x] **RATE-03**: `/api/contact` en `/api/vrijwilligers` routes gebruiken `in-memory-fallback` strategie
-- [ ] **RATE-04**: Onbegrensde `rateLimitMap` is vervangen door `LRUCache` met configureerbare `max` entries en `ttl`
+- [x] **RATE-04**: Onbegrensde `rateLimitMap` is vervangen door `LRUCache` met configureerbare `max` entries en `ttl`
 - [x] **RATE-05**: `@upstash/ratelimit` instance gebruikt `timeout: 500` om Redis latency te begrenzen
-- [ ] **RATE-06**: Elke fallback of 503 response logt een structured entry met `source` (`redis` | `memory` | `hard-fail`), route, en IP (gehashed)
+- [x] **RATE-06**: Elke fallback of 503 response logt een structured entry met `source` (`redis` | `memory` | `hard-fail`), route, en IP (gehashed)
 
 ### Webhook Idempotency Testing
 
@@ -54,8 +54,8 @@
 | RATE-02 | Phase 1 | Complete (2026-02-28) |
 | RATE-03 | Phase 1 | Complete (2026-02-28) |
 | RATE-05 | Phase 1 | Complete (2026-02-28) |
-| RATE-04 | Phase 2 | Pending |
-| RATE-06 | Phase 2 | Pending |
+| RATE-04 | Phase 2 | Complete |
+| RATE-06 | Phase 2 | Complete |
 | WHTEST-01 | Phase 3 | Pending |
 | WHTEST-02 | Phase 3 | Pending |
 | WHTEST-03 | Phase 3 | Pending |
