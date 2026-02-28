@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     // Rate limiting: max 5 donaties per IP per minuut — hard-fail wanneer Redis onbereikbaar
     const ip = getClientIp(request);
-    const rl = await checkRateLimit(ip, 'hard-fail', 5, 60_000);
+    const rl = await checkRateLimit(ip, 'hard-fail', 5, 60_000, '/api/donate');
 
     if (!rl.allowed && rl.source === 'hard-fail') {
       return new Response(JSON.stringify({ error: 'Betalingsservice tijdelijk niet beschikbaar.' }), {

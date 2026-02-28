@@ -13,7 +13,7 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     // Rate limiting: max 20 req/min per IP — in-memory-fallback wanneer Redis onbereikbaar
     const ip = getClientIp(request);
-    const rl = await checkRateLimit(ip, 'in-memory-fallback', 20, 60_000);
+    const rl = await checkRateLimit(ip, 'in-memory-fallback', 20, 60_000, '/api/mollie-webhook');
 
     if (!rl.allowed) {
       return new Response('Rate limited', { status: 429 });
