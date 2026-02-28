@@ -37,6 +37,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
         "connect-src 'self' https://cdn.sanity.io https://*.api.sanity.io https://api.mollie.com",
         "object-src 'none'",
         "base-uri 'self'",
+        "form-action 'self'",
       ].join('; ')
     );
   }

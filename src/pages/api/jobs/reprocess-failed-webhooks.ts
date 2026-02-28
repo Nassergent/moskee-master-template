@@ -25,8 +25,15 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const providedSecret = request.headers.get('x-cron-secret');
-  if (providedSecret !== cronSecret) {
+  const vercelSig = request.headers.get('x-vercel-cron-signature');
+  const isProduction = import.meta.env.PROD;
+  // In production: alleen Vercel cron signature accepteren
+  // In dev: ook custom header voor lokale tests
+  const authorized = isProduction
+    ? vercelSig === cronSecret
+    : (vercelSig === cronSecret || request.headers.get('x-cron-secret') === cronSecret);
+
+  if (!authorized) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },

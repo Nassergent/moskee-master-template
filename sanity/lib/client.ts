@@ -40,8 +40,10 @@ export const freshClient = createClient({
 const writeToken = getEnv('SANITY_WRITE_TOKEN');
 const readToken = getEnv('SANITY_API_TOKEN');
 
-if (!writeToken && readToken) {
-  console.warn('[sanity] SANITY_WRITE_TOKEN ontbreekt — fallback op SANITY_API_TOKEN. Gebruik in productie een apart write token met minimale rechten.');
+if (!writeToken && readToken && (import.meta as any).env?.PROD) {
+  console.warn('[sanity] SANITY_WRITE_TOKEN ontbreekt in productie — fallback op SANITY_API_TOKEN. Configureer een apart write token met minimale rechten.');
+} else if (!writeToken && readToken) {
+  console.warn('[sanity] SANITY_WRITE_TOKEN ontbreekt — fallback op SANITY_API_TOKEN (dev).');
 }
 
 export const writeClient = createClient({
