@@ -4,6 +4,7 @@ import { fetchSettings } from '../../lib/sanity';
 import { checkRateLimit, getClientIp, checkOrigin, isBot } from '../../lib/security';
 import { validatePaymentAmount } from '../../lib/logic/payment-validators';
 import { generateCorrelationId } from '../../lib/logic/webhook-validators';
+import { isMollieDemoMode } from '../../lib/env';
 
 export const prerender = false;
 
@@ -70,8 +71,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     }
     const numAmount = validation.amount!;
 
-    const mollieKey = import.meta.env.MOLLIE_API_KEY;
-    if (!mollieKey || mollieKey === 'test_xxxxxxxxxxxx') {
+    if (isMollieDemoMode()) {
       const bedanktParams = new URLSearchParams({
         bedrag: numAmount.toFixed(2),
         bestemming: resolvedProjectName,
@@ -90,6 +90,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     const settings = await fetchSettings();
     const mosqueName = settings?.mosqueName || 'Moskee';
 
+    const mollieKey = import.meta.env.MOLLIE_API_KEY!;
     const mollieClient = createMollieClient({ apiKey: mollieKey });
 
     const tenantId = import.meta.env.SANITY_PROJECT_ID || import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'default';
