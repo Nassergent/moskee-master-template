@@ -1,0 +1,188 @@
+---
+/**
+ * EventRegistrationForm.astro — Inschrijfformulier voor evenementen
+ * Volgt hetzelfde patroon als VolunteerForm.astro
+ */
+interface Props {
+  eventId: string;
+  eventTitel: string;
+  maxCapacity?: number;
+  occupancy?: number;
+  deadline?: string;
+}
+
+const { eventId, eventTitel, maxCapacity, occupancy = 0, deadline } = Astro.props;
+
+const isFull = maxCapacity ? occupancy >= maxCapacity : false;
+const isExpired = deadline ? new Date(deadline) < new Date() : false;
+const spotsLeft = maxCapacity ? maxCapacity - occupancy : null;
+const occupancyPercent = maxCapacity ? Math.min(100, Math.round((occupancy / maxCapacity) * 100)) : 0;
+---
+
+<div class="bg-white border border-neutral-200 p-6 md:p-8" id="event-registration-section">
+  <h2 class="text-xl font-bold mb-4 font-heading text-primary">Inschrijven</h2>
+
+  {isExpired ? (
+    <div class="bg-neutral-50 border-l-4 border-neutral-400 p-4 text-sm">
+      <p class="font-heading font-bold text-neutral-700 mb-1">Inschrijving gesloten</p>
+      <p class="text-neutral-600">De inschrijfperiode voor dit evenement is verstreken.</p>
+    </div>
+  ) : isFull ? (
+    <div class="bg-neutral-50 border-l-4 border-neutral-400 p-4 text-sm">
+      <p class="font-heading font-bold text-neutral-700 mb-1">Dit evenement is volzet</p>
+      <p class="text-neutral-600">Alle plaatsen zijn bezet. Neem contact op met de moskee voor meer informatie.</p>
+    </div>
+  ) : (
+    <>
+      {/* Capaciteitsindicator */}
+      {maxCapacity && (
+        <div class="mb-6">
+          <div class="flex justify-between text-sm mb-1.5">
+            <span class="text-neutral-600">{occupancy} / {maxCapacity} plaatsen bezet</span>
+            {spotsLeft !== null && spotsLeft <= 10 && (
+              <span class="text-accent font-semibold">Nog {spotsLeft} {spotsLeft === 1 ? 'plek' : 'plekken'}!</span>
+            )}
+          </div>
+          <div class="w-full h-2 bg-neutral-100 overflow-hidden">
+            <div
+              class="h-full bg-accent transition-all"
+              style={`width: ${occupancyPercent}%`}
+            ></div>
+          </div>
+        </div>
+      )}
+
+      <form id="event-registration-form" class="space-y-6">
+        {/* Honeypot */}
+        <div class="hidden" aria-hidden="true">
+          <input type="text" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <input type="hidden" name="eventId" value={eventId} />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label for="reg-name" class="block text-sm font-heading font-semibold text-primary mb-2">Naam *</label>
+            <input type="text" id="reg-name" name="name" required aria-required="true"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base"
+              placeholder="Uw volledige naam" />
+          </div>
+          <div>
+            <label for="reg-email" class="block text-sm font-heading font-semibold text-primary mb-2">E-mail *</label>
+            <input type="email" id="reg-email" name="email" required aria-required="true"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base"
+              placeholder="uw@email.be" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label for="reg-phone" class="block text-sm font-heading font-semibold text-primary mb-2">Telefoon</label>
+            <input type="tel" id="reg-phone" name="phone"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base"
+              placeholder="+32 xxx xx xx xx" />
+          </div>
+          <div>
+            <label for="reg-partySize" class="block text-sm font-heading font-semibold text-primary mb-2">Aantal personen</label>
+            <input type="number" id="reg-partySize" name="partySize" min="1" max="20" value="1"
+              class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base" />
+          </div>
+        </div>
+
+        <div>
+          <label for="reg-notes" class="block text-sm font-heading font-semibold text-primary mb-2">Opmerkingen</label>
+          <textarea id="reg-notes" name="notes" rows="3"
+            class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all resize-y text-base"
+            placeholder="Bijv. dieetwensen, vervoer, bijzonderheden..."></textarea>
+        </div>
+
+        {/* Consent checkbox */}
+        <div class="flex items-start gap-3">
+          <input type="checkbox" id="reg-consent" name="consent" required aria-required="true"
+            class="mt-1 w-4 h-4 border-slate-300 text-primary focus:ring-primary/20" />
+          <label for="reg-consent" class="text-sm text-neutral-600 leading-relaxed">
+            Ik ga akkoord met de verwerking van mijn gegevens voor dit evenement. *
+          </label>
+        </div>
+
+        <p class="text-xs text-neutral-400 leading-relaxed">
+          Je gegevens worden enkel gebruikt voor de organisatie van dit evenement en worden niet gedeeld met derden.
+        </p>
+
+        <button type="submit" id="event-registration-btn"
+          class="w-full py-3.5 px-6 bg-accent text-white font-heading font-bold text-sm tracking-wide hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+          Inschrijven voor {eventTitel}
+        </button>
+
+        <div id="event-registration-status" class="hidden"></div>
+      </form>
+    </>
+  )}
+</div>
+
+<script define:vars={{ eventId, eventTitel }}>
+  const form = document.getElementById('event-registration-form');
+  if (form) {
+    const statusEl = document.getElementById('event-registration-status');
+    const btn = document.getElementById('event-registration-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const originalText = btn.textContent;
+      btn.textContent = 'Versturen...';
+      btn.disabled = true;
+
+      const formData = new FormData(form);
+
+      const data = {
+        eventId: formData.get('eventId'),
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone') || '',
+        partySize: parseInt(formData.get('partySize')) || 1,
+        notes: formData.get('notes') || '',
+        website: formData.get('website') || '',
+      };
+
+      try {
+        const res = await fetch('/api/evenement-aanmelding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (res.ok) {
+          statusEl.innerHTML = `
+            <div class="bg-primary/5 border-l-4 border-primary p-4 text-sm" tabindex="-1" role="status">
+              <p class="font-heading font-bold text-primary mb-1">Inschrijving ontvangen</p>
+              <p class="text-neutral-600">Jazak Allahu Khairan! Je ontvangt een bevestiging per e-mail.</p>
+            </div>
+          `;
+          statusEl.className = '';
+          statusEl.querySelector('[tabindex]')?.focus();
+          form.reset();
+        } else {
+          const result = await res.json().catch(() => ({}));
+          throw new Error(result.error || 'Inschrijving mislukt');
+        }
+      } catch (err) {
+        const msg = document.createElement('span');
+        msg.textContent = err.message || 'Er is iets misgegaan. Probeer het later opnieuw.';
+        statusEl.innerHTML = `
+          <div class="bg-red-50 border-l-4 border-red-500 p-4 text-sm">
+            <p class="font-heading font-bold text-red-700 mb-1">Fout bij inschrijven</p>
+            <p class="text-red-600"></p>
+          </div>
+        `;
+        statusEl.querySelector('.text-red-600').appendChild(msg);
+        statusEl.className = '';
+        statusEl.querySelector('[class*="border-l-4"]')?.setAttribute('tabindex', '-1');
+        statusEl.querySelector('[tabindex]')?.focus();
+      } finally {
+        btn.textContent = originalText || 'Inschrijven';
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

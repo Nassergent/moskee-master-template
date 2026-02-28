@@ -383,11 +383,26 @@ export async function fetchAgendaEvent(slug: string) {
       "categorie": coalesce(categorieRef->titel, categorie),
       "categorieKleur": categorieRef->kleur,
       featured, doelgroep,
-      beschrijving, afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current }
+      beschrijving, afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current },
+      registrationOpen, registrationMax, registrationDeadline, externalRegistrationUrl,
+      "occupancy": math::sum(*[_type == "eventRegistration" && eventRef._ref == ^._id && status != "cancelled"].partySize)
     }`, { slug });
     return result || null;
   } catch (e) {
     console.error('Sanity fetchAgendaEvent error:', e);
     return null;
+  }
+}
+
+export async function fetchEventOccupancy(eventId: string): Promise<number> {
+  try {
+    const result = await freshClient.fetch(
+      `math::sum(*[_type == "eventRegistration" && eventRef._ref == $eventId && status != "cancelled"].partySize)`,
+      { eventId }
+    );
+    return result || 0;
+  } catch (e) {
+    console.error('Sanity fetchEventOccupancy error:', e);
+    return 0;
   }
 }

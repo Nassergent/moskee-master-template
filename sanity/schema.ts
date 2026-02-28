@@ -10,6 +10,7 @@ import { homeCards } from './schemas/homeCards';
 import { aboutPage } from './schemas/aboutPage';
 import { contactPage } from './schemas/contactPage';
 import { volunteer } from './schemas/volunteer';
+import { eventRegistration } from './schemas/eventRegistration';
 import { eventCategorie } from './schemas/eventCategorie';
 import { agendaEvent } from './schemas/agendaEvent';
 import { lessonProgram } from './schemas/lessonProgram';
@@ -37,5 +38,6 @@ export const schema = {
     quote,
     etiquette,
     volunteer,
+    eventRegistration,
   ],
 };

@@ -250,7 +250,102 @@ export function donationConfirmationEmail(opts: {
   });
 }
 
-// ── 4. Vrijwilliger Bevestiging (naar de vrijwilliger zelf) ──
+// ── 4. Evenement Inschrijving Notificatie (naar moskee) ──
+
+export function eventRegistrationNotificationEmail(opts: {
+  mosqueName: string;
+  mosqueEmail?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  partySize: number;
+  notes?: string;
+  eventTitle: string;
+  colors?: Partial<EmailColors>;
+}): string {
+  const c = { ...defaultColors, ...opts.colors };
+
+  const content = `
+    <div style="background-color: ${c.primary}10; border-left: 3px solid ${c.primary}; padding: 12px 16px; margin-bottom: 24px;">
+      <p style="font-size: 14px; color: ${c.primary}; margin: 0; font-weight: 700;">
+        Nieuwe inschrijving voor ${escapeHtml(opts.eventTitle)}
+      </p>
+      <p style="font-size: 13px; color: #64748B; margin: 4px 0 0;">
+        Er heeft zich iemand ingeschreven via de website.
+      </p>
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border: 1px solid #E2E8F0; border-left: 3px solid ${c.accent}; margin-bottom: 24px;">
+      ${dataRow('Naam', escapeHtml(opts.name), c.accent)}
+      ${dataRow('E-mail', `<a href="mailto:${encodeURIComponent(opts.email)}" style="color: ${c.primary}; text-decoration: none;">${escapeHtml(opts.email)}</a>`, c.accent)}
+      ${dataRow('Telefoon', opts.phone ? escapeHtml(opts.phone) : '<span style="color: #CBD5E1;">Niet opgegeven</span>', c.accent)}
+      ${dataRow('Aantal personen', String(opts.partySize), c.accent)}
+      ${dataRow('Evenement', escapeHtml(opts.eventTitle), c.accent)}
+    </table>
+
+    ${opts.notes ? `
+    <div style="background-color: ${c.base}; border: 1px solid #E2E8F0; border-left: 3px solid ${c.accent}; padding: 16px; margin-bottom: 20px;">
+      <p style="font-size: 12px; color: #94A3B8; margin: 0 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Opmerkingen</p>
+      <p style="font-size: 14px; color: #334155; margin: 0; line-height: 1.7; white-space: pre-wrap;">${escapeHtml(opts.notes)}</p>
+    </div>` : ''}
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center" style="padding-top: 8px;">
+          <a href="mailto:${encodeURIComponent(opts.email)}?subject=${encodeURIComponent('Inschrijving ' + opts.eventTitle)}"
+             style="display: inline-block; background-color: ${c.primary}; color: white; padding: 12px 28px; font-size: 13px; font-weight: 700; text-decoration: none; letter-spacing: 0.3px;">
+            Contact opnemen
+          </a>
+        </td>
+      </tr>
+    </table>`;
+
+  return emailWrapper(content, {
+    mosqueName: opts.mosqueName,
+    mosqueEmail: opts.mosqueEmail,
+    colors: opts.colors,
+  });
+}
+
+// ── 5. Evenement Inschrijving Bevestiging (naar deelnemer) ──
+
+export function eventRegistrationConfirmationEmail(opts: {
+  mosqueName: string;
+  mosqueEmail?: string;
+  name: string;
+  partySize: number;
+  eventTitle: string;
+  colors?: Partial<EmailColors>;
+}): string {
+  const c = { ...defaultColors, ...opts.colors };
+
+  const content = `
+    <p style="font-size: 16px; line-height: 1.6; color: #334155; margin: 0 0 16px;">
+      Assalamu Alaikum <strong>${escapeHtml(opts.name)}</strong>,
+    </p>
+    <p style="font-size: 15px; line-height: 1.7; color: #475569; margin: 0 0 8px;">
+      Je bent ingeschreven voor <strong style="color: ${c.primary};">${escapeHtml(opts.eventTitle)}</strong>
+      bij <strong>${opts.mosqueName}</strong>.
+    </p>
+
+    <div style="background: white; border: 1px solid #E2E8F0; border-left: 3px solid ${c.accent}; padding: 16px; margin: 20px 0;">
+      <p style="font-size: 12px; color: #94A3B8; margin: 0 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Inschrijving</p>
+      <p style="font-size: 14px; font-weight: bold; margin: 0; color: #334155;">${opts.partySize} ${opts.partySize === 1 ? 'persoon' : 'personen'}</p>
+    </div>
+
+    <p style="font-size: 14px; color: #94A3B8; text-align: center; font-style: italic; margin: 28px 0 0; line-height: 1.6;">
+      "De beste onder de mensen is degene die het meest nuttig is voor anderen."
+      <br /><span style="color: ${c.accent}; font-weight: 600;">— Hadith</span>
+    </p>`;
+
+  return emailWrapper(content, {
+    mosqueName: opts.mosqueName,
+    mosqueEmail: opts.mosqueEmail,
+    colors: opts.colors,
+  });
+}
+
+// ── 6. Vrijwilliger Bevestiging (naar de vrijwilliger zelf) ──
 
 export function volunteerConfirmationEmail(opts: {
   mosqueName: string;

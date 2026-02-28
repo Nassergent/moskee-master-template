@@ -160,6 +160,38 @@ export const agendaEvent = defineType({
       description: 'Optioneel: koppel dit evenement aan een hoofdartikel. Het artikel toont dan dit evenement in de "Gerelateerd" sectie.',
       group: 'koppelingen',
     }),
+    defineField({
+      name: 'registrationOpen',
+      title: 'Inschrijving openstellen?',
+      type: 'boolean',
+      description: 'AAN = bezoekers kunnen zich inschrijven via het formulier op de website.',
+      initialValue: false,
+      group: 'koppelingen',
+    }),
+    defineField({
+      name: 'registrationMax',
+      title: 'Maximum aantal plaatsen',
+      type: 'number',
+      description: 'Optioneel: beperk het aantal plaatsen. Leeg = onbeperkt.',
+      validation: (Rule) => Rule.min(1),
+      hidden: ({ parent }) => !parent?.registrationOpen,
+      group: 'koppelingen',
+    }),
+    defineField({
+      name: 'registrationDeadline',
+      title: 'Inschrijfdeadline',
+      type: 'datetime',
+      description: 'Optioneel: inschrijving sluit automatisch na deze datum.',
+      hidden: ({ parent }) => !parent?.registrationOpen,
+      group: 'koppelingen',
+    }),
+    defineField({
+      name: 'externalRegistrationUrl',
+      title: 'Externe inschrijflink',
+      type: 'url',
+      description: 'Backup: link naar bijv. Google Forms. Wordt getoond als het ingebouwde formulier niet actief is.',
+      group: 'koppelingen',
+    }),
 
     // ── Oud categorie veld (migratie — verborgen) ──
     defineField({

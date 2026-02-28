@@ -5,7 +5,7 @@
 
 import { Resend } from 'resend';
 import { fetchSettings } from '../lib/sanity';
-import { contactNotificationEmail, volunteerNotificationEmail, volunteerConfirmationEmail } from '../lib/email-templates';
+import { contactNotificationEmail, volunteerNotificationEmail, volunteerConfirmationEmail, eventRegistrationNotificationEmail, eventRegistrationConfirmationEmail } from '../lib/email-templates';
 
 const FROM_DOMAIN = import.meta.env.FROM_EMAIL_DOMAIN || 'onboarding@resend.dev';
 
@@ -121,6 +121,65 @@ export async function sendVolunteerEmails(opts: {
       mosqueEmail,
       naam: opts.naam,
       taken: opts.taken,
+      colors,
+    }),
+  });
+}
+
+/**
+ * Send event registration notification + confirmation emails.
+ */
+export async function sendEventRegistrationEmails(opts: {
+  name: string;
+  email: string;
+  phone?: string;
+  partySize: number;
+  notes?: string;
+  eventTitle: string;
+}): Promise<void> {
+  const resendKey = import.meta.env.RESEND_API_KEY;
+  if (!resendKey || resendKey === 're_xxxxxxxxxxxx') return;
+
+  const settings = await fetchSettings();
+  const mosqueName = settings?.mosqueName || 'Onze Moskee';
+  const mosqueEmail = settings?.email;
+  const colors = getColors(settings?.primaryTheme);
+
+  const resend = new Resend(resendKey);
+
+  // 1. Notification to mosque
+  if (mosqueEmail) {
+    await resend.emails.send({
+      from: buildFromAddress(mosqueName),
+      to: [mosqueEmail],
+      replyTo: opts.email,
+      subject: `📋 Nieuwe inschrijving: ${opts.eventTitle} — ${opts.name}`,
+      html: eventRegistrationNotificationEmail({
+        mosqueName,
+        mosqueEmail,
+        name: opts.name,
+        email: opts.email,
+        phone: opts.phone,
+        partySize: opts.partySize,
+        notes: opts.notes,
+        eventTitle: opts.eventTitle,
+        colors,
+      }),
+    });
+  }
+
+  // 2. Confirmation to participant
+  await resend.emails.send({
+    from: buildFromAddress(mosqueName),
+    to: [opts.email],
+    replyTo: mosqueEmail || undefined,
+    subject: `Inschrijving bevestigd: ${opts.eventTitle}`,
+    html: eventRegistrationConfirmationEmail({
+      mosqueName,
+      mosqueEmail,
+      name: opts.name,
+      partySize: opts.partySize,
+      eventTitle: opts.eventTitle,
       colors,
     }),
   });

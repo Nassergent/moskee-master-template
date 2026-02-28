@@ -425,6 +425,76 @@ function agendaManagement(S: StructureBuilder) {
                 .title('Alle evenementen')
                 .defaultOrdering([{ field: 'startDatum', direction: 'asc' }])
             ),
+
+          S.divider(),
+
+          // ── Inschrijvingen ──
+          S.listItem()
+            .title('📋 Inschrijvingen')
+            .icon(() => '📋')
+            .child(
+              S.list()
+                .title('Inschrijvingen')
+                .items([
+                  S.listItem()
+                    .title('Alle Inschrijvingen')
+                    .icon(() => '📋')
+                    .child(
+                      S.documentTypeList('eventRegistration')
+                        .title('Alle Inschrijvingen')
+                        .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
+                    ),
+                  S.listItem()
+                    .title('📩 Ingediend')
+                    .icon(() => '📩')
+                    .child(
+                      S.documentList()
+                        .title('Ingediende Inschrijvingen')
+                        .schemaType('eventRegistration')
+                        .filter('_type == "eventRegistration" && status == "submitted"')
+                        .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
+                    ),
+                  S.listItem()
+                    .title('❌ Geannuleerd')
+                    .icon(() => '❌')
+                    .child(
+                      S.documentList()
+                        .title('Geannuleerde Inschrijvingen')
+                        .schemaType('eventRegistration')
+                        .filter('_type == "eventRegistration" && status == "cancelled"')
+                        .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
+                    ),
+
+                  S.divider(),
+
+                  // Per evenement: dynamisch groeperen
+                  S.listItem()
+                    .title('Per Evenement')
+                    .icon(() => '📅')
+                    .child(async () => {
+                      const client = S.context.getClient({ apiVersion: '2024-01-01' });
+                      const events = await client.fetch(
+                        `*[_type == "agendaEvent" && registrationOpen == true && gepubliceerd == true] | order(startDatum desc) { _id, titel }`
+                      );
+                      const items = Array.isArray(events)
+                        ? events.map((evt: { _id: string; titel: string }) =>
+                            S.listItem()
+                              .title(evt.titel)
+                              .icon(() => '📅')
+                              .child(
+                                S.documentList()
+                                  .title(`Inschrijvingen: ${evt.titel}`)
+                                  .schemaType('eventRegistration')
+                                  .filter('_type == "eventRegistration" && eventRef._ref == $eventId')
+                                  .params({ eventId: evt._id })
+                                  .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
+                              )
+                          )
+                        : [];
+                      return S.list().title('Per Evenement').items(items);
+                    }),
+                ])
+            ),
         ])
     );
 }
