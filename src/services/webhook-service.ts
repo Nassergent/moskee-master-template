@@ -12,6 +12,7 @@ import { shouldUpdateProject } from '../lib/logic/payment-validators';
 import { formatLog } from '../lib/logic/logger';
 import type { LogContext } from '../lib/logic/logger';
 import { processSuccessfulPayment } from './payment-service';
+import { isMollieDemoMode } from '../lib/env';
 
 // ── Types ──
 
@@ -61,7 +62,7 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
   log('info', 'webhook_received', {});
 
   const mollieKey = import.meta.env.MOLLIE_API_KEY;
-  if (!mollieKey || import.meta.env.WEBHOOK_SKIP_VERIFICATION === 'true') {
+  if (isMollieDemoMode()) {
     log('info', 'webhook_complete', { duration_ms: Date.now() - startTime, note: 'demo_mode' });
     return { status: 200, body: 'OK (demo)', logs };
   }
