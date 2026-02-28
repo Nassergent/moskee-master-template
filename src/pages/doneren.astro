@@ -7,9 +7,14 @@ import { fetchProjecten, fetchSettings, fetchQuote, urlFor } from '../lib/sanity
 import { calculateProjectStats } from '../lib/logic/project-utils';
 import { generateEpcQrCode } from '../lib/logic/qr-service';
 import { buildSiteConfig } from '../lib/logic/config';
+import { isFeatureEnabled } from '../lib/logic/menu-builder';
 
 const projecten = await fetchProjecten();
 const settings = await fetchSettings();
+
+if (!isFeatureEnabled(settings, 'showDonaties')) {
+  return Astro.redirect('/404', 404);
+}
 const quote = await fetchQuote('donaties');
 
 const hasProjects = projecten && projecten.length > 0;

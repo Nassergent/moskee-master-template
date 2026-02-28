@@ -3,6 +3,7 @@ import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin
 import { fetchEventOccupancy, fetchAgendaEventRegistrationInfo } from '../../lib/sanity';
 import { createEventRegistration } from '../../services/event-registration-service';
 import { sendEventRegistrationEmails } from '../../services/email-service';
+import { formatLog } from '../../lib/logic/logger';
 import { Redis } from '@upstash/redis';
 
 export const prerender = false;
@@ -163,7 +164,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         await sendEventRegistrationEmails({ name, email, phone, partySize, notes, eventTitle });
         break;
       } catch (emailErr) {
-        console.error(`Evenement inschrijving e-mail fout (poging ${attempt}):`, emailErr);
+        console.error(formatLog('error', 'email_send_error', { label: 'event_registration', attempt }, emailErr));
         if (attempt < 2) await new Promise(r => setTimeout(r, 500));
       }
     }
@@ -173,7 +174,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Evenement aanmelding API error:', error);
+    console.error(formatLog('error', 'event_registration_error', {}, error));
     return new Response(JSON.stringify({ error: 'Er is een fout opgetreden.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

@@ -1,3 +1,18 @@
+import { formatLog } from './logic/logger';
+import { Redis } from '@upstash/redis';
+
+// ── Redis cache (fail-open: als Redis onbereikbaar, gewoon API callen) ──
+let redis: Redis | null = null;
+try {
+  const url = (import.meta as any).env?.UPSTASH_REDIS_REST_URL;
+  const token = (import.meta as any).env?.UPSTASH_REDIS_REST_TOKEN;
+  if (url && token) {
+    redis = new Redis({ url, token });
+  }
+} catch {
+  // fail-open
+}
+
 // Hijri datum berekening via Intl.DateTimeFormat (geen externe dependency)
 
 interface HijriDate {
@@ -96,12 +111,42 @@ export async function fetchIslamicDays(
         const targetYear = hijriYear + yearOffset;
         const dd = String(day.hijriDay).padStart(2, '0');
         const mm = String(day.hijriMonth).padStart(2, '0');
-        const url = `https://api.aladhan.com/v1/hToG/${dd}-${mm}-${targetYear}?adjustment=${hijriAdjustment}`;
-        const response = await fetch(url);
-        if (!response.ok) continue;
+        const cacheKey = `aladhan:${day.hijriDay}-${day.hijriMonth}-${targetYear}:${hijriAdjustment}`;
 
-        const data = await response.json();
-        if (data.code !== 200 || !data.data?.gregorian) continue;
+        // Try Redis cache first
+        let data: any = null;
+        if (redis) {
+          try {
+            data = await redis.get(cacheKey);
+          } catch {
+            // fail-open: cache miss
+          }
+        }
+
+        // Cache miss: call Aladhan API
+        if (!data) {
+          const apiUrl = `https://api.aladhan.com/v1/hToG/${dd}-${mm}-${targetYear}?adjustment=${hijriAdjustment}`;
+          const response = await fetch(apiUrl);
+          if (!response.ok) continue;
+
+          data = await response.json();
+
+          // Store in Redis cache (TTL: 24h)
+          if (redis && data?.code === 200) {
+            try {
+              await redis.set(cacheKey, JSON.stringify(data), { ex: 86400 });
+            } catch {
+              // best-effort cache write
+            }
+          }
+        }
+
+        // Handle stringified cache hit
+        if (typeof data === 'string') {
+          try { data = JSON.parse(data); } catch { continue; }
+        }
+
+        if (data?.code !== 200 || !data?.data?.gregorian) continue;
 
         const greg = data.data.gregorian;
         const gregorianDate = `${greg.year}-${greg.month.number.toString().padStart(2, '0')}-${greg.day.padStart(2, '0')}`;
@@ -127,7 +172,7 @@ export async function fetchIslamicDays(
       }
     } catch (e) {
       // API fout — sla deze dag over
-      console.error(`Aladhan API error for ${day.name}:`, e);
+      console.error(formatLog('error', 'aladhan_fetch_error', { label: day.name }, e));
     }
   }
 

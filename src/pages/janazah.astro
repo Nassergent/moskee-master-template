@@ -5,12 +5,17 @@ import PortableText from '../components/PortableText.astro';
 import JanazahProcedureSteps from '../components/ui/janazah/JanazahProcedureSteps.astro';
 import { fetchJanazahProcedure, fetchActiveJanazahAlert, fetchSettings } from '../lib/sanity';
 import { isJanazahActive, getDisplayName, buildGebedZin } from '../lib/logic/janazah';
+import { isFeatureEnabled } from '../lib/logic/menu-builder';
 
 const [procedure, alert, settings] = await Promise.all([
   fetchJanazahProcedure(),
   fetchActiveJanazahAlert(),
   fetchSettings(),
 ]);
+
+if (!isFeatureEnabled(settings, 'showJanazah')) {
+  return Astro.redirect('/404', 404);
+}
 
 const hasAlert = isJanazahActive(alert);
 const titel = procedure?.titel || 'Hulp bij Overlijden';

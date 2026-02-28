@@ -5,8 +5,13 @@ import { fetchAgendaEvents, fetchEventCategories, fetchSettings, urlFor } from '
 import { formatHijriDate } from '../../lib/hijri';
 import { buildFilterCategories, formatDatum, formatTijd } from '../../lib/logic/agenda-utils';
 import { sanitizeAlt } from '../../lib/logic/seo-utils';
+import { isFeatureEnabled } from '../../lib/logic/menu-builder';
 
 const settings = await fetchSettings();
+
+if (!isFeatureEnabled(settings, 'showAgenda')) {
+  return Astro.redirect('/404', 404);
+}
 const events = await fetchAgendaEvents();
 const cmsCategories = await fetchEventCategories();
 const hijriToday = formatHijriDate();

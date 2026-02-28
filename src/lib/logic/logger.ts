@@ -30,7 +30,14 @@ export type LogEvent =
   | 'reprocess_complete'
   | 'reprocess_success'
   | 'reprocess_failed'
-  | 'hmac_verification_skipped';
+  | 'hmac_verification_skipped'
+  | 'sanity_fetch_error'
+  | 'aladhan_fetch_error'
+  | 'contact_form_error'
+  | 'volunteer_form_error'
+  | 'event_registration_error'
+  | 'donate_error'
+  | 'email_send_error';
 
 export interface LogContext {
   correlationId?: string;

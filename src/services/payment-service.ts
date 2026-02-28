@@ -76,7 +76,7 @@ export async function processSuccessfulPayment(payment: {
         }),
       });
     } catch (emailErr) {
-      console.error('Bedankmail fout:', emailErr);
+      console.error(formatLog('error', 'email_send_error', { label: 'donation_confirmation' }, emailErr));
     }
   }
 }

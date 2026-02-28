@@ -5,8 +5,13 @@ import PostTypeBadge from '../components/ui/PostTypeBadge.astro';
 import { fetchNieuws, fetchSettings, urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 import { buildSiteConfig } from '../lib/logic/config';
+import { isFeatureEnabled } from '../lib/logic/menu-builder';
 
 const [nieuws, settings] = await Promise.all([fetchNieuws(), fetchSettings()]);
+
+if (!isFeatureEnabled(settings, 'showNieuws')) {
+  return Astro.redirect('/404', 404);
+}
 const config = buildSiteConfig(settings);
 ---
 

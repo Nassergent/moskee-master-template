@@ -4,22 +4,27 @@ import Section from '../components/Section.astro';
 import HomeCardSlot from '../components/home/HomeCardSlot.astro';
 import PrayerManager from '../components/PrayerManager.astro';
 import JanazahBanner from '../components/ui/janazah/JanazahBanner.astro';
-import { fetchActueel, fetchSettings, fetchHomePage, fetchHomeCards, fetchUpcomingAgendaEvents, fetchPrayerTimes, fetchActiveJanazahAlert, urlFor } from '../lib/sanity';
+import { fetchHomepageCdnBatch, fetchHomepageFreshBatch, fetchUpcomingAgendaEvents, fetchPrayerTimes, fetchActiveJanazahAlert, urlFor } from '../lib/sanity';
 import { fetchIslamicDays } from '../lib/hijri';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 import { computePrayerTimesFromSanity } from '../lib/logic/prayer-compute';
 import { isJanazahActive } from '../lib/logic/janazah';
 import { buildSiteConfig } from '../lib/logic/config';
+import { isFeatureEnabled } from '../lib/logic/menu-builder';
 
-const [settings, actueel, homePage, homeCards, agendaEvents, prayer, janazahAlert] = await Promise.all([
-  fetchSettings(),
-  fetchActueel(),
-  fetchHomePage(),
-  fetchHomeCards(),
+// Batched queries: ~7 parallel calls → ~4 (cdn batch + fresh batch + events + prayer + janazah)
+const [cdnBatch, freshBatch, agendaEvents, prayer, janazahAlert] = await Promise.all([
+  fetchHomepageCdnBatch(),
+  fetchHomepageFreshBatch(),
   fetchUpcomingAgendaEvents(3),
   fetchPrayerTimes(),
   fetchActiveJanazahAlert(),
 ]);
+
+const settings = freshBatch.settings;
+const actueel = cdnBatch.actueel || [];
+const homePage = cdnBatch.homePage;
+const homeCards = freshBatch.homeCards;
 
 const config = buildSiteConfig(settings);
 
@@ -123,8 +128,8 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </section>
 
-  <!-- Janazah Banner — alleen zichtbaar als er een actieve melding is -->
-  {isJanazahActive(janazahAlert) && janazahAlert && (
+  <!-- Janazah Banner — alleen zichtbaar als er een actieve melding is EN feature is ingeschakeld -->
+  {isFeatureEnabled(settings, 'showJanazah') && isJanazahActive(janazahAlert) && janazahAlert && (
     <JanazahBanner alert={janazahAlert} />
   )}
 
@@ -230,8 +235,8 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     );
   })()}
 
-  <!-- Sectie 4: Light-50 — Nieuws uit de moskee (conditioneel via CMS) -->
-  {toonActueel && <Section variant="light-50">
+  <!-- Sectie 4: Light-50 — Nieuws uit de moskee (conditioneel via CMS + feature flag) -->
+  {toonActueel && isFeatureEnabled(settings, 'showNieuws') && <Section variant="light-50">
     <div class="text-center mb-14">
       <h2 class="text-3xl font-bold">Nieuws uit de moskee</h2>
       <p class="text-neutral-600 mt-3">Recente berichten en aankondigingen</p>

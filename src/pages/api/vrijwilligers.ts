@@ -3,6 +3,7 @@ import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin
 import { sanitizeTakenArray } from '../../lib/logic/volunteer-validators';
 import { createVolunteer } from '../../services/volunteer-service';
 import { sendVolunteerEmails } from '../../services/email-service';
+import { formatLog } from '../../lib/logic/logger';
 
 export const prerender = false;
 
@@ -77,7 +78,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         await sendVolunteerEmails({ naam, email, telefoon, taken, bericht });
         break;
       } catch (emailErr) {
-        console.error(`Vrijwilliger e-mail fout (poging ${attempt}):`, emailErr);
+        console.error(formatLog('error', 'email_send_error', { label: 'volunteer', attempt }, emailErr));
         if (attempt < 2) await new Promise(r => setTimeout(r, 500));
       }
     }
@@ -87,7 +88,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Vrijwilligers API error:', error);
+    console.error(formatLog('error', 'volunteer_form_error', {}, error));
     return new Response(JSON.stringify({ error: 'Er is een fout opgetreden.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

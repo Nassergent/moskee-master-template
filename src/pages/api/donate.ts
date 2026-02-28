@@ -5,6 +5,7 @@ import { checkRateLimit, getClientIp, checkOrigin, isBot } from '../../lib/secur
 import { validatePaymentAmount } from '../../lib/logic/payment-validators';
 import { generateCorrelationId } from '../../lib/logic/webhook-validators';
 import { isMollieDemoMode } from '../../lib/env';
+import { formatLog } from '../../lib/logic/logger';
 
 export const prerender = false;
 
@@ -127,7 +128,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Mollie payment error:', error);
+    console.error(formatLog('error', 'donate_error', {}, error));
     return new Response(JSON.stringify({ error: 'Er is een fout opgetreden bij het aanmaken van de betaling.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

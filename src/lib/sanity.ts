@@ -1,101 +1,71 @@
 import { sanityClient, freshClient, urlFor } from '../../sanity/lib/client';
+import { formatLog } from './logic/logger';
 export { sanityClient, freshClient, urlFor };
 
 // writeClient is NOT re-exported here — import directly from
 // '../../sanity/lib/client' in server-only code (src/services/, src/pages/api/)
 
+// ── Generic fetch wrapper ─────────────────────────────────────────
+
+async function safeFetch<T>(
+  client: typeof sanityClient | typeof freshClient,
+  query: string,
+  params?: Record<string, unknown>,
+  options?: { fallback?: T; label?: string }
+): Promise<T> {
+  try {
+    const result = await client.fetch<T>(query, params);
+    return result ?? (options?.fallback as T);
+  } catch (e) {
+    console.error(formatLog('error', 'sanity_fetch_error', { label: options?.label }, e));
+    return options?.fallback as T;
+  }
+}
+
 // ── Fetch helpers (Sanity CMS is enige bron) ──────────────────────
 
 export async function fetchSettings() {
-  try {
-    // freshClient: theme/menu wijzigingen moeten direct zichtbaar zijn, geen CDN cache
-    const result = await freshClient.fetch(`*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst, payconiqQr }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchSettings error:', e);
-    return null;
-  }
+  // freshClient: theme/menu wijzigingen moeten direct zichtbaar zijn, geen CDN cache
+  return safeFetch(freshClient, `*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst, payconiqQr }`, undefined, { fallback: null, label: 'fetchSettings' });
 }
 
 export async function fetchDiensten() {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "service" && actief == true] | order(volgorde asc) {
-      _id, titel, "slug": slug.current, beschrijving, inhoud, afbeelding, tijden, volgorde
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchDiensten error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[_type == "service" && actief == true] | order(volgorde asc) {
+    _id, titel, "slug": slug.current, beschrijving, inhoud, afbeelding, tijden, volgorde
+  }`, undefined, { fallback: [] as any[], label: 'fetchDiensten' });
 }
 
 export async function fetchProjecten() {
-  try {
-    // freshClient: donatiebedragen moeten real-time zijn, geen CDN cache
-    const result = await freshClient.fetch(`*[_type == "project" && actief == true] | order(toonOpHomepage desc, _createdAt desc) [0...2] {
-      _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, actief,
-      prijsPerEenheid, eenheid, toonOpHomepage,
-      citaat->{ tekst, tekstArabisch, bron }
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchProjecten error:', e);
-    return [];
-  }
+  // freshClient: donatiebedragen moeten real-time zijn, geen CDN cache
+  return safeFetch(freshClient, `*[_type == "project" && actief == true] | order(toonOpHomepage desc, _createdAt desc) [0...2] {
+    _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, actief,
+    prijsPerEenheid, eenheid, toonOpHomepage,
+    citaat->{ tekst, tekstArabisch, bron }
+  }`, undefined, { fallback: [] as any[], label: 'fetchProjecten' });
 }
 
 export async function fetchNieuws() {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "post" && gepubliceerd == true && !defined(onderwerpHub)] | order(datum desc) {
-      _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding, postType
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchNieuws error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[_type == "post" && gepubliceerd == true && !defined(onderwerpHub)] | order(datum desc) {
+    _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding, postType
+  }`, undefined, { fallback: [] as any[], label: 'fetchNieuws' });
 }
 
 export async function fetchPrayerTimes() {
-  try {
-    const result = await sanityClient.fetch(`*[_id == "prayerTimes"][0]{
-      timezone,
-      coordinates,
-      method,
-      madhab,
-      highLatitudeRule,
-      adhanOffsets,
-      iqamaConfig,
-      jumuahShifts,
-      jumuahNote,
-      footerNote
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchPrayerTimes error:', e);
-    return null;
-  }
+  return safeFetch(sanityClient, `*[_id == "prayerTimes"][0]{
+    timezone, coordinates, method, madhab, highLatitudeRule,
+    adhanOffsets, iqamaConfig, jumuahShifts, jumuahNote, footerNote
+  }`, undefined, { fallback: null, label: 'fetchPrayerTimes' });
 }
 
 export async function fetchActueel() {
-  try {
-    const result = await sanityClient.fetch(`*[
-      _type == "post" && gepubliceerd == true
-    ] | order(_createdAt desc) [0...3] {
-      _id,
-      _type,
-      _createdAt,
-      "titel": titel,
-      "slug": slug.current,
-      "beschrijving": samenvatting,
-      "href": "/nieuws/" + slug.current,
-      postType
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchActueel error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[
+    _type == "post" && gepubliceerd == true
+  ] | order(_createdAt desc) [0...3] {
+    _id, _type, _createdAt,
+    "titel": titel, "slug": slug.current,
+    "beschrijving": samenvatting, "href": "/nieuws/" + slug.current,
+    postType
+  }`, undefined, { fallback: [] as any[], label: 'fetchActueel' });
 }
 
 export async function fetchQuote(categorie: string = 'donaties') {
@@ -108,73 +78,38 @@ export async function fetchQuote(categorie: string = 'donaties') {
     }
     return null;
   } catch (e) {
-    console.error('Sanity fetchQuote error:', e);
+    console.error(formatLog('error', 'sanity_fetch_error', { label: 'fetchQuote' }, e));
     return null;
   }
 }
 
 export async function fetchEtiquette() {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "etiquette" && gepubliceerd == true] | order(volgorde asc) {
-      _id, title, description, volgorde
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchEtiquette error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[_type == "etiquette" && gepubliceerd == true] | order(volgorde asc) {
+    _id, title, description, volgorde
+  }`, undefined, { fallback: [] as any[], label: 'fetchEtiquette' });
 }
 
 // ── Centralized query helpers (used by services + API routes) ────────
 
 export async function fetchProjectByTitle(titel: string) {
-  try {
-    // freshClient: webhook moet actuele _id ophalen
-    return await freshClient.fetch(
-      `*[_type == "project" && titel == $titel][0]{ _id }`,
-      { titel }
-    );
-  } catch (e) {
-    console.error('Sanity fetchProjectByTitle error:', e);
-    return null;
-  }
+  // freshClient: webhook moet actuele _id ophalen
+  return safeFetch(freshClient, `*[_type == "project" && titel == $titel][0]{ _id }`, { titel }, { fallback: null, label: 'fetchProjectByTitle' });
 }
 
 export async function fetchProjectById(id: string) {
-  try {
-    return await freshClient.fetch(
-      `*[_type == "project" && _id == $id][0]{ _id, titel, huidigBedragCents }`,
-      { id }
-    );
-  } catch (e) {
-    console.error('Sanity fetchProjectById error:', e);
-    return null;
-  }
+  return safeFetch(freshClient, `*[_type == "project" && _id == $id][0]{ _id, titel, huidigBedragCents }`, { id }, { fallback: null, label: 'fetchProjectById' });
 }
 
 export async function fetchAllActiveProjectTotals() {
-  try {
-    return await freshClient.fetch(
-      `*[_type == "project" && actief == true]{ _id, titel, huidigBedragCents }`
-    ) || [];
-  } catch (e) {
-    console.error('Sanity fetchAllActiveProjectTotals error:', e);
-    return [];
-  }
+  return safeFetch(freshClient, `*[_type == "project" && actief == true]{ _id, titel, huidigBedragCents }`, undefined, { fallback: [] as any[], label: 'fetchAllActiveProjectTotals' });
 }
 
 // ── Nieuwe fetch helpers (page singletons) ───────────────────────
 
 export async function fetchHomePage() {
-  try {
-    const result = await sanityClient.fetch(`*[_id == "homePage"][0]{
-      heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchHomePage error:', e);
-    return null;
-  }
+  return safeFetch(sanityClient, `*[_id == "homePage"][0]{
+    heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur
+  }`, undefined, { fallback: null, label: 'fetchHomePage' });
 }
 
 // Card projectie — herbruikt voor card1, card2, card3
@@ -193,63 +128,39 @@ const CARD_PROJECTION = `{
 }`;
 
 export async function fetchHomeCards() {
-  try {
-    const result = await freshClient.fetch(`*[_id == "homeCards"][0]{
-      ingeschakeld,
-      card1 ${CARD_PROJECTION},
-      card2 ${CARD_PROJECTION},
-      card3 ${CARD_PROJECTION}
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchHomeCards error:', e);
-    return null;
-  }
+  return safeFetch(freshClient, `*[_id == "homeCards"][0]{
+    ingeschakeld,
+    card1 ${CARD_PROJECTION},
+    card2 ${CARD_PROJECTION},
+    card3 ${CARD_PROJECTION}
+  }`, undefined, { fallback: null, label: 'fetchHomeCards' });
 }
 
 export async function fetchAboutPage() {
-  try {
-    const result = await sanityClient.fetch(`*[_id == "aboutPage"][0]{
-      heroTitle, heroSubtitle,
-      missieTitle, missieText, missieImage,
-      kengetallenTonen, kengetallen,
-      geschiedenisTonen, geschiedenisTitle, tijdlijn,
-      waardenTonen, waardenTitle, waarden,
-      teamTonen, teamTitle, team,
-      vrijwilligerTonen, vrijwilligerTitle, vrijwilligerText
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchAboutPage error:', e);
-    return null;
-  }
+  return safeFetch(sanityClient, `*[_id == "aboutPage"][0]{
+    heroTitle, heroSubtitle,
+    missieTitle, missieText, missieImage,
+    kengetallenTonen, kengetallen,
+    geschiedenisTonen, geschiedenisTitle, tijdlijn,
+    waardenTonen, waardenTitle, waarden,
+    teamTonen, teamTitle, team,
+    vrijwilligerTonen, vrijwilligerTitle, vrijwilligerText
+  }`, undefined, { fallback: null, label: 'fetchAboutPage' });
 }
 
 export async function fetchContactPage() {
-  try {
-    const result = await sanityClient.fetch(`*[_id == "contactPage"][0]{
-      introText, openingstijden, onderwerpen
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchContactPage error:', e);
-    return null;
-  }
+  return safeFetch(sanityClient, `*[_id == "contactPage"][0]{
+    introText, openingstijden, onderwerpen
+  }`, undefined, { fallback: null, label: 'fetchContactPage' });
 }
 
 // ── Topic Hub (Nieuws ↔ Agenda koppeling) ──
 
 export async function fetchPost(slug: string) {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "post" && slug.current == $slug && gepubliceerd == true][0]{
-      _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding, postType,
-      onderwerpHub->{ _id, titel, "slug": slug.current }
-    }`, { slug });
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchPost error:', e);
-    return null;
-  }
+  return safeFetch(sanityClient, `*[_type == "post" && slug.current == $slug && gepubliceerd == true][0]{
+    _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding, postType,
+    onderwerpHub->{ _id, titel, "slug": slug.current }
+  }`, { slug }, { fallback: null, label: 'fetchPost' });
 }
 
 export async function fetchTopicHubRelated(hubId: string) {
@@ -270,7 +181,7 @@ export async function fetchTopicHubRelated(hubId: string) {
       events: relatedEvents || [],
     };
   } catch (e) {
-    console.error('Sanity fetchTopicHubRelated error:', e);
+    console.error(formatLog('error', 'sanity_fetch_error', { label: 'fetchTopicHubRelated' }, e));
     return { posts: [], events: [] };
   }
 }
@@ -278,144 +189,114 @@ export async function fetchTopicHubRelated(hubId: string) {
 // ── Lessen & Ramadan ──
 
 export async function fetchLessonPrograms() {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "lessonProgram" && actief == true] | order(volgorde asc) {
-      _id, titel, categorie, beschrijving, inhoud, afbeelding,
-      maxCapaciteit, inschrijvingOpen, vrijwilligersLink, rooster, volgorde
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchLessonPrograms error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[_type == "lessonProgram" && actief == true] | order(volgorde asc) {
+    _id, titel, categorie, beschrijving, inhoud, afbeelding,
+    maxCapaciteit, inschrijvingOpen, vrijwilligersLink, rooster, volgorde
+  }`, undefined, { fallback: [] as any[], label: 'fetchLessonPrograms' });
 }
 
 export async function fetchRamadanOverride() {
-  try {
-    const result = await sanityClient.fetch(`*[_id == "ramadanOverride"][0]{
-      ingeschakeld, omschrijving, rooster
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchRamadanOverride error:', e);
-    return null;
-  }
+  return safeFetch(sanityClient, `*[_id == "ramadanOverride"][0]{
+    ingeschakeld, omschrijving, rooster
+  }`, undefined, { fallback: null, label: 'fetchRamadanOverride' });
 }
 
 // ── Event Categorieën ──
 
 export async function fetchEventCategories() {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "eventCategorie"] | order(volgorde asc) {
-      _id, titel, "slug": slug.current, kleur, icoon, volgorde
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchEventCategories error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[_type == "eventCategorie"] | order(volgorde asc) {
+    _id, titel, "slug": slug.current, kleur, icoon, volgorde
+  }`, undefined, { fallback: [] as any[], label: 'fetchEventCategories' });
 }
 
 // ── Agenda Evenementen ──
 
 export async function fetchAgendaEvents() {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
-      _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
-      "categorie": coalesce(categorieRef->titel, categorie),
-      "categorieKleur": categorieRef->kleur,
-      featured, prioriteit, doelgroep,
-      beschrijving, afbeelding
-    }`);
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchAgendaEvents error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
+    _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
+    "categorie": coalesce(categorieRef->titel, categorie),
+    "categorieKleur": categorieRef->kleur,
+    featured, prioriteit, doelgroep,
+    beschrijving, afbeelding
+  }`, undefined, { fallback: [] as any[], label: 'fetchAgendaEvents' });
 }
 
 export async function fetchUpcomingAgendaEvents(limit = 3) {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
-      _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
-      "categorie": coalesce(categorieRef->titel, categorie),
-      "categorieKleur": categorieRef->kleur,
-      featured, prioriteit, doelgroep,
-      beschrijving, afbeelding
-    }`, { limit });
-    return result || [];
-  } catch (e) {
-    console.error('Sanity fetchUpcomingAgendaEvents error:', e);
-    return [];
-  }
+  return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
+    _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
+    "categorie": coalesce(categorieRef->titel, categorie),
+    "categorieKleur": categorieRef->kleur,
+    featured, prioriteit, doelgroep,
+    beschrijving, afbeelding
+  }`, { limit }, { fallback: [] as any[], label: 'fetchUpcomingAgendaEvents' });
 }
 
 // ── Janazah & Overlijden ──
 
 export async function fetchJanazahProcedure() {
-  try {
-    const result = await freshClient.fetch(`*[_id == "janazahProcedure"][0]{
-      titel, noodnummer, introductie, stappen
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchJanazahProcedure error:', e);
-    return null;
-  }
+  return safeFetch(freshClient, `*[_id == "janazahProcedure"][0]{
+    titel, noodnummer, introductie, stappen
+  }`, undefined, { fallback: null, label: 'fetchJanazahProcedure' });
 }
 
 export async function fetchActiveJanazahAlert() {
-  try {
-    const result = await freshClient.fetch(`*[_type == "janazahAlert" && actief == true] | order(gebeddatum desc) [0]{
-      _id, naamOverledene, naGebed, gebedstijdstip, gebeddatum, duaArabisch, familyConsent, actief
-    }`);
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchActiveJanazahAlert error:', e);
-    return null;
-  }
+  return safeFetch(freshClient, `*[_type == "janazahAlert" && actief == true] | order(gebeddatum desc) [0]{
+    _id, naamOverledene, naGebed, gebedstijdstip, gebeddatum, duaArabisch, familyConsent, actief
+  }`, undefined, { fallback: null, label: 'fetchActiveJanazahAlert' });
 }
 
 export async function fetchAgendaEvent(slug: string) {
-  try {
-    const result = await sanityClient.fetch(`*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
-      _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
-      "categorie": coalesce(categorieRef->titel, categorie),
-      "categorieKleur": categorieRef->kleur,
-      featured, doelgroep,
-      beschrijving, afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current },
-      registrationOpen, registrationMax, registrationDeadline, externalRegistrationUrl,
-      "occupancy": math::sum(*[_type == "eventRegistration" && eventRef._ref == ^._id && status != "cancelled"].partySize)
-    }`, { slug });
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchAgendaEvent error:', e);
-    return null;
-  }
+  return safeFetch(sanityClient, `*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
+    _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
+    "categorie": coalesce(categorieRef->titel, categorie),
+    "categorieKleur": categorieRef->kleur,
+    featured, doelgroep,
+    beschrijving, afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current },
+    registrationOpen, registrationMax, registrationDeadline, externalRegistrationUrl,
+    "occupancy": math::sum(*[_type == "eventRegistration" && eventRef._ref == ^._id && status != "cancelled"].partySize)
+  }`, { slug }, { fallback: null, label: 'fetchAgendaEvent' });
 }
 
 export async function fetchAgendaEventRegistrationInfo(eventId: string) {
-  try {
-    const result = await freshClient.fetch(
-      `*[_type == "agendaEvent" && _id == $eventId][0]{ _id, titel, registrationOpen, registrationMax, registrationDeadline }`,
-      { eventId }
-    );
-    return result || null;
-  } catch (e) {
-    console.error('Sanity fetchAgendaEventRegistrationInfo error:', e);
-    return null;
-  }
+  return safeFetch(freshClient, `*[_type == "agendaEvent" && _id == $eventId][0]{ _id, titel, registrationOpen, registrationMax, registrationDeadline }`, { eventId }, { fallback: null, label: 'fetchAgendaEventRegistrationInfo' });
 }
 
 export async function fetchEventOccupancy(eventId: string): Promise<number> {
-  try {
-    const result = await freshClient.fetch(
-      `math::sum(*[_type == "eventRegistration" && eventRef._ref == $eventId && status != "cancelled"].partySize)`,
-      { eventId }
-    );
-    return result || 0;
-  } catch (e) {
-    console.error('Sanity fetchEventOccupancy error:', e);
-    return 0;
-  }
+  return safeFetch(freshClient, `math::sum(*[_type == "eventRegistration" && eventRef._ref == $eventId && status != "cancelled"].partySize)`, { eventId }, { fallback: 0, label: 'fetchEventOccupancy' });
+}
+
+// ── Homepage Batched Queries (2.2c — reduces ~7 calls to ~3) ──
+
+export async function fetchHomepageCdnBatch() {
+  return safeFetch(sanityClient, `{
+    "homePage": *[_id == "homePage"][0]{
+      heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur
+    },
+    "actueel": *[_type == "post" && gepubliceerd == true] | order(_createdAt desc) [0...3] {
+      _id, _type, _createdAt,
+      "titel": titel, "slug": slug.current,
+      "beschrijving": samenvatting, "href": "/nieuws/" + slug.current,
+      postType
+    },
+    "etiquette": *[_type == "etiquette" && gepubliceerd == true] | order(volgorde asc) {
+      _id, title, description, volgorde
+    }
+  }`, undefined, { fallback: { homePage: null, actueel: [], etiquette: [] }, label: 'fetchHomepageCdnBatch' });
+}
+
+export async function fetchHomepageFreshBatch() {
+  return safeFetch(freshClient, `{
+    "settings": *[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst, payconiqQr },
+    "homeCards": *[_id == "homeCards"][0]{
+      ingeschakeld,
+      card1 ${CARD_PROJECTION},
+      card2 ${CARD_PROJECTION},
+      card3 ${CARD_PROJECTION}
+    },
+    "projecten": *[_type == "project" && actief == true] | order(toonOpHomepage desc, _createdAt desc) [0...2] {
+      _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, actief,
+      prijsPerEenheid, eenheid, toonOpHomepage,
+      citaat->{ tekst, tekstArabisch, bron }
+    }
+  }`, undefined, { fallback: { settings: null, homeCards: null, projecten: [] }, label: 'fetchHomepageFreshBatch' });
 }

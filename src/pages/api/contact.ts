@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
 import { sendContactNotification } from '../../services/email-service';
+import { formatLog } from '../../lib/logic/logger';
 
 export const prerender = false;
 
@@ -81,7 +82,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Contact form error:', error);
+    console.error(formatLog('error', 'contact_form_error', {}, error));
     return new Response(JSON.stringify({ error: 'Er is een fout opgetreden.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
