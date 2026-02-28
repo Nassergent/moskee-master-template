@@ -20,13 +20,13 @@ const { taken = [] } = Astro.props;
     <div>
       <label for="vol-naam" class="block text-sm font-heading font-semibold text-primary mb-2">Naam *</label>
       <input type="text" id="vol-naam" name="naam" required aria-required="true"
-        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base"
+        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-neutral-900"
         placeholder="Uw volledige naam" />
     </div>
     <div>
       <label for="vol-email" class="block text-sm font-heading font-semibold text-primary mb-2">E-mail *</label>
       <input type="email" id="vol-email" name="email" required aria-required="true"
-        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base"
+        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-neutral-900"
         placeholder="uw@email.be" />
     </div>
   </div>
@@ -34,7 +34,7 @@ const { taken = [] } = Astro.props;
   <div>
     <label for="vol-telefoon" class="block text-sm font-heading font-semibold text-primary mb-2">Telefoon</label>
     <input type="tel" id="vol-telefoon" name="telefoon"
-      class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base"
+      class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-neutral-900"
       placeholder="+32 xxx xx xx xx" />
   </div>
 
@@ -42,7 +42,7 @@ const { taken = [] } = Astro.props;
     <div>
       <label for="vol-taak" class="block text-sm font-heading font-semibold text-primary mb-2">Waar wil je bij helpen?</label>
       <select id="vol-taak" name="taak"
-        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-base appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
+        class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all text-neutral-900 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10">
         <option value="">Kies een taak</option>
         {taken.map((taak: string) => (
           <option value={taak.toLowerCase()}>{taak}</option>
@@ -54,7 +54,7 @@ const { taken = [] } = Astro.props;
   <div>
     <label for="vol-bericht" class="block text-sm font-heading font-semibold text-primary mb-2">Bericht</label>
     <textarea id="vol-bericht" name="bericht" rows="3"
-      class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all resize-y text-base"
+      class="w-full bg-white px-4 py-3.5 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none transition-all resize-y text-neutral-900"
       placeholder="Vertel ons kort waarom u vrijwilliger wilt worden..."></textarea>
   </div>
 
