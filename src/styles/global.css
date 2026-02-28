@@ -20,6 +20,14 @@
   --color-accent-light: var(--theme-accent-light, #f5ede4);
   --color-accent-hover: var(--theme-accent-hover, #d4b999);
 
+  /* Iqama current-prayer indicator */
+  --color-iqama-current: #E8CDB5;
+
+  /* Post type badges */
+  --color-badge-nieuws: #166534;
+  --color-badge-mededeling: #92400e;
+  --color-badge-artikel: #1e40af;
+
   /* WhatsApp */
   --color-whatsapp: #25D366;
   --color-whatsapp-hover: #1da851;

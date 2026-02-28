@@ -5,10 +5,10 @@ interface Props {
 
 const { postType = 'nieuws' } = Astro.props;
 
-const config: Record<string, { label: string; color: string }> = {
-  nieuws:     { label: 'Nieuws',     color: '#166534' },
-  mededeling: { label: 'Mededeling', color: '#92400e' },
-  artikel:    { label: 'Artikel',    color: '#1e40af' },
+const config: Record<string, { label: string; colorVar: string }> = {
+  nieuws:     { label: 'Nieuws',     colorVar: 'var(--color-badge-nieuws)' },
+  mededeling: { label: 'Mededeling', colorVar: 'var(--color-badge-mededeling)' },
+  artikel:    { label: 'Artikel',    colorVar: 'var(--color-badge-artikel)' },
 };
 
 const badge = config[postType] || config.nieuws;
@@ -16,7 +16,7 @@ const badge = config[postType] || config.nieuws;
 
 <span
   class="inline-block px-2 py-0.5 text-xs font-semibold uppercase tracking-wider"
-  style={`background-color: ${badge.color}20; color: ${badge.color};`}
+  style={`background-color: color-mix(in srgb, ${badge.colorVar} 12%, transparent); color: ${badge.colorVar};`}
 >
   {badge.label}
 </span>

@@ -14,11 +14,3 @@ export function buildSiteConfig(settings: any) {
     mosqueName: settings?.mosqueName ?? 'Moskee',
   };
 }
-
-export function formatDate(date: Date | string, locale: string, options?: Intl.DateTimeFormatOptions) {
-  return new Date(date).toLocaleDateString(locale, options);
-}
-
-export function formatCurrency(cents: number, locale: string) {
-  return (cents / 100).toLocaleString(locale, { style: 'currency', currency: 'EUR' });
-}

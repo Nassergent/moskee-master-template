@@ -8,6 +8,7 @@
  * 3. CMS override via card.evenementTitel/Datum (handmatig hoofdevenement)
  */
 import { generateGoogleCalendarUrl } from '../../lib/hijri';
+import { daysUntil } from '../../lib/logic/date-utils';
 
 interface Props {
   card: any;
@@ -34,8 +35,7 @@ const apiUpcoming = islamicDaysData.length > 0 ? islamicDaysData[0] : null;
 
 // CMS override: if evenementTitel + evenementDatum are set, use those
 const hasCmsOverride = !!(card.evenementTitel && card.evenementDatum);
-const cmsDate = hasCmsOverride ? new Date(card.evenementDatum) : null;
-const cmsDaysUntil = cmsDate ? Math.ceil((cmsDate.getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24)) : null;
+const cmsDaysUntil = hasCmsOverride ? daysUntil(card.evenementDatum) : null;
 
 const upcoming = hasCmsOverride
   ? {
@@ -49,15 +49,12 @@ const upcoming = hasCmsOverride
 // "Daarna" list: API data or CMS fallback
 const nextDays = !hasCmsOverride && islamicDaysData.length > 1
   ? islamicDaysData.slice(1)
-  : (card.komendeDatumsFallback || []).map((d: any) => {
-      const dt = new Date(d.datum);
-      return {
+  : (card.komendeDatumsFallback || []).map((d: any) => ({
         name: d.naam,
         nameAr: d.naamArabisch || '',
         gregorianDate: d.datum,
-        daysUntil: Math.ceil((dt.getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24)),
-      };
-    }).filter((d: any) => d.daysUntil >= 0);
+        daysUntil: daysUntil(d.datum),
+    })).filter((d: any) => d.daysUntil >= 0);
 
 if (!upcoming) return;
 

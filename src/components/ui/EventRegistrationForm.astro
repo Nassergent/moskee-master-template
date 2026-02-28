@@ -3,6 +3,8 @@
  * EventRegistrationForm.astro — Inschrijfformulier voor evenementen
  * Volgt hetzelfde patroon als VolunteerForm.astro
  */
+import { getRegistrationStatus } from '../../lib/logic/event-utils';
+
 interface Props {
   eventId: string;
   eventTitel: string;
@@ -13,10 +15,7 @@ interface Props {
 
 const { eventId, eventTitel, maxCapacity, occupancy = 0, deadline } = Astro.props;
 
-const isFull = maxCapacity ? occupancy >= maxCapacity : false;
-const isExpired = deadline ? new Date(deadline) < new Date() : false;
-const spotsLeft = maxCapacity ? maxCapacity - occupancy : null;
-const occupancyPercent = maxCapacity ? Math.min(100, Math.round((occupancy / maxCapacity) * 100)) : 0;
+const { isFull, isExpired, spotsLeft, occupancyPercent } = getRegistrationStatus(maxCapacity, occupancy, deadline);
 ---
 
 <div class="bg-white border border-neutral-200 p-6 md:p-8" id="event-registration-section">

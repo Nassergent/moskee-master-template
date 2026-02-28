@@ -126,11 +126,11 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
                 <div class="flex items-center gap-1.5">
                   <span class:list={[
                     'text-[10px] uppercase tracking-wider font-bold',
-                    isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                    isCurrent ? 'text-[var(--color-iqama-current)]' : 'text-accent',
                   ]}>Iqama</span>
                   <span class:list={[
                     'text-sm font-bold tabular-nums',
-                    isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                    isCurrent ? 'text-[var(--color-iqama-current)]' : 'text-accent',
                   ]}>{times.iqama[name]}</span>
                 </div>
               ) : null}
@@ -174,7 +174,7 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
                 {PRAYER_LABELS[name]}
               </p>
               {isCurrent && (
-                <span class="inline-block mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#E8CDB5]">Nu</span>
+                <span class="inline-block mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-iqama-current)]">Nu</span>
               )}
               {isNext && secondsUntilNext > 0 && (
                 <p
@@ -201,11 +201,11 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
                 <div>
                   <p class:list={[
                     'text-[10px] uppercase tracking-wider font-bold',
-                    isCurrent ? 'text-[#E8CDB5]/70' : 'text-accent/60',
+                    isCurrent ? 'text-[var(--color-iqama-current)]/70' : 'text-accent/60',
                   ]}>Iqama</p>
                   <p class:list={[
                     'text-lg font-bold font-heading tabular-nums',
-                    isCurrent ? 'text-[#E8CDB5]' : 'text-accent',
+                    isCurrent ? 'text-[var(--color-iqama-current)]' : 'text-accent',
                   ]}>{times.iqama[name]}</p>
                 </div>
               ) : (

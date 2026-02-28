@@ -394,6 +394,19 @@ export async function fetchAgendaEvent(slug: string) {
   }
 }
 
+export async function fetchAgendaEventRegistrationInfo(eventId: string) {
+  try {
+    const result = await freshClient.fetch(
+      `*[_type == "agendaEvent" && _id == $eventId][0]{ _id, titel, registrationOpen, registrationMax, registrationDeadline }`,
+      { eventId }
+    );
+    return result || null;
+  } catch (e) {
+    console.error('Sanity fetchAgendaEventRegistrationInfo error:', e);
+    return null;
+  }
+}
+
 export async function fetchEventOccupancy(eventId: string): Promise<number> {
   try {
     const result = await freshClient.fetch(

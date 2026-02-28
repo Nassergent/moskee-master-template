@@ -1,7 +1,6 @@
 import type { APIRoute } from 'astro';
 import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
-import { fetchEventOccupancy } from '../../lib/sanity';
-import { freshClient } from '../../../sanity/lib/client';
+import { fetchEventOccupancy, fetchAgendaEventRegistrationInfo } from '../../lib/sanity';
 import { createEventRegistration } from '../../services/event-registration-service';
 import { sendEventRegistrationEmails } from '../../services/email-service';
 import { Redis } from '@upstash/redis';
@@ -111,10 +110,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     }
 
     // Fetch event for deadline + capacity check
-    const event = await freshClient.fetch(
-      `*[_type == "agendaEvent" && _id == $eventId][0]{ _id, titel, registrationOpen, registrationMax, registrationDeadline }`,
-      { eventId }
-    );
+    const event = await fetchAgendaEventRegistrationInfo(eventId);
 
     if (!event || !event.registrationOpen) {
       return new Response(JSON.stringify({ error: 'Inschrijving is niet geopend voor dit evenement.' }), {
