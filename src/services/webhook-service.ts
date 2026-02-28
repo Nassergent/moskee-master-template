@@ -167,21 +167,38 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
     }
 
     if (projectId && shouldUpdateProject(projectName)) {
-      await retryWithBackoff(async (attempt) => {
-        if (attempt > 1) {
-          log('info', 'sanity_commit_retry', { tenantId, projectId: projectId!, amountCents, attempt });
+      try {
+        await retryWithBackoff(async (attempt) => {
+          if (attempt > 1) {
+            log('info', 'sanity_commit_retry', { tenantId, projectId: projectId!, amountCents, attempt });
+          }
+          const result = await writeClient
+            .patch(projectId!)
+            .inc({ huidigBedragCents: amountCents })
+            .commit();
+          log('info', 'sanity_commit_ok', {
+            tenantId,
+            projectId: projectId!,
+            amountCents,
+            newTotalCents: result?.huidigBedragCents,
+          });
+        }, 3, logs, paymentId, tenantId);
+      } catch (sanityErr) {
+        // Sanity definitief gefaald — sla op in Redis voor later reprocess
+        if (r) {
+          const failedData = JSON.stringify({
+            paymentId,
+            projectId,
+            projectName,
+            amountCents,
+            failedAt: new Date().toISOString(),
+            error: sanityErr instanceof Error ? sanityErr.message : String(sanityErr),
+          });
+          await r.set(`${tenantId}:failed:${paymentId}`, failedData, { ex: 2592000 }); // 30 days TTL
+          log('error', 'sanity_write_failed_stored', { tenantId, projectId, amountCents });
         }
-        const result = await writeClient
-          .patch(projectId!)
-          .inc({ huidigBedragCents: amountCents })
-          .commit();
-        log('info', 'sanity_commit_ok', {
-          tenantId,
-          projectId: projectId!,
-          amountCents,
-          newTotalCents: result?.huidigBedragCents,
-        });
-      }, 3, logs, paymentId, tenantId);
+        // BELANGRIJK: ga door naar processed marker + email — donatie is wel betaald
+      }
     } else {
       log('info', 'payment_not_paid', { tenantId, note: 'no_project_update', projectId, projectName });
     }

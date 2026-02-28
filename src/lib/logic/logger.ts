@@ -23,7 +23,13 @@ export type LogEvent =
   | 'reconcile_complete'
   | 'reconcile_diff'
   | 'rate_limit_fallback'
-  | 'rate_limit_hard_fail';
+  | 'rate_limit_hard_fail'
+  | 'sanity_write_failed'
+  | 'sanity_write_failed_stored'
+  | 'reprocess_start'
+  | 'reprocess_complete'
+  | 'reprocess_success'
+  | 'reprocess_failed';
 
 export interface LogContext {
   correlationId?: string;
