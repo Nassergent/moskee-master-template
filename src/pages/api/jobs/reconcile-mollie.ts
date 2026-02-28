@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { runReconciliation } from '../../../services/reconcile-service';
 import { formatLog } from '../../../lib/logic/logger';
+import { isMollieDemoMode } from '../../../lib/env';
 
 export const prerender = false;
 
@@ -31,7 +32,7 @@ export const POST: APIRoute = async ({ request, url }) => {
   }
 
   const mollieKey = import.meta.env.MOLLIE_API_KEY;
-  if (!mollieKey || mollieKey === 'test_xxxxxxxxxxxx') {
+  if (!mollieKey || isMollieDemoMode()) {
     return new Response(JSON.stringify({ error: 'Mollie not configured' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
