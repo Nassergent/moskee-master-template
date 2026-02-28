@@ -42,7 +42,7 @@ export const lessonProgram = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      hidden: true,
+      description: 'URL-pad van het lesprogramma. Klik op "Generate" om te genereren vanuit de titel.',
       options: {
         source: 'titel',
         maxLength: 96,

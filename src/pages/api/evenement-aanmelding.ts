@@ -45,8 +45,7 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
-    const host = request.headers.get('host');
-    const siteOrigin = host ? `https://${host}` : import.meta.env.PUBLIC_SITE_URL || url.origin;
+    const siteOrigin = url.origin;
 
     // CSRF origin check
     const originError = checkOrigin(request, siteOrigin);

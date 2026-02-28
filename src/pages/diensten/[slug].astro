@@ -7,7 +7,7 @@ import { sanitizeAlt } from '../../lib/logic/seo-utils';
 
 const { slug } = Astro.params;
 const diensten = await fetchDiensten();
-const dienst = diensten.find((d: any) => d.slug?.current === slug);
+const dienst = diensten.find((d: any) => d.slug === slug);
 if (!dienst?.titel) return Astro.redirect('/diensten');
 const settings = await fetchSettings();
 ---

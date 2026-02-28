@@ -23,7 +23,7 @@ export const agendaEvent = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      hidden: true,
+      description: 'URL-pad van het evenement. Klik op "Generate" om te genereren vanuit de titel.',
       options: {
         source: 'titel',
         maxLength: 96,
