@@ -27,7 +27,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A POST to `/api/donate` when Redis is unreachable returns HTTP 503, not a silent pass-through
   3. A POST to `/api/contact` or `/api/vrijwilligers` when Redis is unreachable falls through to the in-memory path without returning 503
   4. `@upstash/ratelimit` instance is constructed with `timeout: 500` so Redis latency spikes do not hold Vercel invocation slots open beyond 500ms
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 01-01-PLAN.md — Refactor checkRateLimit with typed FailStrategy + update all 3 API callers
 
 ### Phase 2: In-Memory LRU + Observability
 **Goal**: The in-memory fallback is bounded and observable — no unbounded Map growth, every fallback activation emits a structured log entry
@@ -58,6 +61,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. FailStrategy Foundation | 0/? | Not started | - |
+| 1. FailStrategy Foundation | 0/1 | Not started | - |
 | 2. In-Memory LRU + Observability | 0/? | Not started | - |
 | 3. Webhook Idempotency Test Suite | 0/? | Not started | - |
