@@ -29,7 +29,8 @@ export type LogEvent =
   | 'reprocess_start'
   | 'reprocess_complete'
   | 'reprocess_success'
-  | 'reprocess_failed';
+  | 'reprocess_failed'
+  | 'hmac_verification_skipped';
 
 export interface LogContext {
   correlationId?: string;

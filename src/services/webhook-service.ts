@@ -61,7 +61,7 @@ export async function processWebhook(paymentId: string): Promise<WebhookResult> 
   log('info', 'webhook_received', {});
 
   const mollieKey = import.meta.env.MOLLIE_API_KEY;
-  if (!mollieKey || mollieKey === 'test_xxxxxxxxxxxx') {
+  if (!mollieKey || import.meta.env.WEBHOOK_SKIP_VERIFICATION === 'true') {
     log('info', 'webhook_complete', { duration_ms: Date.now() - startTime, note: 'demo_mode' });
     return { status: 200, body: 'OK (demo)', logs };
   }
