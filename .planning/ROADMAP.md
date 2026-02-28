@@ -43,7 +43,7 @@ Plans:
 **Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 02-01-PLAN.md — Replace Map with LRUCache, add structured fallback/hard-fail logging, update all 5 callers with route param
+- [x] 02-01-PLAN.md — Replace Map with LRUCache, add structured fallback/hard-fail logging, update all 5 callers with route param
 
 ### Phase 3: Webhook Idempotency Test Suite
 **Goal**: The webhook idempotency pipeline has verified test coverage for all four critical failure scenarios — no production Redis failure mode is untested
@@ -59,7 +59,7 @@ Plans:
 
 Plans:
 - [ ] 03-01-PLAN.md — Webhook service tests: Redis timeout, ECONNREFUSED, idempotency, shared mock factory, structured log assertions
-- [ ] 03-02-PLAN.md — HMAC tampered signature verification tests
+- [x] 03-02-PLAN.md — HMAC tampered signature verification tests
 
 ## Progress
 
@@ -70,4 +70,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. FailStrategy Foundation | 1/1 | Complete | 2026-02-28 |
 | 2. In-Memory LRU + Observability | 1/1 | Complete   | 2026-02-28 |
-| 3. Webhook Idempotency Test Suite | 0/2 | Not started | - |
+| 3. Webhook Idempotency Test Suite | 1/2 | In progress | - |

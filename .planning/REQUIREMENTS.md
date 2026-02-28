@@ -19,7 +19,7 @@
 - [ ] **WHTEST-01**: Test: `processWebhook()` retourneert 503 wanneer Redis een timeout geeft (slow reject, gesimuleerd met fake timers)
 - [ ] **WHTEST-02**: Test: `processWebhook()` retourneert 503 wanneer Redis volledig onbereikbaar is (connection refused)
 - [ ] **WHTEST-03**: Test: `processWebhook()` verwerkt een payment slechts één keer wanneer dezelfde paymentId twee keer wordt aangeboden (idempotency check)
-- [ ] **WHTEST-04**: Test: Mollie webhook POST met getamperde HMAC signature wordt afgewezen
+- [x] **WHTEST-04**: Test: Mollie webhook POST met getamperde HMAC signature wordt afgewezen
 - [ ] **WHTEST-05**: Shared `vi.mock('@upstash/redis')` factory is herbruikbaar across alle webhook test scenario's
 - [ ] **WHTEST-06**: Tests verifieren dat 503 paden een structured log entry emitten met `paymentId` en `tenantId`
 
@@ -59,7 +59,7 @@
 | WHTEST-01 | Phase 3 | Pending |
 | WHTEST-02 | Phase 3 | Pending |
 | WHTEST-03 | Phase 3 | Pending |
-| WHTEST-04 | Phase 3 | Pending |
+| WHTEST-04 | Phase 3 | Complete (2026-02-28) |
 | WHTEST-05 | Phase 3 | Pending |
 | WHTEST-06 | Phase 3 | Pending |
 

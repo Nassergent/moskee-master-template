@@ -2,26 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-28T07:41:08.927Z"
-progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
 status: in-progress
-last_updated: "2026-02-28T07:37:25Z"
+last_updated: "2026-02-28T11:26:00Z"
 progress:
   total_phases: 3
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 5
+  completed_plans: 3
 ---
 
 # Project State
@@ -31,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Betalingen en API-bescherming mogen nooit stil falen — elke failure moet detecteerbaar en herstelbaar zijn.
-**Current focus:** Phase 2 — In-Memory LRU + Observability (complete)
+**Current focus:** Phase 3 — Webhook Idempotency Test Suite (in progress)
 
 ## Current Position
 
-Phase: 2 of 3 (In-Memory LRU + Observability)
-Plan: 1 of 1 in current phase
-Status: Phase 2 complete — ready for Phase 3
-Last activity: 2026-02-28 — Plan 02-01 complete (LRU cache + structured rate-limit logging)
+Phase: 3 of 3 (Webhook Idempotency Test Suite)
+Plan: 2 of 2 complete in current phase
+Status: Phase 3 Plan 02 complete — WHTEST-04 HMAC tests passing
+Last activity: 2026-02-28 — Plan 03-02 complete (HMAC signature verification tests)
 
-Progress: [████░░░░░░] 67%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: ~7min
-- Total execution time: ~13min
+- Total plans completed: 3
+- Average duration: ~6min
+- Total execution time: ~18min
 
 **By Phase:**
 
@@ -55,10 +42,11 @@ Progress: [████░░░░░░] 67%
 |-------|-------|-------|----------|
 | 01-failstrategy-foundation | 1 | ~10min | ~10min |
 | 02-in-memory-lru-observability | 1 | ~3min | ~3min |
+| 03-webhook-idempotency-test-suite | 2 complete | ~5min (so far) | ~5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~10min), 02-01 (~3min)
-- Trend: —
+- Last 5 plans: 01-01 (~10min), 02-01 (~3min), 03-02 (~5min)
+- Trend: Stable
 
 *Updated after each plan completion*
 
@@ -86,17 +74,21 @@ Recent decisions affecting current work:
 - hashIp sliced to 16 hex chars — sufficient for correlation, not enough to reverse the original IP
 - No ttlAutopurge on LRUCache — unnecessary in serverless context (Vercel cold-start resets module state)
 
+**Phase 3 Plan 02 decisions (2026-02-28):**
+- Test verifyHmacTimingSafe() directly — avoids Astro route runtime dependency for WHTEST-04
+- signBody() helper uses crypto.subtle (same Web Crypto API as production) — no external HMAC lib needed
+
 ### Pending Todos
 
 None yet.
 
 ### Blockers/Concerns
 
-- [Pre-Phase 3]: Confirm that Astro exports the `POST` handler from `mollie-webhook.ts` as a directly callable async function without needing full Astro runtime — needed before writing the route-level HMAC test
 - [Pre-Phase 3]: Mollie exact retry window duration is LOW confidence (community sources only) — verify in official Mollie docs before writing ops runbook in Phase 3
+- [Observation]: src/services/webhook-service.test.ts is present as an untracked file — likely from prior Phase 3 plan work. Review before Phase 3 gate.
 
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 02-01-PLAN.md (In-Memory LRU + Observability — LRU cache + structured rate-limit logging)
+Stopped at: Completed 03-02-PLAN.md (Webhook Idempotency Test Suite — HMAC signature verification tests, WHTEST-04)
 Resume file: None
