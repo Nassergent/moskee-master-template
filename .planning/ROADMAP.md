@@ -11,7 +11,7 @@ Deze milestone maakt het moskee-master-template veilig deploybaar naar meerdere 
 
 - [ ] **Phase 1: Webhook Sanity Write Recovery** - Sanity write failures opvangen met Redis fallback + reprocess endpoint
 - [ ] **Phase 2: HMAC Verificatie Fix** - Test mode detectie vervangen door expliciete env var
-- [ ] **Phase 3: Frequency Cleanup** - Ongebruikte frequency parameter opruimen uit API
+- [x] **Phase 3: Frequency Cleanup** - Ongebruikte frequency parameter opruimen uit API
 - [ ] **Phase 4: Centrale Demo Mode Helper** - Alle hardcoded test values vervangen door isDemoMode()
 
 ## Phase Details
@@ -54,7 +54,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 03-01-PLAN.md — Frequency parameter cleanup
+- [x] 03-01-PLAN.md — Frequency parameter cleanup
 
 ### Phase 4: Centrale Demo Mode Helper
 **Goal**: Alle 6 hardcoded test value checks zijn vervangen door één centrale `isDemoMode()` helper — nieuwe services hoeven nooit meer magic strings te kennen
