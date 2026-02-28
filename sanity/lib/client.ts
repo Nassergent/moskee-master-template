@@ -17,16 +17,16 @@ if (!projectId) {
   throw new Error('Missing PUBLIC_SANITY_PROJECT_ID — set it in .env');
 }
 
-// Public read client — useCdn: false voor directe updates na Sanity edits
-// Bij laag verkeer (moskee-sites) is CDN cache niet nodig
+// CDN client — gecachte reads voor publieke content (diensten, nieuws, etiquette, ...)
+// useCdn: true geeft snellere responses via Sanity's edge network
 export const sanityClient = createClient({
   projectId,
   dataset,
-  useCdn: false,
+  useCdn: true,
   apiVersion: '2024-01-01',
 });
 
-// Fresh client — useCdn: false voor data die real-time moet zijn (donaties, bedragen)
+// Fresh client — useCdn: false voor data die real-time moet zijn (donaties, settings, bedragen)
 export const freshClient = createClient({
   projectId,
   dataset,

@@ -86,7 +86,7 @@ const cardSlotFields = (position: string) => [
     name: 'donatieCtaLabelOverride',
     title: 'Knop tekst (optioneel, standaard: "Steun dit doel")',
     type: 'string',
-    placeholder: 'Steun dit doel',
+    description: 'Laat leeg voor standaard "Steun dit doel".',
     hidden: ({ parent }) => parent?.variant !== 'donatieCampagne',
   }),
 
@@ -109,6 +109,14 @@ const cardSlotFields = (position: string) => [
     title: 'Preview afbeelding',
     type: 'image',
     hidden: ({ parent }) => parent?.variant !== 'download',
+    fields: [
+      defineField({
+        name: 'alt',
+        title: 'Alt-tekst',
+        type: 'string',
+        description: 'Beschrijving voor toegankelijkheid en SEO.',
+      }),
+    ],
   }),
   defineField({
     name: 'downloadBestand',
@@ -144,6 +152,14 @@ const cardSlotFields = (position: string) => [
     type: 'image',
     options: { hotspot: true },
     hidden: ({ parent }) => parent?.variant !== 'aangepast',
+    fields: [
+      defineField({
+        name: 'alt',
+        title: 'Alt-tekst',
+        type: 'string',
+        description: 'Beschrijving voor toegankelijkheid en SEO.',
+      }),
+    ],
   }),
   defineField({
     name: 'aangepastCtaLabel',
@@ -164,6 +180,9 @@ export const homeCards = defineType({
   name: 'homeCards',
   title: 'Home Kaarten',
   type: 'document',
+  groups: [
+    { name: 'instellingen', title: 'Instellingen', default: true },
+  ],
   fields: [
     defineField({
       name: 'ingeschakeld',
@@ -171,6 +190,7 @@ export const homeCards = defineType({
       type: 'boolean',
       initialValue: true,
       description: 'Schakel de volledige 3-kaarten sectie op de homepage in/uit.',
+      group: 'instellingen',
     }),
     defineField({
       name: 'card1',

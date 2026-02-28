@@ -12,6 +12,7 @@ export const aboutPage = defineType({
     { name: 'waarden', title: 'Onze Waarden' },
     { name: 'team', title: 'Bestuur & Team' },
     { name: 'vrijwilliger', title: 'Vrijwilligers' },
+    { name: 'seo', title: 'SEO' },
   ],
   fields: [
     // ── Hero & Introductie ──────────────────────────────────
@@ -54,6 +55,14 @@ export const aboutPage = defineType({
       title: 'Missie Afbeelding',
       type: 'image',
       options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt-tekst',
+          type: 'string',
+          description: 'Beschrijving voor toegankelijkheid en SEO.',
+        }),
+      ],
       group: 'missie',
       description: 'Wordt getoond in 4:3 verhouding naast de missietekst. Tip: upload een liggende foto.',
     }),
@@ -262,6 +271,14 @@ export const aboutPage = defineType({
               type: 'image',
               options: { hotspot: true },
               description: 'Vierkante foto werkt het best',
+              fields: [
+                defineField({
+                  name: 'alt',
+                  title: 'Alt-tekst',
+                  type: 'string',
+                  description: 'Beschrijving voor toegankelijkheid en SEO.',
+                }),
+              ],
             }),
           ],
           preview: {
@@ -299,6 +316,31 @@ export const aboutPage = defineType({
       hidden: ({ parent }) => !parent?.vrijwilligerTonen,
     }),
 
+    // ── SEO ───────────────────────────────────────────────────
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      group: 'seo',
+      description: 'Overschrijft de standaard paginatitel in zoekmachines. Laat leeg om de titel te gebruiken.',
+      validation: (rule) => rule.max(60),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 3,
+      group: 'seo',
+      description: 'Korte beschrijving voor Google-zoekresultaten. Laat leeg voor automatische samenvatting.',
+      validation: (rule) => rule.max(160),
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Social Media Afbeelding',
+      type: 'image',
+      group: 'seo',
+      description: 'Wordt getoond als preview bij delen op social media. Aanbevolen: 1200x630px.',
+    }),
   ],
   preview: {
     prepare() {

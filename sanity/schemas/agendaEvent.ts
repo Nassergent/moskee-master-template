@@ -9,6 +9,7 @@ export const agendaEvent = defineType({
     { name: 'uitgelicht', title: 'Uitgelicht' },
     { name: 'media', title: 'Media' },
     { name: 'koppelingen', title: 'Koppelingen' },
+    { name: 'seo', title: 'SEO' },
   ],
   fields: [
     defineField({
@@ -49,6 +50,13 @@ export const agendaEvent = defineType({
       type: 'datetime',
       description: 'Wanneer eindigt het evenement?',
       group: 'basis',
+      validation: (Rule) => Rule.custom((eindDatum, context) => {
+        const parent = context.parent as { startDatum?: string };
+        if (!eindDatum || !parent?.startDatum) return true;
+        return new Date(eindDatum) > new Date(parent.startDatum)
+          ? true
+          : 'Einddatum moet na de startdatum liggen.';
+      }),
     }),
     defineField({
       name: 'locatie',
@@ -90,7 +98,7 @@ export const agendaEvent = defineType({
       title: 'Gepubliceerd',
       type: 'boolean',
       description: 'AAN = zichtbaar op de website.',
-      initialValue: true,
+      initialValue: false,
       group: 'basis',
     }),
 
@@ -148,6 +156,14 @@ export const agendaEvent = defineType({
       title: 'Afbeelding (optioneel)',
       type: 'image',
       options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt-tekst',
+          type: 'string',
+          description: 'Beschrijving voor toegankelijkheid en SEO.',
+        }),
+      ],
       group: 'media',
     }),
 
@@ -212,6 +228,32 @@ export const agendaEvent = defineType({
         ],
         layout: 'dropdown',
       },
+    }),
+
+    // ── SEO ───────────────────────────────────────────────────
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      group: 'seo',
+      description: 'Overschrijft de standaard paginatitel in zoekmachines. Laat leeg om de titel te gebruiken.',
+      validation: (rule) => rule.max(60),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 3,
+      group: 'seo',
+      description: 'Korte beschrijving voor Google-zoekresultaten. Laat leeg voor automatische samenvatting.',
+      validation: (rule) => rule.max(160),
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Social Media Afbeelding',
+      type: 'image',
+      group: 'seo',
+      description: 'Wordt getoond als preview bij delen op social media. Aanbevolen: 1200x630px.',
     }),
   ],
   orderings: [

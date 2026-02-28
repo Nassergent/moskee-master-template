@@ -202,7 +202,7 @@ export interface EventCategory {
 
 export interface Etiquette {
   _id: string;
-  title: string;
-  description: string;
+  titel: string;
+  beschrijving?: string;
   volgorde?: number;
 }

@@ -1,12 +1,5 @@
 import { defineType, defineField } from 'sanity';
-
-// Tijdslots: elk half uur van 06:00 tot 23:00
-const timeSlots = Array.from({ length: 35 }, (_, i) => {
-  const h = Math.floor(i / 2) + 6;
-  const m = i % 2 === 0 ? '00' : '30';
-  const val = `${String(h).padStart(2, '0')}:${m}`;
-  return { title: val, value: val };
-});
+import { timeSlots } from '../lib/timeSlots';
 
 const weekDays = [
   { title: 'Maandag', value: 'maandag' },
@@ -30,6 +23,12 @@ export const lessonProgram = defineType({
   name: 'lessonProgram',
   title: 'Lesprogramma',
   type: 'document',
+  groups: [
+    { name: 'inhoud', title: 'Inhoud', default: true },
+    { name: 'rooster', title: 'Rooster' },
+    { name: 'publicatie', title: 'Publicatie' },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'titel',
@@ -37,6 +36,7 @@ export const lessonProgram = defineType({
       type: 'string',
       description: 'Naam van het lesprogramma, bijv. "Koranles" of "Arabisch voor beginners".',
       validation: (Rule) => Rule.required().max(120),
+      group: 'inhoud',
     }),
     defineField({
       name: 'slug',
@@ -52,6 +52,7 @@ export const lessonProgram = defineType({
             .replace(/\s+/g, '-')
             .slice(0, 96),
       },
+      group: 'inhoud',
     }),
     defineField({
       name: 'categorie',
@@ -61,6 +62,7 @@ export const lessonProgram = defineType({
       options: { list: categorieOptions, layout: 'dropdown' },
       initialValue: 'algemeen',
       validation: (Rule) => Rule.required(),
+      group: 'inhoud',
     }),
     defineField({
       name: 'beschrijving',
@@ -68,6 +70,7 @@ export const lessonProgram = defineType({
       type: 'text',
       rows: 4,
       description: 'Korte beschrijving van het lesprogramma (plain text).',
+      group: 'inhoud',
     }),
     defineField({
       name: 'inhoud',
@@ -78,6 +81,7 @@ export const lessonProgram = defineType({
         { type: 'block' },
         { type: 'image', options: { hotspot: true } },
       ],
+      group: 'inhoud',
     }),
     defineField({
       name: 'afbeelding',
@@ -85,6 +89,15 @@ export const lessonProgram = defineType({
       type: 'image',
       options: { hotspot: true },
       description: 'Optionele afbeelding bij het lesprogramma.',
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt-tekst',
+          type: 'string',
+          description: 'Beschrijving voor toegankelijkheid en SEO.',
+        }),
+      ],
+      group: 'inhoud',
     }),
     defineField({
       name: 'maxCapaciteit',
@@ -92,6 +105,7 @@ export const lessonProgram = defineType({
       type: 'number',
       description: 'Maximaal aantal deelnemers. Laat leeg voor onbeperkt.',
       validation: (Rule) => Rule.min(1),
+      group: 'inhoud',
     }),
     defineField({
       name: 'inschrijvingOpen',
@@ -99,18 +113,21 @@ export const lessonProgram = defineType({
       type: 'boolean',
       description: 'AAN = bezoekers kunnen zich inschrijven.',
       initialValue: true,
+      group: 'inhoud',
     }),
     defineField({
       name: 'vrijwilligersLink',
       title: 'Vrijwilligerslink',
       type: 'url',
       description: 'Optionele link naar vrijwilligers- of inschrijfformulier (bijv. Google Forms). Als leeg → /contact.',
+      group: 'inhoud',
     }),
     defineField({
       name: 'rooster',
       title: 'Lesrooster',
       type: 'array',
       description: 'Wekelijks terugkerend rooster voor dit programma.',
+      group: 'rooster',
       of: [
         {
           type: 'object',
@@ -165,13 +182,41 @@ export const lessonProgram = defineType({
       type: 'number',
       description: 'Lagere waarde = eerder getoond op de pagina.',
       initialValue: 10,
+      group: 'publicatie',
     }),
     defineField({
       name: 'actief',
       title: 'Actief',
       type: 'boolean',
-      description: 'AAN = zichtbaar op de website.',
-      initialValue: true,
+      description: 'Zet AAN als dit lesprogramma klaar is om te tonen op de website.',
+      initialValue: false,
+      group: 'publicatie',
+    }),
+
+    // ── SEO ───────────────────────────────────────────────────
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      group: 'seo',
+      description: 'Overschrijft de standaard paginatitel in zoekmachines. Laat leeg om de titel te gebruiken.',
+      validation: (rule) => rule.max(60),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 3,
+      group: 'seo',
+      description: 'Korte beschrijving voor Google-zoekresultaten. Laat leeg voor automatische samenvatting.',
+      validation: (rule) => rule.max(160),
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Social Media Afbeelding',
+      type: 'image',
+      group: 'seo',
+      description: 'Wordt getoond als preview bij delen op social media. Aanbevolen: 1200x630px.',
     }),
   ],
   orderings: [

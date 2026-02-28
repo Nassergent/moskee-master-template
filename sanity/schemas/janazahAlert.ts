@@ -4,12 +4,17 @@ export const janazahAlert = defineType({
   name: 'janazahAlert',
   title: 'Janazah Melding',
   type: 'document',
+  groups: [
+    { name: 'inhoud', title: 'Inhoud', default: true },
+    { name: 'publicatie', title: 'Publicatie' },
+  ],
   fields: [
     defineField({
       name: 'naamOverledene',
       title: 'Naam Overledene',
       type: 'string',
       description: 'Wordt alleen getoond als de familie toestemming geeft (zie vinkje hieronder).',
+      group: 'inhoud',
     }),
     defineField({
       name: 'naGebed',
@@ -26,24 +31,29 @@ export const janazahAlert = defineType({
           { title: "Jumu'ah-gebed", value: "Jumu'ah-gebed" },
         ],
       },
+      group: 'inhoud',
     }),
     defineField({
       name: 'gebedstijdstip',
       title: 'Tijdstip',
       type: 'string',
       description: 'Alleen het uur, bijv. 14:00',
+      validation: (Rule) => Rule.regex(/^([01]\d|2[0-3]):[0-5]\d$/, { name: 'HH:mm', invert: false }).error('Voer een geldig tijdstip in (bijv. 14:00).'),
+      group: 'inhoud',
     }),
     defineField({
       name: 'gebeddatum',
       title: 'Datum Janazah-gebed',
       type: 'date',
       description: 'Datum waarop het gebed plaatsvindt.',
+      group: 'inhoud',
     }),
     defineField({
       name: 'duaArabisch',
       title: 'Dua (Arabisch)',
       type: 'string',
       description: 'Optionele Arabische dua-tekst, bijv. een specifieke smeekbede.',
+      group: 'inhoud',
     }),
     defineField({
       name: 'familyConsent',
@@ -51,6 +61,7 @@ export const janazahAlert = defineType({
       type: 'boolean',
       description: 'AAN = naam wordt getoond op de website. UIT = anonieme melding.',
       initialValue: false,
+      group: 'publicatie',
     }),
     defineField({
       name: 'actief',
@@ -58,6 +69,7 @@ export const janazahAlert = defineType({
       type: 'boolean',
       description: 'AAN = melding wordt getoond op de homepage. Zet UIT na afloop van het gebed.',
       initialValue: false,
+      group: 'publicatie',
     }),
   ],
   orderings: [

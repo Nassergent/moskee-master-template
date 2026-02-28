@@ -24,7 +24,7 @@ export const volunteer = defineType({
       type: 'string',
       readOnly: true,
       group: 'info',
-      validation: (rule) => rule.required(),
+      validation: (rule) => rule.required().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { name: 'e-mail', invert: false }).error('Voer een geldig e-mailadres in.'),
     }),
     defineField({
       name: 'telefoon',

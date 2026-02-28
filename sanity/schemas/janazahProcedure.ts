@@ -25,6 +25,7 @@ export const janazahProcedure = defineType({
       title: 'Noodnummer',
       type: 'string',
       description: 'Telefoonnummer voor directe hulp (internationaal formaat, bijv. +32470123456).',
+      validation: (Rule) => Rule.regex(/^\+?[0-9\s\-()]{7,20}$/, { name: 'telefoon', invert: false }).error('Voer een geldig telefoonnummer in (bijv. +32470123456).'),
     }),
     defineField({
       name: 'introductie',

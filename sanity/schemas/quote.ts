@@ -4,6 +4,10 @@ export const quote = defineType({
   name: 'quote',
   title: 'Islamitische Citaten',
   type: 'document',
+  groups: [
+    { name: 'inhoud', title: 'Inhoud', default: true },
+    { name: 'publicatie', title: 'Publicatie' },
+  ],
   fields: [
     defineField({
       name: 'tekst',
@@ -12,6 +16,7 @@ export const quote = defineType({
       rows: 3,
       validation: (rule) => rule.required(),
       description: 'De Nederlandse vertaling van het citaat.',
+      group: 'inhoud',
     }),
     defineField({
       name: 'tekstArabisch',
@@ -19,6 +24,7 @@ export const quote = defineType({
       type: 'text',
       rows: 2,
       description: 'Originele Arabische tekst (optioneel).',
+      group: 'inhoud',
     }),
     defineField({
       name: 'bron',
@@ -26,6 +32,7 @@ export const quote = defineType({
       type: 'string',
       validation: (rule) => rule.required(),
       description: 'Bijv. "Sahih al-Bukhari 1423", "Quran 2:261", "Sunan at-Tirmidhi 2616"',
+      group: 'inhoud',
     }),
     defineField({
       name: 'categorie',
@@ -42,13 +49,15 @@ export const quote = defineType({
       },
       initialValue: 'donaties',
       description: 'Wordt gebruikt om het juiste citaat op de juiste pagina te tonen.',
+      group: 'inhoud',
     }),
     defineField({
       name: 'actief',
       title: 'Actief',
       type: 'boolean',
-      initialValue: true,
-      description: 'Alleen actieve citaten worden getoond op de website.',
+      initialValue: false,
+      description: 'Zet AAN als dit citaat klaar is om te tonen op de website.',
+      group: 'publicatie',
     }),
   ],
   preview: {

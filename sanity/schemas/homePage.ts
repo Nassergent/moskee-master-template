@@ -4,6 +4,11 @@ export const homePage = defineType({
   name: 'homePage',
   title: 'Home Pagina',
   type: 'document',
+  groups: [
+    { name: 'hero', title: 'Hero', default: true },
+    { name: 'secties', title: 'Secties' },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'heroTagline',
@@ -11,6 +16,7 @@ export const homePage = defineType({
       type: 'string',
       description: 'Optioneel: klein tekstje boven de H1 titel (bijv. "Welkom", "Ramadan Mubarak"). Laat leeg om te verbergen.',
       validation: (rule) => rule.max(50),
+      group: 'hero',
     }),
     defineField({
       name: 'heroTitle',
@@ -18,6 +24,7 @@ export const homePage = defineType({
       type: 'string',
       description: 'De grote hoofdtitel in de hero sectie (bijv. "Moskee El Fath"). Dit is de H1 — belangrijk voor SEO.',
       validation: (rule) => rule.max(100),
+      group: 'hero',
     }),
     defineField({
       name: 'heroSubtitle',
@@ -25,12 +32,14 @@ export const homePage = defineType({
       type: 'text',
       rows: 3,
       description: 'De beschrijvende tekst onder de titel. Als dit leeg is, wordt de "Korte Beschrijving" uit Site Instellingen gebruikt.',
+      group: 'hero',
     }),
     defineField({
       name: 'heroCta',
       title: 'Primaire Knoptekst',
       type: 'string',
       description: 'Tekst op de primaire knop (bijv. "Gebedstijden bekijken")',
+      group: 'hero',
     }),
     defineField({
       name: 'heroImage',
@@ -38,6 +47,15 @@ export const homePage = defineType({
       type: 'image',
       options: { hotspot: true },
       description: 'De grote afbeelding rechts in de hero sectie',
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt-tekst',
+          type: 'string',
+          description: 'Beschrijving voor toegankelijkheid en SEO.',
+        }),
+      ],
+      group: 'hero',
     }),
     defineField({
       name: 'toonActueel',
@@ -45,6 +63,7 @@ export const homePage = defineType({
       type: 'boolean',
       initialValue: true,
       description: 'Schakel de actueel sectie op de homepage in/uit',
+      group: 'secties',
     }),
     defineField({
       name: 'badgeKleur',
@@ -53,6 +72,7 @@ export const homePage = defineType({
       initialValue: '#593B1D',
       description: 'De kleur van de welkom-badges. Formaat: #RRGGBB (bijv. #593B1D voor bruin, #1D5C6B voor blauw, #D4AF37 voor goud)',
       validation: (rule) => rule.regex(/^#[0-9A-Fa-f]{6}$/, { name: 'hex kleur', invert: false }).error('Voer een geldige hex kleur in (bijv. #593B1D)'),
+      group: 'secties',
     }),
     defineField({
       name: 'badges',
@@ -60,6 +80,33 @@ export const homePage = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Welkomstwoorden in verschillende talen (bijv. "Allen Welkom", "All Welcome")',
+      group: 'secties',
+    }),
+
+    // ── SEO ───────────────────────────────────────────────────
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      group: 'seo',
+      description: 'Overschrijft de standaard paginatitel in zoekmachines. Laat leeg om de titel te gebruiken.',
+      validation: (rule) => rule.max(60),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 3,
+      group: 'seo',
+      description: 'Korte beschrijving voor Google-zoekresultaten. Laat leeg voor automatische samenvatting.',
+      validation: (rule) => rule.max(160),
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Social Media Afbeelding',
+      type: 'image',
+      group: 'seo',
+      description: 'Wordt getoond als preview bij delen op social media. Aanbevolen: 1200x630px.',
     }),
   ],
   preview: {

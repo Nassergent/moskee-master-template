@@ -76,7 +76,7 @@ export async function fetchQuote(categorie: string = 'donaties'): Promise<Quote 
 
 export async function fetchEtiquette(): Promise<Etiquette[]> {
   return safeFetch(sanityClient, `*[_type == "etiquette" && gepubliceerd == true] | order(volgorde asc) {
-    _id, title, description, volgorde
+    _id, titel, beschrijving, volgorde
   }`, undefined, { fallback: [] as any[], label: 'fetchEtiquette' });
 }
 
@@ -263,14 +263,14 @@ export async function fetchHomepageCdnBatch() {
     "homePage": *[_id == "homePage"][0]{
       heroTagline, heroTitle, heroSubtitle, heroCta, heroImage, toonActueel, badges, badgeKleur
     },
-    "actueel": *[_type == "post" && gepubliceerd == true] | order(_createdAt desc) [0...3] {
+    "actueel": *[_type == "post" && gepubliceerd == true && !defined(onderwerpHub)] | order(_createdAt desc) [0...3] {
       _id, _type, _createdAt,
       "titel": titel, "slug": slug.current,
       "beschrijving": samenvatting, "href": "/nieuws/" + slug.current,
       postType
     },
     "etiquette": *[_type == "etiquette" && gepubliceerd == true] | order(volgorde asc) {
-      _id, title, description, volgorde
+      _id, titel, beschrijving, volgorde
     }
   }`, undefined, { fallback: { homePage: null, actueel: [], etiquette: [] }, label: 'fetchHomepageCdnBatch' });
 }

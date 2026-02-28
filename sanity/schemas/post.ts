@@ -4,6 +4,11 @@ export const post = defineType({
   name: 'post',
   title: 'Artikelen & Updates',
   type: 'document',
+  groups: [
+    { name: 'inhoud', title: 'Inhoud', default: true },
+    { name: 'publicatie', title: 'Publicatie' },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'titel',
@@ -11,6 +16,7 @@ export const post = defineType({
       type: 'string',
       description: 'De kop van het artikel zoals getoond op de website.',
       validation: (rule) => rule.required(),
+      group: 'inhoud',
     }),
     defineField({
       name: 'postType',
@@ -26,6 +32,7 @@ export const post = defineType({
         layout: 'radio',
       },
       initialValue: 'nieuws',
+      group: 'inhoud',
     }),
     defineField({
       name: 'slug',
@@ -41,6 +48,7 @@ export const post = defineType({
             .replace(/\s+/g, '-')
             .slice(0, 96),
       },
+      group: 'inhoud',
     }),
     defineField({
       name: 'datum',
@@ -48,6 +56,7 @@ export const post = defineType({
       type: 'datetime',
       description: 'Wordt getoond bij het artikel. Nieuwste artikelen verschijnen bovenaan.',
       initialValue: () => new Date().toISOString(),
+      group: 'inhoud',
     }),
     defineField({
       name: 'samenvatting',
@@ -55,6 +64,7 @@ export const post = defineType({
       type: 'text',
       rows: 3,
       description: 'Korte samenvatting voor de overzichtspagina en Google-zoekresultaten.',
+      group: 'inhoud',
     }),
     defineField({
       name: 'afbeelding',
@@ -62,6 +72,15 @@ export const post = defineType({
       type: 'image',
       description: 'Hoofdafbeelding van het artikel. Aanbevolen: liggend formaat, min. 600px breed.',
       options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt-tekst',
+          type: 'string',
+          description: 'Beschrijving voor toegankelijkheid en SEO.',
+        }),
+      ],
+      group: 'inhoud',
     }),
     defineField({
       name: 'inhoud',
@@ -72,6 +91,7 @@ export const post = defineType({
         { type: 'block' },
         { type: 'image', options: { hotspot: true } },
       ],
+      group: 'inhoud',
     }),
     defineField({
       name: 'onderwerpHub',
@@ -79,13 +99,41 @@ export const post = defineType({
       type: 'reference',
       to: [{ type: 'post' }],
       description: 'Optioneel: koppel dit artikel aan een hoofdartikel. Het hoofdartikel toont dan automatisch alle gekoppelde berichten en agenda-items.',
+      group: 'publicatie',
     }),
     defineField({
       name: 'gepubliceerd',
       title: 'Gepubliceerd',
       type: 'boolean',
-      initialValue: true,
+      initialValue: false,
       description: 'AAN = zichtbaar op de website. UIT = verborgen (concept).',
+      group: 'publicatie',
+    }),
+
+    // ── SEO ───────────────────────────────────────────────────
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Titel',
+      type: 'string',
+      group: 'seo',
+      description: 'Overschrijft de standaard paginatitel in zoekmachines. Laat leeg om de titel te gebruiken.',
+      validation: (rule) => rule.max(60),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Beschrijving',
+      type: 'text',
+      rows: 3,
+      group: 'seo',
+      description: 'Korte beschrijving voor Google-zoekresultaten. Laat leeg voor automatische samenvatting.',
+      validation: (rule) => rule.max(160),
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Social Media Afbeelding',
+      type: 'image',
+      group: 'seo',
+      description: 'Wordt getoond als preview bij delen op social media. Aanbevolen: 1200x630px.',
     }),
   ],
   orderings: [

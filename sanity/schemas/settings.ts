@@ -317,6 +317,7 @@ export const settings = defineType({
       title: 'E-mailadres',
       type: 'string',
       group: 'contact',
+      validation: (rule) => rule.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { name: 'e-mail', invert: false }).error('Voer een geldig e-mailadres in.'),
     }),
     defineField({
       name: 'whatsapp',

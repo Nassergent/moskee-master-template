@@ -89,7 +89,7 @@ function volunteerManagement(S: StructureBuilder) {
                           .title(`Vrijwilligers: ${task}`)
                           .schemaType('volunteer')
                           .filter(`_type == "volunteer" && $task in taken`)
-                          .params({ task: task.toLowerCase() })
+                          .params({ task })
                           .defaultOrdering([{ field: 'aanmeldDatum', direction: 'desc' }])
                       )
                   )
@@ -298,7 +298,7 @@ function etiquetteManagement(S: StructureBuilder) {
               S.documentList()
                 .title('Actieve etiketten')
                 .schemaType('etiquette')
-                .filter('_type == "etiquette" && isPublished != false')
+                .filter('_type == "etiquette" && gepubliceerd != false')
                 .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
             ),
           S.listItem()
@@ -308,7 +308,7 @@ function etiquetteManagement(S: StructureBuilder) {
               S.documentList()
                 .title('Uitgeschakelde etiketten')
                 .schemaType('etiquette')
-                .filter('_type == "etiquette" && isPublished == false')
+                .filter('_type == "etiquette" && gepubliceerd == false')
                 .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
             ),
           S.divider(),
