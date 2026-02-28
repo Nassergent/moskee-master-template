@@ -6,295 +6,408 @@
 
 ```
 moskee-master-template/
-├── src/                          # Source code (SSR app)
-│   ├── components/               # Astro & React UI components
-│   │   ├── home/                 # Homepage-specific cards (Event, Donation, Download, etc.)
-│   │   ├── ui/                   # Shared UI components
-│   │   │   ├── donation/         # Donation-related (BankQrCard)
-│   │   │   ├── education/        # Education/lessons UI (ScheduleGrid, LessonCard, etc.)
-│   │   │   └── janazah/          # Janazah banner & procedure steps
-│   │   ├── BaseLayout.astro      # Main layout wrapper (SEO, theme, fonts)
-│   │   ├── Navigation.astro      # Header nav with menu toggles
-│   │   ├── Footer.astro          # Footer (settings-driven)
-│   │   ├── Section.astro         # Zebra-striping wrapper
-│   │   ├── PortableText.astro    # Sanity rich text renderer
-│   │   ├── PrayerManager.astro   # Prayer times display
-│   │   └── [...other cards]
-│   ├── layouts/                  # Page layouts
-│   │   └── BaseLayout.astro      # Main page wrapper
-│   ├── pages/                    # File-based routing (Astro)
-│   │   ├── index.astro           # Homepage
-│   │   ├── over-ons.astro        # About page
-│   │   ├── contact.astro         # Contact form page
-│   │   ├── doneren.astro         # Donation page
-│   │   ├── gebedstijden.astro    # Prayer times page
-│   │   ├── lessen.astro          # Lesson programs listing
-│   │   ├── janazah.astro         # Janazah information
-│   │   ├── diensten.astro        # Services overview
-│   │   ├── nieuws.astro          # News listing
-│   │   ├── bedankt.astro         # Thank you page (post-donation)
-│   │   ├── privacy.astro         # Privacy policy
-│   │   ├── diensten/
-│   │   │   └── [slug].astro      # Dynamic service detail pages
-│   │   ├── nieuws/
-│   │   │   └── [slug].astro      # Dynamic news detail pages
-│   │   ├── agenda/
-│   │   │   ├── index.astro       # Agenda listing
-│   │   │   └── [slug].astro      # Dynamic event detail
-│   │   ├── api/                  # API endpoints
-│   │   │   ├── donate.ts         # Payment creation (POST)
-│   │   │   ├── mollie-webhook.ts # Payment webhook (POST)
-│   │   │   ├── contact.ts        # Contact form submission (POST)
-│   │   │   ├── evenement-aanmelding.ts  # Event registration (POST)
-│   │   │   ├── vrijwilligers.ts  # Volunteer form (POST)
-│   │   │   └── jobs/
-│   │   │       └── reconcile-mollie.ts  # Background job for payment reconciliation
-│   │   ├── 404.astro             # Not found page
-│   │   └── 500.astro             # Error page
-│   ├── lib/                      # Shared utilities & logic
-│   │   ├── sanity.ts             # Sanity fetch helpers (primary API)
-│   │   ├── hijri.ts              # Islamic calendar computation
-│   │   ├── email-templates.ts    # Email HTML template strings
-│   │   ├── countdown-ticker.ts   # Countdown timer for events
-│   │   ├── security.ts           # CSRF, rate limiting, bot detection
-│   │   └── logic/                # Pure business logic (no side effects)
-│   │       ├── prayer-engine.ts  # Accurate prayer time calculation
-│   │       ├── prayer-engine.test.ts  # 12K prayer engine tests
-│   │       ├── prayer-compute.ts # Convert Sanity config to computed times
-│   │       ├── education.ts      # Lesson schedule filtering & sorting
-│   │       ├── janazah.ts        # Janazah alert logic
-│   │       ├── agenda-utils.ts   # Event date formatting
-│   │       ├── donation-utils.ts # Donation progress calculations
-│   │       ├── payment-validators.ts  # Amount & currency validation
-│   │       ├── webhook-validators.ts  # Signature & data validation
-│   │       ├── volunteer-validators.ts  # Form validation
-│   │       ├── qr-service.ts     # QR code generation
-│   │       ├── menu-builder.ts   # Navigation menu from settings
-│   │       ├── config.ts         # Site config builder (country, timezone)
-│   │       ├── logger.ts         # Structured logging
-│   │       ├── image-optimizer.ts  # Image URL building
-│   │       ├── media-utils.ts    # Asset URL helpers
-│   │       ├── project-utils.ts  # Donation project helpers
-│   │       ├── reconcile-utils.ts  # Payment reconciliation
-│   │       ├── seo-utils.ts      # SEO alt text sanitization
-│   │       └── nav-utils.ts      # Navigation helpers
-│   ├── services/                 # External integrations & workflows
-│   │   ├── email-service.ts      # Resend email client + sending
-│   │   ├── payment-service.ts    # Mollie payment client
-│   │   ├── webhook-service.ts    # Webhook handler (Mollie → Sanity)
-│   │   ├── event-registration-service.ts  # Event registration workflow
-│   │   ├── volunteer-service.ts  # Volunteer form workflow
-│   │   └── reconcile-service.ts  # Payment reconciliation job
-│   ├── styles/
-│   │   └── global.css            # Tailwind v4 config + animations
-│   └── middleware.ts             # Request-level CSP, cache, security headers
-├── sanity/                       # Sanity CMS schema & configuration
+├── .astro/                     # Astro build cache (generated, ignored)
+├── .git/                       # Git repository
+├── .planning/                  # GSD planning documents
+├── .sanity/                    # Sanity CLI config cache
+├── .vercel/                    # Vercel deployment cache
+├── .vscode/                    # VSCode workspace settings
+├── dist/                       # Build output (generated by `npm run build`)
+├── node_modules/               # Dependencies (npm install)
+├── public/                     # Static assets served at root
+│   ├── favicon.svg             # Root favicon
+│   └── fonts/                  # Self-hosted web fonts
+│       ├── philosopher-*.woff2
+│       ├── lato-*.woff2
+│       └── amiri-*.woff2
+├── sanity/                     # Sanity CMS configuration
+│   ├── schema.ts               # CMS document types registry
+│   ├── structure.ts            # CMS sidebar structure & filters
+│   ├── schemas/                # Document type definitions (19 types)
+│   │   ├── settings.ts         # Singleton: site config, theme, menu toggles
+│   │   ├── homePage.ts         # Singleton: hero tagline, title, image
+│   │   ├── homeCards.ts        # Singleton: 3 dynamic card slots
+│   │   ├── prayerTimes.ts      # Singleton: prayer coords, method, offsets
+│   │   ├── aboutPage.ts        # Singleton: mission, timeline, values, team
+│   │   ├── contactPage.ts      # Singleton: intro text, hours, subjects
+│   │   ├── ramadanOverride.ts  # Singleton: alternative lesson schedule
+│   │   ├── janazahProcedure.ts # Singleton: janazah guide & emergency number
+│   │   ├── service.ts          # Collection: prayer services (Fajr, Zuhr, etc.)
+│   │   ├── lessonProgram.ts    # Collection: Quran, Arabic, Islamic courses
+│   │   ├── project.ts          # Collection: donation campaigns & charities
+│   │   ├── post.ts             # Collection: news articles (type: nieuws/mededeling/artikel)
+│   │   ├── agendaEvent.ts      # Collection: events with registration
+│   │   ├── eventCategorie.ts   # Collection: event type categories
+│   │   ├── quote.ts            # Collection: Islamic quotes (by category)
+│   │   ├── etiquette.ts        # Collection: mosque etiquette guidelines
+│   │   ├── volunteer.ts        # Collection: volunteer signup submissions
+│   │   ├── eventRegistration.ts# Collection: event registration forms
+│   │   └── janazahAlert.ts     # Collection: active death notices
+│   └── lib/
+│       └── client.ts           # Sanity client initialization (read & write)
+├── scripts/                    # Utility scripts
+│   ├── seed-categories.js      # Seed event categories
+│   ├── seed-data.js            # Populate test data
+│   └── telemetry-ping.js       # Optional telemetry ping
+├── src/
+│   ├── components/             # Astro & React UI components
+│   │   ├── BaseLayout.astro    # Master layout (SEO, fonts, theme, nav, footer)
+│   │   ├── Navigation.astro    # Header navbar with menu toggles
+│   │   ├── Footer.astro        # Footer with contact & socials
+│   │   ├── Section.astro       # Zebra-striping section wrapper (dark/light-50/light-100)
+│   │   ├── PortableText.astro  # Portable Text content renderer
+│   │   ├── PrayerManager.astro # Prayer times with live countdown
+│   │   ├── DonationCard.astro  # Donation project card with amount picker
+│   │   ├── EtiquetteGrid.astro # Mosque etiquette display
+│   │   ├── AddToCalendar.astro # iCalendar download link
+│   │   ├── VolunteerForm.astro # Volunteer signup form
+│   │   ├── home/               # Homepage-specific components
+│   │   │   ├── HomeCardSlot.astro         # Dynamic card wrapper
+│   │   │   ├── DonatieCampagneCard.astro  # Donation project card
+│   │   │   ├── EvenementCountdownCard.astro # Event countdown
+│   │   │   ├── AangepastCard.astro        # Custom CTA card
+│   │   │   └── DownloadCard.astro        # File download card
+│   │   └── ui/                 # Feature-specific UI components
+│   │       ├── education/
+│   │       │   ├── LessonCard.astro      # Lesson program display
+│   │       │   ├── ScheduleGrid.astro    # Weekly schedule table
+│   │       │   ├── PracticalInfo.astro   # Lesson capacity & link
+│   │       │   └── SmartFilterBar.astro  # Category filter bar
+│   │       ├── donation/
+│   │       │   └── BankQrCard.astro      # Bank transfer QR code
+│   │       ├── janazah/
+│   │       │   ├── JanazahBanner.astro        # Active death notice banner
+│   │       │   └── JanazahProcedureSteps.astro # Step-by-step guide
+│   │       ├── EventRegistrationForm.astro    # Event signup form (React)
+│   │       ├── LivePrayerCard.astro           # Current prayer highlight
+│   │       ├── PrayerGrid.astro               # Prayer times table
+│   │       └── PostTypeBadge.astro            # Post type indicator
+│   ├── layouts/
+│   │   └── BaseLayout.astro    # (Also in components/ — main layout)
 │   ├── lib/
-│   │   └── client.ts             # Sanity client setup (read, fresh, write)
-│   ├── schema.ts                 # Schema registry (imports all types)
-│   └── schemas/                  # Document type definitions
-│       ├── settings.ts           # Singleton: site config, theme, menu toggles
-│       ├── homePage.ts           # Singleton: hero, badges, CTA
-│       ├── homeCards.ts          # Singleton: card variants (event, donation, download, custom)
-│       ├── prayerTimes.ts        # Singleton: prayer config + coordinates
-│       ├── aboutPage.ts          # Singleton: about page content
-│       ├── contactPage.ts        # Singleton: contact form metadata
-│       ├── service.ts            # Collection: services (herstellingen, montage, etc.)
-│       ├── project.ts            # Collection: donation projects
-│       ├── post.ts               # Collection: news articles
-│       ├── agendaEvent.ts        # Collection: event entries
-│       ├── lessonProgram.ts      # Collection: lesson programs
-│       ├── ramadanOverride.ts    # Document: Ramadan schedule override
-│       ├── janazahProcedure.ts   # Document: Janazah procedure steps
-│       ├── janazahAlert.ts       # Document: Active janazah alert
-│       ├── quote.ts              # Collection: quotes (categorie: donaties, etc.)
-│       ├── etiquette.ts          # Collection: mosque etiquette rules
-│       ├── eventCategorie.ts     # Collection: event category taxonomy
-│       ├── eventRegistration.ts  # Document: submitted event registrations
-│       └── volunteer.ts          # Document: submitted volunteer applications
-├── public/                       # Static assets
-│   ├── fonts/                    # Self-hosted fonts (Philosopher, Lato, Amiri)
-│   ├── favicon.svg
-│   ├── favicon.ico
-│   └── robots.txt
-├── .planning/
-│   └── codebase/                 # Documentation (this location)
-├── astro.config.mjs              # Astro configuration (SSR, adapters, integrations)
-├── tsconfig.json                 # TypeScript config
-├── package.json                  # Dependencies & scripts
-└── .env (ignored)                # Runtime env vars (PUBLIC_*, SANITY_*, etc.)
+│   │   ├── sanity.ts           # Fetch helpers (40+ functions)
+│   │   ├── hijri.ts            # Islamic calendar conversion
+│   │   ├── email-templates.ts  # HTML email templates
+│   │   ├── countdown-ticker.ts # Client-side countdown timer
+│   │   ├── security.ts         # Rate limiting, CSRF, bot detection
+│   │   ├── logic/              # Pure business logic (23 files)
+│   │   │   ├── config.ts                # Site config builder
+│   │   │   ├── education.ts             # Lesson schedule logic
+│   │   │   ├── prayer-compute.ts        # Prayer time calculations
+│   │   │   ├── prayer-engine.ts         # Adhan library wrapper
+│   │   │   ├── agenda-utils.ts          # Event date/time formatting
+│   │   │   ├── date-utils.ts            # Date helpers
+│   │   │   ├── donation-utils.ts        # Donation project utilities
+│   │   │   ├── project-utils.ts         # Project display logic
+│   │   │   ├── payment-validators.ts    # Mollie payment validation
+│   │   │   ├── volunteer-validators.ts  # Form validation
+│   │   │   ├── webhook-validators.ts    # HMAC, idempotency checks
+│   │   │   ├── event-utils.ts           # Event filtering & display
+│   │   │   ├── janazah.ts               # Janazah alert logic
+│   │   │   ├── menu-builder.ts          # Dynamic menu construction
+│   │   │   ├── nav-utils.ts             # Navigation helpers
+│   │   │   ├── seo-utils.ts             # SEO utilities
+│   │   │   ├── logger.ts                # Structured logging
+│   │   │   ├── media-utils.ts           # Image/media helpers
+│   │   │   ├── image-optimizer.ts       # Image optimization config
+│   │   │   ├── qr-service.ts            # QR code generation
+│   │   │   ├── reconcile-utils.ts       # Payment reconciliation
+│   │   │   └── *.test.ts                # Unit tests
+│   ├── pages/                  # Astro page routes (file-based routing)
+│   │   ├── index.astro         # GET / — Homepage
+│   │   ├── 404.astro           # 404 error page
+│   │   ├── 500.astro           # 500 error page
+│   │   ├── diensten.astro      # GET /diensten — Services listing
+│   │   ├── diensten/
+│   │   │   └── [slug].astro    # GET /diensten/{slug} — Service detail
+│   │   ├── lessen.astro        # GET /lessen — Lessons with filter
+│   │   ├── doneren.astro       # GET /doneren — Donation page
+│   │   ├── contact.astro       # GET /contact — Contact form
+│   │   ├── gebedstijden.astro  # GET /gebedstijden — Prayer times
+│   │   ├── janazah.astro       # GET /janazah — Janazah guide
+│   │   ├── over-ons.astro      # GET /over-ons — About page
+│   │   ├── privacy.astro       # GET /privacy — Privacy policy
+│   │   ├── nieuws.astro        # GET /nieuws — News listing
+│   │   ├── nieuws/
+│   │   │   └── [slug].astro    # GET /nieuws/{slug} — News detail (with topic hub)
+│   │   ├── agenda/
+│   │   │   ├── index.astro     # GET /agenda — Events listing
+│   │   │   └── [slug].astro    # GET /agenda/{slug} — Event detail (with registration)
+│   │   ├── bedankt.astro       # GET /bedankt — Donation thank you page
+│   │   └── api/                # API routes (server endpoints)
+│   │       ├── donate.ts       # POST /api/donate — Mollie payment initiation
+│   │       ├── mollie-webhook.ts        # POST /api/mollie-webhook — Payment callback
+│   │       ├── contact.ts               # POST /api/contact — Contact form submission
+│   │       ├── evenement-aanmelding.ts  # POST /api/evenement-aanmelding — Event signup
+│   │       ├── vrijwilligers.ts         # POST /api/vrijwilligers — Volunteer form
+│   │       └── jobs/
+│   │           └── reconcile-mollie.ts  # POST /api/jobs/reconcile-mollie — Scheduled job
+│   ├── services/                # Complex business logic workflows
+│   │   ├── webhook-service.ts   # Webhook processing (idempotency, locking)
+│   │   ├── payment-service.ts   # Payment success handling
+│   │   ├── reconcile-service.ts # Payment reconciliation job
+│   │   ├── email-service.ts     # Email sending via Resend
+│   │   ├── event-registration-service.ts # Event signup logic
+│   │   ├── volunteer-service.ts # Volunteer processing
+│   │   └── *.test.ts            # Service unit tests
+│   └── styles/
+│       └── global.css           # Tailwind v4 + base styles (60-30-10 theme)
+├── sanity.config.ts            # Sanity Studio configuration
+├── astro.config.mjs            # Astro configuration (SSR, Vercel adapter)
+├── tsconfig.json               # TypeScript configuration
+├── package.json                # Dependencies & scripts
+├── package-lock.json           # Lock file
+├── .env                        # Environment variables (MUST NOT commit)
+├── .env.example                # Environment template (commit this)
+├── .gitignore                  # Git exclusions
+├── .nvmrc                      # Node.js version (18.x)
+├── vercel.json                 # Vercel deployment configuration
+├── README.md                   # Project documentation
+├── ARCHITECTURE_LOG.md         # Architecture evolution history
+└── *.png                       # Screenshots (bedankt, doneren)
 ```
 
 ## Directory Purposes
 
-**src/components:**
-- Purpose: Reusable Astro & React UI building blocks
-- Contains: Page-level components, card variants, form wrappers, display helpers
-- Key files: `BaseLayout.astro`, `Navigation.astro`, `Footer.astro`, `Section.astro`
-- Subfolders: `home/` (homepage-specific), `ui/` (shared UI by domain: donation, education, janazah)
+**`/sanity`** - CMS Configuration
+- Purpose: Sanity Studio setup, document types, sidebar structure
+- Contains: Schema definitions (19 types), structure builder with filters, client initialization
+- Key files: `schema.ts` (registry), `structure.ts` (sidebar UI), `lib/client.ts` (read/write clients)
+- Deployment: Embedded at `/admin` route via `@sanity/astro`
 
-**src/lib/sanity.ts:**
-- Purpose: Central Sanity CMS API — fetch helpers + client setup
-- Contains: Query functions for every document type (fetchSettings, fetchDiensten, fetchProjecten, etc.)
-- Key detail: Uses both `sanityClient` (CDN-cached) and `freshClient` (real-time) based on content type
-- Exported to: All pages, components, services
+**`/src/components`** - UI Components
+- Purpose: Reusable Astro and React components for pages
+- Organization: BaseLayout, feature-specific (home/, ui/education/, ui/donation/, ui/janazah/), generic (Section, Navigation, Footer)
+- Astro: Server-rendered components with CSS, no client-side hydration unless using React
+- React: Islands of interactivity (event registration, donation amount picker, countdown)
+- Key patterns: Props-based composition, async data fetching in page layer only
 
-**src/lib/logic/:**
-- Purpose: Pure business logic isolated from framework/UI concerns
-- Contains: Calculations (prayer times, schedules), validation, transformation
-- Key exports: `getEffectiveSchedule()`, `computePrayerTimes()`, `validatePaymentAmount()`, `sortByDay()`
-- No side effects: Can be tested in isolation, reused across pages/services
+**`/src/lib`** - Business Logic and Data Access
+- Purpose: Fetch helpers, utilities, and pure logic
+- `sanity.ts`: Central fetch API with 40+ query functions
+- `logic/`: Pure functions isolated from I/O (education, prayer, payment validation, etc.)
+- `security.ts`: Rate limiting, CSRF checks, bot detection
+- `email-templates.ts`: HTML email templates
 
-**src/pages/ (Route Structure):**
-- Purpose: File-based routing via Astro — each file is a route
-- Pattern: `pages/[slug].astro` → `/:slug` endpoint
-- Nested: `pages/api/*.ts` → `/api/*` endpoints (server functions)
-- Singletons: `index.astro`, `contact.astro`, `doneren.astro` (one-page each)
-- Dynamic: `diensten/[slug].astro`, `nieuws/[slug].astro` (prerendered via getStaticPaths)
+**`/src/lib/logic`** - Pure Business Logic (23 files)
+- Purpose: Domain logic independent of I/O or framework
+- No dependencies on Sanity client, fetch, or Express
+- Testable in isolation (Vitest unit tests)
+- Examples: Schedule sorting, prayer calculations, payment validation, logger format
+- Imported by: Pages, components, API routes, services
 
-**src/pages/api/:**
-- Purpose: HTTP endpoints for form submissions, payments, webhooks
-- Pattern: POST endpoints only (GET returns 302 redirect)
-- Security: Rate limiting, CSRF check, signature verification
-- Clients: Use `writeClient` for Sanity mutations, `fetchSettings` for config
+**`/src/pages`** - Page Routes and API Endpoints
+- Purpose: Astro file-based routing + API endpoints
+- Pages: 20+ .astro files for public routes (homepage, services, events, lessons, etc.)
+- API: 6 POST endpoints for form submissions, payments, webhooks
+- All pages: Server-rendered (`output: 'server'`), no prerendering
+- Dynamic routes: `[slug].astro` for services, events, news articles
 
-**src/services/:**
-- Purpose: Orchestrate external integrations (Resend, Mollie, Sanity mutations)
-- Examples: `email-service.ts` (Resend), `payment-service.ts` (Mollie), `webhook-service.ts` (Mollie → Sanity)
-- Dependencies: Services can call other services + logic layer
+**`/src/services`** - Complex Business Workflows
+- Purpose: Multi-step logic that coordinates across layers
+- Examples: Webhook processing (payment handling), event registration, email sending
+- Each service: Focused on one business process (not generic utilities)
+- Pattern: Async functions with error boundaries and logging
+- Used by: API routes (`POST /api/donate` → `payment-service.ts`)
 
-**sanity/lib/client.ts:**
-- Purpose: Sanity client configuration with dual-access pattern
-- Exports: `sanityClient` (CDN), `freshClient` (no cache), `writeClient` (mutations), `urlFor()` (image builder)
-- Environment: `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET`, `SANITY_WRITE_TOKEN`
+**`/src/styles`** - Styling
+- Purpose: Global CSS with Tailwind v4 and theme variables
+- Content: Tailwind `@theme` block (colors, fonts), base styles, typography
+- 60-30-10 color system: Base (60%), Primary (30%), Accent (10%)
+- Flat design enforcement: No border-radius, no box-shadow (except badges)
+- Color customization: CSS variables injected by BaseLayout from Sanity CMS
 
-**sanity/schemas/:**
-- Purpose: GROQ document type definitions (schema registry)
-- Naming: Each schema is `[type].ts`, imported into `schema.ts`
-- Types: Singletons (settings, homePage) + collections (services, projects, news)
-- Validation: Rules defined in schema (required fields, slug uniqueness, etc.)
+**`/public`** - Static Assets
+- Purpose: Files served at root (favicon, fonts, images)
+- Fonts: Self-hosted Web Fonts (Philosopher, Lato, Amiri) in WOFF2 format
+- Favicon: From Sanity if available, else `/favicon.svg`
 
-**src/styles/global.css:**
-- Purpose: Tailwind v4 theme definition + global animations
-- Pattern: Uses `@theme {}` block for color tokens + CSS custom properties
-- Dynamic: Overridden at runtime by BaseLayout via `define:vars`
-- No config file: Tailwind v4 requires CSS-only theme definition
-
-**src/middleware.ts:**
-- Purpose: Request-level middleware (CSP headers, cache control, security)
-- Patterns: Exclude `/admin` from CSP (Sanity Studio needs inline scripts), no-cache for donation pages
+**`/scripts`** - Utility Scripts
+- Purpose: Build-time or manual scripts (seeding, telemetry)
+- Examples: `seed-categories.js`, `seed-data.js`, `telemetry-ping.js`
 
 ## Key File Locations
 
 **Entry Points:**
-- `src/pages/index.astro`: Homepage (renders 16K+ lines of critical content)
-- `src/pages/[directory]/[slug].astro`: Dynamic detail pages (services, news, agenda)
-- `src/pages/api/*.ts`: HTTP endpoints (donations, contact, webhooks)
+- `src/pages/index.astro` — Homepage with hero, prayer card, donations, upcoming events
+- `src/pages/agenda/[slug].astro` — Event detail page with registration form
+- `src/pages/diensten/[slug].astro` — Service detail page
+- `src/pages/lessen.astro` — Lessons listing with smart category filter
+- `src/pages/api/donate.ts` — Donation payment initiation endpoint
 
 **Configuration:**
-- `astro.config.mjs`: Output mode (server), adapters (Vercel), integrations (React, Sanity)
-- `src/middleware.ts`: CSP + cache headers
-- `sanity/lib/client.ts`: Sanity project config + image optimization defaults
-- `src/lib/logic/config.ts`: Site config builder (builds from settings)
+- `astro.config.mjs` — Astro setup (SSR, Vercel adapter, Sanity integration, sitemap)
+- `sanity.config.ts` — Sanity Studio setup (schema registry, structure, auto-slug action)
+- `tsconfig.json` — TypeScript configuration
+- `package.json` — Dependencies and npm scripts
+- `.env` (not committed) — Environment variables (Sanity IDs, API keys)
 
 **Core Logic:**
-- `src/lib/sanity.ts`: All Sanity queries (primary API surface)
-- `src/lib/logic/prayer-engine.ts`: Prayer time calculation (12K test coverage)
-- `src/lib/logic/education.ts`: Lesson schedule filtering
-- `src/services/webhook-service.ts`: Payment webhook handling + reconciliation
+- `src/lib/sanity.ts` — 40+ fetch helpers for all data queries
+- `src/lib/logic/education.ts` — Lesson schedule and filtering logic
+- `src/lib/logic/prayer-compute.ts` — Prayer time calculations
+- `src/lib/logic/config.ts` — Site configuration builder
+- `src/services/webhook-service.ts` — Armored webhook/payment processing
+
+**Styling:**
+- `src/styles/global.css` — Tailwind v4 + base styles + 60-30-10 theme
+- `src/layouts/BaseLayout.astro` — HTML template, fonts, SEO, dynamic theme injection
 
 **Testing:**
-- `src/lib/logic/prayer-engine.test.ts`: Comprehensive prayer engine tests (Vitest)
+- `src/lib/logic/*.test.ts` — Unit tests for pure logic (prayer engine, webhook validators)
+- `src/services/*.test.ts` — Service integration tests
 
 ## Naming Conventions
 
 **Files:**
-- Kebab-case: `src/pages/api/mollie-webhook.ts`, `src/components/home/AangepastCard.astro`
-- PascalCase for components: `BaseLayout.astro`, `DonationCard.astro`, `ScheduleGrid.astro`
-- Utility files: Lowercase + suffix: `prayer-engine.ts`, `email-templates.ts`, `security.ts`
-- Tests: `[name].test.ts` or `[name].spec.ts`
+- Pages: `[slug].astro` for dynamic routes, kebab-case for static routes (index.astro, sobre-ons.astro)
+- Components: PascalCase (BaseLayout.astro, EventRegistrationForm.tsx)
+- Utilities: camelCase (sanity.ts, dateUtils.ts, paymentValidators.ts)
+- Schemas: camelCase (settings.ts, agendaEvent.ts, eventRegistration.ts)
 
 **Directories:**
-- Lowercase plural: `src/components/`, `src/services/`, `src/lib/logic/`
-- Feature-scoped: `src/components/home/`, `src/components/ui/donation/`
-- API scope: `src/pages/api/`
+- Domain-specific: Lowercase plural (components/home/, components/ui/education/)
+- Feature-specific: Kebab-case (src/lib/logic/, src/pages/api/)
 
-**Exports:**
-- Functions: camelCase: `fetchDiensten()`, `getEffectiveSchedule()`, `urlFor()`
-- Types: PascalCase: `ScheduleEntry`, `RamadanOverride`, `LessonProgram`
-- Constants: UPPER_SNAKE_CASE: `dagVolgorde` (data structure, lowercase for objects)
+**TypeScript/JavaScript:**
+- Interfaces: PascalCase (ScheduleEntry, LessonProgram, WebhookResult)
+- Functions: camelCase (fetchDiensten, getEffectiveSchedule, validatePaymentAmount)
+- Constants: SCREAMING_SNAKE_CASE (DEFAULTS, SLUG_TYPES)
+- Variables: camelCase (mosqueName, prayerTimes, projectId)
+- Classes: PascalCase (Mollie, Redis)
+
+**Sanity Schema:**
+- Document types: camelCase (settings, homePage, lessonProgram, eventRegistration)
+- Fields: camelCase (mosqueName, heroImage, categoryRef, registrationOpen)
+- Slug fields: Always named `slug` with type slug (auto-generated from titel)
+
+**Routes:**
+- Pages: Kebab-case URLs (/diensten, /over-ons, /gebedstijden, /evenement-aanmelding)
+- API: Kebab-case with `/api/` prefix (/api/donate, /api/mollie-webhook)
+- Dynamic segments: Brackets in filenames ([slug].astro), lowercase in URLs
 
 ## Where to Add New Code
 
-**New Feature (Complete Feature):**
-- Primary page: `src/pages/[feature].astro` (or nested: `src/pages/[feature]/index.astro`)
-- Supporting components: `src/components/[feature]/` or `src/components/ui/[feature]/`
-- Business logic: `src/lib/logic/[feature].ts` (pure functions)
-- Services: `src/services/[feature]-service.ts` (if external API integration)
-- API endpoint: `src/pages/api/[feature].ts` (if POST needed)
-- Sanity schema: `sanity/schemas/[feature].ts` + import into `sanity/schema.ts`
-- Example: Prayer times → `src/pages/gebedstijden.astro` + `PrayerManager.astro` + `prayer-engine.ts` logic
+**New Feature Page:**
+- Implementation: `src/pages/{feature-name}.astro` or `src/pages/{feature-name}/index.astro`
+- Data fetching: Call existing helpers in `src/lib/sanity.ts` (or add new ones)
+- Logic: Import from `src/lib/logic/` (create new file if domain-specific)
+- Components: Use existing components from `src/components/` or create new ones
+- Styling: Use Tailwind classes from global config, leverage `Section.astro` for layout
+- Example: New lesson detail page
+  - File: `src/pages/lessen/[slug].astro`
+  - Fetch: Use `fetchLessonPrograms()` + find by slug
+  - Logic: Import `getEffectiveSchedule()`, `sortByDay()` from `education.ts`
+  - Components: Use `Section.astro`, `ScheduleGrid.astro`, `PracticalInfo.astro`
 
-**New Component/Module:**
-- Shared UI: `src/components/ui/[domain]/[ComponentName].astro`
-- Page-specific: `src/components/[page]/[ComponentName].astro`
-- React interactivity: `src/components/[name].jsx` or wrap in Astro
-- Exports: Default export (component) + named exports (helpers, interfaces)
+**New Component:**
+- Astro component: `src/components/{feature}/ComponentName.astro`
+- React component: `src/components/{feature}/ComponentName.tsx` (use `@astrojs/react`)
+- Props: Define interface at top of component
+- Styling: Inline `<style>` for scoped styles, Tailwind classes for layout
+- Example: New donation project card variant
+  - File: `src/components/home/DonationCard.astro`
+  - Props: { project, featured?: boolean }
+  - Usage: `<DonationCard project={proj} featured={true} />`
 
-**Utilities/Helpers:**
-- Sanity queries: Add to `src/lib/sanity.ts` (export as `fetchX()`)
-- Business logic: Create new file in `src/lib/logic/[domain].ts`
-- Security checks: Add to `src/lib/security.ts`
-- Validators: Add domain-specific `src/lib/logic/[domain]-validators.ts`
+**New API Route:**
+- File: `src/pages/api/{endpoint}.ts`
+- Structure:
+  ```typescript
+  import type { APIRoute } from 'astro';
 
-**Styling:**
-- Global styles: `src/styles/global.css` (@theme block or utility classes)
-- Component-scoped: `<style>` block inside `.astro` file
-- Tailwind classes: Use in HTML via `class=""` (no CSS-in-JS)
+  export const prerender = false;
 
-**API Endpoints:**
-- New POST route: Create `src/pages/api/[name].ts`
-- Structure: Export `POST: APIRoute` handler function
-- Flow: Validate input → call service → return JSON
-- Security: Add CSRF check, rate limiting if user-facing
+  export const POST: APIRoute = async ({ request }) => {
+    try {
+      // Validation
+      // Processing (use service if complex)
+      // Response
+    } catch (error) {
+      console.error('[endpoint] Error:', error);
+      return new Response(...);
+    }
+  };
+  ```
+- Security: Add `checkOrigin()` and `checkRateLimit()` calls
+- Validation: Use pure logic functions from `src/lib/logic/`
+- Complex logic: Delegate to `src/services/`
+
+**New Service:**
+- File: `src/services/{domain}-service.ts`
+- Structure:
+  ```typescript
+  import { writeClient } from '../sanity/lib/client';
+
+  export async function processTransaction(id: string): Promise<Result> {
+    try {
+      // Fetch via freshClient
+      // Validate via logic functions
+      // Update Sanity via writeClient
+      // Send email via email-service
+      return { success: true };
+    } catch (error) {
+      // Log and return error result
+    }
+  }
+  ```
+- Used by: API routes (import and call in POST handler)
+- Error handling: Return structured result, don't throw (let caller handle)
+
+**New Logic Module:**
+- File: `src/lib/logic/{domain}.ts`
+- Structure:
+  ```typescript
+  // Interfaces first
+  export interface InputType { ... }
+  export interface OutputType { ... }
+
+  // Pure functions (no side effects)
+  export function processData(input: InputType): OutputType {
+    // No fetch(), no writeClient, no external calls
+    // Only math, filtering, sorting, validation
+  }
+
+  // Helper functions
+  function validateInput(input: any): boolean { ... }
+  ```
+- Testing: Add `{domain}.test.ts` with Vitest
+- Used by: Pages, components, API routes, services
+
+**New Sanity Document Type:**
+- File: `sanity/schemas/{typeName}.ts`
+- Register in: `sanity/schema.ts` (add import and include in types array)
+- Structure in sidebar: Add entry in `sanity/structure.ts`
+  - Singletons (settings, homePage, etc.): Use `singleton()` helper
+  - Collections: Use `collection()` helper with ordering
+- Auto-slug: Add to `SLUG_TYPES` array in `sanity.config.ts` for auto-generation
+- Fetch helper: Add function in `src/lib/sanity.ts`
+  - Use `sanityClient` for general content (CDN)
+  - Use `freshClient` for real-time data (donations, overrides)
 
 ## Special Directories
 
-**`.planning/codebase/`:**
-- Purpose: Architecture & structure documentation (this location)
-- Generated: No (hand-written guides)
-- Committed: Yes
-- Contents: ARCHITECTURE.md, STRUCTURE.md, CONVENTIONS.md, TESTING.md, STACK.md, INTEGRATIONS.md, CONCERNS.md
+**`node_modules/`**
+- Purpose: Installed npm dependencies
+- Generated: `npm install` from package-lock.json
+- Committed: NO (in .gitignore)
 
-**`dist/`:**
-- Purpose: Build output (SSR server function + static assets)
-- Generated: Yes (by `astro build`)
-- Committed: No
-- Structure: `dist/client/` (static), `dist/server/` (Node.js functions)
+**`dist/`**
+- Purpose: Production build output
+- Generated: `npm run build` via Astro
+- Deployed to: Vercel
+- Committed: NO (in .gitignore)
 
-**`.vercel/output/`:**
-- Purpose: Vercel build artifact cache
-- Generated: Yes (by Vercel CLI or CI)
-- Committed: No
-- Cleanup: Safe to delete
+**`.astro/`**
+- Purpose: Astro build cache and type information
+- Generated: During `npm run build` and `npm run dev`
+- Committed: NO (in .gitignore)
 
-**`.astro/`:**
-- Purpose: Astro internal cache (types, collection metadata)
-- Generated: Yes (by Astro)
-- Committed: No (excluded via .gitignore)
-- Cleanup: `astro sync` regenerates if missing
-
-**`node_modules/`:**
-- Purpose: npm dependencies
-- Generated: Yes (by `npm install`)
-- Committed: No
-- Install: Use `npm ci` for reproducible builds
-
-**`public/fonts/`:**
-- Purpose: Self-hosted WOFF2 fonts (Philosopher, Lato, Amiri)
-- Generated: No (pre-built + committed)
-- Committed: Yes
-- Preload: In BaseLayout via `<link rel="preload">`
+**`.planning/codebase/`**
+- Purpose: GSD codebase analysis documents
+- Generated: By GSD agents (this audit)
+- Committed: YES
+- Contains: ARCHITECTURE.md, STRUCTURE.md, CONVENTIONS.md, TESTING.md, CONCERNS.md
 
 ---
 

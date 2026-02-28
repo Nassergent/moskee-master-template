@@ -4,169 +4,207 @@
 
 ## APIs & External Services
 
-**Content Management:**
-- Sanity CMS - Full content backend (services, projects, posts, events, lessons, settings)
-  - SDK/Client: `@sanity/client` (read + write)
-  - Studio: Embedded at `/admin` via `@sanity/astro`
-  - Auth: `SANITY_API_TOKEN` (read), `SANITY_WRITE_TOKEN` (write, minimized scope)
-  - Read clients: `sanityClient` (CDN-cached for public content) + `freshClient` (uncached for real-time data)
+**Sanity CMS (Content Management):**
+- Service: Sanity (headless CMS, managed backend)
+- What it's used for: Central content repository for all mosque data (settings, prayers, events, news, projects, etc.)
+- SDK/Client: @sanity/client 5.11.0, @sanity/image-url 2.0.3
+- Auth:
+  - Public read: `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET`
+  - Server-side read (fresh): `PUBLIC_SANITY_PROJECT_ID`, `SANITY_API_TOKEN`
+  - Server-side write: `SANITY_WRITE_TOKEN` (preferred) or fallback `SANITY_API_TOKEN`
+- Configuration files:
+  - `sanity.config.ts` - Schema, plugins, auto-slug actions
+  - `sanity/lib/client.ts` - Dual clients: `sanityClient` (CDN, cached) and `freshClient` (no cache, real-time)
+  - `sanity/schema.ts` - Document type registry
+  - `sanity/structure.ts` - Sidebar navigation structure
 
-**Payment Processing:**
-- Mollie - Dutch payment provider (iDEAL, credit card, PayPal, etc.)
-  - SDK/Client: `@mollie/api-client`
-  - Auth: `MOLLIE_API_KEY` (test or live)
-  - Webhook Auth: `MOLLIE_WEBHOOK_SECRET` (HMAC SHA-256)
-  - Webhook endpoint: `POST /api/mollie-webhook`
-  - Status: Live in production (`mollie-webhook.ts` line 28 detects test vs. live mode)
+**Mollie Payment Processing:**
+- Service: Mollie (payment gateway, Dutch-friendly)
+- What it's used for: Credit card, bank transfer, iDEAL, and other payment methods for donations
+- SDK/Client: @mollie/api-client 4.4.0
+- Auth: `MOLLIE_API_KEY` (test_xxxx for demo, live_xxxx for production)
+- Webhook secret: `MOLLIE_WEBHOOK_SECRET` (HMAC verification, required in live mode)
+- Configuration:
+  - Creates payments with metadata (projectId, correlationId, email, frequency)
+  - Webhook endpoint: `/api/mollie-webhook` (POST)
+  - Sandbox mode auto-enabled when key starts with "test_"
+- Used in:
+  - `src/pages/api/donate.ts` - Payment initiation
+  - `src/pages/api/mollie-webhook.ts` - Webhook handler with HMAC verification
+  - `src/services/webhook-service.ts` - Webhook processing, idempotency, locking
+  - `src/services/payment-service.ts` - Payment completion, Sanity updates
+  - `src/services/reconcile-service.ts` - Daily reconciliation of Mollie vs Sanity amounts
+  - `src/pages/api/jobs/reconcile-mollie.ts` - Cron job (0 3 * * * daily)
 
-**Email Delivery:**
-- Resend - Email API for transactional emails
-  - SDK/Client: `Resend` class from `resend` package
-  - Auth: `RESEND_API_KEY`
-  - From address: `${mosqueName} <${FROM_EMAIL_DOMAIN}>`
-  - Email templates: `src/lib/email-templates.ts` (HTML templates)
-  - Emails sent for:
-    - Contact form notifications (mosque + visitor)
-    - Volunteer applications (mosque + volunteer)
-    - Donation confirmations (donor)
-    - Event registrations (mosque + participant)
+**Resend Email Service:**
+- Service: Resend (transactional email, API-first)
+- What it's used for: Send confirmation emails (donations, volunteer signups, event registrations, contact form notifications)
+- SDK/Client: resend 6.9.2
+- Auth: `RESEND_API_KEY` (re_xxxxxxxxxxxx format)
+- From domain: `FROM_EMAIL_DOMAIN` (must be verified with Resend; defaults to `onboarding@resend.dev` for testing)
+- Configuration:
+  - Skips sending when key is default or missing (demo mode)
+  - Dynamic "from" address: `${mosqueName} <${FROM_EMAIL_DOMAIN}>`
+- Used in:
+  - `src/services/email-service.ts` - Contact notification, volunteer signup/confirmation, event registration emails
+  - `src/services/payment-service.ts` - Donation confirmation email
+  - `src/lib/email-templates.ts` - HTML email templates with theme colors
 
-**Rate Limiting & Idempotency:**
-- Upstash Redis - Serverless Redis for distributed state
-  - SDK/Client: `Redis` from `@upstash/redis`
-  - Auth: `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`
-  - Use cases:
-    - Rate limiting: 5 requests per 60s per IP (configurable per endpoint)
-    - Webhook idempotency: Tracks processed payment IDs with 7-day TTL
-    - Processing locks: Concurrency control for webhook handler (300s expiry)
-  - Fallback: In-memory rate limiting on local development (no Redis)
+**Upstash Redis (Rate Limiting, Distributed Caching):**
+- Service: Upstash (Redis REST API, serverless-friendly)
+- What it's used for: Rate limiting, webhook idempotency markers, processing locks for concurrency safety
+- SDK/Client: @upstash/redis 1.36.2, @upstash/ratelimit 2.0.8
+- Auth:
+  - `UPSTASH_REDIS_REST_URL` - Redis REST endpoint
+  - `UPSTASH_REDIS_REST_TOKEN` - Authentication token
+- Configuration:
+  - Rate limit timeout: 500ms (configurable)
+  - Sliding window: 5 requests per 60 seconds (default, varies by route)
+  - Fallback: In-memory LRU cache (max 500 entries, 60s TTL) when Redis unavailable
+- Used in:
+  - `src/lib/security.ts` - Rate limiting for all API routes with fail strategies
+  - `src/pages/api/donate.ts` - Donation form (hard-fail strategy: 503 if Redis unavailable)
+  - `src/pages/api/mollie-webhook.ts` - Webhook rate limiting (in-memory fallback strategy)
+  - `src/pages/api/contact.ts` - Contact form rate limiting (in-memory fallback)
+  - `src/pages/api/vrijwilligers.ts` - Volunteer signup rate limiting (in-memory fallback)
+  - `src/pages/api/evenement-aanmelding.ts` - Event registration locking and occupancy
+  - `src/services/webhook-service.ts` - Idempotency check and processing lock (CRITICAL for production)
 
 ## Data Storage
 
-**Databases:**
-- Sanity Cloud - Headless CMS database
-  - Connection: REST API via `@sanity/client`
-  - Client: `sanityClient`, `freshClient`, `writeClient`
-  - Dataset: `production` (configurable via `PUBLIC_SANITY_DATASET`)
-  - Schema types (from `sanity/schema.ts`): 14 document types including
-    - Settings (singleton: mosque name, colors, menu toggles)
-    - Projects (donation fundraising)
-    - Posts (news articles)
-    - AgendaEvents (calendar events)
-    - LessonPrograms (education schedules)
-    - ServiceWorkers (volunteer intake)
-    - JanazahAlerts (funeral prayer notifications)
+**Database:**
+- Type/Provider: Sanity CMS (JSON-based document store)
+- Connection: REST API via `@sanity/client`
+  - CDN endpoint (cached): `sanityClient` with `useCdn: true`
+  - Fresh endpoint (no cache): `freshClient` with `useCdn: false`
+- Client: @sanity/client 5.11.0
+- Authentication:
+  - Read: Public (only project ID and dataset needed)
+  - Write: `SANITY_WRITE_TOKEN` (preferred, minimal scope) or `SANITY_API_TOKEN`
+- Document types (14 total in `sanity/schema.ts`):
+  - Singletons: settings, homePage, homeCards, aboutPage, contactPage, prayerTimes, ramadanOverride, janazahProcedure
+  - Collections: post, agendaEvent, service, project, lessonProgram, quote, etiquette, eventCategorie, janazahAlert, eventRegistration, topicHub
 
 **File Storage:**
-- Sanity CDN - Image hosting + optimization
-  - URL builder: `urlFor()` from `@sanity/image-url`
-  - Format: Auto-detect WebP/AVIF via Accept header
-  - Quality: 80 (default)
-  - Width: 1200px (default, callers can override)
+- Provider: Sanity CMS (asset management)
+- Purpose: Images, logos, documents, files stored in Sanity
+- URL builder: `@sanity/image-url` with auto-format (WebP/AVIF), default 1200px width, 80% quality
 
 **Caching:**
-- Sanity CDN (public content, enabled via `useCdn: true`)
-- Vercel Edge Network (deployment platform)
+- CDN: Sanity CDN (enabled for public content via `useCdn: true`)
+- In-memory: LRU cache for rate limiting fallback (`lru-cache` 11.2.6)
+- HTTP caching: Vercel edge headers configured in `vercel.json`
+  - `/_astro/*` - 1 year immutable cache
+  - `/fonts/*` - 1 year immutable cache
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- Custom origin validation + API tokens
-  - Contact/donate forms: CSRF origin check via `checkOrigin()` (`src/lib/security.ts`)
-  - Webhooks: HMAC-SHA256 signature verification (Mollie signed requests)
-  - Sanity: Token-based (read tokens for `sanityClient`, write tokens for mutations)
+- Type: Custom (none external)
+- Sanity token-based:
+  - Read token: `SANITY_API_TOKEN` (optional, public reads work without)
+  - Write token: `SANITY_WRITE_TOKEN` (required for document creation/updates)
+- API security:
+  - CSRF origin check (custom implementation, not Astro's built-in)
+  - Rate limiting with configurable strategies
+  - Honeypot bot detection
+  - HMAC verification for Mollie webhooks
 
-**API Tokens (Server-only):**
-- `SANITY_API_TOKEN` - Read token for public content + admin fetches
-- `SANITY_WRITE_TOKEN` - Write token (separate, minimal scope per Sanity best practices)
-- `MOLLIE_API_KEY` - Payment API key
-- `MOLLIE_WEBHOOK_SECRET` - Webhook HMAC signing key
-- `RESEND_API_KEY` - Email API key
-- `UPSTASH_REDIS_REST_TOKEN` - Redis auth
+**Authorization:**
+- No user login system
+- Cron jobs authenticated via: `CRON_SECRET` header (Vercel cron signature in prod, custom header in dev)
 
 ## Monitoring & Observability
 
 **Error Tracking:**
-- Console logging (no external service)
-  - Logger helper: `src/lib/logic/logger.ts` (`formatLog()` function)
-  - Webhook processor logs all steps: verification, Mollie fetch, Sanity commit, email dispatch
-  - Sanitizes PII: redacts email addresses in logs
+- Service: None detected (no Sentry, Rollbar, etc.)
+- Approach: Console logging with structured JSON format
 
 **Logs:**
-- Vercel deployment logs (SSR errors, function invocations)
-- Mollie webhook logs (per payment processing)
-- Sanity mutation logs (implicit in dashboard)
-
-**Analytics:**
-- Not integrated (no Vercel Analytics, no third-party)
+- Approach: Structured JSON logging via `src/lib/logic/logger.ts`
+- Event types: webhook_received, lock_acquired, mollie_fetched, sanity_commit_ok, sanity_commit_retry, sanity_commit_failed, email_sent, rate_limit_fallback, rate_limit_hard_fail, etc.
+- Sensitive keys redacted: secret, token, apiKey, password, MOLLIE_API_KEY, SANITY_WRITE_TOKEN, RESEND_API_KEY, UPSTASH_REDIS_REST_TOKEN, CRON_SECRET
+- Correlation ID: Generated for each donation (`generateCorrelationId()` in webhook processing)
+- Tenant ID: Included in logs for multi-tenant tracking (`SANITY_PROJECT_ID` or `PUBLIC_SANITY_PROJECT_ID`)
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Vercel - Serverless deployment
-  - Adapter: `@astrojs/vercel` (SSR mode, function-per-route)
-  - Environment: Production environment with secrets management
-  - Cold starts: Handled gracefully (Upstash Redis connection pool)
+- Platform: Vercel (serverless Edge Runtime)
+- Deployment: Via git push (automatic deployment from GitHub)
+- Region: Vercel global CDN
+- Environment: Production (`PROD` flag)
+
+**Build Process:**
+- Build command: `astro build`
+- Deploy command: Auto-deployed via Vercel integration
+- Output: `dist/` directory (serverless functions + static assets)
 
 **CI Pipeline:**
-- GitHub Actions (assumed, via `git` integration for Sanity studio commits)
-- Vercel auto-deploy on push to main branch
+- Service: GitHub Actions (implied, no explicit config file found)
+- Tests: `npm test` or `npm run test:watch` (Vitest)
 
-**Cron Jobs (Vercel):**
-- `GET /api/jobs/reconcile-mollie?since=24h`
-  - Schedule: `0 3 * * *` (3 AM UTC daily)
-  - Purpose: Reconcile pending payments from Mollie (failsafe for missed webhooks)
-  - Auth: `CRON_SECRET` (via Vercel header validation)
+**Cron Jobs:**
+- Service: Vercel cron jobs (defined in `vercel.json`)
+- Job 1: Reconcile Mollie payments daily at 3 AM
+  - Endpoint: `/api/jobs/reconcile-mollie?since=24h`
+  - Schedule: `0 3 * * *` (UTC)
+  - Auth: Vercel cron signature + `CRON_SECRET`
 
 ## Environment Configuration
 
-**Required env vars at deploy time:**
-```
-PUBLIC_SITE_URL              # Production domain
-PUBLIC_SANITY_PROJECT_ID    # Sanity project ID
-SANITY_API_TOKEN            # Read token
-SANITY_WRITE_TOKEN          # Write token
-MOLLIE_API_KEY              # Payment API key
-MOLLIE_WEBHOOK_SECRET       # Webhook signature secret
-RESEND_API_KEY              # Email API key
-FROM_EMAIL_DOMAIN           # Verified email domain
-UPSTASH_REDIS_REST_URL      # Redis endpoint
-UPSTASH_REDIS_REST_TOKEN    # Redis auth
-CRON_SECRET                 # Cron job authentication
-TENANT_ID                   # Multi-tenant identifier
-HUB_TELEMETRY_URL           # UmmahOS fleet tracking
-```
+**Required env vars for production:**
+- `PUBLIC_SITE_URL` - Base URL for sitemaps and redirects
+- `PUBLIC_SANITY_PROJECT_ID` - Sanity project ID (shared)
+- `PUBLIC_SANITY_DATASET` - Sanity dataset (default: "production")
+- `SANITY_API_TOKEN` - Read token (fallback for writes in dev)
+- `SANITY_WRITE_TOKEN` - Write token (preferred in production)
+- `SANITY_PROJECT_ID` - Server-only tenant identifier (optional, for multi-tenant)
+- `MOLLIE_API_KEY` - Mollie payment API key
+- `MOLLIE_WEBHOOK_SECRET` - Mollie webhook HMAC secret
+- `RESEND_API_KEY` - Resend email API key
+- `FROM_EMAIL_DOMAIN` - Verified email sender domain
+- `UPSTASH_REDIS_REST_URL` - Upstash Redis endpoint
+- `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis token
+- `CRON_SECRET` - Vercel cron authentication
+- `TENANT_ID` - Mosque identifier (optional, for fleet telemetry)
+- `HUB_TELEMETRY_URL` - Fleet telemetry endpoint (optional)
 
-**Secrets Location:**
-- Vercel Environment Variables dashboard (encrypted at rest)
-- `.env` file for local development (gitignored)
-- Sanity project secrets for studio-level API tokens
+**Secrets location:**
+- Vercel Environment Variables (never committed)
+- `.env` file (local development only, in `.gitignore`)
+- See `.env.example` for template with all required keys
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- **Mollie Payment Webhook** - `POST /api/mollie-webhook`
-  - Triggered on payment status changes (paid, expired, cancelled, etc.)
-  - Payload: `{ id: "tr_XXXXX" }` + signature header
-  - Verification: HMAC-SHA256 vs. `MOLLIE_WEBHOOK_SECRET`
-  - Processing: Idempotent (Redis key tracks processed IDs)
-  - Response: HTTP 200 if success, 503 if service unavailable (triggers Mollie retry)
+- `/api/mollie-webhook` (POST) - Payment status updates from Mollie
+  - Authentication: HMAC signature verification (`x-mollie-signature` header)
+  - Payload: Form-encoded or JSON with `id` (payment ID)
+  - Idempotency: Redis-backed marker key `{tenantId}:processed:{paymentId}`
+  - Locking: Processing lock key `{tenantId}:processing:{paymentId}` (300s TTL)
+  - Processing: Fetches payment from Mollie, validates, commits to Sanity, sends confirmation email
+  - Retry: Mollie auto-retries if response is not 200
 
 **Outgoing:**
-- Resend email webhooks (email delivery tracking)
-  - Not consumed by this app; configured in Resend dashboard
+- Mollie payment redirect: `/bedankt?bedrag=X&bestemming=Y` (redirect from Mollie checkout, no webhook data needed)
+- Fleet telemetry: `HUB_TELEMETRY_URL` (optional, not actively used in current codebase)
 
-## Multi-Tenant Architecture
+## API Endpoints (Summary)
 
-**Tenant Isolation:**
-- Each mosque instance uses separate Sanity dataset (via environment)
-- Webhook idempotency: Keyed by `SANITY_PROJECT_ID` + payment ID
-- Telemetry: Fleet monitoring via `HUB_TELEMETRY_URL` (UmmahOS Hub)
+**Public:**
+- `GET /` - Homepage
+- `POST /api/donate` - Initiate donation payment (returns Mollie checkout URL)
+- `POST /api/contact` - Submit contact form
+- `POST /api/vrijwilligers` - Volunteer signup
+- `POST /api/evenement-aanmelding` - Event registration
+- `POST /api/mollie-webhook` - Mollie payment webhook
 
-**Fleet Telemetry:**
-- Endpoint: `HUB_TELEMETRY_URL` (from `MEMORY.md`: `https://ummah.be/api/v1/fleet/intake`)
-- Identifier: `TENANT_ID` (mosque-specific ID)
-- Usage: Anonymous health checks + aggregate metrics
+**Internal (Vercel Cron):**
+- `POST /api/jobs/reconcile-mollie?since=24h` - Daily payment reconciliation (authenticated via CRON_SECRET)
+
+**Sanity Studio:**
+- `/admin` - Sanity CMS studio (embedded via @sanity/astro)
 
 ---
 
