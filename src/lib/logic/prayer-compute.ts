@@ -35,7 +35,6 @@ export function computePrayerTimesFromSanity(prayer: any): PrayerComputeResult {
     const prayerStatus = getPrayerStatus(now, computedTimes);
     return { computedTimes, prayerStatus };
   } catch (e) {
-    console.error('Prayer engine computation failed:', e);
     return { computedTimes: null, prayerStatus: null };
   }
 }

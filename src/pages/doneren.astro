@@ -5,7 +5,7 @@ import DonationCard from '../components/DonationCard.astro';
 import BankQrCard from '../components/ui/donation/BankQrCard.astro';
 import { fetchProjecten, fetchSettings, fetchQuote, urlFor } from '../lib/sanity';
 import { calculateProjectStats } from '../lib/logic/project-utils';
-import { generateEpcQrCode } from '../lib/logic/qr-service';
+import { generateEpcQrCode } from '../services/qr-service';
 import { buildSiteConfig } from '../lib/logic/config';
 import { isFeatureEnabled } from '../lib/logic/menu-builder';
 import type { Project } from '../types/sanity';

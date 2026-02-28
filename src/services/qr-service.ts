@@ -3,7 +3,7 @@
  * Server-side only — outputs SVG string (no client JS).
  */
 import QRCode from 'qrcode';
-import { validateIban } from './payment-validators';
+import { validateIban } from '../lib/logic/payment-validators';
 
 export interface QrResult {
   success: true;
