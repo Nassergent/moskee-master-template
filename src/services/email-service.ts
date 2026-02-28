@@ -6,6 +6,7 @@
 import { Resend } from 'resend';
 import { fetchSettings } from '../lib/sanity';
 import { contactNotificationEmail, volunteerNotificationEmail, volunteerConfirmationEmail, eventRegistrationNotificationEmail, eventRegistrationConfirmationEmail } from '../lib/email-templates';
+import { isResendDemoMode } from '../lib/env';
 
 const FROM_DOMAIN = import.meta.env.FROM_EMAIL_DOMAIN || 'onboarding@resend.dev';
 
@@ -44,8 +45,8 @@ export async function sendContactNotification(opts: {
   onderwerp?: string;
   bericht: string;
 }): Promise<void> {
-  const apiKey = import.meta.env.RESEND_API_KEY;
-  if (!apiKey || apiKey === 're_xxxxxxxxxxxx') return;
+  if (isResendDemoMode()) return;
+  const apiKey = import.meta.env.RESEND_API_KEY!;
 
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
@@ -80,8 +81,8 @@ export async function sendVolunteerEmails(opts: {
   taken: string[];
   bericht?: string;
 }): Promise<void> {
-  const resendKey = import.meta.env.RESEND_API_KEY;
-  if (!resendKey || resendKey === 're_xxxxxxxxxxxx') return;
+  if (isResendDemoMode()) return;
+  const resendKey = import.meta.env.RESEND_API_KEY!;
 
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
@@ -137,8 +138,8 @@ export async function sendEventRegistrationEmails(opts: {
   notes?: string;
   eventTitle: string;
 }): Promise<void> {
-  const resendKey = import.meta.env.RESEND_API_KEY;
-  if (!resendKey || resendKey === 're_xxxxxxxxxxxx') return;
+  if (isResendDemoMode()) return;
+  const resendKey = import.meta.env.RESEND_API_KEY!;
 
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
