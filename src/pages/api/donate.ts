@@ -97,7 +97,7 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const description = resolvedProjectId && resolvedProjectId !== 'algemeen'
       ? `Donatie: ${resolvedProjectName} — ${mosqueName}`
-      : `${frequency === 'maandelijks' ? 'Maandelijkse d' : 'D'}onatie — ${mosqueName}`;
+      : `Donatie — ${mosqueName}`;
 
     const payment = await mollieClient.payments.create({
       amount: {
@@ -112,7 +112,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         projectName: resolvedProjectName,
         tenantId,
         correlationId,
-        frequency,
+        frequency, // TODO: Implement via Mollie Subscriptions API when ready
         project: resolvedProjectName,  // Legacy: kept for in-flight backward compat
         email: email || '',
       },
