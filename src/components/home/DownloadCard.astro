@@ -16,19 +16,22 @@ const { card, delay = 0 } = Astro.props;
 
 const titel = card.downloadTitel;
 const beschrijving = card.downloadBeschrijving;
-const downloadUrl = card.downloadBestandUrl;
+const bestandUrl = card.downloadBestandUrl;
 const afbeeldingUrl = card.downloadAfbeeldingUrl;
 const ctaLabel = card.downloadCtaLabel || 'Download';
+
+// Downloadbare URL: bestand heeft voorrang, anders afbeelding
+const downloadUrl = bestandUrl || afbeeldingUrl;
 
 // Skip if no title or no downloadable content
 if (!titel || !downloadUrl) return;
 
-// Preview afbeelding heeft voorrang op bestand-URL detectie
+// Preview: afbeelding heeft voorrang, anders probeer bestand-URL
 const { hasImage, imageUrl: downloadImageUrl, imageUrlLarge: downloadImageUrlLarge } = afbeeldingUrl
   ? { hasImage: true, imageUrl: afbeeldingUrl, imageUrlLarge: afbeeldingUrl }
   : resolveDownloadImage(null, downloadUrl);
 const downloadFileName = extractFileName(downloadUrl);
-const directDownloadUrl = downloadUrl ? `${downloadUrl}?dl=${downloadFileName}` : null;
+const directDownloadUrl = `${downloadUrl}?dl=${downloadFileName}`;
 
 // Unique ID for multiple lightboxes on the same page
 const lightboxId = `download-lightbox-${Math.random().toString(36).slice(2, 8)}`;
