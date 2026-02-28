@@ -3,6 +3,7 @@ import { checkRateLimit, getClientIp } from '../../lib/security';
 import { verifyHmacTimingSafe, isValidPaymentId } from '../../lib/logic/webhook-validators';
 import { processWebhook } from '../../services/webhook-service';
 import { formatLog } from '../../lib/logic/logger';
+import { shouldSkipWebhookVerification } from '../../lib/env';
 
 export const prerender = false;
 
@@ -28,7 +29,7 @@ export const POST: APIRoute = async ({ request }) => {
     const secret = import.meta.env.MOLLIE_WEBHOOK_SECRET;
     const signature = request.headers.get('x-mollie-signature');
 
-    if (import.meta.env.WEBHOOK_SKIP_VERIFICATION === 'true') {
+    if (shouldSkipWebhookVerification()) {
       // Dev mode: explicit env var skips verification
       console.error(formatLog('error', 'hmac_verification_skipped', { route: '/api/mollie-webhook' }));
     } else {
