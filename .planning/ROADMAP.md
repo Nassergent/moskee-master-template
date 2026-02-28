@@ -9,7 +9,7 @@ Deze milestone maakt het moskee-master-template veilig deploybaar naar meerdere 
 **Phase Numbering:**
 - Integer phases (1, 2, 3, 4): Planned milestone work
 
-- [ ] **Phase 1: Webhook Sanity Write Recovery** - Sanity write failures opvangen met Redis fallback + reprocess endpoint
+- [x] **Phase 1: Webhook Sanity Write Recovery** - Sanity write failures opvangen met Redis fallback + reprocess endpoint
 - [ ] **Phase 2: HMAC Verificatie Fix** - Test mode detectie vervangen door expliciete env var
 - [x] **Phase 3: Frequency Cleanup** - Ongebruikte frequency parameter opruimen uit API
 - [ ] **Phase 4: Centrale Demo Mode Helper** - Alle hardcoded test values vervangen door isDemoMode()
@@ -28,7 +28,7 @@ Deze milestone maakt het moskee-master-template veilig deploybaar naar meerdere 
 **Plans:** 1 plan
 
 Plans:
-- [ ] 01-01-PLAN.md — Sanity write recovery met Redis fallback + reprocess endpoint
+- [x] 01-01-PLAN.md — Sanity write recovery met Redis fallback + reprocess endpoint
 
 ### Phase 2: HMAC Verificatie Fix
 **Goal**: HMAC verificatie wordt niet meer bepaald door API key format — expliciete env var controleert of verificatie wordt overgeslagen

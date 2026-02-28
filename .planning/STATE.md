@@ -8,7 +8,7 @@ progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 
 ## Current Position
 
-Phase: 3 (Frequency Parameter Cleanup)
-Plan: 03-01 completed
-Status: In progress — plan 03-01 done, 3 plans remaining
-Last activity: 2026-02-28 — executed 03-01-PLAN.md
+Phase: 1 (Webhook Sanity Write Recovery)
+Plan: 01-01 completed
+Status: In progress — plans 01-01 and 03-01 done, 2 plans remaining (02-01, 04-01)
+Last activity: 2026-02-28 — executed 01-01-PLAN.md
 
-Progress: [█░░░░░░░░░] 25%
+Progress: [██░░░░░░░░] 50%
 
 ## Accumulated Context
 
@@ -38,6 +38,9 @@ Progress: [█░░░░░░░░░] 25%
 - Frequency → cleanup description logic, keep in metadata for future
 - Demo mode → central `isDemoMode()` helper in `src/lib/env.ts`
 - 6 hardcoded test value locations (not 4 as originally estimated)
+- Redis key pattern: `{tenantId}:failed:{paymentId}` with 30-day TTL (01-01)
+- Reprocess endpoint uses x-cron-secret header, not Vercel cron signature (01-01)
+- Failed keys NOT deleted on reprocess failure — left for next cron run (01-01)
 
 ### Pending Todos
 
@@ -50,5 +53,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 03-01-PLAN.md (Frequency Parameter Cleanup)
+Stopped at: Completed 01-01-PLAN.md (Sanity Write Recovery met Redis Fallback)
 Resume file: None
