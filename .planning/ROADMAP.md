@@ -12,7 +12,7 @@ This milestone closes two specific production security gaps in the moskee-master
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: FailStrategy Foundation** - Harden `checkRateLimit()` with typed per-route fail strategies and update all callers
+- [x] **Phase 1: FailStrategy Foundation** - Harden `checkRateLimit()` with typed per-route fail strategies and update all callers
 - [ ] **Phase 2: In-Memory LRU + Observability** - Replace unbounded Map with bounded LRU cache and add structured fallback logging
 - [ ] **Phase 3: Webhook Idempotency Test Suite** - Cover all four critical Redis failure scenarios with Vitest
 
@@ -30,7 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 1 plan
 
 Plans:
-- [ ] 01-01-PLAN.md — Refactor checkRateLimit with typed FailStrategy + update all 3 API callers
+- [x] 01-01-PLAN.md — Refactor checkRateLimit with typed FailStrategy + update all 3 API callers
 
 ### Phase 2: In-Memory LRU + Observability
 **Goal**: The in-memory fallback is bounded and observable — no unbounded Map growth, every fallback activation emits a structured log entry
@@ -61,6 +61,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. FailStrategy Foundation | 0/1 | Not started | - |
+| 1. FailStrategy Foundation | 1/1 | Complete | 2026-02-28 |
 | 2. In-Memory LRU + Observability | 0/? | Not started | - |
 | 3. Webhook Idempotency Test Suite | 0/? | Not started | - |
