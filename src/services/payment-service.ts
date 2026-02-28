@@ -12,6 +12,7 @@ import { escapeHtml } from '../lib/security';
 import { donationConfirmationEmail } from '../lib/email-templates';
 import { formatLog } from '../lib/logic/logger';
 import { Resend } from 'resend';
+import { isResendDemoMode } from '../lib/env';
 
 interface PaymentMetadata {
   project?: string;
@@ -53,10 +54,10 @@ export async function processSuccessfulPayment(payment: {
 
   // 2. Send confirmation email (display amount in euros)
   const donorEmail = metadata?.email;
-  const resendKey = import.meta.env.RESEND_API_KEY;
 
-  if (donorEmail && resendKey && resendKey !== 're_xxxxxxxxxxxx') {
+  if (donorEmail && !isResendDemoMode()) {
     try {
+      const resendKey = import.meta.env.RESEND_API_KEY!;
       const settings = await fetchSettings();
       const mosqueName = escapeHtml(settings?.mosqueName || 'Onze Moskee');
       const safeProjectName = escapeHtml(projectName || 'Algemene Sadaqa');
