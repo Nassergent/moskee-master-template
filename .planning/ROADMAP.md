@@ -13,7 +13,7 @@ This milestone closes two specific production security gaps in the moskee-master
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: FailStrategy Foundation** - Harden `checkRateLimit()` with typed per-route fail strategies and update all callers
-- [x] **Phase 2: In-Memory LRU + Observability** - Replace unbounded Map with bounded LRU cache and add structured fallback logging (completed 2026-02-28)
+- [x] **Phase 2: In-Memory LRU + Observability** - Replace unbounded Map with bounded LRU cache and add structured fallback logging (completed 2026-02-28)
 - [ ] **Phase 3: Webhook Idempotency Test Suite** - Cover all four critical Redis failure scenarios with Vitest
 
 ## Phase Details
@@ -55,7 +55,11 @@ Plans:
   3. The duplicate webhook test asserts that `processWebhook()` returns `'Already processed'` on the second call and that zero Sanity patch calls are made
   4. A shared `vi.mock('@upstash/redis')` factory is reused across all Redis scenario tests — no per-test duplication of mock setup
   5. Every test that exercises a 503 response path asserts that a structured log entry was emitted containing `paymentId` and `tenantId`
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Webhook service tests: Redis timeout, ECONNREFUSED, idempotency, shared mock factory, structured log assertions
+- [ ] 03-02-PLAN.md — HMAC tampered signature verification tests
 
 ## Progress
 
@@ -66,4 +70,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. FailStrategy Foundation | 1/1 | Complete | 2026-02-28 |
 | 2. In-Memory LRU + Observability | 1/1 | Complete   | 2026-02-28 |
-| 3. Webhook Idempotency Test Suite | 0/? | Not started | - |
+| 3. Webhook Idempotency Test Suite | 0/2 | Not started | - |
