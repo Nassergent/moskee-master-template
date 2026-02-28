@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in-progress
-last_updated: "2026-02-28T11:26:00Z"
+status: complete
+last_updated: "2026-02-28T11:23:14Z"
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Betalingen en API-bescherming mogen nooit stil falen — elke failure moet detecteerbaar en herstelbaar zijn.
-**Current focus:** Phase 3 — Webhook Idempotency Test Suite (in progress)
+**Current focus:** Phase 3 — Webhook Idempotency Test Suite (complete)
 
 ## Current Position
 
 Phase: 3 of 3 (Webhook Idempotency Test Suite)
-Plan: 2 of 2 complete in current phase
-Status: Phase 3 Plan 02 complete — WHTEST-04 HMAC tests passing
-Last activity: 2026-02-28 — Plan 03-02 complete (HMAC signature verification tests)
+Plan: All plans complete in current phase
+Status: Phase 3 complete — all webhook tests (WHTEST-01 through WHTEST-06) passing
+Last activity: 2026-02-28 — Plan 03-01 complete (Redis failure modes + idempotency test suite)
 
-Progress: [████████░░] 80%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: ~6min
-- Total execution time: ~18min
+- Total plans completed: 4
+- Average duration: ~7min
+- Total execution time: ~26min
 
 **By Phase:**
 
@@ -42,10 +42,10 @@ Progress: [████████░░] 80%
 |-------|-------|-------|----------|
 | 01-failstrategy-foundation | 1 | ~10min | ~10min |
 | 02-in-memory-lru-observability | 1 | ~3min | ~3min |
-| 03-webhook-idempotency-test-suite | 2 complete | ~5min (so far) | ~5min |
+| 03-webhook-idempotency-test-suite | 2 complete | ~13min | ~6.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~10min), 02-01 (~3min), 03-02 (~5min)
+- Last 5 plans: 01-01 (~10min), 02-01 (~3min), 03-02 (~5min), 03-01 (~8min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -78,17 +78,21 @@ Recent decisions affecting current work:
 - Test verifyHmacTimingSafe() directly — avoids Astro route runtime dependency for WHTEST-04
 - signBody() helper uses crypto.subtle (same Web Crypto API as production) — no external HMAC lib needed
 
+**Phase 3 Plan 01 decisions (2026-02-28):**
+- vi.fn(function() { return {...}; }) instead of vi.fn(() => ({...})) — arrow functions cannot be called with `new`; webhook-service.ts calls `new Redis({url, token})`
+- Redis module-level caching (redisChecked flag) works without vi.resetModules() — mock factory intercepts at module load time, per-test mockReset() on shared refs is sufficient
+- MOLLIE_API_KEY must be 'live_fakekeyfortesting' (not 'test_...') — demo-mode guard short-circuits before Redis/idempotency flow
+
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-- [Pre-Phase 3]: Mollie exact retry window duration is LOW confidence (community sources only) — verify in official Mollie docs before writing ops runbook in Phase 3
-- [Observation]: src/services/webhook-service.test.ts is present as an untracked file — likely from prior Phase 3 plan work. Review before Phase 3 gate.
+None remaining. All webhook test scenarios covered.
 
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 03-02-PLAN.md (Webhook Idempotency Test Suite — HMAC signature verification tests, WHTEST-04)
+Stopped at: Completed 03-01-PLAN.md (Webhook Idempotency Test Suite — Redis failure modes, idempotency, structured log assertions)
 Resume file: None
