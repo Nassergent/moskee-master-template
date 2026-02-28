@@ -11,9 +11,10 @@ interface Props {
   maxCapacity?: number;
   occupancy?: number;
   deadline?: string;
+  csrfToken?: string;
 }
 
-const { eventId, eventTitel, maxCapacity, occupancy = 0, deadline } = Astro.props;
+const { eventId, eventTitel, maxCapacity, occupancy = 0, deadline, csrfToken = '' } = Astro.props;
 
 const { isFull, isExpired, spotsLeft, occupancyPercent } = getRegistrationStatus(maxCapacity, occupancy, deadline);
 ---
@@ -51,7 +52,7 @@ const { isFull, isExpired, spotsLeft, occupancyPercent } = getRegistrationStatus
         </div>
       )}
 
-      <form id="event-registration-form" class="space-y-6">
+      <form id="event-registration-form" class="space-y-6" data-csrf={csrfToken}>
         {/* Honeypot */}
         <div class="hidden" aria-hidden="true">
           <input type="text" name="website" tabindex="-1" autocomplete="off" />
@@ -142,6 +143,7 @@ const { isFull, isExpired, spotsLeft, occupancyPercent } = getRegistrationStatus
         partySize: parseInt(formData.get('partySize')) || 1,
         notes: formData.get('notes') || '',
         website: formData.get('website') || '',
+        _csrf: form.dataset.csrf || '',
       };
 
       try {

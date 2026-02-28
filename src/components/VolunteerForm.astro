@@ -5,12 +5,13 @@
  */
 interface Props {
   taken?: string[];
+  csrfToken?: string;
 }
 
-const { taken = [] } = Astro.props;
+const { taken = [], csrfToken = '' } = Astro.props;
 ---
 
-<form id="volunteer-form" class="space-y-6">
+<form id="volunteer-form" class="space-y-6" data-csrf={csrfToken}>
   {/* Honeypot — verborgen voor echte gebruikers */}
   <div class="hidden" aria-hidden="true">
     <input type="text" name="website" tabindex="-1" autocomplete="off" />
@@ -89,6 +90,7 @@ const { taken = [] } = Astro.props;
       taken: taak ? [taak] : [],
       bericht: formData.get('bericht') || '',
       website: formData.get('website') || '',
+      _csrf: form.dataset.csrf || '',
     };
 
     try {

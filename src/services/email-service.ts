@@ -7,6 +7,7 @@ import { Resend } from 'resend';
 import { fetchSettings } from '../lib/sanity';
 import { contactNotificationEmail, volunteerNotificationEmail, volunteerConfirmationEmail, eventRegistrationNotificationEmail, eventRegistrationConfirmationEmail } from '../lib/email-templates';
 import { isResendDemoMode } from '../lib/env';
+import type { PrimaryTheme } from '../types/sanity';
 
 const FROM_DOMAIN = import.meta.env.FROM_EMAIL_DOMAIN || 'onboarding@resend.dev';
 
@@ -27,7 +28,7 @@ const primaryThemeMap: Record<string, string> = {
   'charcoal-sage': '#374940',
 };
 
-function getColors(primaryTheme: string | undefined): SettingsColors {
+function getColors(primaryTheme: PrimaryTheme | string | undefined): SettingsColors {
   return {
     primary: primaryThemeMap[primaryTheme || ''] || '#5B2334',
     accent: '#C9A983',

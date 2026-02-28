@@ -2,6 +2,7 @@
 import { urlFor } from '../lib/sanity';
 import { calculateDonationProgress } from '../lib/logic/donation-utils';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
+import type { SanityImage } from '../types/sanity';
 
 interface Props {
   _id: string;
@@ -11,7 +12,7 @@ interface Props {
   /** Current amount in integer cents */
   huidigBedragCents?: number | null;
   actief: boolean;
-  afbeelding?: any;
+  afbeelding?: SanityImage;
   /** When false, the CTA button selects the project in the form dropdown (used on donatiepagina) */
   clickable?: boolean;
   locale?: string;

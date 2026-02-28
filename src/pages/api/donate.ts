@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createMollieClient } from '@mollie/api-client';
 import { fetchSettings } from '../../lib/sanity';
-import { checkRateLimit, getClientIp, checkOrigin, isBot } from '../../lib/security';
+import { checkRateLimit, getClientIp, checkOrigin, isBot, validateCsrfToken } from '../../lib/security';
 import { validatePaymentAmount } from '../../lib/logic/payment-validators';
 import { generateCorrelationId } from '../../lib/logic/webhook-validators';
 import { isMollieDemoMode } from '../../lib/env';
@@ -21,16 +21,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     const originError = checkOrigin(request, siteOrigin);
     if (originError) return originError;
 
-    // Rate limiting: max 5 donaties per IP per minuut — hard-fail wanneer Redis onbereikbaar
+    // Rate limiting: max 5 donaties per IP per minuut — in-memory-fallback (don't block users if Redis is down)
     const ip = getClientIp(request);
-    const rl = await checkRateLimit(ip, 'hard-fail', 5, 60_000, '/api/donate');
-
-    if (!rl.allowed && rl.source === 'hard-fail') {
-      return new Response(JSON.stringify({ error: 'Betalingsservice tijdelijk niet beschikbaar.' }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    const rl = await checkRateLimit(ip, 'in-memory-fallback', 5, 60_000, '/api/donate');
 
     if (!rl.allowed) {
       return new Response(JSON.stringify({ error: 'Te veel aanvragen. Probeer het over een minuut opnieuw.' }), {
@@ -52,10 +45,14 @@ export const POST: APIRoute = async ({ request, url }) => {
     // Honeypot check
     if (isBot(data)) {
       return new Response(JSON.stringify({ success: true }), {
-        status: 200,
+        status: 202,
         headers: { 'Content-Type': 'application/json' },
       });
     }
+
+    // CSRF double-submit cookie validation
+    const csrfError = validateCsrfToken(request, data._csrf);
+    if (csrfError) return csrfError;
 
     const { amount, frequency, projectId, projectName, email } = data;
     // Legacy compat: accept old 'project' field from cached frontends

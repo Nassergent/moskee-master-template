@@ -1,5 +1,6 @@
 import { sanityClient, freshClient, urlFor } from '../../sanity/lib/client';
 import { formatLog } from './logic/logger';
+import type { Settings, Project, Service, AgendaEvent, NewsPost, Quote, LessonProgram, EventCategory, Etiquette } from '../types/sanity';
 export { sanityClient, freshClient, urlFor };
 
 // writeClient is NOT re-exported here — import directly from
@@ -24,18 +25,18 @@ async function safeFetch<T>(
 
 // ── Fetch helpers (Sanity CMS is enige bron) ──────────────────────
 
-export async function fetchSettings() {
+export async function fetchSettings(): Promise<Settings | null> {
   // freshClient: theme/menu wijzigingen moeten direct zichtbaar zijn, geen CDN cache
   return safeFetch(freshClient, `*[_id == "settings"][0]{ mosqueName, description, logo, logoFooter, favicon, primaryTheme, menuToggles, donateButtonText, volunteerTasks, address, phone, email, whatsapp, socials, iban, legal, timezone, hijriAdjustment, islamicDays, bedanktTekst, payconiqQr }`, undefined, { fallback: null, label: 'fetchSettings' });
 }
 
-export async function fetchDiensten() {
+export async function fetchDiensten(): Promise<Service[]> {
   return safeFetch(sanityClient, `*[_type == "service" && actief == true] | order(volgorde asc) {
     _id, titel, "slug": slug.current, beschrijving, inhoud, afbeelding, tijden, volgorde
   }`, undefined, { fallback: [] as any[], label: 'fetchDiensten' });
 }
 
-export async function fetchProjecten() {
+export async function fetchProjecten(): Promise<Project[]> {
   // freshClient: donatiebedragen moeten real-time zijn, geen CDN cache
   return safeFetch(freshClient, `*[_type == "project" && actief == true] | order(toonOpHomepage desc, _createdAt desc) [0...2] {
     _id, titel, beschrijving, afbeelding, doelbedrag, huidigBedragCents, actief,
@@ -44,7 +45,7 @@ export async function fetchProjecten() {
   }`, undefined, { fallback: [] as any[], label: 'fetchProjecten' });
 }
 
-export async function fetchNieuws() {
+export async function fetchNieuws(): Promise<NewsPost[]> {
   return safeFetch(sanityClient, `*[_type == "post" && gepubliceerd == true && !defined(onderwerpHub)] | order(datum desc) {
     _id, titel, "slug": slug.current, datum, samenvatting, inhoud, afbeelding, postType
   }`, undefined, { fallback: [] as any[], label: 'fetchNieuws' });
@@ -68,7 +69,7 @@ export async function fetchActueel() {
   }`, undefined, { fallback: [] as any[], label: 'fetchActueel' });
 }
 
-export async function fetchQuote(categorie: string = 'donaties') {
+export async function fetchQuote(categorie: string = 'donaties'): Promise<Quote | null> {
   try {
     const result = await sanityClient.fetch(`*[_type == "quote" && actief == true && categorie == $categorie] {
       _id, tekst, tekstArabisch, bron
@@ -83,7 +84,7 @@ export async function fetchQuote(categorie: string = 'donaties') {
   }
 }
 
-export async function fetchEtiquette() {
+export async function fetchEtiquette(): Promise<Etiquette[]> {
   return safeFetch(sanityClient, `*[_type == "etiquette" && gepubliceerd == true] | order(volgorde asc) {
     _id, title, description, volgorde
   }`, undefined, { fallback: [] as any[], label: 'fetchEtiquette' });
@@ -188,7 +189,7 @@ export async function fetchTopicHubRelated(hubId: string) {
 
 // ── Lessen & Ramadan ──
 
-export async function fetchLessonPrograms() {
+export async function fetchLessonPrograms(): Promise<LessonProgram[]> {
   return safeFetch(sanityClient, `*[_type == "lessonProgram" && actief == true] | order(volgorde asc) {
     _id, titel, categorie, beschrijving, inhoud, afbeelding,
     maxCapaciteit, inschrijvingOpen, vrijwilligersLink, rooster, volgorde
@@ -203,7 +204,7 @@ export async function fetchRamadanOverride() {
 
 // ── Event Categorieën ──
 
-export async function fetchEventCategories() {
+export async function fetchEventCategories(): Promise<EventCategory[]> {
   return safeFetch(sanityClient, `*[_type == "eventCategorie"] | order(volgorde asc) {
     _id, titel, "slug": slug.current, kleur, icoon, volgorde
   }`, undefined, { fallback: [] as any[], label: 'fetchEventCategories' });
@@ -211,7 +212,7 @@ export async function fetchEventCategories() {
 
 // ── Agenda Evenementen ──
 
-export async function fetchAgendaEvents() {
+export async function fetchAgendaEvents(): Promise<AgendaEvent[]> {
   return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
     _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
     "categorie": coalesce(categorieRef->titel, categorie),
@@ -221,7 +222,7 @@ export async function fetchAgendaEvents() {
   }`, undefined, { fallback: [] as any[], label: 'fetchAgendaEvents' });
 }
 
-export async function fetchUpcomingAgendaEvents(limit = 3) {
+export async function fetchUpcomingAgendaEvents(limit = 3): Promise<AgendaEvent[]> {
   return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
     _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
     "categorie": coalesce(categorieRef->titel, categorie),

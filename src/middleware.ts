@@ -1,8 +1,27 @@
 import { defineMiddleware } from 'astro:middleware';
+import { validateRedisConfig } from './lib/security';
+import { formatLog } from './lib/logic/logger';
+
+// Boot-time Redis check — runs once on first request
+let bootLogged = false;
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const response = await next();
+  // One-time boot log
+  if (!bootLogged) {
+    bootLogged = true;
+    const redis = validateRedisConfig();
+    const isProd = import.meta.env.PROD;
+    if (!redis.configured && isProd) {
+      console.error(formatLog('error', 'redis_boot_check', { source: 'memory', env: 'production' }));
+    } else if (!redis.configured) {
+      console.log(formatLog('info', 'redis_boot_check', { source: 'memory', env: 'development' }));
+    } else {
+      console.log(formatLog('info', 'redis_boot_check', { source: 'redis' }));
+    }
+  }
+
   const url = new URL(context.request.url);
+  const response = await next();
 
   // Sanity Studio (/admin) heeft eigen CSP nodig — niet beperken
   if (!url.pathname.startsWith('/admin')) {

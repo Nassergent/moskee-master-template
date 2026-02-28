@@ -9,6 +9,15 @@ import { sanitizeAlt } from '../lib/logic/seo-utils';
 const settings = await fetchSettings();
 const aboutPage = await fetchAboutPage();
 
+// CSRF token — double-submit cookie pattern
+const csrfToken = crypto.randomUUID();
+Astro.cookies.set('__csrf', csrfToken, {
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: true,
+  path: '/',
+});
+
 // ── Data met fallbacks ──────────────────────────────────────────
 const heroTitle = aboutPage?.heroTitle || 'Over Ons';
 const heroSubtitle = aboutPage?.heroSubtitle || `Ontdek wie wij zijn en wat ons drijft`;
@@ -214,7 +223,7 @@ function teamGridClass(count: number): string {
           <h2 class="text-2xl font-bold mb-3">{vrijwilligerTitle}</h2>
           {vrijwilligerText && <p class="text-neutral-600">{vrijwilligerText}</p>}
         </div>
-        <VolunteerForm taken={vrijwilligerTaken} />
+        <VolunteerForm taken={vrijwilligerTaken} csrfToken={csrfToken} />
       </div>
     </Section>
   )}

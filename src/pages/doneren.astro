@@ -8,8 +8,9 @@ import { calculateProjectStats } from '../lib/logic/project-utils';
 import { generateEpcQrCode } from '../lib/logic/qr-service';
 import { buildSiteConfig } from '../lib/logic/config';
 import { isFeatureEnabled } from '../lib/logic/menu-builder';
+import type { Project } from '../types/sanity';
 
-const projecten = await fetchProjecten();
+const projecten: Project[] = await fetchProjecten();
 const settings = await fetchSettings();
 
 if (!isFeatureEnabled(settings, 'showDonaties')) {
@@ -33,6 +34,15 @@ const cleanIban = settings?.iban?.replace(/\s/g, '').toUpperCase();
 const qrResult = showQR && cleanIban
   ? await generateEpcQrCode(cleanIban, settings?.mosqueName || 'Moskee')
   : null;
+
+// CSRF token — double-submit cookie pattern
+const csrfToken = crypto.randomUUID();
+Astro.cookies.set('__csrf', csrfToken, {
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: true,
+  path: '/',
+});
 
 // Payconiq met crash protection (F2)
 let payconiqImageUrl: string | undefined;
@@ -78,7 +88,7 @@ try {
         <div class="lg:col-span-3">
           <h2 class="text-2xl font-bold font-heading text-primary mb-6">Direct doneren</h2>
           <div class="bg-white border border-neutral-200 p-5 sm:p-8">
-            <form id="donation-form" class="space-y-6">
+            <form id="donation-form" class="space-y-6" data-csrf={csrfToken}>
               <div class="hidden" aria-hidden="true">
                 <input type="text" name="website" tabindex="-1" autocomplete="off" />
               </div>
@@ -476,6 +486,20 @@ try {
       return;
     }
 
+    if (finalAmount > 10000) {
+      errorEl.textContent = 'Maximum bedrag is \u20ac10.000.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    // Email format client-side check (optional field)
+    const emailVal = emailInput?.value?.trim();
+    if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      errorEl.textContent = 'Vul een geldig e-mailadres in.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
     // Disable submit
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Even geduld...';
@@ -486,6 +510,7 @@ try {
     const projectName = selectedOption?.dataset.name || 'Algemene Sadaqa';
 
     try {
+      const csrfToken = form.dataset.csrf || '';
       const res = await fetch('/api/donate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -496,6 +521,7 @@ try {
           projectName,
           email: emailInput?.value || '',
           website: (document.querySelector('input[name="website"]') as HTMLInputElement)?.value || '',
+          _csrf: csrfToken,
         }),
       });
 

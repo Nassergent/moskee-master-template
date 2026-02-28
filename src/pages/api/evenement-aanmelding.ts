@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin } from '../../lib/security';
+import { checkRateLimit, getClientIp, isValidEmail, sanitize, isBot, checkOrigin, validateCsrfToken } from '../../lib/security';
 import { fetchEventOccupancy, fetchAgendaEventRegistrationInfo } from '../../lib/sanity';
 import { createEventRegistration } from '../../services/event-registration-service';
 import { sendEventRegistrationEmails } from '../../services/email-service';
@@ -75,10 +75,14 @@ export const POST: APIRoute = async ({ request, url }) => {
     // Honeypot check
     if (isBot(data)) {
       return new Response(JSON.stringify({ success: true }), {
-        status: 200,
+        status: 202,
         headers: { 'Content-Type': 'application/json' },
       });
     }
+
+    // CSRF double-submit cookie validation
+    const csrfError = validateCsrfToken(request, data._csrf);
+    if (csrfError) return csrfError;
 
     // Sanitize input
     const name = sanitize(data.name, 100);

@@ -37,7 +37,9 @@ export type LogEvent =
   | 'volunteer_form_error'
   | 'event_registration_error'
   | 'donate_error'
-  | 'email_send_error';
+  | 'email_send_error'
+  | 'redis_boot_check'
+  | 'csrf_validation_failed';
 
 export interface LogContext {
   correlationId?: string;

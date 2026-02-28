@@ -18,6 +18,15 @@ const settings = await fetchSettings();
 const config = buildSiteConfig(settings);
 const tz = config.timezone;
 
+// CSRF token — double-submit cookie pattern
+const csrfToken = crypto.randomUUID();
+Astro.cookies.set('__csrf', csrfToken, {
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: true,
+  path: '/',
+});
+
 // Wrapper functies met detail-pagina opmaak (jaar + dynamische timezone)
 const fmtDatum = (d: string) => formatDatum(d, { year: true, tz });
 const fmtTijd = (d: string) => formatTijd(d, tz);
@@ -183,6 +192,7 @@ const eventSchema = JSON.stringify({
             maxCapacity={event.registrationMax}
             occupancy={event.occupancy || 0}
             deadline={event.registrationDeadline}
+            csrfToken={csrfToken}
           />
         </div>
       ) : event.externalRegistrationUrl ? (

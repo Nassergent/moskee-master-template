@@ -35,6 +35,19 @@ const rateLimitMap = new LRUCache<string, { count: number; resetAt: number }>({
   ttl: 60_000,
 });
 
+/**
+ * Check whether Upstash Redis environment variables are configured.
+ * Used by health endpoint and boot-time logging.
+ */
+export function validateRedisConfig(): { configured: boolean; source: 'redis' | 'memory' } {
+  const url = import.meta.env.UPSTASH_REDIS_REST_URL;
+  const token = import.meta.env.UPSTASH_REDIS_REST_TOKEN;
+  return {
+    configured: !!(url && token),
+    source: url && token ? 'redis' : 'memory',
+  };
+}
+
 export type FailStrategy = 'hard-fail' | 'in-memory-fallback';
 
 export interface RateLimitResult {
@@ -215,6 +228,36 @@ export function checkOrigin(request: Request, siteUrl: string): Response | null 
     status: 403,
     headers: { 'Content-Type': 'application/json' },
   });
+}
+
+/**
+ * Generate a CSRF token (for use in Astro frontmatter / middleware).
+ */
+export function generateCsrfToken(): string {
+  return crypto.randomUUID();
+}
+
+/**
+ * Validate CSRF token using double-submit cookie pattern.
+ * Compares the token from the request body with the __csrf cookie.
+ * Returns an error Response on mismatch, or null if valid.
+ */
+export function validateCsrfToken(request: Request, bodyToken: string | undefined): Response | null {
+  const cookieHeader = request.headers.get('cookie') || '';
+  const csrfCookie = cookieHeader
+    .split(';')
+    .map(c => c.trim())
+    .find(c => c.startsWith('__csrf='));
+  const cookieToken = csrfCookie?.split('=')[1];
+
+  if (!cookieToken || !bodyToken || cookieToken !== bodyToken) {
+    return new Response(JSON.stringify({ error: 'Ongeldig beveiligingstoken. Herlaad de pagina en probeer opnieuw.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  return null;
 }
 
 /**

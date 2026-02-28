@@ -6,6 +6,15 @@ import { fetchSettings, fetchContactPage } from '../lib/sanity';
 const settings = await fetchSettings();
 const contactPage = await fetchContactPage();
 
+// CSRF token — double-submit cookie pattern
+const csrfToken = crypto.randomUUID();
+Astro.cookies.set('__csrf', csrfToken, {
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: true,
+  path: '/',
+});
+
 const introText = contactPage?.introText || '';
 const openingstijden = contactPage?.openingstijden?.length ? contactPage.openingstijden : [];
 const onderwerpen = contactPage?.onderwerpen?.length ? contactPage.onderwerpen : [];
@@ -29,7 +38,7 @@ const onderwerpen = contactPage?.onderwerpen?.length ? contactPage.onderwerpen :
       <!-- Contact Form — Premium Flat Design -->
       <div>
         <h2 class="text-2xl font-bold mb-8">Stuur ons een bericht</h2>
-        <form id="contact-form" class="space-y-6">
+        <form id="contact-form" class="space-y-6" data-csrf={csrfToken}>
           {/* Honeypot — verborgen voor echte gebruikers */}
           <div class="hidden" aria-hidden="true">
             <input type="text" name="website" tabindex="-1" autocomplete="off" />
@@ -167,6 +176,7 @@ const onderwerpen = contactPage?.onderwerpen?.length ? contactPage.onderwerpen :
 
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
+    (data as any)._csrf = form.dataset.csrf || '';
 
     try {
       const res = await fetch('/api/contact', {
