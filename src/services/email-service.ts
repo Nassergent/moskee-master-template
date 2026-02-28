@@ -11,6 +11,11 @@ import type { PrimaryTheme } from '../types/sanity';
 
 const FROM_DOMAIN = import.meta.env.FROM_EMAIL_DOMAIN || 'onboarding@resend.dev';
 
+/** Strip \r\n to prevent email header injection */
+function safeSubject(subject: string): string {
+  return subject.replace(/[\r\n]/g, '');
+}
+
 export function buildFromAddress(mosqueName: string) {
   return `${mosqueName} <${FROM_DOMAIN}>`;
 }
@@ -47,7 +52,8 @@ export async function sendContactNotification(opts: {
   bericht: string;
 }): Promise<void> {
   if (isResendDemoMode()) return;
-  const apiKey = import.meta.env.RESEND_API_KEY!;
+  const apiKey = import.meta.env.RESEND_API_KEY;
+  if (!apiKey) return;
 
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
@@ -58,7 +64,7 @@ export async function sendContactNotification(opts: {
     from: buildFromAddress(mosqueName),
     to: [contactEmail],
     replyTo: opts.email,
-    subject: `\uD83D\uDCE9 Contactformulier: ${opts.onderwerp || 'Algemeen'} — ${opts.naam}`,
+    subject: safeSubject(`\uD83D\uDCE9 Contactformulier: ${opts.onderwerp || 'Algemeen'} — ${opts.naam}`),
     html: contactNotificationEmail({
       mosqueName,
       mosqueEmail: contactEmail,
@@ -83,7 +89,8 @@ export async function sendVolunteerEmails(opts: {
   bericht?: string;
 }): Promise<void> {
   if (isResendDemoMode()) return;
-  const resendKey = import.meta.env.RESEND_API_KEY!;
+  const resendKey = import.meta.env.RESEND_API_KEY;
+  if (!resendKey) return;
 
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
@@ -98,7 +105,7 @@ export async function sendVolunteerEmails(opts: {
       from: buildFromAddress(mosqueName),
       to: [mosqueEmail],
       replyTo: opts.email,
-      subject: `\uD83D\uDC65 Nieuwe vrijwilliger: ${opts.naam}`,
+      subject: safeSubject(`\uD83D\uDC65 Nieuwe vrijwilliger: ${opts.naam}`),
       html: volunteerNotificationEmail({
         mosqueName,
         mosqueEmail,
@@ -117,7 +124,7 @@ export async function sendVolunteerEmails(opts: {
     from: buildFromAddress(mosqueName),
     to: [opts.email],
     replyTo: mosqueEmail || undefined,
-    subject: `Welkom als vrijwilliger bij ${mosqueName}`,
+    subject: safeSubject(`Welkom als vrijwilliger bij ${mosqueName}`),
     html: volunteerConfirmationEmail({
       mosqueName,
       mosqueEmail,
@@ -140,7 +147,8 @@ export async function sendEventRegistrationEmails(opts: {
   eventTitle: string;
 }): Promise<void> {
   if (isResendDemoMode()) return;
-  const resendKey = import.meta.env.RESEND_API_KEY!;
+  const resendKey = import.meta.env.RESEND_API_KEY;
+  if (!resendKey) return;
 
   const settings = await fetchSettings();
   const mosqueName = settings?.mosqueName || 'Onze Moskee';
@@ -155,7 +163,7 @@ export async function sendEventRegistrationEmails(opts: {
       from: buildFromAddress(mosqueName),
       to: [mosqueEmail],
       replyTo: opts.email,
-      subject: `📋 Nieuwe inschrijving: ${opts.eventTitle} — ${opts.name}`,
+      subject: safeSubject(`📋 Nieuwe inschrijving: ${opts.eventTitle} — ${opts.name}`),
       html: eventRegistrationNotificationEmail({
         mosqueName,
         mosqueEmail,
@@ -175,7 +183,7 @@ export async function sendEventRegistrationEmails(opts: {
     from: buildFromAddress(mosqueName),
     to: [opts.email],
     replyTo: mosqueEmail || undefined,
-    subject: `Inschrijving bevestigd: ${opts.eventTitle}`,
+    subject: safeSubject(`Inschrijving bevestigd: ${opts.eventTitle}`),
     html: eventRegistrationConfirmationEmail({
       mosqueName,
       mosqueEmail,

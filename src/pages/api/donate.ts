@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createMollieClient } from '@mollie/api-client';
 import { fetchSettings } from '../../lib/sanity';
-import { checkRateLimit, getClientIp, checkOrigin, isBot, validateCsrfToken } from '../../lib/security';
+import { checkRateLimit, getClientIp, checkOrigin, isBot, validateCsrfToken, sanitize, isValidEmail } from '../../lib/security';
 import { validatePaymentAmount } from '../../lib/logic/payment-validators';
 import { generateCorrelationId } from '../../lib/logic/webhook-validators';
 import { isMollieDemoMode } from '../../lib/env';
@@ -56,8 +56,17 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const { amount, frequency, projectId, projectName, email } = data;
     // Legacy compat: accept old 'project' field from cached frontends
-    const resolvedProjectName = projectName || data.project || 'Algemene Sadaqa';
-    const resolvedProjectId = projectId || '';
+    const resolvedProjectName = sanitize(projectName || data.project || 'Algemene Sadaqa', 200);
+    const resolvedProjectId = sanitize(projectId || '', 100);
+    const sanitizedFrequency = sanitize(frequency || '', 50);
+    const sanitizedEmail = sanitize(email || '', 254);
+
+    if (sanitizedEmail && !isValidEmail(sanitizedEmail)) {
+      return new Response(JSON.stringify({ error: 'Ongeldig e-mailadres.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     // Validate via logic compartiment
     const validation = validatePaymentAmount(amount);
@@ -88,7 +97,14 @@ export const POST: APIRoute = async ({ request, url }) => {
     const settings = await fetchSettings();
     const mosqueName = settings?.mosqueName || 'Moskee';
 
-    const mollieKey = import.meta.env.MOLLIE_API_KEY!;
+    const mollieKey = import.meta.env.MOLLIE_API_KEY;
+    if (!mollieKey) {
+      console.error(formatLog('error', 'donate_config', { reason: 'MOLLIE_API_KEY not set' }));
+      return new Response(JSON.stringify({ error: 'Betalingen zijn momenteel niet beschikbaar.' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
     const mollieClient = createMollieClient({ apiKey: mollieKey });
 
     const tenantId = import.meta.env.SANITY_PROJECT_ID || import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'default';
@@ -111,9 +127,9 @@ export const POST: APIRoute = async ({ request, url }) => {
         projectName: resolvedProjectName,
         tenantId,
         correlationId,
-        frequency, // TODO: Implement via Mollie Subscriptions API when ready
+        frequency: sanitizedFrequency, // TODO: Implement via Mollie Subscriptions API when ready
         project: resolvedProjectName,  // Legacy: kept for in-flight backward compat
-        email: email || '',
+        email: sanitizedEmail,
       },
     });
 

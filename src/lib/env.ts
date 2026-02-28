@@ -15,8 +15,9 @@ export function isResendDemoMode(): boolean {
   return !key || key === 're_xxxxxxxxxxxx';
 }
 
-/** True when HMAC verification should be skipped (dev only) */
+/** True when HMAC verification should be skipped (dev only, never in production) */
 export function shouldSkipWebhookVerification(): boolean {
+  if (import.meta.env.PROD) return false;
   return import.meta.env.WEBHOOK_SKIP_VERIFICATION === 'true';
 }
 
