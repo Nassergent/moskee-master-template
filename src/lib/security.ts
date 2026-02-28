@@ -4,6 +4,9 @@
 
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
+import { LRUCache } from 'lru-cache';
+import { createHash } from 'node:crypto';
+import { formatLog } from './logic/logger';
 
 // Rate limiter: Upstash Redis als beschikbaar, anders in-memory fallback
 let ratelimit: Ratelimit | null = null;
@@ -26,8 +29,11 @@ try {
   // Silently fall back to in-memory
 }
 
-// In-memory fallback (voor local development)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+// In-memory fallback (voor local development) — bounded LRU cache, max 500 entries, 60s TTL
+const rateLimitMap = new LRUCache<string, { count: number; resetAt: number }>({
+  max: 500,
+  ttl: 60_000,
+});
 
 export type FailStrategy = 'hard-fail' | 'in-memory-fallback';
 
@@ -36,28 +42,58 @@ export interface RateLimitResult {
   source: 'redis' | 'memory' | 'hard-fail';
 }
 
+/** Hash an IP address for log output (privacy-preserving) */
+function hashIp(ip: string): string {
+  return createHash('sha256').update(ip).digest('hex').slice(0, 16);
+}
+
 /**
  * In-memory rate limiting fallback.
  * Used when Redis is unavailable (strategy = in-memory-fallback) or no Redis configured.
+ * emitLog: true → Redis was configured but failed (log the fallback activation)
+ * emitLog: false → No Redis configured (local dev, do not spam logs)
  */
 function checkInMemoryFallback(
   ip: string,
+  route: string,
   maxRequests: number,
-  windowMs: number
+  windowMs: number,
+  emitLog: boolean
 ): RateLimitResult {
   const now = Date.now();
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
+    if (emitLog) {
+      console.log(formatLog('warn', 'rate_limit_fallback', {
+        source: 'memory',
+        route,
+        hashedIp: hashIp(ip),
+      }));
+    }
     return { allowed: true, source: 'memory' };
   }
 
   if (entry.count >= maxRequests) {
+    if (emitLog) {
+      console.log(formatLog('warn', 'rate_limit_fallback', {
+        source: 'memory',
+        route,
+        hashedIp: hashIp(ip),
+      }));
+    }
     return { allowed: false, source: 'memory' };
   }
 
   entry.count++;
+  if (emitLog) {
+    console.log(formatLog('warn', 'rate_limit_fallback', {
+      source: 'memory',
+      route,
+      hashedIp: hashIp(ip),
+    }));
+  }
   return { allowed: true, source: 'memory' };
 }
 
@@ -66,12 +102,14 @@ function checkInMemoryFallback(
  * failStrategy bepaalt gedrag wanneer Redis onbereikbaar is:
  *   - 'hard-fail': geeft { allowed: false, source: 'hard-fail' } → caller retourneert HTTP 503
  *   - 'in-memory-fallback': valt terug op in-memory rate limiting → geen 503
+ * route: route identifier for structured log output (default 'unknown')
  */
 export async function checkRateLimit(
   ip: string,
   failStrategy: FailStrategy,
   maxRequests: number = 5,
-  windowMs: number = 60_000
+  windowMs: number = 60_000,
+  route: string = 'unknown'
 ): Promise<RateLimitResult> {
   // Upstash Redis (productie)
   if (ratelimit) {
@@ -81,24 +119,34 @@ export async function checkRateLimit(
     } catch {
       // Redis threw (connection refused or similar) — apply fail strategy
       if (failStrategy === 'hard-fail') {
+        console.log(formatLog('warn', 'rate_limit_hard_fail', {
+          source: 'hard-fail',
+          route,
+          hashedIp: hashIp(ip),
+        }));
         return { allowed: false, source: 'hard-fail' };
       }
-      return checkInMemoryFallback(ip, maxRequests, windowMs);
+      return checkInMemoryFallback(ip, route, maxRequests, windowMs, true);
     }
 
     if (response.reason === 'timeout') {
       // Redis did not respond within timeout — library allowed by default, we override
       if (failStrategy === 'hard-fail') {
+        console.log(formatLog('warn', 'rate_limit_hard_fail', {
+          source: 'hard-fail',
+          route,
+          hashedIp: hashIp(ip),
+        }));
         return { allowed: false, source: 'hard-fail' };
       }
-      return checkInMemoryFallback(ip, maxRequests, windowMs);
+      return checkInMemoryFallback(ip, route, maxRequests, windowMs, true);
     }
 
     return { allowed: response.success, source: 'redis' };
   }
 
-  // No Redis configured (local dev / missing env) — in-memory only
-  return checkInMemoryFallback(ip, maxRequests, windowMs);
+  // No Redis configured (local dev / missing env) — in-memory only, no log emission
+  return checkInMemoryFallback(ip, route, maxRequests, windowMs, false);
 }
 
 /**

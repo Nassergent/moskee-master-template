@@ -21,7 +21,9 @@ export type LogEvent =
   | 'webhook_error'
   | 'reconcile_start'
   | 'reconcile_complete'
-  | 'reconcile_diff';
+  | 'reconcile_diff'
+  | 'rate_limit_fallback'
+  | 'rate_limit_hard_fail';
 
 export interface LogContext {
   correlationId?: string;
