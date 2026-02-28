@@ -17,12 +17,12 @@ if (!projectId) {
   throw new Error('Missing PUBLIC_SANITY_PROJECT_ID — set it in .env');
 }
 
-// Public read client — useCdn: true voor snelle, gecachte responses
-// Geen token nodig: leest alleen publieke data via CDN
+// Public read client — useCdn: false voor directe updates na Sanity edits
+// Bij laag verkeer (moskee-sites) is CDN cache niet nodig
 export const sanityClient = createClient({
   projectId,
   dataset,
-  useCdn: true,
+  useCdn: false,
   apiVersion: '2024-01-01',
 });
 
