@@ -10,7 +10,7 @@ Deze milestone maakt het moskee-master-template veilig deploybaar naar meerdere 
 - Integer phases (1, 2, 3, 4): Planned milestone work
 
 - [x] **Phase 1: Webhook Sanity Write Recovery** - Sanity write failures opvangen met Redis fallback + reprocess endpoint
-- [ ] **Phase 2: HMAC Verificatie Fix** - Test mode detectie vervangen door expliciete env var
+- [x] **Phase 2: HMAC Verificatie Fix** - Test mode detectie vervangen door expliciete env var
 - [x] **Phase 3: Frequency Cleanup** - Ongebruikte frequency parameter opruimen uit API
 - [ ] **Phase 4: Centrale Demo Mode Helper** - Alle hardcoded test values vervangen door isDemoMode()
 
@@ -41,7 +41,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 02-01-PLAN.md — HMAC verificatie losgekoppeld van API key format
+- [x] 02-01-PLAN.md — HMAC verificatie losgekoppeld van API key format
 
 ### Phase 3: Frequency Cleanup
 **Goal**: De ongebruikte frequency parameter is opgeruimd uit de API flow — geen dead code in het donatie-pad

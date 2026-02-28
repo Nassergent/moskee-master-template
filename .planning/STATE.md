@@ -8,7 +8,7 @@ progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 
 ## Current Position
 
-Phase: 1 (Webhook Sanity Write Recovery)
-Plan: 01-01 completed
-Status: In progress — plans 01-01 and 03-01 done, 2 plans remaining (02-01, 04-01)
-Last activity: 2026-02-28 — executed 01-01-PLAN.md
+Phase: 4 (Centrale Demo Mode Helper)
+Plan: 04-01 pending
+Status: In progress — plans 01-01, 02-01, 03-01 done, 1 plan remaining (04-01)
+Last activity: 2026-02-28 — executed 02-01-PLAN.md (HMAC fix)
 
-Progress: [██░░░░░░░░] 50%
+Progress: [███████░░░] 75%
 
 ## Accumulated Context
 
