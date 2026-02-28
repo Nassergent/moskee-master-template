@@ -122,7 +122,7 @@ function nieuwsManagement(S: StructureBuilder) {
         .title('Nieuws uit de moskee')
         .items([
           S.listItem()
-            .title('🟢 Gepubliceerd')
+            .title('Gepubliceerd')
             .icon(() => '🟢')
             .child(
               S.documentList()
@@ -132,7 +132,7 @@ function nieuwsManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'datum', direction: 'desc' }])
             ),
           S.listItem()
-            .title('⚫ Concept / Uitgeschakeld')
+            .title('Concept / Uitgeschakeld')
             .icon(() => '⚫')
             .child(
               S.documentList()
@@ -164,7 +164,7 @@ function dienstenManagement(S: StructureBuilder) {
         .title('Diensten')
         .items([
           S.listItem()
-            .title('🟢 Actief op website')
+            .title('Actief op website')
             .icon(() => '🟢')
             .child(
               S.documentList()
@@ -174,7 +174,7 @@ function dienstenManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
             ),
           S.listItem()
-            .title('⚫ Uitgeschakeld')
+            .title('Uitgeschakeld')
             .icon(() => '⚫')
             .child(
               S.documentList()
@@ -206,7 +206,7 @@ function lessenManagement(S: StructureBuilder) {
         .title('Lessen')
         .items([
           S.listItem()
-            .title('🟢 Actief op website')
+            .title('Actief op website')
             .icon(() => '🟢')
             .child(
               S.documentList()
@@ -216,7 +216,7 @@ function lessenManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
             ),
           S.listItem()
-            .title('⚫ Uitgeschakeld')
+            .title('Uitgeschakeld')
             .icon(() => '⚫')
             .child(
               S.documentList()
@@ -250,7 +250,7 @@ function quoteManagement(S: StructureBuilder) {
         .title('Islamitische Citaten')
         .items([
           S.listItem()
-            .title('🟢 Actief op website')
+            .title('Actief op website')
             .icon(() => '🟢')
             .child(
               S.documentList()
@@ -260,7 +260,7 @@ function quoteManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'bron', direction: 'asc' }])
             ),
           S.listItem()
-            .title('⚫ Uitgeschakeld')
+            .title('Uitgeschakeld')
             .icon(() => '⚫')
             .child(
               S.documentList()
@@ -292,7 +292,7 @@ function etiquetteManagement(S: StructureBuilder) {
         .title('Moskee-etiketten')
         .items([
           S.listItem()
-            .title('🟢 Actief op website')
+            .title('Actief op website')
             .icon(() => '🟢')
             .child(
               S.documentList()
@@ -302,7 +302,7 @@ function etiquetteManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
             ),
           S.listItem()
-            .title('⚫ Uitgeschakeld')
+            .title('Uitgeschakeld')
             .icon(() => '⚫')
             .child(
               S.documentList()
@@ -334,7 +334,7 @@ function projectenManagement(S: StructureBuilder) {
         .title('Goede Doelen')
         .items([
           S.listItem()
-            .title('🟢 Actief op website')
+            .title('Actief op website')
             .icon(() => '🟢')
             .child(
               S.documentList()
@@ -344,7 +344,7 @@ function projectenManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: '_createdAt', direction: 'desc' }])
             ),
           S.listItem()
-            .title('⚫ Uitgeschakeld')
+            .title('Uitgeschakeld')
             .icon(() => '⚫')
             .child(
               S.documentList()
@@ -376,7 +376,7 @@ function agendaManagement(S: StructureBuilder) {
         .title('Activiteiten')
         .items([
           S.listItem()
-            .title('🏷️ Categorieën')
+            .title('Categorieën')
             .icon(() => '🏷️')
             .child(
               S.documentTypeList('eventCategorie')
@@ -387,7 +387,7 @@ function agendaManagement(S: StructureBuilder) {
           S.divider(),
 
           S.listItem()
-            .title('⭐ Uitgelicht')
+            .title('Uitgelicht')
             .icon(() => '⭐')
             .child(
               S.documentList()
@@ -397,7 +397,7 @@ function agendaManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'prioriteit', direction: 'asc' }])
             ),
           S.listItem()
-            .title('🟢 Actief op website')
+            .title('Actief op website')
             .icon(() => '🟢')
             .child(
               S.documentList()
@@ -407,7 +407,7 @@ function agendaManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'startDatum', direction: 'asc' }])
             ),
           S.listItem()
-            .title('⚫ Uitgeschakeld')
+            .title('Uitgeschakeld')
             .icon(() => '⚫')
             .child(
               S.documentList()
@@ -428,73 +428,42 @@ function agendaManagement(S: StructureBuilder) {
 
           S.divider(),
 
-          // ── Inschrijvingen ──
+          // ── Inschrijvingen (direct, geen submenu) ──
           S.listItem()
-            .title('📋 Inschrijvingen')
-            .icon(() => '📋')
+            .title('Nieuwe Inschrijvingen')
+            .icon(() => '📩')
             .child(
-              S.list()
-                .title('Inschrijvingen')
-                .items([
-                  S.listItem()
-                    .title('Alle Inschrijvingen')
-                    .icon(() => '📋')
-                    .child(
-                      S.documentTypeList('eventRegistration')
-                        .title('Alle Inschrijvingen')
-                        .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
-                    ),
-                  S.listItem()
-                    .title('📩 Ingediend')
-                    .icon(() => '📩')
-                    .child(
-                      S.documentList()
-                        .title('Ingediende Inschrijvingen')
-                        .schemaType('eventRegistration')
-                        .filter('_type == "eventRegistration" && status == "submitted"')
-                        .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
-                    ),
-                  S.listItem()
-                    .title('❌ Geannuleerd')
-                    .icon(() => '❌')
-                    .child(
-                      S.documentList()
-                        .title('Geannuleerde Inschrijvingen')
-                        .schemaType('eventRegistration')
-                        .filter('_type == "eventRegistration" && status == "cancelled"')
-                        .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
-                    ),
-
-                  S.divider(),
-
-                  // Per evenement: dynamisch groeperen
-                  S.listItem()
-                    .title('Per Evenement')
-                    .icon(() => '📅')
-                    .child(async () => {
-                      const client = S.context.getClient({ apiVersion: '2024-01-01' });
-                      const events = await client.fetch(
-                        `*[_type == "agendaEvent" && registrationOpen == true && gepubliceerd == true] | order(startDatum desc) { _id, titel }`
-                      );
-                      const items = Array.isArray(events)
-                        ? events.map((evt: { _id: string; titel: string }) =>
-                            S.listItem()
-                              .title(evt.titel)
-                              .icon(() => '📅')
-                              .child(
-                                S.documentList()
-                                  .title(`Inschrijvingen: ${evt.titel}`)
-                                  .schemaType('eventRegistration')
-                                  .filter('_type == "eventRegistration" && eventRef._ref == $eventId')
-                                  .params({ eventId: evt._id })
-                                  .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
-                              )
-                          )
-                        : [];
-                      return S.list().title('Per Evenement').items(items);
-                    }),
-                ])
+              S.documentList()
+                .title('Nieuwe Inschrijvingen')
+                .schemaType('eventRegistration')
+                .filter('_type == "eventRegistration" && status == "submitted"')
+                .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
             ),
+          S.listItem()
+            .title('Inschrijvingen per Evenement')
+            .icon(() => '📅')
+            .child(async () => {
+              const client = S.context.getClient({ apiVersion: '2024-01-01' });
+              const events = await client.fetch(
+                `*[_type == "agendaEvent" && registrationOpen == true && gepubliceerd == true] | order(startDatum desc) { _id, titel }`
+              );
+              const items = Array.isArray(events)
+                ? events.map((evt: { _id: string; titel: string }) =>
+                    S.listItem()
+                      .title(evt.titel)
+                      .icon(() => '📅')
+                      .child(
+                        S.documentList()
+                          .title(`Inschrijvingen: ${evt.titel}`)
+                          .schemaType('eventRegistration')
+                          .filter('_type == "eventRegistration" && eventRef._ref == $eventId')
+                          .params({ eventId: evt._id })
+                          .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
+                      )
+                  )
+                : [];
+              return S.list().title('Inschrijvingen per Evenement').items(items);
+            }),
         ])
     );
 }
@@ -511,7 +480,7 @@ function janazahManagement(S: StructureBuilder) {
           singleton(S, 'janazahProcedure', 'Janazah Gids', '📖'),
           S.divider(),
           S.listItem()
-            .title('🟢 Actieve Meldingen')
+            .title('Actieve Meldingen')
             .icon(() => '🟢')
             .child(
               S.documentList()
