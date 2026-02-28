@@ -1,0 +1,4603 @@
+[
+  {
+    "_id": "aboutPage",
+    "_type": "aboutPage",
+    "geschiedenisTitle": "Onze Geschiedenis",
+    "geschiedenisTonen": true,
+    "heroSubtitle": "Een Huis voor Iedereen",
+    "heroTitle": "Wie Zijn Wij?",
+    "kengetallenTonen": false,
+    "missieText": [
+      {
+        "_key": "missie-1",
+        "_type": "block",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_key": "m1s",
+            "_type": "span",
+            "marks": [],
+            "text": "Onze moskee is een thuis voor moslims van alle achtergronden. De gemeenschap is een afspiegeling van de stad — divers, warm en verbonden door geloof."
+          }
+        ]
+      },
+      {
+        "_key": "missie-2",
+        "_type": "block",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_key": "m2s",
+            "_type": "span",
+            "marks": [],
+            "text": "Of u nu Marokkaans, Turks, Somalisch, Belgisch of van een andere oorsprong bent: bij ons is iedereen welkom. Wij geloven dat de moskee een plek is die mensen samenbrengt, ongeacht taal of cultuur."
+          }
+        ]
+      },
+      {
+        "_key": "missie-3",
+        "_type": "block",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_key": "m3s",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens de Ramadan, bij het vrijdaggebed en tijdens onze evenementen ziet u die diversiteit terug — schouder aan schouder, verenigd in gebed."
+          }
+        ]
+      }
+    ],
+    "missieTitle": "Een Huis voor Iedereen",
+    "tijdlijn": [
+      {
+        "_key": "tl-1",
+        "_type": "tijdlijnItem",
+        "jaar": "19XX",
+        "titel": "De oprichting",
+        "beschrijving": "Een groep moslims verenigde zich om een eigen gebedsplaats te creëren. Wat begon als een klein initiatief groeide uit tot een erkende moskee."
+      },
+      {
+        "_key": "tl-2",
+        "_type": "tijdlijnItem",
+        "jaar": "19XX",
+        "titel": "Opening van het gebedshuis",
+        "beschrijving": "De moskee opende haar deuren. Het gebouw werd omgevormd tot een gebedshuis dat sindsdien het spirituele thuis is van vele moslims."
+      },
+      {
+        "_key": "tl-3",
+        "_type": "tijdlijnItem",
+        "jaar": "Heden",
+        "titel": "De moskee vandaag",
+        "beschrijving": "Vandaag is de moskee een levendig centrum. Met vijf dagelijkse gebeden, het vrijdaggebed en educatieve activiteiten vormt zij het hart van de gemeenschap."
+      }
+    ]
+  },
+  {
+    "_id": "contactPage",
+    "_type": "contactPage",
+    "introText": "Heeft u een vraag of wilt u langskomen? Neem gerust contact met ons op.",
+    "onderwerpen": [
+      ""
+    ]
+  },
+  {
+    "_id": "homeCards",
+    "_type": "homeCards",
+    "card1": {
+      "ingeschakeld": true,
+      "variant": "evenementCountdown"
+    },
+    "card2": {
+      "donatieCtaLabelOverride": "Dagelijks Iftar in de moskee",
+      "donatieProject": {
+        "_ref": "project-ramadan-voedselpakketten",
+        "_type": "reference"
+      },
+      "ingeschakeld": true,
+      "variant": "donatieCampagne"
+    },
+    "card3": {
+      "downloadBeschrijving": "Bekijk hier het actuele programma van onze moskee.",
+      "downloadCtaLabel": "Bekijk programma",
+      "downloadTitel": "Programma",
+      "ingeschakeld": false,
+      "variant": "download"
+    },
+    "ingeschakeld": true
+  },
+  {
+    "_id": "homePage",
+    "_type": "homePage",
+    "badgeKleur": "#c9aa83",
+    "heroSubtitle": "Gebed, kennis en gemeenschap\n\nEen plek voor gebed, kennis en gemeenschap.",
+    "heroTagline": "Welkom",
+    "heroTitle": "Welkom",
+    "toonActueel": true
+  },
+  {
+    "_id": "janazahProcedure",
+    "_type": "janazahProcedure",
+    "introductie": [
+      {
+        "_key": "bcb1da3afe2e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "92c5cf8a6ec9",
+            "_type": "span",
+            "marks": [],
+            "text": "Wanneer een dierbare overlijdt, komt er veel op de familie af. In deze moeilijke momenten staan wij klaar om u te begeleiden volgens de islamitische richtlijnen en in overeenstemming met de Belgische wetgeving."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "af0c397fba7b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b14f71fc4510",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij vragen u om bij een overlijden zo spoedig mogelijk contact met ons op te nemen via het noodnummer, zodat de nodige stappen tijdig kunnen worden georganiseerd."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "noodnummer": "+32 4XX XX XX XX",
+    "stappen": [
+      {
+        "_key": "b63862907665",
+        "_type": "stapItem",
+        "tekst": [
+          {
+            "_key": "2c075a55840b",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "222b0f654069",
+                "_type": "span",
+                "marks": [],
+                "text": "De rituele wassing wordt uitgevoerd volgens de islamitische richtlijnen, met respect en discretie."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          },
+          {
+            "_key": "3fbc7d59c64d",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "f62f675f4503",
+                "_type": "span",
+                "marks": [],
+                "text": "De familie wordt geïnformeerd over het tijdstip en de praktische organisatie."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "titelNL": "Stap 1 – Rituele wassing (Ghusl)"
+      },
+      {
+        "_key": "e08f913b49a2",
+        "_type": "stapItem",
+        "tekst": [
+          {
+            "_key": "d589ce7efbe1",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "f6544777d211",
+                "_type": "span",
+                "marks": [],
+                "text": "De overledene wordt gewikkeld in de voorgeschreven lijkwade, conform de islamitische traditie."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "titelNL": "Stap 2 – Lijkwade (Kafan)"
+      },
+      {
+        "_key": "d55f3bfba747",
+        "_type": "stapItem",
+        "tekst": [
+          {
+            "_key": "222d8e47e192",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "1c59b4a1eb7c",
+                "_type": "span",
+                "marks": [],
+                "text": "Het Janazah-gebed vindt plaats in de moskee of op de begraafplaats, afhankelijk van de praktische omstandigheden."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          },
+          {
+            "_key": "861217c628bd",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "eaf465327657",
+                "_type": "span",
+                "marks": [],
+                "text": "Datum en tijdstip worden in overleg met de familie vastgelegd."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "titelNL": "Stap 3 – Janazah-gebed"
+      },
+      {
+        "_key": "ed89ae8532c9",
+        "_type": "stapItem",
+        "tekst": [
+          {
+            "_key": "bf4a2485fb29",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "901a5846aade",
+                "_type": "span",
+                "marks": [],
+                "text": "De begrafenis wordt georganiseerd in overeenstemming met de Belgische regelgeving en de islamitische voorschriften."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          },
+          {
+            "_key": "ffeebe870985",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "c67d83744730",
+                "_type": "span",
+                "marks": [],
+                "text": "Wij ondersteunen de familie in overleg met de begraafplaats en de begrafenisondernemer."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "titelNL": "Stap 5 – Begrafenis"
+      }
+    ],
+    "titel": "Hulp bij Overlijden"
+  },
+  {
+    "_id": "prayerTimes",
+    "_type": "prayerTimes",
+    "adhanOffsets": {
+      "asr": 2,
+      "dhuhr": 1,
+      "fajr": 1,
+      "isha": 7,
+      "maghrib": 3
+    },
+    "coordinates": {
+      "lat": 51.0543,
+      "lng": 3.7174
+    },
+    "highLatitudeRule": "middleOfTheNight",
+    "iqamaConfig": {
+      "asr": {
+        "enabled": true,
+        "minutes": 10,
+        "type": "offset"
+      },
+      "dhuhr": {
+        "dayOffset": 0,
+        "enabled": true,
+        "minutes": 10,
+        "time": "13:00",
+        "type": "offset"
+      },
+      "fajr": {
+        "enabled": true,
+        "minutes": 5,
+        "type": "offset"
+      },
+      "isha": {
+        "enabled": true,
+        "minutes": 0,
+        "type": "offset"
+      },
+      "maghrib": {
+        "enabled": true,
+        "minutes": 5,
+        "type": "offset"
+      }
+    },
+    "jumuahNote": "De iqamah-tijden kunnen variëren...\"",
+    "jumuahShifts": [
+      {
+        "_key": "f27bc3f4e491",
+        "label": "Wintertijd:",
+        "time": "13:00"
+      },
+      {
+        "_key": "f9d4cc8b202b",
+        "label": "Zomertijd:",
+        "note": "Khutbah begint stipt",
+        "time": "14:00"
+      }
+    ],
+    "madhab": "shafi",
+    "method": "MuslimWorldLeague",
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "_id": "ramadanOverride",
+    "_type": "ramadanOverride",
+    "ingeschakeld": true,
+    "omschrijving": "Tijdens de Ramadan gelden aangepaste lestijden.",
+    "rooster": [
+      {
+        "_key": "7b2cac9f0c8a",
+        "_type": "ramadanItem",
+        "datum": "2026-02-21",
+        "eindTijd": "16:00",
+        "notitie": "Koranles",
+        "startTijd": "13:00"
+      },
+      {
+        "_key": "73b4e1811a68",
+        "_type": "ramadanItem",
+        "datum": "2026-02-22",
+        "eindTijd": "16:00",
+        "notitie": "Koranles",
+        "startTijd": "13:00"
+      },
+      {
+        "_key": "b398df9b276d",
+        "_type": "ramadanItem",
+        "datum": "2026-02-25",
+        "eindTijd": "17:00",
+        "notitie": "Koranles",
+        "startTijd": "14:00"
+      },
+      {
+        "_key": "95a582258275",
+        "_type": "ramadanItem",
+        "datum": "2026-03-04",
+        "eindTijd": "17:00",
+        "notitie": "Koranles",
+        "startTijd": "14:00"
+      },
+      {
+        "_key": "a48fe384d6b6",
+        "_type": "ramadanItem",
+        "datum": "2026-03-11",
+        "eindTijd": "17:00",
+        "notitie": "Koranles",
+        "startTijd": "14:00"
+      },
+      {
+        "_key": "5595aaa532ab",
+        "_type": "ramadanItem",
+        "datum": "2026-03-18",
+        "eindTijd": "17:00",
+        "notitie": "Koranles",
+        "startTijd": "14:00"
+      },
+      {
+        "_key": "ee77aa9f3e26",
+        "_type": "ramadanItem",
+        "datum": "2026-02-22",
+        "eindTijd": "17:00",
+        "notitie": "Koranles",
+        "startTijd": "14:00"
+      }
+    ]
+  },
+  {
+    "_id": "settings",
+    "_type": "settings",
+    "hijriAdjustment": 0,
+    "islamicDays": {
+      "enabled": true,
+      "showArafah": true,
+      "showAshura": true,
+      "showEidAdha": true,
+      "showEidFitr": true,
+      "showIsraMiraj": true,
+      "showLailatAlQadr": true,
+      "showRamadan": true
+    },
+    "legal": {},
+    "menuToggles": {
+      "showAbout": true,
+      "showAgenda": true,
+      "showDonaties": true,
+      "showGebedstijden": true,
+      "showJanazah": false,
+      "showLessen": true,
+      "showMollie": true,
+      "showNieuws": true,
+      "showProjects": true,
+      "showServices": true,
+      "showVrijwilligers": true
+    },
+    "mosqueName": "Nieuwe Moskee",
+    "primaryTheme": "deep-bordeaux",
+    "timezone": "Europe/Brussels",
+    "volunteerTasks": [
+      "Kuisen",
+      "Onderhoud",
+      "Educatie",
+      "Buurtwerking",
+      "Administratie",
+      "Koken"
+    ],
+    "description": "Welkom bij uw moskee — een plek van gebed, kennis en gemeenschap."
+  },
+  {
+    "_id": "0XGVOLEgaE9bHyaXbvERln",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "d3746b8b706d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0ca70b28b704",
+            "_type": "span",
+            "marks": [],
+            "text": "Met de komst van de gezegende maand Ramadan verwelkomen wij u in onze moskee voor een maand van aanbidding, gemeenschap en spiritualiteit."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "fe1fae8a665c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0a37c1f30745",
+            "_type": "span",
+            "marks": [],
+            "text": "Gedurende deze maand worden dagelijks de verplichte gebeden in gemeenschap verricht en vindt elke avond het Tarawih-gebed plaats."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4f19a1c45baa",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "54d98c54f54a",
+            "_type": "span",
+            "marks": [],
+            "text": "📌 Programma-overzicht:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a681a01699f0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "de8e5f368cd7",
+            "_type": "span",
+            "marks": [],
+            "text": "– Dagelijkse Fajr, Dhuhr, Asr, Maghrib & Isha in gemeenschap\n– Dagelijkse Tarawih na Isha\n– Wekelijkse lezingen\n– Dagelijkse gezamenlijke Iftar (op bepaalde dagen)\n– Qiyam al-Layl in de laatste tien nachten"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8a8e2d713389",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a1608ff11783",
+            "_type": "span",
+            "marks": [],
+            "text": "Specifieke weekindelingen van de qari’s worden afzonderlijk gepubliceerd."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "eff888bac4c6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7f48ab2dfbb5",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij vragen iedereen om:\n– De rust in de moskee te bewaren\n– Aanwijzingen van vrijwilligers te volgen\n– Kinderen onder toezicht te houden"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ce0da60f6ca7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8e333326cf71",
+            "_type": "span",
+            "marks": [],
+            "text": "Moge Allah deze maand voor ons allen zegenrijk maken en onze vasten en gebeden aanvaarden."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d445865e58c2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "50289be27203",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "(Start en einde van Ramadan zijn afhankelijk van officiële maanwaarneming.)"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Gebed",
+    "categorieRef": {
+      "_ref": "eventcat-bijeenkomst",
+      "_type": "reference"
+    },
+    "doelgroep": "Iedereen",
+    "eindDatum": "2026-03-20T22:00:00.000Z",
+    "gepubliceerd": true,
+    "locatie": "anders",
+    "locatieAnders": "Moskee",
+    "onderwerpHub": {
+      "_ref": "b2e0589b-73f3-4e8d-b3e3-6cb55518633b",
+      "_type": "reference"
+    },
+    "slug": {
+      "_type": "slug",
+      "current": "ramadan-1447-2026-volledig-programma"
+    },
+    "startDatum": "2026-02-18T04:30:00.000Z",
+    "titel": "Ramadan 1447 / 2026 – Volledig Programma"
+  },
+  {
+    "_id": "0XGVOLEgaE9bHyaXbvERnL",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "07ceda45f950",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3419e6dc2b2a",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens de paasvakantie organiseren wij een gezamenlijke uitstap naar Bellewaerde."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "997f322bbdf6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0d834b119b4a",
+            "_type": "span",
+            "marks": [],
+            "text": "Deze dag staat in het teken van ontspanning, vriendschap en samen plezier maken."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ad5704ab4b39",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a1d58f6f75dd",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische informatie:\n– Busvervoer inbegrepen\n– Begeleiding voorzien\n– Vertrek 09:00 – Terug 18:00\n– Eigen lunch of zakgeld voorzien"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "7a7ce4492a97",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3b931ccfa944",
+            "_type": "span",
+            "marks": [],
+            "text": "Inschrijving verplicht."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Eid",
+    "categorieRef": {
+      "_ref": "eventcat-bijeenkomst",
+      "_type": "reference"
+    },
+    "doelgroep": "Jeugd",
+    "eindDatum": "2026-05-08T16:00:00.000Z",
+    "gepubliceerd": true,
+    "locatie": "anders",
+    "locatieAnders": "We vertrekken aan de moskee ",
+    "registrationDeadline": "2026-04-30T04:13:00.000Z",
+    "registrationMax": 40,
+    "registrationOpen": true,
+    "slug": {
+      "_type": "slug",
+      "current": "jeugduitstap-bellewaerde-paasvakantie-2026"
+    },
+    "startDatum": "2026-05-08T06:00:00.000Z",
+    "titel": "Jeugduitstap – Bellewaerde Paasvakantie 2026"
+  },
+  {
+    "_id": "0XGVOLEgaE9bHyaXbvERot",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "al1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "al1s",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Alhamdulillah, het nieuwe semester Arabische lessen is officieel van start gegaan."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "al2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "al2s",
+            "_type": "span",
+            "marks": [],
+            "text": "Of u nu net begint of uw kennis verder wilt verdiepen, er is altijd een niveau dat bij u past."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "al3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "al3s",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij bieden drie lesniveaus aan:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "al4",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "al4a",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Beginners"
+          },
+          {
+            "_key": "al4b",
+            "_type": "span",
+            "marks": [],
+            "text": " – maandag om 19:00"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "al5",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "al5a",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Gevorderden"
+          },
+          {
+            "_key": "al5b",
+            "_type": "span",
+            "marks": [],
+            "text": " – woensdag om 19:00"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "al6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "al6a",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Koranisch Arabisch"
+          },
+          {
+            "_key": "al6b",
+            "_type": "span",
+            "marks": [],
+            "text": " – vrijdag om 19:00"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "al7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "al7s",
+            "_type": "span",
+            "marks": [],
+            "text": "Elke les duurt 90 minuten en wordt verzorgd door ervaren docenten."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Les",
+    "categorieRef": {
+      "_ref": "eventcat-les",
+      "_type": "reference"
+    },
+    "gepubliceerd": true,
+    "locatie": "Leslokaal",
+    "slug": {
+      "_type": "slug",
+      "current": "arabische-lessen-nieuw-semester"
+    },
+    "startDatum": "2026-02-23T18:00:00.000Z",
+    "titel": "Arabische Lessen – Nieuw Semester"
+  },
+  {
+    "_id": "0XGVOLEgaE9bHyaXbvERrz",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "924a5ab365ad",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "91db84fcee8e",
+            "_type": "span",
+            "marks": [],
+            "text": "Met het einde van de gezegende maand Ramadan nodigen wij u en uw familie uit voor het gezamenlijke Eid al-Fitr gebed."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b37cd041358b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "62a6e34acd06",
+            "_type": "span",
+            "marks": [],
+            "text": "📅 Vrijdag 20 maart 2026 "
+          },
+          {
+            "_key": "230b999d8353",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "(verwacht, afhankelijk van maanwaarneming)"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "f697e2b0cafd",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e92df5c2934e",
+            "_type": "span",
+            "marks": [],
+            "text": "Programma:\n– 07:00: Takbir\n– 08:00: Eid-gebed\n– Aansluitend: Khutbah"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8df1738843d1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "6d1964bf64a6",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij vragen iedereen om tijdig aanwezig te zijn en de aanwijzingen van de vrijwilligers te respecteren."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3dc5264b5794",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5e615bc77505",
+            "_type": "span",
+            "marks": [],
+            "text": "Gelieve rekening te houden met:\n– Gepaste en nette kleding\n– Correct parkeren in de omgeving\n– Rust en orde in en rond de moskee"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a960e85e7edb",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "003fd34078a7",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Zakat al-Fitr dient voldaan te worden vóór het Eid-gebed."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "959d608a73b2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "29398a01f189",
+            "_type": "span",
+            "marks": [],
+            "text": "Moge Allah onze vasten, gebeden en goede daden aanvaarden."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Bijeenkomst",
+    "categorieRef": {
+      "_ref": "eventcat-gebed",
+      "_type": "reference"
+    },
+    "doelgroep": "Iedereen",
+    "eindDatum": "2026-03-08T15:00:00.000Z",
+    "featured": true,
+    "gepubliceerd": true,
+    "locatie": "anders",
+    "locatieAnders": "Moskee – Gebedsruimte",
+    "prioriteit": 1,
+    "slug": {
+      "_type": "slug",
+      "current": "eid-al-fitr-2026-gebed-praktische-informatie"
+    },
+    "startDatum": "2026-03-20T06:00:00.000Z",
+    "titel": "Eid al-Fitr 2026 – Gebed & Praktische Informatie"
+  },
+  {
+    "_id": "33HwYkukp45JeQ4MaqcZGC",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "724a1032ba32",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "1a52de6e89d6",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens de gezegende maand Ramadan hebben vele vrijwilligers zich ingezet voor iftar, organisatie, orde, schoonmaak en begeleiding."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4a9807606146",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "6a5997747ff2",
+            "_type": "span",
+            "marks": [],
+            "text": "Met deze avond willen wij onze dankbaarheid uitdrukken voor hun inzet en toewijding."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1795a9710b3a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b6bb2333afcf",
+            "_type": "span",
+            "marks": [],
+            "text": "Programma:\n– Korte dankwoord\n– Evaluatiemoment\n– Gezellig samenzijn met hapjes"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "452b4d959a0e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "979ceeff3cc9",
+            "_type": "span",
+            "marks": [],
+            "text": "Samen bouwen wij aan een sterke en georganiseerde gemeenschap."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b55041f8f3e1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "082c5985d7e3",
+            "_type": "span",
+            "marks": [],
+            "text": "Enkel voor vrijwilligers."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Les",
+    "categorieRef": {
+      "_ref": "eventcat-bijeenkomst",
+      "_type": "reference"
+    },
+    "doelgroep": "Iedereen",
+    "eindDatum": "2026-04-03T19:30:00.000Z",
+    "gepubliceerd": true,
+    "locatie": "anders",
+    "locatieAnders": "Moskee – Gemeenschapsruimte",
+    "slug": {
+      "_type": "slug",
+      "current": "vrijwilligers-bedankmoment-ramadan-2026"
+    },
+    "startDatum": "2026-04-03T17:30:00.000Z",
+    "titel": "Vrijwilligers Bedankmoment – Ramadan 2026"
+  },
+  {
+    "_id": "AL002vP6w3zdbjZXT1i67U",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "e1a78f120dda",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "92789de1f764",
+            "_type": "span",
+            "marks": [],
+            "text": "In mei nadert de gezegende periode van de Hadj."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "7bb23e9730b1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0d7972bf03f5",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens deze informatiesessie begeleiden wij toekomstige pelgrims stap voor stap doorheen de belangrijkste aspecten van de Hadj:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3118b7856cb4",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7c5be9ab52f5",
+            "_type": "span",
+            "marks": [],
+            "text": "– Soorten Hadj (Tamattu’, Qiran, Ifrad)\n– Rituelen in Mina, Arafat en Muzdalifah\n– Tawaf & Sa’i correct uitvoeren\n– Praktische voorbereiding (reis, gezondheid, documenten)"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "490f4c156dec",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c8e562a4a526",
+            "_type": "span",
+            "marks": [],
+            "text": "Deze sessie is bedoeld voor iedereen die dit jaar Hadj zal verrichten of zich inhoudelijk wil voorbereiden."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "7aff62e431b1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0c1cd9ce3bd8",
+            "_type": "span",
+            "marks": [],
+            "text": "Er is ruimte voor vragen en praktische begeleiding."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Vrijwilligers",
+    "categorieRef": {
+      "_ref": "eventcat-les",
+      "_type": "reference"
+    },
+    "doelgroep": "Iedereen",
+    "eindDatum": "2026-03-20T18:00:00.000Z",
+    "gepubliceerd": true,
+    "locatie": "Grote zaal",
+    "slug": {
+      "_type": "slug",
+      "current": "hadj-voorbereidingssessie"
+    },
+    "startDatum": "2026-03-20T17:00:00.000Z",
+    "titel": "Hadj Voorbereidingssessie"
+  },
+  {
+    "_id": "event-tafsir-dames",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "8cc846174fec",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ae223cf1e0bf",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens de paasvakantie organiseren wij een educatieve uitstap naar de Grote Moskee van Keulen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "093f1d28c21a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c192f88ecd33",
+            "_type": "span",
+            "marks": [],
+            "text": "We krijgen een rondleiding met uitleg over de architectuur, geschiedenis en de rol van moslims in Europa."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "5a16309cc238",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9e26dec0dabb",
+            "_type": "span",
+            "marks": [],
+            "text": "Programma:\n– Vertrek per bus om 08:00\n– Rondleiding en gezamenlijk gebed\n– Vrij moment en lunch\n– Terugkomst rond 19:00"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "be393785d30a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "fc38d31cbc2b",
+            "_type": "span",
+            "marks": [],
+            "text": "Inschrijving verplicht via het formulier. Plaatsen zijn beperkt."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Onderwijs",
+    "categorieRef": {
+      "_ref": "eventcat-bijeenkomst",
+      "_type": "reference"
+    },
+    "doelgroep": "Iedereen",
+    "eindDatum": "2026-04-11T16:00:00.000Z",
+    "featured": false,
+    "gepubliceerd": true,
+    "locatie": "anders",
+    "locatieAnders": "Grote Moskee van Keulen – Duitsland",
+    "prioriteit": 1,
+    "slug": {
+      "_type": "slug",
+      "current": "bezoek-grote-moskee-keulen"
+    },
+    "startDatum": "2026-04-11T05:30:00.000Z",
+    "titel": "Bezoek Grote Moskee Keulen"
+  },
+  {
+    "_id": "rqIWAjtU1heVz2YnpPP5Jr",
+    "_type": "agendaEvent",
+    "beschrijving": [
+      {
+        "_key": "5c0c2defb8da",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "348c36715ace",
+            "_type": "span",
+            "marks": [],
+            "text": "De eerste tien dagen van Dhul-Hijjah behoren tot de meest gezegende dagen van het jaar."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "541308e2073a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7381577d8b96",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens deze lezing staan we stil bij:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d3bd59644d46",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ae31f4127ff9",
+            "_type": "span",
+            "marks": [],
+            "text": "– De verdiensten van de eerste tien dagen\n– Het belang van vasten op de Dag van ‘Arafah\n– Takbir, dhikr en extra aanbidding\n– Hoe wij deze dagen praktisch kunnen benutten"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "6c4cc90bcca7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "eb2c618b5555",
+            "_type": "span",
+            "marks": [],
+            "text": "Iedereen is welkom."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "categorie": "Gebed",
+    "categorieRef": {
+      "_ref": "eventcat-les",
+      "_type": "reference"
+    },
+    "doelgroep": "Iedereen",
+    "eindDatum": "2026-03-14T18:30:00.000Z",
+    "gepubliceerd": true,
+    "locatie": "Gebedsruimte",
+    "slug": {
+      "_type": "slug",
+      "current": "lezing-de-dag-van-arafah-dhul-hijjah-2026"
+    },
+    "startDatum": "2026-05-25T17:30:00.000Z",
+    "titel": "Lezing – De Dag van ‘Arafah & Dhul-Hijjah 2026"
+  },
+  {
+    "_id": "etiquette-kinderen",
+    "_type": "etiquette",
+    "description": "Houd toezicht op uw kinderen en zorg dat ze andere bezoekers niet storen tijdens het gebed.",
+    "isPublished": true,
+    "title": "Kinderen begeleiden",
+    "volgorde": 6
+  },
+  {
+    "_id": "etiquette-kom-op-tijd",
+    "_type": "etiquette",
+    "description": "Probeer minimaal 15 minuten voor de Iqamah aanwezig te zijn.",
+    "isPublished": true,
+    "title": "Kom op tijd",
+    "volgorde": 1
+  },
+  {
+    "_id": "etiquette-netheid",
+    "_type": "etiquette",
+    "description": "Help mee de moskee schoon te houden. Ruim afval op en houd de wudhu-ruimte droog.",
+    "isPublished": true,
+    "title": "moskee schoon",
+    "volgorde": 5
+  },
+  {
+    "_id": "etiquette-parkeren",
+    "_type": "etiquette",
+    "description": "Parkeer enkel op toegestane plekken, respecteer de buren.",
+    "gepubliceerd": true,
+    "title": "Correct Parkeren",
+    "volgorde": 1
+  },
+  {
+    "_id": "etiquette-proper",
+    "_type": "etiquette",
+    "description": "Gooi geen afval op straat, houd de omgeving van de moskee netjes.",
+    "gepubliceerd": true,
+    "title": "Buurt Proper Houden",
+    "volgorde": 2
+  },
+  {
+    "_id": "etiquette-rust",
+    "_type": "etiquette",
+    "description": "Houd het stil bij het verlaten van de moskee, respecteer de nachtrust.",
+    "gepubliceerd": true,
+    "title": "Rust voor de buren",
+    "volgorde": 3
+  },
+  {
+    "_id": "etiquette-schoenen-uit",
+    "_type": "etiquette",
+    "description": "Plaats uw schoenen netjes in het rek bij de ingang.",
+    "isPublished": true,
+    "title": "Schoenen uit",
+    "volgorde": 3
+  },
+  {
+    "_id": "etiquette-stilte",
+    "_type": "etiquette",
+    "description": "Respecteer de aanbidding, vermijd luide gesprekken in de gebedsruimte.",
+    "gepubliceerd": true,
+    "title": "Stilte in gebedsruimte",
+    "volgorde": 4
+  },
+  {
+    "_id": "etiquette-telefoon",
+    "_type": "etiquette",
+    "description": "Zet uw telefoon op vliegtuigmodus tijdens het gebed.",
+    "gepubliceerd": true,
+    "title": "Telefoon op stil",
+    "volgorde": 5
+  },
+  {
+    "_id": "etiquette-telefoon-stil",
+    "_type": "etiquette",
+    "description": "Zet uw telefoon op stil of vliegtuigmodus tijdens het gebed.",
+    "isPublished": true,
+    "title": "Telefoon op stil",
+    "volgorde": 2
+  },
+  {
+    "_id": "eventcat-bijeenkomst",
+    "_type": "eventCategorie",
+    "kleur": "#374151",
+    "slug": {
+      "_type": "slug",
+      "current": "gemeenschap"
+    },
+    "titel": "Gemeenschap",
+    "volgorde": 3
+  },
+  {
+    "_id": "eventcat-eid",
+    "_type": "eventCategorie",
+    "kleur": "#8B6843",
+    "slug": {
+      "_type": "slug",
+      "current": "eid"
+    },
+    "titel": "Eid",
+    "volgorde": 6
+  },
+  {
+    "_id": "eventcat-gebed",
+    "_type": "eventCategorie",
+    "kleur": "#5B2334",
+    "slug": {
+      "_type": "slug",
+      "current": "gebed"
+    },
+    "titel": "Gebed",
+    "volgorde": 1
+  },
+  {
+    "_id": "eventcat-les",
+    "_type": "eventCategorie",
+    "kleur": "#1D5C6B",
+    "slug": {
+      "_type": "slug",
+      "current": "onderwijs"
+    },
+    "titel": "Onderwijs",
+    "volgorde": 2
+  },
+  {
+    "_id": "eventcat-ramadan",
+    "_type": "eventCategorie",
+    "kleur": "#C9A983",
+    "slug": {
+      "_type": "slug",
+      "current": "ramadan"
+    },
+    "titel": "Ramadan",
+    "volgorde": 5
+  },
+  {
+    "_id": "eventcat-vrijwilligers",
+    "_type": "eventCategorie",
+    "kleur": "#25D366",
+    "slug": {
+      "_type": "slug",
+      "current": "vrijwilligers"
+    },
+    "titel": "Vrijwilligers",
+    "volgorde": 4
+  },
+  {
+    "_id": "janazah-voorbeeld",
+    "_type": "janazahAlert",
+    "naamOverledene": "Voorbeeld Naam",
+    "naGebed": "Dhuhr-gebed",
+    "gebedstijdstip": "14:00",
+    "gebeddatum": "2026-01-01",
+    "familyConsent": false,
+    "actief": false
+  },
+  {
+    "_id": "d5284e37-9b92-416e-9494-343fe7eed89f",
+    "_type": "lessonProgram",
+    "actief": true,
+    "beschrijving": "Wekelijkse lessen voor kinderen met focus op Arabisch lezen, basiskennis en islamitische opvoeding in een gestructureerde leeromgeving.",
+    "categorie": "kinderen",
+    "inhoud": [
+      {
+        "_key": "d3a485a89b02",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e8b083908189",
+            "_type": "span",
+            "marks": [],
+            "text": "Over het programma"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "deeae578b2b9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8301323b25ec",
+            "_type": "span",
+            "marks": [],
+            "text": "De kinderlessen in Moskee El-Fath bieden een gestructureerd leertraject voor kinderen die Arabisch willen leren lezen en hun basiskennis van de islam willen versterken."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d3c7ecb798f8",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d73e66637976",
+            "_type": "span",
+            "marks": [],
+            "text": "De lessen worden gegeven in kleine groepen en aangepast aan het niveau van het kind."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1e630ef52b08",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "56454cac4f02",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat leren de kinderen?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "dabe8923daaa",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "51363223571a",
+            "_type": "span",
+            "marks": [],
+            "text": "Arabisch alfabet en lezen"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9f7134976174",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e9f669d00e39",
+            "_type": "span",
+            "marks": [],
+            "text": "Basis woordenschat"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d4b4f70a801e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5f395801599b",
+            "_type": "span",
+            "marks": [],
+            "text": "Korte soera’s"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "2083a3949fd9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d7da8b0989ba",
+            "_type": "span",
+            "marks": [],
+            "text": "Basiskennis (gebed, etiquette, waarden)"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "052be95f23b7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bc3e8a137a08",
+            "_type": "span",
+            "marks": [],
+            "text": "Respect, discipline en gemeenschapszin"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "6ab598ba6ec9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "43c54e0fb92a",
+            "_type": "span",
+            "marks": [],
+            "text": "Lesmomenten"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "a9d04d254e35",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "1ee0f317f19b",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Vaste wekelijkse lessen:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c666797531f2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9d14ca109dae",
+            "_type": "span",
+            "marks": [],
+            "text": "Zondag: 14:00 – 17:00"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "94684aa990a8",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bb20201937cb",
+            "_type": "span",
+            "marks": [],
+            "text": "Dinsdag: 17:00 – 19:00"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d63f845151a1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "6fd4e09b3ca4",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens Ramadan geldt een aangepast rooster (zie agenda)."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "35dbfd6d1e79",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "1c19e0fdb29d",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische informatie"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "88fab3703ad2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e540216d9f8d",
+            "_type": "span",
+            "marks": [],
+            "text": "De indeling gebeurt op basis van niveau. Nieuwe leerlingen worden eerst geëvalueerd."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d3edbf7f5b01",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c08646dcfe73",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor vragen of inschrijving kan u contact opnemen via het contactformulier."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "inschrijvingOpen": true,
+    "maxCapaciteit": 20,
+    "rooster": [
+      {
+        "_key": "9289f21a891e",
+        "_type": "roosterItem",
+        "actief": true,
+        "dag": "zondag",
+        "eindTijd": "17:00",
+        "startTijd": "14:00"
+      },
+      {
+        "_key": "0a4981d4589a",
+        "_type": "roosterItem",
+        "actief": true,
+        "dag": "dinsdag",
+        "eindTijd": "19:00",
+        "startTijd": "17:00"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "arabisch-basis-islamitische-vorming"
+    },
+    "titel": "Arabisch & Basis Islamitische Vorming",
+    "volgorde": 10
+  },
+  {
+    "_id": "b2e0589b-73f3-4e8d-b3e3-6cb55518633b",
+    "_type": "post",
+    "datum": "2026-02-26T10:48:19.985Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "049c88c6999c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7aa6e5fdb7b0",
+            "_type": "span",
+            "marks": [],
+            "text": "Ramadan 1447 / 2026"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "034e3138f687",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5e19fe3a1edc",
+            "_type": "span",
+            "marks": [],
+            "text": "Met de komst van de gezegende maand Ramadan stellen wij het volledige programma voor dat in onze moskee zal plaatsvinden."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "536a2218f44a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7a6dc22f8053",
+            "_type": "span",
+            "marks": [],
+            "text": "Gedurende deze maand worden de vijf dagelijkse gebeden in gemeenschap verricht. Daarnaast vindt elke avond het Tarawih-gebed plaats na het ‘Isha-gebed."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a81edf983196",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a9cc25fa2527",
+            "_type": "span",
+            "marks": [],
+            "text": "Wekelijkse indeling"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "2f88ab71eb37",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "385c2605970a",
+            "_type": "span",
+            "marks": [],
+            "text": "Om het programma overzichtelijk te houden, publiceren wij per week een afzonderlijk overzicht van de qari’s die het Tarawih-gebed leiden."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "467d6b9aed4b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "95806a7ca0c0",
+            "_type": "span",
+            "marks": [],
+            "text": "Bekijk hier het programma per week:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a73f5a4a0b59",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a22c8a751a24",
+            "_type": "span",
+            "marks": [],
+            "text": "Tarawih – Week 1"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "26fa1dc35992",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "db724ee69405",
+            "_type": "span",
+            "marks": [],
+            "text": "Tarawih – Week 2"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "20462988f0a6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f990bbfd4267",
+            "_type": "span",
+            "marks": [],
+            "text": "Tarawih – Week 3"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "20b0302bdd06",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f6ec2057babc",
+            "_type": "span",
+            "marks": [],
+            "text": "Tarawih – Week 4"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "7a98d9b71a87",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d55d6e4f00d2",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor de actuele gebedstijden verwijzen wij naar de pagina “Gebedstijden”."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "samenvatting": "Overzicht van het Ramadanprogramma 2026 met Tarawih-gebed, wekelijkse indeling.",
+    "slug": {
+      "_type": "slug",
+      "current": "ramadanprogramma-2026"
+    },
+    "titel": "Ramadanprogramma 2026"
+  },
+  {
+    "_id": "post-blog-belang-van-gemeenschap",
+    "_type": "post",
+    "datum": "2026-02-16T22:21:24.526Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "723d4c08b6a5",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c53acf46957c",
+            "_type": "span",
+            "marks": [],
+            "text": "Tarawih – Week 1"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "4cc685665c4a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3fb3ec3774af",
+            "_type": "span",
+            "marks": [],
+            "text": "Met het begin van Ramadan 1447 (2026) delen wij het overzicht van de qari’s die tijdens de eerste week het Tarawih-gebed zullen leiden in onze moskee."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "db361d45f7d2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ca0b7a4c7870",
+            "_type": "span",
+            "marks": [],
+            "text": "Qari’s – Week 1"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "34edc7069d93",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dd697bd5ee63",
+            "_type": "span",
+            "marks": [],
+            "text": "Brahim Laghzaoui"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8858f2c923cc",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ec69d344a334",
+            "_type": "span",
+            "marks": [],
+            "text": "Anas Laytouss"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "29a0b4f57cd0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8a50f1385195",
+            "_type": "span",
+            "marks": [],
+            "text": "Redwane Laghzaoui"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "2b31ff423ffa",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c3beab70e3ba",
+            "_type": "span",
+            "marks": [],
+            "text": "Aymen Layeb"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "fe3ea47747d5",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4950bca5b7a5",
+            "_type": "span",
+            "marks": [],
+            "text": "Moge Allah hen rijkelijk belonen voor hun inzet en toewijding."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "217dba8e3225",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2eb4bd0590e5",
+            "_type": "span",
+            "marks": [],
+            "text": "Het Tarawih-gebed vindt dagelijks plaats na het ‘Isha-gebed. Voor de exacte aanvangstijd verwijzen wij naar de pagina “Gebedstijden”."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d79232858df1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "55e4f1ff0750",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij nodigen iedereen uit om deze gezegende maand in rust, respect en verbondenheid te beleven."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "onderwerpHub": {
+      "_ref": "b2e0589b-73f3-4e8d-b3e3-6cb55518633b",
+      "_type": "reference"
+    },
+    "samenvatting": "Tijdens de eerste week van Ramadan 1447 (2026) wordt het Tarawih-gebed geleid door onderstaande qari’s. Wij danken hen voor hun inzet en recitatie.",
+    "slug": {
+      "_type": "slug",
+      "current": "tarawih-week-1-ramadan-1447-2026"
+    },
+    "titel": "Tarawih – Week 1 (Ramadan 1447 / 2026)"
+  },
+  {
+    "_id": "post-blog-dua-dagelijks-leven",
+    "_type": "post",
+    "datum": "2026-02-03T22:21:24.526Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "dua-1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dua-1-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Dua is het wapen van de gelovige. Het is een directe lijn naar Allah, beschikbaar op elk moment, op elke plek. U hebt geen wudhu nodig, geen specifieke richting — alleen een oprecht hart."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "dua-2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dua-2-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Begin met de dua bij het wakker worden, bij het eten, bij het verlaten van huis. Deze kleine gewoonten transformeren uw dag in een doorlopend gesprek met uw Schepper."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "samenvatting": "Hoe dagelijkse smeekbeden uw leven kunnen verrijken — met praktische voorbeelden.",
+    "slug": {
+      "_type": "slug",
+      "current": "de-kracht-van-dua-in-het-dagelijks-leven"
+    },
+    "titel": "De kracht van dua in het dagelijks leven"
+  },
+  {
+    "_id": "post-blog-kinderen-en-koran",
+    "_type": "post",
+    "datum": "2026-02-09T22:21:24.526Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "kind-1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "kind-1-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Het leren van de Koran begint thuis. Maak er een dagelijks ritueel van: lees samen na Fajr of voor het slapengaan. Zelfs 10 minuten per dag maken een groot verschil."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "kind-2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "kind-2-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Gebruik positieve bekrachtiging. Beloon inspanning, niet alleen resultaat. Een kind dat met plezier leert, zal de Koran zijn hele leven blijven reciteren."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "kind-3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "kind-3-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Onze moskee biedt speciale kinderlessen aan op zaterdag en zondag. De docenten werken met spel, zang en verhalen om de liefde voor de Koran over te brengen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "samenvatting": "Praktische adviezen om uw kinderen op een liefdevolle manier vertrouwd te maken met de Koran.",
+    "slug": {
+      "_type": "slug",
+      "current": "tips-voor-ouders-kinderen-en-de-koran"
+    },
+    "titel": "Tips voor ouders: kinderen en de Koran"
+  },
+  {
+    "_id": "post-blog-moskee-etiquette",
+    "_type": "post",
+    "datum": "2026-01-15T17:00:00.000Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "7afdc67b0212",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "901f42c0729e",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens de 3 de week van Ramadan 1447 (2026) wordt het Tarawih-gebed geleid door onderstaande qari’s."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b9e2f0a3d4de",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b74505149052",
+            "_type": "span",
+            "marks": [],
+            "text": "Tarawih – Week 3"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "3d9dc40ce9a1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e9480b361a82",
+            "_type": "span",
+            "marks": [],
+            "text": "In de vierde week van Ramadan 1447 (2026) vervolgen wij het Tarawih-gebed in gemeenschap."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "838cd8953a22",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "596e870b1f4e",
+            "_type": "span",
+            "marks": [],
+            "text": "Qari’s – Week 3"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "1af70ecff25c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e4e63f23474b",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 1]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8ce4a4b6864a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "11556a493ab6",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 2]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "f6572aca5180",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "df806a4bef14",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 3]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "0f28e05ee053",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0da796d95be3",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 4]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "f9a496645e6d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "109dacfd78da",
+            "_type": "span",
+            "marks": [],
+            "text": "Moge Allah hen belonen voor hun inzet en toewijding."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "73bee9ced044",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9659a76b25b3",
+            "_type": "span",
+            "marks": [],
+            "text": "Het Tarawih-gebed vindt dagelijks plaats na het ‘Isha-gebed. Voor de actuele tijden verwijzen wij naar de pagina “Gebedstijden”."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "onderwerpHub": {
+      "_ref": "b2e0589b-73f3-4e8d-b3e3-6cb55518633b",
+      "_type": "reference"
+    },
+    "samenvatting": "Tijdens de derde week van Ramadan 1447 (2026) wordt het Tarawih-gebed geleid door verschillende qari’s. Hieronder vindt u het overzicht van week 1.",
+    "slug": {
+      "_type": "slug",
+      "current": "tarawihprogramma-week-3-ramadan-1447-2026"
+    },
+    "titel": "Tarawihprogramma – Week 3 (Ramadan 1447 / 2026)"
+  },
+  {
+    "_id": "post-blog-ramadan-voorbereiden",
+    "_type": "post",
+    "datum": "2026-01-27T22:21:24.526Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "ram-1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ram-1-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Begin twee weken voor Ramadan met het vasten op maandag en donderdag. Dit bereidt uw lichaam voor en is tegelijk een soennapraktijk."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ram-2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ram-2-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Maak een persoonlijk plan: welke soera wilt u memoriseren? Hoeveel Koran wilt u lezen? Welke slechte gewoonte wilt u afleren? Schrijf het op en hang het zichtbaar op."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ram-3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ram-3-s",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktisch: vul uw vriezer met maaltijden, organiseer uw werkschema en informeer collega's. Hoe beter u voorbereid bent, hoe meer u zich kunt focussen op het spirituele."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "samenvatting": "Een stap-voor-stap gids om spiritueel en praktisch klaar te zijn voor de heilige maand.",
+    "slug": {
+      "_type": "slug",
+      "current": "zo-bereidt-u-zich-voor-op-de-ramadan"
+    },
+    "titel": "Zo bereidt u zich voor op de Ramadan"
+  },
+  {
+    "_id": "post-parkeerbeleid-update",
+    "_type": "post",
+    "datum": "2026-02-14T22:21:24.526Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "c327bd13b6a0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a8c5efd0fe8d",
+            "_type": "span",
+            "marks": [],
+            "text": "Qari’s – Week 2"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "f824447041e5",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "12d9b09eceee",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 1]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "6a86610de1ce",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4a14dc46a084",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 2]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9aa72c8144a9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "979d0afd3103",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 3]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "37af152d5cae",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2fdb66577b7c",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 4]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3ab6d2318581",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2a71e08f9e8d",
+            "_type": "span",
+            "marks": [],
+            "text": "Moge Allah hen rijkelijk belonen voor hun inzet en toewijding."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9fdabb1e8d77",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b34edd6529cd",
+            "_type": "span",
+            "marks": [],
+            "text": "Het Tarawih-gebed vindt dagelijks plaats na het ‘Isha-gebed. Voor de exacte aanvangstijd verwijzen wij naar de pagina “Gebedstijden”."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b7c303b785a5",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e4e68864065b",
+            "_type": "span",
+            "marks": [],
+            "text": "Eventuele wijzigingen in het programma worden tijdig via de website gecommuniceerd."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "onderwerpHub": {
+      "_ref": "b2e0589b-73f3-4e8d-b3e3-6cb55518633b",
+      "_type": "reference"
+    },
+    "samenvatting": "Tijdens de tweede week van Ramadan 1447 (2026) zetten wij het Tarawih-programma voort met een nieuwe indeling van qari’s die het gebed in gemeenschap zullen leiden.",
+    "slug": {
+      "_type": "slug",
+      "current": "tarawih-week-2"
+    },
+    "titel": "Tarawih – Week 2"
+  },
+  {
+    "_id": "post-renovatie-update",
+    "_type": "post",
+    "datum": "2026-02-11T22:21:24.526Z",
+    "gepubliceerd": true,
+    "inhoud": [
+      {
+        "_key": "10d8e3601129",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3c557b23da28",
+            "_type": "span",
+            "marks": [],
+            "text": "Tarawih – Week 4"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "ffdda7d2cffe",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ee162b2fcad5",
+            "_type": "span",
+            "marks": [],
+            "text": "In de vierde week van Ramadan 1447 (2026) vervolgen wij het Tarawih-gebed in gemeenschap."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b1ebe0f04293",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a778be9d1413",
+            "_type": "span",
+            "marks": [],
+            "text": "Qari’s – Week 4"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "a9208bf95555",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0df7412c6f5f",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 1]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "e7c55e3bd8be",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4073db4ba2b7",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 2]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9dd38793c8b8",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "343fe58347b2",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 3]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "2a063513d238",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f007eeff302f",
+            "_type": "span",
+            "marks": [],
+            "text": "[Naam qari 4]"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "97719e15d0ec",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "292e0b46c50f",
+            "_type": "span",
+            "marks": [],
+            "text": "Moge Allah hen belonen voor hun inzet en toewijding."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1b3c888ca2bc",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "92c68d85dd5c",
+            "_type": "span",
+            "marks": [],
+            "text": "Het Tarawih-gebed vindt dagelijks plaats na het ‘Isha-gebed. Voor de actuele tijden verwijzen wij naar de pagina “Gebedstijden”."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "onderwerpHub": {
+      "_ref": "b2e0589b-73f3-4e8d-b3e3-6cb55518633b",
+      "_type": "reference"
+    },
+    "samenvatting": "Tijdens de vierde week van Ramadan 1447 (2026) wordt het Tarawih-gebed geleid door onderstaande qari’s.",
+    "slug": {
+      "_type": "slug",
+      "current": "tarawih-week-4-ramadan-1447-2026"
+    },
+    "titel": "Tarawih – Week 4 (Ramadan 1447 / 2026)"
+  },
+  {
+    "_id": "cf527cc0-6ae1-40cd-b53a-b3f66ddff1ea",
+    "_type": "project",
+    "actief": false,
+    "beschrijving": "tgsdfgdfgsdfgdssdf",
+    "doelbedrag": 25000,
+    "huidigBedragCents": 0,
+    "titel": "Nieuwe tapijten voor gebedszaal",
+    "toonOpHomepage": false
+  },
+  {
+    "_id": "project-ramadan-voedselpakketten",
+    "_type": "project",
+    "actief": true,
+    "beschrijving": "Doneer een iftaar-pakket voor €10 en help een vastende zijn of haar vasten te verbreken.\n\nDoneer vandaag via onderstaand formulier en maak samen met ons het verschil tijdens deze gezegende Ramadan.",
+    "eenheid": "maaltijd",
+    "prijsPerEenheid": 10,
+    "titel": "Iftaar Pakketten",
+    "toonOpHomepage": true
+  },
+  {
+    "_id": "project-renovatie",
+    "_type": "project",
+    "actief": false,
+    "beschrijving": "Help ons de gebedsruimte te voorzien van nieuw tapijt en duurzame verlichting. Elke bijdrage brengt ons dichter bij een waardige gebedsruimte.",
+    "doelbedrag": 25000,
+    "huidigBedragCents": 0,
+    "titel": "Renovatie Gebedsruimte",
+    "toonOpHomepage": true
+  },
+  {
+    "_id": "project-renovatie-gebedsruimte",
+    "_type": "project",
+    "actief": false,
+    "beschrijving": "Help ons de gebedsruimte te voorzien van nieuw tapijt en duurzame verlichting.",
+    "doelbedrag": 25000,
+    "titel": "Renovatie Gebedsruimte"
+  },
+  {
+    "_id": "project-sadaqa",
+    "_type": "project",
+    "actief": true,
+    "beschrijving": "Steun de renovatie, het onderhoud en de uitbreiding van onze moskee. Uw sadaqa jariya draagt bij aan een duurzame plek van gebed voor generaties.",
+    "titel": "Bouwfonds Moskee El-Fath"
+  },
+  {
+    "_id": "33HwYkukp45JeQ4MbGuqVT",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Surat al-Baqara 2:274",
+    "categorie": "donaties",
+    "tekst": "Degenen die hun bezittingen uitgeven, in de nacht en overdag, heimelijk en openlijk — voor hen is hun beloning bij hun Heer; geen angst zal over hen zijn en zij zullen niet treuren.",
+    "tekstArabisch": "ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُم بِٱلَّيْلِ وَٱلنَّهَارِ سِرًّۭا وَعَلَانِيَةًۭ فَلَهُمْ أَجْرُهُمْ عِندَ رَبِّهِمْ وَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ"
+  },
+  {
+    "_id": "33HwYkukp45JeQ4MbGurYn",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Sahih al-Bukhari 1410 · Sahih Muslim 1014",
+    "categorie": "donaties",
+    "tekst": "Allah accepteert sadaqah met Zijn rechterhand en laat het groeien voor degene die het gaf, zoals één van jullie een veulen grootbrengt.",
+    "tekstArabisch": "إِنَّ اللَّهَ يَقْبَلُ الصَّدَقَةَ وَيَأْخُذُهَا بِيَمِينِهِ فَيُرَبِّيهَا لأَحَدِكُمْ كَمَا يُرَبِّي أَحَدُكُمْ مُهْرَهُ"
+  },
+  {
+    "_id": "AL002vP6w3zdbjZXTeB8k4",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Sahih al-Bukhari 1419 · Sahih Muslim 1032",
+    "categorie": "donaties",
+    "tekst": "De beste liefdadigheid is die gegeven wordt terwijl je gezond bent, hoop hebt op rijkdom en bang bent voor armoede.",
+    "tekstArabisch": "أَفْضَلُ الصَّدَقَةِ أَنْ تَصَدَّقَ وَأَنْتَ صَحِيحٌ شَحِيحٌ تَأْمُلُ الْغِنَى وَتَخْشَى الْفَقْرَ"
+  },
+  {
+    "_id": "AL002vP6w3zdbjZXTeB97D",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Sahih Muslim 1631",
+    "categorie": "donaties",
+    "tekst": "Wanneer een mens sterft, stoppen zijn daden behalve drie: voortdurende liefdadigheid, nuttige kennis, of een rechtschapen kind dat voor hem bidt.",
+    "tekstArabisch": "إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلَّا مِنْ ثَلاَثَةٍ إِلَّا مِنْ صَدَقَةٍ جَارِيَةٍ أَوْ عِلْمٍ يُنْتَفَعُ بِهِ أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ"
+  },
+  {
+    "_id": "quote-hadith-moskee",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Sahih al-Bukhari 450",
+    "categorie": "donaties",
+    "tekst": "Wie een moskee bouwt om Allah te behagen, voor hem bouwt Allah een huis in het Paradijs."
+  },
+  {
+    "_id": "quote-hadith-sadaqa",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Sunan at-Tirmidhi 2616",
+    "categorie": "donaties",
+    "tekst": "Sadaqah dooft de zonde uit zoals water het vuur dooft."
+  },
+  {
+    "_id": "rqIWAjtU1heVz2YnppqgKF",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Surat al-Baqara 2:261",
+    "categorie": "donaties",
+    "tekst": "De gelijkenis van degenen die hun bezit uitgeven op de Weg van Allah is als die van een graankorrel die zeven aren voortbrengt; in elke aar honderd korrels. En Allah vermenigvuldigt voor wie Hij wil.",
+    "tekstArabisch": "مَّثَلُ ٱلَّذِينَ يُنفِقُونَ أَمْوَٰلَهُمْ فِى سَبِيلِ ٱللَّهِ كَمَثَلِ حَبَّةٍ أَنۢبَتَتْ سَبْعَ سَنَابِلَ فِى كُلِّ سُنۢبُلَةٍۢ مِّا۟ئَةُ حَبَّةٍۢ ۗ وَٱللَّهُ يُضَـٰعِفُ لِمَن يَشَآءُ"
+  },
+  {
+    "_id": "rqIWAjtU1heVz2Ynppqgo3",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Surat Sabaʾ 34:39",
+    "categorie": "donaties",
+    "tekst": "En wat jullie ook uitgeven (voor Allah), Hij zal het vervangen.",
+    "tekstArabisch": "وَمَآ أَنفَقْتُم مِّن شَىْءٍۢ فَهُوَ يُخْلِفُهُۥ"
+  },
+  {
+    "_id": "rqIWAjtU1heVz2YnppqgZ9",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Surat Āl-ʿImrān 3:92",
+    "categorie": "donaties",
+    "tekst": "Jullie zullen de ware vroomheid niet bereiken totdat jullie uitgeven van wat jullie liefhebben.",
+    "tekstArabisch": "لَن تَنَالُوا۟ ٱلْبِرَّ حَتَّىٰ تُنفِقُوا۟ مِمَّا تُحِبُّونَ"
+  },
+  {
+    "_id": "rqIWAjtU1heVz2YnppqhJz",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Sahih al-Bukhari 1417 · Sahih Muslim 1016",
+    "categorie": "donaties",
+    "tekst": "Bescherm jezelf tegen het Vuur, al is het met een halve dadel.",
+    "tekstArabisch": "اتَّقُوا النَّارَ وَلَوْ بِشِقِّ تَمْرَةٍ"
+  },
+  {
+    "_id": "rqIWAjtU1heVz2YnppqhSV",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Sahih Muslim 2588",
+    "categorie": "donaties",
+    "tekst": "Rijkdom vermindert niet door liefdadigheid.",
+    "tekstArabisch": "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ"
+  },
+  {
+    "_id": "rqIWAjtU1heVz2Ynppqi95",
+    "_type": "quote",
+    "actief": true,
+    "bron": "Surat at-Tawbah 9:103",
+    "categorie": "donaties",
+    "tekst": "Neem van hun bezittingen een liefdadigheid waarmee jij hen reinigt en zuivert.",
+    "tekstArabisch": "خُذْ مِنْ أَمْوَٰلِهِمْ صَدَقَةًۭ تُطَهِّرُهُمْ وَتُزَكِّيهِم بِهَا"
+  },
+  {
+    "_id": "service-arabische-taalles",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Arabische taallessen voor kinderen en volwassenen, met aandacht voor lezen, schrijven, woordenschat en basisgrammatica in een gestructureerde leeromgeving.",
+    "inhoud": [
+      {
+        "_key": "c1c6629f1906",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e9a186e69979",
+            "_type": "span",
+            "marks": [],
+            "text": "Arabisch leren stap voor stap"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "a17ebe246912",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7f9c817532de",
+            "_type": "span",
+            "marks": [],
+            "text": "Onze Arabische taallessen zijn bedoeld voor iedereen die de Arabische taal wil leren of verbeteren. Zowel beginners als gevorderden zijn welkom. De lessen zijn toegankelijk voor kinderen, jongeren en volwassenen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8d225f70bfc1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9b8cea840824",
+            "_type": "span",
+            "marks": [],
+            "text": "Er wordt gewerkt met een duidelijke structuur, zodat elke leerling op een rustig tempo vooruitgang kan boeken."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a6362e93c102",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2319b0e6e197",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat leert u tijdens de lessen?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "c758cd9def7d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8ba475ef943e",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens de lessen besteden we aandacht aan:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "5053143a807c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9ec2a448c5fd",
+            "_type": "span",
+            "marks": [],
+            "text": "Het leren van het Arabisch alfabet"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "70d32e6f6af3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "68c4a4558802",
+            "_type": "span",
+            "marks": [],
+            "text": "Correct lezen en schrijven"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d2eb95dd6835",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "14435e3d3dac",
+            "_type": "span",
+            "marks": [],
+            "text": "Uitbreiden van woordenschat"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9065d22e9e41",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e431860b1c8d",
+            "_type": "span",
+            "marks": [],
+            "text": "Basisgrammatica"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3445503cd47f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e95af0686b56",
+            "_type": "span",
+            "marks": [],
+            "text": "Eenvoudige zinsopbouw"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4a2cd9eed8c1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "57fc1af769de",
+            "_type": "span",
+            "marks": [],
+            "text": "Begrijpend lezen"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b06c1e11b90e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dfab2e467405",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor kinderen ligt de focus op een geleidelijke opbouw met herhaling. Voor volwassenen wordt rekening gehouden met hun startniveau en leerdoelen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9e1c3e0da80c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "05f3f9496448",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische aanpak"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "5af28625c75a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3dfb1d629a35",
+            "_type": "span",
+            "marks": [],
+            "text": "De lessen worden wekelijks georganiseerd in een rustige en respectvolle leeromgeving. We werken in kleine groepen zodat er voldoende persoonlijke begeleiding mogelijk is."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8b5f42578ce2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a98ed74a72d0",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor wie?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "ec2db7d99253",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "1bd534505edf",
+            "_type": "span",
+            "marks": [],
+            "text": "Kinderen die Arabisch willen leren lezen en schrijven"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c7bd7d7d8bf0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c0cdc6ff5b2a",
+            "_type": "span",
+            "marks": [],
+            "text": "Jongeren die hun taalvaardigheid willen verbeteren"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a2db01b150a4",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0e99b8073979",
+            "_type": "span",
+            "marks": [],
+            "text": "Volwassenen die de taal beter willen begrijpen, bijvoorbeeld om religieuze teksten te kunnen volgen"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "e3e6568c075e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7c8355995319",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor meer informatie of inschrijving kunt u contact opnemen via het contactformulier of langskomen in de moskee."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "arabische-taalles"
+    },
+    "titel": "Arabische Taalles",
+    "volgorde": 2
+  },
+  {
+    "_id": "service-bekeerlingen",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Ondersteuning en begeleiding voor mensen die de islam hebben aangenomen of zich hierin verdiepen. Wij bieden persoonlijke begeleiding, basiskennis en praktische ondersteuning.",
+    "inhoud": [
+      {
+        "_key": "9c321c9e1dfc",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dd58c4836745",
+            "_type": "span",
+            "marks": [],
+            "text": "Een nieuw begin"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "fdd7d3f30276",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d850297fd264",
+            "_type": "span",
+            "marks": [],
+            "text": "Het aannemen van de islam is een belangrijke en persoonlijke stap. In onze moskee bieden wij begeleiding aan mensen die recent de islam hebben omarmd of die zich verder willen verdiepen in hun geloof."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "2ef2f1976f01",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d8b295b47772",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij streven naar een rustige en respectvolle begeleiding, waarbij ruimte is voor vragen, groei en persoonlijke ontwikkeling."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "37c29989ef13",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0fe98087d10b",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat bieden wij aan?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "af4630978c54",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "97cc8f6fee56",
+            "_type": "span",
+            "marks": [],
+            "text": "Persoonlijke begeleiding bij de eerste stappen in de islam.\nUitleg over de geloofsbelijdenis (shahada).\nBasislessen over gebed, reinheid en dagelijkse praktijk.\nInleiding tot de Koran en fundamentele geloofsleer.\nOndersteuning bij praktische en sociale vragen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "fb915eace9e3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5559a233f95e",
+            "_type": "span",
+            "marks": [],
+            "text": "Discretie en respect"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "3f76d5aeb82f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a845d6549928",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij begrijpen dat deze stap soms gepaard gaat met persoonlijke uitdagingen. Daarom behandelen wij elke begeleiding met discretie, zorg en respect voor ieders situatie."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4bcb2662285d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a66934220745",
+            "_type": "span",
+            "marks": [],
+            "text": "Deel uitmaken van de gemeenschap"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "b39ba4f5394a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "748fef58acd4",
+            "_type": "span",
+            "marks": [],
+            "text": "Nieuwe moslims worden ondersteund in hun integratie binnen de gemeenschap, met aandacht voor verbondenheid, kennis en stabiliteit."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8c08bb158490",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7fd8fcc4c6f6",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische informatie"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "ccfb28e9c1e9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e3c0d182c927",
+            "_type": "span",
+            "marks": [],
+            "text": "Begeleiding gebeurt op afspraak.\nPersoonlijke gesprekken zijn mogelijk met een imam of begeleider.\nVoor deelname aan lessen kan inschrijving vereist zijn."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "eeb01dc0ea80",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b99ef55688bd",
+            "_type": "span",
+            "marks": [],
+            "text": "Contact"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "5788914e2f21",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "91665bb3d712",
+            "_type": "span",
+            "marks": [],
+            "text": "Neem contact met ons op voor een afspraak of verdere informatie."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "begeleiding-voor-nieuwe-moslims"
+    },
+    "tijden": "Op afspraak",
+    "titel": "Begeleiding voor Nieuwe Moslims",
+    "volgorde": 3
+  },
+  {
+    "_id": "service-counseling",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Persoonlijke geestelijke begeleiding en advies op basis van islamitische waarden, in vertrouwen en met respect voor uw situatie.",
+    "inhoud": [
+      {
+        "_key": "84fceefacae8",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c1d6dbd5fed0",
+            "_type": "span",
+            "marks": [],
+            "text": "Persoonlijke begeleiding en advies"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "f545a98980f7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f893a06d956c",
+            "_type": "span",
+            "marks": [],
+            "text": "Soms heeft men nood aan een gesprek, advies of spirituele ondersteuning. Onze geestelijke begeleiding is bedoeld voor leden van de gemeenschap die vragen hebben over geloof, levenskeuzes of persoonlijke situaties."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c2a052ee5386",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "14716de7bf55",
+            "_type": "span",
+            "marks": [],
+            "text": "Gesprekken gebeuren in een vertrouwelijke en respectvolle omgeving."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "63450ca76bac",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c70bff64908a",
+            "_type": "span",
+            "marks": [],
+            "text": "Waarvoor kunt u terecht?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "9c7b63ba6fec",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "6596d9b6d5cf",
+            "_type": "span",
+            "marks": [],
+            "text": "U kunt onder andere terecht voor:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "bc85e52923fc",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "12bac947ffb7",
+            "_type": "span",
+            "marks": [],
+            "text": "Religieus advies bij persoonlijke vragen"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "19a5515d5ea8",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0a2a541e6b0c",
+            "_type": "span",
+            "marks": [],
+            "text": "Ondersteuning bij moeilijke levenssituaties"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "21b0d8e26c72",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "fb46ed783086",
+            "_type": "span",
+            "marks": [],
+            "text": "Huwelijks- en gezinsadvies"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "e1697ec4599f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ff4c5cbe1863",
+            "_type": "span",
+            "marks": [],
+            "text": "Begeleiding bij geloofsvragen"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "815bb5fc2b4d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b63b00fd8ad2",
+            "_type": "span",
+            "marks": [],
+            "text": "Spirituele versterking en motivatie"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "56058b5e1966",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a489155616b6",
+            "_type": "span",
+            "marks": [],
+            "text": "Elke situatie wordt met discretie behandeld."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "76fa1f416af4",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4b5fa99dd567",
+            "_type": "span",
+            "marks": [],
+            "text": "Vertrouwen en respect"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "fe6461bdce75",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "68a69ed6e175",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij hechten veel belang aan vertrouwelijkheid. Het doel van geestelijke begeleiding is rust, duidelijkheid en richting bieden, in overeenstemming met islamitische principes."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "e00dd36f18e3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8be03aee1b82",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor een afspraak kunt u contact opnemen via het contactformulier of rechtstreeks met het bestuur."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "geestelijke-begeleiding"
+    },
+    "titel": "Geestelijke Begeleiding",
+    "volgorde": 6
+  },
+  {
+    "_id": "service-huisbezoek",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Bezoek aan zieken en leden van de gemeenschap thuis of in het ziekenhuis, met aandacht, gebed en morele ondersteuning.",
+    "inhoud": [
+      {
+        "_key": "c43b6082a731",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d928a3094e78",
+            "_type": "span",
+            "marks": [],
+            "text": "Bezoek met aandacht en zorg"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "3cd98e3896f6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "be3416993cd1",
+            "_type": "span",
+            "marks": [],
+            "text": "Binnen onze gemeenschap vinden wij het belangrijk om naar elkaar om te kijken. Daarom bieden wij huisbezoeken en ziekenbezoeken aan voor leden die door ziekte, ouderdom of andere omstandigheden ondersteuning nodig hebben."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4c3d9f1cefb3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b24854e41844",
+            "_type": "span",
+            "marks": [],
+            "text": "Een bezoek brengt troost, verbondenheid en spirituele steun in moeilijke momenten."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9df2a3619d24",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5731009b65ea",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat houdt een bezoek in?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "ef5d1b5a9258",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2939e35d19ae",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens een huis- of ziekenbezoek kan onder andere:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "148489c0c05e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e22205813568",
+            "_type": "span",
+            "marks": [],
+            "text": "Samen gebed verricht worden"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "66cb6905b107",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d5bf5796e984",
+            "_type": "span",
+            "marks": [],
+            "text": "Korte Koranverzen worden gereciteerd"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "0690b03143cc",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "890b249f224a",
+            "_type": "span",
+            "marks": [],
+            "text": "Een dua (smeekbede) worden gedaan voor herstel"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a36e1efa7d8a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "7cb5b61f9b60",
+            "_type": "span",
+            "marks": [],
+            "text": "Een luisterend oor worden geboden"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "6a66fc2439c9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "aca9e86b1ca0",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische noden besproken worden"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9b9ca1c7add6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a8e455bb1956",
+            "_type": "span",
+            "marks": [],
+            "text": "Het bezoek gebeurt steeds met respect voor de situatie en wensen van de betrokkene en de familie."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "dad0437c1610",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "15eee860cd62",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor wie?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "821977a22376",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d7af255fbe00",
+            "_type": "span",
+            "marks": [],
+            "text": "Zieken in het ziekenhuis"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "be7351b693be",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "6ea2598d4367",
+            "_type": "span",
+            "marks": [],
+            "text": "Ouderen die moeilijk naar de moskee kunnen komen"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1c0a331dc1b7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "981fda770ee6",
+            "_type": "span",
+            "marks": [],
+            "text": "Gemeenschapsleden die extra steun nodig hebben"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "0ef1adafefdd",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "06002ff6009d",
+            "_type": "span",
+            "marks": [],
+            "text": "Indien u een bezoek wenst aan te vragen, kunt u contact opnemen met het bestuur of het contactformulier invullen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "huisbezoek-ziekenbezoek"
+    },
+    "titel": "Huisbezoek & Ziekenbezoek",
+    "volgorde": 4
+  },
+  {
+    "_id": "service-islamitische-uitvaart",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Begeleiding bij een islamitische uitvaart volgens de religieuze voorschriften, met respect, zorg en ondersteuning voor de nabestaanden.",
+    "inhoud": [
+      {
+        "_key": "a72023caef91",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "40cd3908761f",
+            "_type": "span",
+            "marks": [],
+            "text": "Islamitische uitvaartbegeleiding"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "0966684d6628",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ed92bf90b0a8",
+            "_type": "span",
+            "marks": [],
+            "text": "Bij het overlijden van een dierbare staan wij de familie bij in deze moeilijke periode. De islamitische uitvaart wordt verzorgd volgens de religieuze richtlijnen, met aandacht voor respect, eenvoud en waardigheid."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "22b36090b815",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "27448053e673",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij ondersteunen de nabestaanden stap voor stap, zodat alles correct en sereen kan verlopen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "24cc00ccc7b0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a3f4630925c6",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat houdt dit in?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "fb713df1ad76",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9b54503c62d3",
+            "_type": "span",
+            "marks": [],
+            "text": "De begeleiding omvat onder andere:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "26aac00f46fa",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "cc016db6fc68",
+            "_type": "span",
+            "marks": [],
+            "text": "Rituele wassing (ghusl) volgens de islamitische voorschriften"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "101d2cb08c38",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f4c4ace1722a",
+            "_type": "span",
+            "marks": [],
+            "text": "Het wikkelen in de lijkwade (kafan)"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b34cb059182c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f525ec1fcbae",
+            "_type": "span",
+            "marks": [],
+            "text": "Het organiseren van het janazah-gebed"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "0996f8202514",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "404282c1dd63",
+            "_type": "span",
+            "marks": [],
+            "text": "Afstemming met begraafplaats en betrokken instanties"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ddcfa0e47997",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c11bde6d1cde",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische ondersteuning voor de familie"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "cbfb7c3bff9a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "df002435e158",
+            "_type": "span",
+            "marks": [],
+            "text": "Alles gebeurt met de nodige discretie en respect voor de wensen van de familie."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c25389abb08e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "6ca8d053e6a2",
+            "_type": "span",
+            "marks": [],
+            "text": "Ondersteuning voor de familie"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "b15264b45eda",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "397d3ced5ef6",
+            "_type": "span",
+            "marks": [],
+            "text": "Naast de praktische organisatie bieden wij ook morele ondersteuning. In een periode van verdriet is het belangrijk dat de familie zich kan focussen op rouw en gebed, terwijl de praktische zaken zorgvuldig worden geregeld."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "2ca5e886028a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c229cdd2123a",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor dringende gevallen of meer informatie kunt u rechtstreeks contact opnemen met het bestuur van de moskee."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "islamitische-uitvaart"
+    },
+    "titel": "Islamitische Uitvaart",
+    "volgorde": 3
+  },
+  {
+    "_id": "service-janazah",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Begeleiding bij de islamitische uitvaart. Wij ondersteunen de familie bij de wassing, het Janazah-gebed en de begrafenis volgens de islamitische richtlijnen.",
+    "inhoud": [
+      {
+        "_key": "0ce98067063a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4603fc3fd08d",
+            "_type": "span",
+            "marks": [],
+            "text": "Begeleiding in een moeilijke periode"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "d30a87951423",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c01e3b009c3f",
+            "_type": "span",
+            "marks": [],
+            "text": "Het verlies van een dierbare is een ingrijpend moment. In deze moeilijke periode staan wij de familie bij met zorg, discretie en respect, overeenkomstig de islamitische voorschriften."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "f8024c1f57ac",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "700839f9bc2f",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat houdt de begeleiding in?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "7605f5d35720",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bab64f7bfdf0",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij ondersteunen bij:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "00b28db9439c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4e0e4544784d",
+            "_type": "span",
+            "marks": [],
+            "text": "De rituele wassing (ghusl) volgens de islamitische richtlijnen.\nHet voorzien van de lijkwade (kafan).\nDe organisatie van het Janazah-gebed in de moskee.\nPraktische coördinatie in overleg met begrafenisondernemers en begraafplaats.\nReligieuze begeleiding en advies aan de familie."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "52f8c0a8786a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "71e32d3347b3",
+            "_type": "span",
+            "marks": [],
+            "text": "Volgens islamitische traditie"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "bab74775c2a1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0ba7db9dccfc",
+            "_type": "span",
+            "marks": [],
+            "text": "De uitvaartbegeleiding gebeurt volgens de islamitische richtlijnen zoals die binnen onze moskee worden toegepast. Hierbij staat waardigheid, eenvoud en respect centraal."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "073c4ce90507",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c322badfabb4",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische informatie"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "cd3c79535713",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ebacf160b29f",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij verzoeken de familie om zo spoedig mogelijk contact op te nemen bij een overlijden, zodat de nodige stappen tijdig kunnen worden georganiseerd."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "fc99d4b72a5a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f9c115127646",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor administratieve afhandeling dienen de vereiste documenten beschikbaar te zijn."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "afa2ac25fb6d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "30392db09e76",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij werken samen met erkende begrafenisondernemers conform de Belgische wetgeving."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "238782060045",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "95186c981085",
+            "_type": "span",
+            "marks": [],
+            "text": "Contact"
+          }
+        ],
+        "markDefs": [],
+        "style": "h2"
+      },
+      {
+        "_key": "fd1a7e9bb196",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bda3fcc58da3",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor dringende gevallen kunt u rechtstreeks telefonisch contact opnemen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "islamitische-uitvaartbegeleiding"
+    },
+    "tijden": "Telefonisch contact opnemen.",
+    "titel": "Islamitische Uitvaartbegeleiding",
+    "volgorde": 2
+  },
+  {
+    "_id": "service-koranles",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Wekelijkse Koranlessen voor kinderen en volwassenen, met aandacht voor correcte recitatie, begrip en persoonlijke begeleiding in een rustige leeromgeving.",
+    "inhoud": [
+      {
+        "_key": "a60cbe87cf4b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dcef5a27a3e0",
+            "_type": "span",
+            "marks": [],
+            "text": "Koranlessen voor kinderen en volwassenen"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "8e0b6a08600a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4b2450832941",
+            "_type": "span",
+            "marks": [],
+            "text": "Onze Koranlessen zijn bedoeld voor iedereen die zijn of haar band met de Koran wil versterken. Zowel kinderen als volwassenen zijn welkom, ongeacht hun niveau. Of u nu wilt leren lezen, uw recitatie wilt verbeteren of meer begrip wilt krijgen van de betekenis, wij begeleiden u stap voor stap."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "339f5dfdd584",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "42cfc9c4b527",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat leert u tijdens de lessen?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "a855dc74ca8f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "143ac0c46bc9",
+            "_type": "span",
+            "marks": [],
+            "text": "Tijdens de lessen wordt gewerkt aan:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8764821aae9c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "786db934839a",
+            "_type": "span",
+            "marks": [],
+            "text": "Correct leren lezen van de Koran"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1ffc2bfa487c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3259c0433a47",
+            "_type": "span",
+            "marks": [],
+            "text": "Verbeteren van de uitspraak (tajwid)"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "0bcdc5601c52",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8787f7571c71",
+            "_type": "span",
+            "marks": [],
+            "text": "Memoriseerwerk op eigen tempo"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a5e9541e53f9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3f56b9ce5de2",
+            "_type": "span",
+            "marks": [],
+            "text": "Basisbegrip van de verzen"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ad17a73a94a9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0bea90de8b93",
+            "_type": "span",
+            "marks": [],
+            "text": "Respectvolle omgang met de Koran"
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "08fe27fc0cde",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "55c831de71cb",
+            "_type": "span",
+            "marks": [],
+            "text": "Voor kinderen ligt de nadruk op een gestructureerde opbouw en herhaling. Voor volwassenen wordt rekening gehouden met hun startniveau en leerdoelen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ab472c026b6b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f7975fd2e893",
+            "_type": "span",
+            "marks": [],
+            "text": "Persoonlijke begeleiding"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "d8bd8dc89db7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "807f20f29853",
+            "_type": "span",
+            "marks": [],
+            "text": "Onze docenten hebben ervaring in het onderwijzen van verschillende leeftijden en niveaus. Er wordt lesgegeven in een rustige en respectvolle omgeving, waar aandacht is voor discipline, concentratie en vooruitgang."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "e7507b78ec56",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5251bc4519f5",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische informatie"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "b31b6446ee7a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a623b068aad4",
+            "_type": "span",
+            "marks": [],
+            "text": "De lessen vinden wekelijks plaats in de moskee. Voor inschrijving of meer informatie kunt u contact opnemen via het contactformulier of langskomen na het gebed."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "koranles"
+    },
+    "titel": "Koranles",
+    "volgorde": 1
+  },
+  {
+    "_id": "service-nikah",
+    "_type": "service",
+    "actief": true,
+    "beschrijving": "Begeleiding bij de islamitische echtverbintenis (Nikah). Van voorbereiding tot de huwelijksplechtigheid begeleiden wij u op een respectvolle en zorgvuldige manier.",
+    "inhoud": [
+      {
+        "_key": "b880e647938e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "45c92573370a",
+            "_type": "span",
+            "marks": [],
+            "text": "Islamitisch huwelijk in onze moskee"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "53f325c39118",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5473d79e8036",
+            "_type": "span",
+            "marks": [],
+            "text": "Het huwelijk (Nikah) is een gezegende verbintenis en een belangrijke stap in het leven van twee mensen. In onze moskee begeleiden wij koppels op een serene en respectvolle manier bij het sluiten van hun islamitisch huwelijk, volgens de geldende religieuze richtlijnen."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "e718a5fdf10a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0b8047c1abd9",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat is de Nikah?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "7fefd7e7f2a8",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "668bc598046f",
+            "_type": "span",
+            "marks": [],
+            "text": "De Nikah is de islamitische huwelijksakte waarbij, in aanwezigheid van getuigen, de wederzijdse toestemming wordt uitgesproken en de mahr (bruidsgave) wordt vastgesteld. Deze plechtigheid bevestigt de verbintenis binnen het kader van de islamitische traditie."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "10fd3fe7f16f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "5536e6bf6571",
+            "_type": "span",
+            "marks": [],
+            "text": "Wat bieden wij aan?"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "75b68b428338",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bdea0826d9a7",
+            "_type": "span",
+            "marks": [],
+            "text": "Begeleiding bij de voorbereiding van de Nikah.\nToelichting van de religieuze voorwaarden.\nOrganisatie van de huwelijksplechtigheid in de moskee.\nOpmaak van een islamitische huwelijksakte.\nMogelijkheid tot een korte religieuze overdenking of duʿā tijdens de plechtigheid."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8382225b658e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "15b6101d27a8",
+            "_type": "span",
+            "marks": [],
+            "text": "Praktische informatie"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "b601d5fbec5d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c6aa61972bb9",
+            "_type": "span",
+            "marks": [],
+            "text": "Een afspraak is vooraf noodzakelijk.\nIdentiteitsdocumenten dienen voorgelegd te worden.\nTwee getuigen moeten aanwezig zijn.\nHet burgerlijk huwelijk moet vooraf wettelijk voltrokken zijn, conform de Belgische wetgeving."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "53e1acc9ea2a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "00dcde037b20",
+            "_type": "span",
+            "marks": [],
+            "text": "Een waardige plechtigheid"
+          }
+        ],
+        "markDefs": [],
+        "style": "h3"
+      },
+      {
+        "_key": "6ed8919c6a0d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3d84a6755655",
+            "_type": "span",
+            "marks": [],
+            "text": "Wij streven naar een eenvoudige en waardige huwelijksplechtigheid waarbij verantwoordelijkheid, zegen en gemeenschap centraal staan."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "slug": {
+      "_type": "slug",
+      "current": "huwelijk-nikah"
+    },
+    "tijden": "Op afspraak",
+    "titel": "Huwelijk (Nikah)",
+    "volgorde": 0
+  }
+]

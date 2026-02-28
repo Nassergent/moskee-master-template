@@ -10,6 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "ping": "node scripts/telemetry-ping.js",
+    "seed:all": "node scripts/seed-all.js",
+    "seed:export": "node scripts/export-from-sanity.js",
     "seed:categories": "node scripts/seed-categories.js",
     "seed:data": "node scripts/seed-data.js"
   },
