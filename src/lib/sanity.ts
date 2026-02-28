@@ -58,16 +58,6 @@ export async function fetchPrayerTimes() {
   }`, undefined, { fallback: null, label: 'fetchPrayerTimes' });
 }
 
-export async function fetchActueel() {
-  return safeFetch(sanityClient, `*[
-    _type == "post" && gepubliceerd == true
-  ] | order(_createdAt desc) [0...3] {
-    _id, _type, _createdAt,
-    "titel": titel, "slug": slug.current,
-    "beschrijving": samenvatting, "href": "/nieuws/" + slug.current,
-    postType
-  }`, undefined, { fallback: [] as any[], label: 'fetchActueel' });
-}
 
 export async function fetchQuote(categorie: string = 'donaties'): Promise<Quote | null> {
   try {

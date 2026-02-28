@@ -96,10 +96,6 @@ h2::after {
   margin-top: 0.5rem;
 }
 
-/* White accent line in dark sections */
-[class*="bg-primary"] h2::after {
-  background-color: rgba(255, 255, 255, 0.3);
-}
 
 /* Center accent line when h2 is centered */
 .text-center h2::after,
@@ -228,19 +224,6 @@ h2.text-center::after {
   opacity: 0.85;
 }
 
-/* ─── Touch feedback for all interactive elements ─── */
-a:active,
-button:active {
-  transition-duration: 0.1s;
-}
-
-/* Ensure minimum touch targets on mobile */
-@media (pointer: coarse) {
-  a[href],
-  button {
-    min-height: 44px;
-  }
-}
 
 /* ─── Screen Reader Only (a11y) ─── */
 .sr-only {

@@ -136,10 +136,7 @@ export function shouldShowFilter(programs: LessonProgram[]): boolean {
 /**
  * Capitalize category name for display.
  */
-export function capitalizeCategorie(cat: string): string {
-  if (!cat) return '';
-  return cat.charAt(0).toUpperCase() + cat.slice(1);
-}
+export const capitalizeCategorie = capitalizeDag;
 
 /**
  * Generate a URL-safe anchor ID from a category name.

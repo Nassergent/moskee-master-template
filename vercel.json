@@ -3,6 +3,10 @@
     {
       "path": "/api/jobs/reconcile-mollie?since=24h",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/jobs/reprocess-failed-webhooks",
+      "schedule": "0 4 * * *"
     }
   ],
   "headers": [
