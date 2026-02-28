@@ -8,6 +8,15 @@ Moskee-master-template SaaS platform met geharde security laag. Redis rate limit
 
 Betalingen en API-bescherming mogen nooit stil falen — elke failure moet detecteerbaar en herstelbaar zijn.
 
+## Current Milestone: v1.1 Type Safety (Core)
+
+**Goal:** Replace `any` types in fetch helpers and core components with Sanity schema-generated TypeScript types.
+
+**Target features:**
+- Sanity typegen pipeline (auto-generated types from 19 schemas)
+- Typed fetch helper return types (~25 helpers)
+- Typed component props (settings, cards, events, projects)
+
 ## Requirements
 
 ### Validated
@@ -31,15 +40,19 @@ Betalingen en API-bescherming mogen nooit stil falen — elke failure moet detec
 
 ### Active
 
-(No active requirements — run `/gsd:new-milestone` to define next milestone)
+<!-- Current scope: v1.1 Type Safety (Core) -->
+
+- [ ] Sanity typegen setup with auto-generated TypeScript types
+- [ ] Typed fetch helper return types (all ~25 helpers in src/lib/sanity.ts)
+- [ ] Typed component props for core components (settings, cards, events, projects)
 
 ### Out of Scope
 
-- Sanity schema type generation (any types) — volgende milestone
+- Inline template casts (`.map((item: any) => ...)`) — v1.2
 - Monitoring/alerting integratie (Sentry) — apart project
 - Aladhan API caching — performance milestone
 - fetchSettings() deduplicatie — performance milestone
-- A/B testing infrastructuur — niet nodig voor security
+- A/B testing infrastructuur — niet nodig
 
 ## Context
 
@@ -71,4 +84,4 @@ Betalingen en API-bescherming mogen nooit stil falen — elke failure moet detec
 | hashIp 16-char SHA-256 prefix | GDPR-compliant IP pseudonymization in logs | ✓ Good — sufficient for correlation |
 
 ---
-*Last updated: 2026-02-28 after v1.0 milestone*
+*Last updated: 2026-02-28 after v1.1 milestone start*
