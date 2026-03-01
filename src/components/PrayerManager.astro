@@ -13,6 +13,7 @@ import {
   formatCountdownHMS,
 } from '../lib/logic/prayer-engine';
 import { formatHijriDate } from '../lib/hijri';
+import { formatFullDate } from '../lib/logic/date-utils';
 import PrayerGrid from './ui/PrayerGrid.astro';
 import LivePrayerCard from './ui/LivePrayerCard.astro';
 import type { ComputedPrayerTimes, PrayerStatus } from '../lib/logic/prayer-engine';
@@ -31,12 +32,7 @@ interface Props {
 const { compact = false, fullscreen = false, mosqueName = '', locale = 'nl-BE', computedTimes = null, prayerStatus = null } = Astro.props;
 
 const hijriToday = formatHijriDate();
-const gregorianToday = new Date().toLocaleDateString(locale, {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-});
+const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], locale);
 ---
 
 {computedTimes && prayerStatus ? (

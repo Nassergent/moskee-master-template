@@ -2,8 +2,10 @@
 /**
  * Portable Text renderer voor Sanity rich text velden.
  * Rendert blocks, marks (bold, italic, links), lijsten en inline afbeeldingen.
+ * Logic gedelegeerd naar lib/logic/portable-text-utils.ts
  */
 import { urlFor } from '../lib/sanity';
+import { renderChildrenWithLinks, groupBlocks } from '../lib/logic/portable-text-utils';
 
 interface Props {
   value: any[];
@@ -13,79 +15,6 @@ interface Props {
 const { value, class: className = '' } = Astro.props;
 
 if (!value || !Array.isArray(value)) return;
-
-// Render inline marks (bold, italic, links, etc.)
-function renderChildren(children: any[]): string {
-  if (!children) return '';
-  return children.map((child: any) => {
-    let text = child.text || '';
-    // Escape HTML
-    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    if (!child.marks || child.marks.length === 0) return text;
-    // Apply marks
-    for (const mark of child.marks) {
-      if (mark === 'strong') text = `<strong>${text}</strong>`;
-      else if (mark === 'em') text = `<em>${text}</em>`;
-      else if (mark === 'underline') text = `<u>${text}</u>`;
-      else if (mark === 'strike-through') text = `<s>${text}</s>`;
-      else if (mark === 'code') text = `<code class="bg-neutral-100 px-1.5 py-0.5 text-sm">${text}</code>`;
-    }
-    return text;
-  }).join('');
-}
-
-// Resolve link marks from markDefs
-function renderChildrenWithLinks(block: any): string {
-  if (!block.children) return '';
-  const markDefs = block.markDefs || [];
-  return block.children.map((child: any) => {
-    let text = child.text || '';
-    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    if (!child.marks || child.marks.length === 0) return text;
-    for (const mark of child.marks) {
-      if (mark === 'strong') text = `<strong>${text}</strong>`;
-      else if (mark === 'em') text = `<em>${text}</em>`;
-      else if (mark === 'underline') text = `<u>${text}</u>`;
-      else if (mark === 'strike-through') text = `<s>${text}</s>`;
-      else if (mark === 'code') text = `<code class="bg-neutral-100 px-1.5 py-0.5 text-sm">${text}</code>`;
-      else {
-        // Check markDefs for links
-        const def = markDefs.find((d: any) => d._key === mark);
-        if (def && def._type === 'link') {
-          const rawHref = def.href || '#';
-          // XSS preventie: blokkeer javascript:, data:, vbscript: links
-          const isSafe = /^(https?:\/\/|\/|#|mailto:|tel:)/.test(rawHref.trim().toLowerCase());
-          const href = isSafe ? rawHref : '#';
-          const escapedHref = href.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-          const rel = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
-          text = `<a href="${escapedHref}" class="text-primary hover:opacity-80 underline break-words"${rel}>${text}</a>`;
-        }
-      }
-    }
-    return text;
-  }).join('');
-}
-
-// Group list items into <ul>/<ol>
-function groupBlocks(blocks: any[]): any[] {
-  const grouped: any[] = [];
-  let currentList: any = null;
-
-  for (const block of blocks) {
-    if (block._type === 'block' && block.listItem) {
-      const listType = block.listItem === 'number' ? 'ol' : 'ul';
-      if (!currentList || currentList.type !== listType) {
-        currentList = { type: listType, items: [] };
-        grouped.push(currentList);
-      }
-      currentList.items.push(block);
-    } else {
-      currentList = null;
-      grouped.push(block);
-    }
-  }
-  return grouped;
-}
 
 const grouped = groupBlocks(value);
 ---

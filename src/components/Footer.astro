@@ -1,6 +1,7 @@
 ---
 import { urlFor } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
+import { getCurrentYear } from '../lib/logic/date-utils';
 
 interface Props {
   settings: any;
@@ -163,7 +164,7 @@ const { settings } = Astro.props;
     <!-- Bottom Bar — Flat, strak -->
     <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
       <p class="text-xs text-white/60">
-        &copy; {new Date().getFullYear()} {settings?.mosqueName}. Alle rechten voorbehouden.
+        &copy; {getCurrentYear()} {settings?.mosqueName}. Alle rechten voorbehouden.
       </p>
 
       <!-- Ummah.be Signature -->

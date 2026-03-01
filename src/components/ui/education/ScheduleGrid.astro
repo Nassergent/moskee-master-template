@@ -6,6 +6,7 @@
  */
 import { capitalizeDag } from '../../../lib/logic/education';
 import type { EffectiveSchedule, ScheduleEntry, RamadanEntry } from '../../../lib/logic/education';
+import { formatScheduleDate } from '../../../lib/logic/date-utils';
 
 interface Props {
   schedule: EffectiveSchedule;
@@ -34,11 +35,7 @@ const { schedule, locale = locale } = Astro.props;
         <tbody>
           {(schedule.items as RamadanEntry[]).map((item, i) => {
             const datumStr = item.datum
-              ? new Date(item.datum + 'T00:00:00').toLocaleDateString(locale, {
-                  weekday: 'short',
-                  day: 'numeric',
-                  month: 'long',
-                })
+              ? formatScheduleDate(item.datum, locale)
               : '—';
             return (
               <tr class={i % 2 === 0 ? 'bg-base' : 'bg-base-100'}>

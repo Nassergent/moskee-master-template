@@ -1,4 +1,6 @@
 ---
+import { cleanIban as formatIban } from '../../../lib/logic/payment-validators';
+
 interface Props {
   iban: string;
   bankName: string;
@@ -8,7 +10,7 @@ interface Props {
 
 const { iban, bankName, payconiqImage, qrSvg } = Astro.props;
 
-const cleanIban = iban.replace(/\s/g, '').toUpperCase();
+const cleanedIban = formatIban(iban);
 ---
 
 <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
@@ -22,10 +24,10 @@ const cleanIban = iban.replace(/\s/g, '').toUpperCase();
       <div class="flex justify-between items-center py-3 border-b border-neutral-100">
         <span class="text-slate-500">IBAN</span>
         <div class="flex items-center gap-2">
-          <code class="font-mono font-medium text-slate-800 text-lg">{cleanIban}</code>
+          <code class="font-mono font-medium text-slate-800 text-lg">{cleanedIban}</code>
           <button
             type="button"
-            data-iban={cleanIban}
+            data-iban={cleanedIban}
             class="iban-copy-btn text-neutral-400 hover:text-primary transition-colors p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Kopieer IBAN naar klembord"
           >

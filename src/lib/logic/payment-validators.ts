@@ -52,6 +52,11 @@ export function centsToEuros(cents: number): number {
   return cents / 100;
 }
 
+/** Clean an IBAN string: remove spaces and uppercase. */
+export function cleanIban(iban: string): string {
+  return iban.replace(/\s/g, '').toUpperCase();
+}
+
 // ── IBAN Validation (MOD97, ISO 13616) ──────────────────────────
 
 const SEPA_COUNTRIES = new Set([

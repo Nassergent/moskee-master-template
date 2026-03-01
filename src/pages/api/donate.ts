@@ -1,11 +1,9 @@
 import type { APIRoute } from 'astro';
-import { createMollieClient } from '@mollie/api-client';
-import { fetchSettings } from '../../lib/sanity';
 import { checkRateLimit, getClientIp, checkOrigin, isBot, validateCsrfToken, sanitize, isValidEmail } from '../../lib/security';
 import { validatePaymentAmount } from '../../lib/logic/payment-validators';
-import { generateCorrelationId } from '../../lib/logic/webhook-validators';
 import { isMollieDemoMode } from '../../lib/env';
 import { formatLog } from '../../lib/logic/logger';
+import { createDonationPayment } from '../../services/donate-service';
 
 export const prerender = false;
 
@@ -93,53 +91,31 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    // Fetch via centralized Sanity layer
-    const settings = await fetchSettings();
-    const mosqueName = settings?.mosqueName || 'Moskee';
+    // Delegate to donate service
+    try {
+      const result = await createDonationPayment({
+        amount: numAmount,
+        projectId: resolvedProjectId,
+        projectName: resolvedProjectName,
+        email: sanitizedEmail,
+        frequency: sanitizedFrequency,
+        siteOrigin,
+      });
 
-    const mollieKey = import.meta.env.MOLLIE_API_KEY;
-    if (!mollieKey) {
-      console.error(formatLog('error', 'donate_config', { reason: 'MOLLIE_API_KEY not set' }));
-      return new Response(JSON.stringify({ error: 'Betalingen zijn momenteel niet beschikbaar.' }), {
+      return new Response(JSON.stringify({
+        success: true,
+        redirectUrl: result.checkoutUrl,
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } catch (serviceErr) {
+      const msg = serviceErr instanceof Error ? serviceErr.message : 'Betalingen zijn momenteel niet beschikbaar.';
+      return new Response(JSON.stringify({ error: msg }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' },
       });
     }
-    const mollieClient = createMollieClient({ apiKey: mollieKey });
-
-    const tenantId = import.meta.env.SANITY_PROJECT_ID || import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'default';
-    const correlationId = generateCorrelationId();
-
-    const description = resolvedProjectId && resolvedProjectId !== 'algemeen'
-      ? `Donatie: ${resolvedProjectName} — ${mosqueName}`
-      : `Donatie — ${mosqueName}`;
-
-    const payment = await mollieClient.payments.create({
-      amount: {
-        currency: 'EUR',
-        value: numAmount.toFixed(2),
-      },
-      description,
-      redirectUrl: `${siteOrigin}/bedankt?bedrag=${numAmount.toFixed(2)}&bestemming=${encodeURIComponent(resolvedProjectName)}`,
-      webhookUrl: `${siteOrigin}/api/mollie-webhook`,
-      metadata: {
-        projectId: resolvedProjectId || undefined,
-        projectName: resolvedProjectName,
-        tenantId,
-        correlationId,
-        frequency: sanitizedFrequency, // TODO: Implement via Mollie Subscriptions API when ready
-        project: resolvedProjectName,  // Legacy: kept for in-flight backward compat
-        email: sanitizedEmail,
-      },
-    });
-
-    return new Response(JSON.stringify({
-      success: true,
-      redirectUrl: payment.getCheckoutUrl(),
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
   } catch (error) {
     console.error(formatLog('error', 'donate_error', {}, error));
     return new Response(JSON.stringify({ error: 'Er is een fout opgetreden bij het aanmaken van de betaling.' }), {
