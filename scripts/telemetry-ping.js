@@ -11,20 +11,12 @@
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { loadEnv } from './lib/load-env.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ── .env laden (zelfde patroon als seed-data.js) ──
-const envPath = resolve(__dirname, '..', '.env');
-try {
-  const envContent = readFileSync(envPath, 'utf-8');
-  for (const line of envContent.split('\n')) {
-    const match = line.match(/^\s*([\w.]+)\s*=\s*"?(.*?)"?\s*$/);
-    if (match && !process.env[match[1]]) {
-      process.env[match[1]] = match[2];
-    }
-  }
-} catch { /* .env niet gevonden — gebruik bestaande env vars */ }
+// ── .env laden ──
+loadEnv(import.meta.url);
 
 // ── Versie uit package.json (altijd met v-prefix) ──
 let version = 'unknown';

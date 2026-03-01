@@ -9,19 +9,9 @@ import { createClient } from '@sanity/client';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { loadEnv } from './lib/load-env.js';
 
-// Laad .env handmatig
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const envPath = resolve(__dirname, '..', '.env');
-try {
-  const envContent = readFileSync(envPath, 'utf-8');
-  for (const line of envContent.split('\n')) {
-    const match = line.match(/^\s*([\w.]+)\s*=\s*(.*)$/);
-    if (match && !process.env[match[1]]) {
-      process.env[match[1]] = match[2].trim();
-    }
-  }
-} catch { /* .env niet gevonden */ }
+loadEnv(import.meta.url);
 
 const projectId = process.env.PUBLIC_SANITY_PROJECT_ID;
 if (!projectId) throw new Error('Missing PUBLIC_SANITY_PROJECT_ID in .env');

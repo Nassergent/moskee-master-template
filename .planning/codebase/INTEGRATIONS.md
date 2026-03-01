@@ -167,8 +167,8 @@
 - `UPSTASH_REDIS_REST_URL` - Upstash Redis endpoint
 - `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis token
 - `CRON_SECRET` - Vercel cron authentication
-- `TENANT_ID` - Mosque identifier (optional, for fleet telemetry)
-- `HUB_TELEMETRY_URL` - Fleet telemetry endpoint (optional)
+- `TENANT_ID` - Mosque identifier (required for fleet telemetry)
+- `HUB_TELEMETRY_URL` - Fleet telemetry endpoint (required, default: https://ummah.be/api/v1/fleet/intake)
 
 **Secrets location:**
 - Vercel Environment Variables (never committed)
@@ -188,7 +188,7 @@
 
 **Outgoing:**
 - Mollie payment redirect: `/bedankt?bedrag=X&bestemming=Y` (redirect from Mollie checkout, no webhook data needed)
-- Fleet telemetry: `HUB_TELEMETRY_URL` (optional, not actively used in current codebase)
+- Fleet telemetry: `HUB_TELEMETRY_URL` — ACTIVE. Sends deployment status to Hub via `npm run ping`. Hub intake endpoint at `/api/v1/fleet/intake` updates Sanity `customer` docs. Dashboard at `/dashboard` monitors fleet health, versions, and connection status.
 
 ## API Endpoints (Summary)
 

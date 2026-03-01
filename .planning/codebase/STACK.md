@@ -93,8 +93,8 @@ Stored in `.env` (NOT committed):
 - `UPSTASH_REDIS_REST_URL` - Upstash Redis endpoint
 - `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis authentication
 - `CRON_SECRET` - Vercel cron job authentication
-- `TENANT_ID` - Mosque identifier for fleet telemetry
-- `HUB_TELEMETRY_URL` - Fleet telemetry intake URL (optional)
+- `TENANT_ID` - Mosque identifier for fleet telemetry (required)
+- `HUB_TELEMETRY_URL` - Fleet telemetry intake URL (required)
 
 See `.env.example` for template.
 
