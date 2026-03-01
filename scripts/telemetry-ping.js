@@ -39,10 +39,24 @@ if (!tenantId || !cronSecret || !hubUrl) {
 // ── Status uit CLI args ──
 const status = process.argv.includes('failed') ? 'failed' : 'success';
 
-// ── Ping versturen ──
+// ── Status validatie ──
+const VALID_STATUSES = ['success', 'failed'];
+if (!VALID_STATUSES.includes(status)) {
+  console.warn(`⚠ Ongeldige status "${status}" — verwacht: ${VALID_STATUSES.join(', ')}`);
+  process.exit(0);
+}
+
+// ── Optioneel failure reason uit env ──
+const reason = process.env.FAILURE_REASON || null;
+
+// ── Ping versturen (met 10s timeout) ──
+const controller = new AbortController();
+const timeout = setTimeout(() => controller.abort(), 10_000);
+
 try {
   const response = await fetch(hubUrl, {
     method: 'POST',
+    signal: controller.signal,
     headers: {
       'Content-Type': 'application/json',
       'x-fleet-secret': cronSecret,
@@ -51,6 +65,7 @@ try {
       tenantId,
       version,
       status,
+      ...(reason && { reason }),
       timestamp: new Date().toISOString(),
     }),
   });
@@ -58,9 +73,13 @@ try {
   if (response.ok) {
     console.log(`✓ Fleet Hub melding verstuurd (${tenantId}, ${version}, ${status})`);
   } else {
-    console.warn(`⚠ Fleet Hub antwoordde met ${response.status} — melding niet verwerkt`);
+    const body = await response.text().catch(() => '');
+    console.error(`✗ Fleet Hub antwoordde met ${response.status}${body ? `: ${body}` : ''}`);
   }
 } catch (err) {
-  console.warn(`⚠ Fleet Hub niet bereikbaar: ${err.message}`);
+  const msg = err.name === 'AbortError' ? 'timeout na 10s' : err.message;
+  console.error(`✗ Fleet Hub niet bereikbaar: ${msg}`);
   // Fail-open: exit 0
+} finally {
+  clearTimeout(timeout);
 }
