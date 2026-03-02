@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /api/
-Disallow: /bedankt
-
-Sitemap: https://moskee-master-template.vercel.app/sitemap-index.xml

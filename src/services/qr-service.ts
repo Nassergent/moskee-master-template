@@ -55,7 +55,7 @@ export async function generateEpcQrCode(
     '',              // Amount (empty = open amount)
     '',              // Purpose code
     '',              // Remittance reference
-    'Sadaqa via Ummah.be', // Remittance text
+    '',              // Remittance text (empty = donor fills in)
     '',              // Information
   ].join('\n');
 
