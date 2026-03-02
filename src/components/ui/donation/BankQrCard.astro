@@ -5,10 +5,9 @@ interface Props {
   iban: string;
   bankName: string;
   payconiqImage?: string;
-  qrSvg?: string;
 }
 
-const { iban, bankName, payconiqImage, qrSvg } = Astro.props;
+const { iban, bankName, payconiqImage } = Astro.props;
 
 const cleanedIban = formatIban(iban);
 ---
@@ -46,36 +45,19 @@ const cleanedIban = formatIban(iban);
       </div>
     </div>
 
-    <!-- QR Codes -->
-    {(qrSvg || payconiqImage) && (
+    <!-- Payconiq QR -->
+    {payconiqImage && (
       <div class="border-t border-neutral-100 pt-6">
-        <p class="text-sm text-slate-500 mb-4">Scan met uw bank-app om direct over te schrijven</p>
-        <div class:list={[
-          'flex gap-6',
-          qrSvg && payconiqImage ? 'flex-col sm:flex-row items-start' : 'flex-col items-start',
-        ]}>
-          {qrSvg && (
-            <div class="border-l-[3px] border-primary pl-4">
-              <p class="text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">Bank QR</p>
-              <div
-                aria-hidden="true"
-                class="w-[200px] h-[200px] [&>svg]:w-full [&>svg]:h-full"
-                set:html={qrSvg}
-              />
-            </div>
-          )}
-          {payconiqImage && (
-            <div class="border-l-[3px] border-primary pl-4">
-              <p class="text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">Payconiq</p>
-              <img
-                src={payconiqImage}
-                alt="Payconiq QR code"
-                width="200"
-                height="200"
-                loading="lazy"
-              />
-            </div>
-          )}
+        <p class="text-sm text-slate-500 mb-4">Scan met uw Payconiq-app om direct te betalen</p>
+        <div class="border-l-[3px] border-primary pl-4">
+          <p class="text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">Payconiq</p>
+          <img
+            src={payconiqImage}
+            alt="Payconiq QR code"
+            width="200"
+            height="200"
+            loading="lazy"
+          />
         </div>
       </div>
     )}

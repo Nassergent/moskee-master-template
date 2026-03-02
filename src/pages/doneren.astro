@@ -5,7 +5,7 @@ import DonationCard from '../components/DonationCard.astro';
 import BankQrCard from '../components/ui/donation/BankQrCard.astro';
 import { fetchProjecten, fetchSettings, fetchQuote, urlFor } from '../lib/sanity';
 import { calculateProjectStats } from '../lib/logic/project-utils';
-import { generateEpcQrCode } from '../services/qr-service';
+
 import { buildSiteConfig } from '../lib/logic/config';
 import { isFeatureEnabled } from '../lib/logic/menu-builder';
 import type { Project } from '../types/sanity';
@@ -26,14 +26,9 @@ const { totalRaised, activeCount: activeProjectCount, options: projectOptions } 
 const config = buildSiteConfig(settings);
 const showMollie = settings?.menuToggles?.showMollie !== false;
 
-// QR tonen = simpel: IBAN bestaat?
-const showQR = !!settings?.iban;
+// Bankgegevens tonen als IBAN bestaat
+const showBank = !!settings?.iban;
 const cleanIban = settings?.iban?.replace(/\s/g, '').toUpperCase();
-
-// QR genereren (server-side)
-const qrResult = showQR && cleanIban
-  ? await generateEpcQrCode(cleanIban, settings?.mosqueName || 'Moskee')
-  : null;
 
 // CSRF token — double-submit cookie pattern
 const csrfToken = crypto.randomUUID();
@@ -215,30 +210,12 @@ try {
         <div class="lg:col-span-3">
           <h2 class="text-2xl font-bold font-heading text-primary mb-4">Overschrijving</h2>
           <p class="text-neutral-500 mb-6">Maak uw donatie over via onderstaande bankgegevens</p>
-          {showQR && qrResult?.success ? (
+          {showBank && cleanIban ? (
             <BankQrCard
-              iban={cleanIban!}
+              iban={cleanIban}
               bankName={settings?.mosqueName || ''}
-              qrSvg={qrResult.svg}
               payconiqImage={payconiqImageUrl}
             />
-          ) : showQR && cleanIban ? (
-            <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
-              <div class="space-y-3">
-                <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-                  <span class="text-slate-500">Begunstigde</span>
-                  <span class="font-medium text-slate-800">{settings?.mosqueName || 'Moskee'}</span>
-                </div>
-                <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-                  <span class="text-slate-500">IBAN</span>
-                  <span class="font-mono font-medium text-slate-800 text-lg">{cleanIban}</span>
-                </div>
-                <div class="flex justify-between items-center py-3">
-                  <span class="text-slate-500">Mededeling</span>
-                  <span class="font-medium text-slate-800">Donatie + projectnaam</span>
-                </div>
-              </div>
-            </div>
           ) : (
             <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
               <p class="text-neutral-500">Geen bankgegevens beschikbaar.</p>
@@ -276,30 +253,12 @@ try {
       <div class="max-w-3xl mx-auto">
         <h2 class="text-2xl font-bold font-heading text-center mb-2">Overschrijving</h2>
         <p class="text-sm text-neutral-500 text-center mb-6">Liever via overschrijving? Gebruik onderstaande gegevens.</p>
-        {showQR && qrResult?.success ? (
+        {showBank && cleanIban ? (
           <BankQrCard
-            iban={cleanIban!}
+            iban={cleanIban}
             bankName={settings?.mosqueName || ''}
-            qrSvg={qrResult.svg}
             payconiqImage={payconiqImageUrl}
           />
-        ) : showQR && cleanIban ? (
-          <div class="bg-white border border-neutral-200 p-5 sm:p-8 md:p-10">
-            <div class="space-y-3">
-              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-                <span class="text-slate-500">Begunstigde</span>
-                <span class="font-medium text-slate-800">{settings?.mosqueName || 'Moskee'}</span>
-              </div>
-              <div class="flex justify-between items-center py-3 border-b border-neutral-100">
-                <span class="text-slate-500">IBAN</span>
-                <span class="font-mono font-medium text-slate-800 text-lg">{cleanIban}</span>
-              </div>
-              <div class="flex justify-between items-center py-3">
-                <span class="text-slate-500">Mededeling</span>
-                <span class="font-medium text-slate-800">Donatie + projectnaam</span>
-              </div>
-            </div>
-          </div>
         ) : (
           <div class="bg-white border border-neutral-200 text-center p-6 sm:p-8 md:p-10">
             <p class="text-neutral-500">Geen bankgegevens beschikbaar.</p>
