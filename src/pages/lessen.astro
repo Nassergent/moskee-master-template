@@ -42,6 +42,10 @@ if (uncategorized.length > 0) {
 
 let sectionIndex = 0;
 const variants = ['light-50', 'light-100'] as const;
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=3600');
+Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+Astro.response.headers.set('Vercel-Cache-Tag', 'lessons');
 ---
 
 <BaseLayout title="Lessen" description="Overzicht van alle lesprogramma's bij onze moskee — Koranles, Arabisch en meer.">

@@ -13,6 +13,10 @@ if (!isFeatureEnabled(settings, 'showNieuws')) {
   return Astro.redirect('/404', 404);
 }
 const config = buildSiteConfig(settings);
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=3600');
+Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+Astro.response.headers.set('Vercel-Cache-Tag', 'news');
 ---
 
 <BaseLayout title="Nieuws uit de moskee" description="Recente berichten en aankondigingen uit onze moskee-gemeenschap">

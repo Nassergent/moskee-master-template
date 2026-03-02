@@ -4,6 +4,10 @@ import Section from '../components/Section.astro';
 import { fetchDiensten, urlFor } from '../lib/sanity';
 
 const diensten = await fetchDiensten();
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+Astro.response.headers.set('Vercel-Cache-Tag', 'services');
 ---
 
 <BaseLayout title="Diensten" description="Overzicht van alle diensten bij onze moskee">

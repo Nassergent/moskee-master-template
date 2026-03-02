@@ -51,7 +51,9 @@ const badgeKleur = homePage?.badgeKleur || '#593B1D';
 const toonActueel = homePage?.toonActueel ?? true;
 
 // Korte cache: janazah-meldingen moeten snel zichtbaar zijn op de homepage
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=300');
+Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+Astro.response.headers.set('Vercel-Cache-Tag', 'homepage');
 ---
 
 <BaseLayout title={settings?.mosqueName || 'Moskee'} description={settings?.description || ''} ogImage={heroImageUrl || undefined} preloadImage={heroImageUrl || undefined}>

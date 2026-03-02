@@ -22,7 +22,10 @@ const titel = procedure?.titel || 'Hulp bij Overlijden';
 const moskeeName = settings?.mosqueName || 'de moskee';
 const seoDesc = `${titel} — ${moskeeName}. Hulp bij overlijden, rituele wassing, janazah-gebed en begrafenis.`;
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+// Janazah = urgent (overlijdensberichten). Korte edge-cache, snel verversen.
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=10, stale-while-revalidate=30');
+Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=10, stale-while-revalidate=30');
+Astro.response.headers.set('Vercel-Cache-Tag', 'janazah');
 ---
 
 <BaseLayout title={`${titel} — ${settings?.mosqueName || ''}`} description={seoDesc}>

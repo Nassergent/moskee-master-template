@@ -27,6 +27,10 @@ const hasRelated = hubRelated.posts.length > 0 || hubRelated.events.length > 0;
 // Of dit artikel zelf een sub-item is van een hub
 const parentHub = item.onderwerpHub;
 
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=3600');
+Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+Astro.response.headers.set('Vercel-Cache-Tag', 'news');
+
 const newsArticleSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "NewsArticle",
