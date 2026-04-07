@@ -116,6 +116,7 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
 
       // Countdown
       import { startCountdownTicker } from '../lib/countdown-ticker';
+      import { firePrayerAlert } from '../lib/prayer-alert';
 
       const countdownCleanup = startCountdownTicker({
         elementId: 'mawaqit-countdown-bar',
@@ -123,6 +124,7 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
         format: 'hms',
         reloadOnZero: true,
         reloadDelay: 3000,
+        onZero: firePrayerAlert,
       });
 
       document.addEventListener('astro:before-preparation', countdownCleanup);

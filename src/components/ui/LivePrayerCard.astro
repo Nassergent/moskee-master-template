@@ -73,6 +73,7 @@ const nextTime = times.adhan[nextPrayer];
 
 <script>
   import { startCountdownTicker } from '../../lib/countdown-ticker';
+  import { firePrayerAlert } from '../../lib/prayer-alert';
 
   const cleanup = startCountdownTicker({
     elementId: 'prayer-countdown',
@@ -80,6 +81,7 @@ const nextTime = times.adhan[nextPrayer];
     format: 'hms',
     reloadOnZero: true,
     reloadDelay: 5000,
+    onZero: firePrayerAlert,
   });
 
   document.addEventListener('astro:before-preparation', cleanup);

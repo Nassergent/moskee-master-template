@@ -38,6 +38,8 @@ interface TickerOptions {
   reloadOnZero?: boolean;
   /** Delay before reload in ms (default: 5000) */
   reloadDelay?: number;
+  /** Callback fired when countdown reaches zero (before reload) */
+  onZero?: () => void;
 }
 
 /**
@@ -65,6 +67,7 @@ export function startCountdownTicker(options: TickerOptions): () => void {
     if (remaining <= 0) {
       display.textContent = zeroText;
       clearInterval(interval);
+      if (options.onZero) options.onZero();
       if (options.reloadOnZero) {
         setTimeout(() => window.location.reload(), options.reloadDelay ?? 5000);
       }

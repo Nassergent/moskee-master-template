@@ -200,6 +200,13 @@ h2.text-center::after {
 .animate-slide-up { animation: slide-up 0.8s ease-out both; }
 .animate-scale-in { animation: scale-in 0.5s ease-out both; }
 
+/* ─── Prayer Alert Pulse ─── */
+@keyframes prayer-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--theme-accent, #C9A983); }
+  50% { box-shadow: 0 0 0 8px transparent; }
+}
+.animate-prayer-pulse { animation: prayer-pulse 1s ease-in-out 3; }
+
 /* ─── Reduced Motion (a11y) ─── */
 @media (prefers-reduced-motion: reduce) {
   *,

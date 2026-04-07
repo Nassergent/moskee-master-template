@@ -91,7 +91,14 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
 
 {/* ── Niet-fullscreen: desktop grid + compact mobiel ── */}
 {!fullscreen && (
-  <div class="border border-neutral-200 overflow-hidden">
+  <div class="relative border border-neutral-200 overflow-hidden">
+    {/* Geluid toggle */}
+    <button
+      id="sound-toggle"
+      class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center text-sm text-neutral-400 hover:text-primary transition-colors"
+      aria-label="Geluid aan/uit"
+    >
+    </button>
 
     {/* Desktop/Tablet: 5-kolom grid */}
     <div class="hidden sm:grid sm:grid-cols-5 gap-0">
@@ -106,6 +113,8 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
                 ? 'bg-primary text-white'
                 : 'bg-white hover:bg-base-100',
             ]}
+            data-prayer-active={isCurrent ? 'true' : undefined}
+            data-next-prayer={isNext ? PRAYER_LABELS[name] : undefined}
           >
             <p class:list={[
               'text-xs font-bold uppercase tracking-[0.15em] mb-3',
@@ -234,14 +243,32 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
 {nextPrayer && secondsUntilNext > 0 && (
   <script>
     import { startCountdownTicker } from '../../lib/countdown-ticker';
+    import { firePrayerAlert } from '../../lib/prayer-alert';
 
     const cleanup = startCountdownTicker({
       elementId: 'grid-countdown',
       format: 'compact',
       intervalMs: 60000,
       zeroText: 'Nu',
+      onZero: firePrayerAlert,
     });
 
     document.addEventListener('astro:before-preparation', cleanup);
   </script>
 )}
+
+{/* Geluid toggle */}
+<script>
+  import { isPrayerSoundEnabled, togglePrayerSound } from '../../lib/prayer-alert';
+
+  const btn = document.getElementById('sound-toggle');
+  if (btn) {
+    const update = () => {
+      const on = isPrayerSoundEnabled();
+      btn.setAttribute('aria-label', on ? 'Geluid uitzetten' : 'Geluid aanzetten');
+      btn.textContent = on ? '\u{1F514}' : '\u{1F515}';
+    };
+    update();
+    btn.addEventListener('click', () => { togglePrayerSound(); update(); });
+  }
+</script>
