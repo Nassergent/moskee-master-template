@@ -61,3 +61,11 @@ export function urlFor(source: any) {
   // Default width 1200 prevents full-resolution downloads; callers can override with .width()
   return builder.image(source).auto('format').quality(80).width(1200);
 }
+
+/**
+ * Logo-specific URL builder — NO default width, NO crop.
+ * Preserves full aspect ratio. Use for nav logo, footer logo, favicon.
+ */
+export function logoUrl(source: any) {
+  return builder.image(source).auto('format').quality(90);
+}

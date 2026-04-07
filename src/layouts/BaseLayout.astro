@@ -1,7 +1,7 @@
 ---
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
-import { fetchSettings, urlFor } from '../lib/sanity';
+import { fetchSettings, urlFor, logoUrl } from '../lib/sanity';
 import { buildSiteConfig } from '../lib/logic/config';
 import '../styles/global.css';
 
@@ -79,7 +79,7 @@ const colors = {
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
     {settings?.favicon ? (
-      <link rel="icon" type="image/png" href={urlFor(settings.favicon).width(64).height(64).fit('crop').url()} />
+      <link rel="icon" type="image/png" href={logoUrl(settings.favicon).width(32).height(32).url()} />
     ) : (
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     )}

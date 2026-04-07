@@ -1,5 +1,5 @@
 ---
-import { urlFor } from '../lib/sanity';
+import { urlFor, logoUrl } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 import { isNavItemActive } from '../lib/logic/nav-utils';
 import { buildVisibleMenuItems } from '../lib/logic/menu-builder';
@@ -23,9 +23,9 @@ const currentPath = Astro.url.pathname;
     <a href="/" class="flex items-center gap-3 group">
       {settings?.logo ? (
         <img
-          src={urlFor(settings.logo).width(128).height(128).fit('min').url()}
+          src={logoUrl(settings.logo).height(128).url()}
           alt={sanitizeAlt(mosqueName)}
-          class="h-16 w-16 object-contain"
+          class="h-14 w-auto object-contain"
         />
       ) : null}
       <span class="text-xl font-bold font-heading text-primary group-hover:opacity-80 transition-opacity">

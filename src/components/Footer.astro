@@ -1,5 +1,5 @@
 ---
-import { urlFor } from '../lib/sanity';
+import { urlFor, logoUrl } from '../lib/sanity';
 import { sanitizeAlt } from '../lib/logic/seo-utils';
 import { getCurrentYear } from '../lib/logic/date-utils';
 
@@ -22,9 +22,9 @@ const { settings } = Astro.props;
         <div class="flex items-center gap-2.5 mb-5">
           {(settings?.logoFooter || settings?.logo) ? (
             <img
-              src={urlFor(settings.logoFooter || settings.logo).width(80).height(80).fit('min').url()}
+              src={logoUrl(settings.logoFooter || settings.logo).height(80).url()}
               alt={sanitizeAlt(settings?.mosqueName)}
-              class="h-10 w-10 object-contain"
+              class="h-10 w-auto object-contain"
             />
           ) : null}
           <h3 class="text-white text-xl font-heading font-bold">{settings?.mosqueName}</h3>

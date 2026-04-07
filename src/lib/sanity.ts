@@ -1,7 +1,7 @@
-import { sanityClient, freshClient, urlFor } from '../../sanity/lib/client';
+import { sanityClient, freshClient, urlFor, logoUrl } from '../../sanity/lib/client';
 import { formatLog } from './logic/logger';
 import type { Settings, Project, Service, AgendaEvent, NewsPost, Quote, LessonProgram, EventCategory, Etiquette } from '../types/sanity';
-export { sanityClient, freshClient, urlFor };
+export { sanityClient, freshClient, urlFor, logoUrl };
 
 // writeClient is NOT re-exported here — import directly from
 // '../../sanity/lib/client' in server-only code (src/services/, src/pages/api/)
