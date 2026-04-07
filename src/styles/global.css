@@ -202,10 +202,14 @@ h2.text-center::after {
 
 /* ─── Prayer Alert Pulse ─── */
 @keyframes prayer-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 var(--theme-accent, #C9A983); }
-  50% { box-shadow: 0 0 0 8px transparent; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.03); }
 }
-.animate-prayer-pulse { animation: prayer-pulse 1s ease-in-out 3; }
+.animate-prayer-pulse {
+  animation: prayer-pulse 0.5s ease-in-out 6;
+  outline: 3px solid var(--theme-accent, #C9A983);
+  outline-offset: 2px;
+}
 
 /* ─── Reduced Motion (a11y) ─── */
 @media (prefers-reduced-motion: reduce) {

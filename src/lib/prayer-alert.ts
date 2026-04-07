@@ -30,16 +30,16 @@ function playTick(ctx: AudioContext, startTime: number): void {
   const gain = ctx.createGain();
 
   osc.type = 'sine';
-  osc.frequency.value = 800;
+  osc.frequency.value = 600;
 
-  gain.gain.setValueAtTime(0.3, startTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.08);
+  gain.gain.setValueAtTime(0.6, startTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.12);
 
   osc.connect(gain);
   gain.connect(ctx.destination);
 
   osc.start(startTime);
-  osc.stop(startTime + 0.08);
+  osc.stop(startTime + 0.12);
 }
 
 export function playTickAlert(): void {
