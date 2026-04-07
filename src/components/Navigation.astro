@@ -23,7 +23,7 @@ const currentPath = Astro.url.pathname;
     <a href="/" class="flex items-center gap-3 group">
       {settings?.logo ? (
         <img
-          src={urlFor(settings.logo).width(96).height(96).fit('clip').url()}
+          src={urlFor(settings.logo).width(96).height(96).fit('min').url()}
           alt={sanitizeAlt(mosqueName)}
           class="h-12 w-12 object-contain"
         />

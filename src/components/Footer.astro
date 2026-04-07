@@ -22,7 +22,7 @@ const { settings } = Astro.props;
         <div class="flex items-center gap-2.5 mb-5">
           {(settings?.logoFooter || settings?.logo) ? (
             <img
-              src={urlFor(settings.logoFooter || settings.logo).width(80).height(80).fit('clip').url()}
+              src={urlFor(settings.logoFooter || settings.logo).width(80).height(80).fit('min').url()}
               alt={sanitizeAlt(settings?.mosqueName)}
               class="h-10 w-10 object-contain"
             />
