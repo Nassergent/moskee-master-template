@@ -42,11 +42,17 @@ function playTick(ctx: AudioContext, startTime: number): void {
   osc.stop(startTime + 0.12);
 }
 
-export function playTickAlert(): void {
+export async function playTickAlert(): Promise<void> {
   if (!isPrayerSoundEnabled()) return;
 
   try {
     const ctx = new AudioContext();
+
+    // Resume indien suspended (browser autoplay policy)
+    if (ctx.state === 'suspended') {
+      await ctx.resume();
+    }
+
     const now = ctx.currentTime;
 
     // 3x tik met 250ms pauze
