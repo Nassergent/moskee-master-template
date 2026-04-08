@@ -51,7 +51,7 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
             )}
             {isNext && secondsUntilNext > 0 && (
               <p
-                id="grid-countdown"
+                class="js-grid-countdown"
                 data-seconds={secondsUntilNext}
                 class="text-[10px] font-bold uppercase tracking-wider text-primary/60 tabular-nums"
               >
@@ -147,7 +147,7 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
 
             {isNext && secondsUntilNext > 0 && (
               <p
-                id="grid-countdown"
+                class="js-grid-countdown"
                 data-seconds={secondsUntilNext}
                 class="text-[10px] font-bold uppercase tracking-wider text-primary mt-1 tabular-nums"
               >
@@ -187,7 +187,7 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
               )}
               {isNext && secondsUntilNext > 0 && (
                 <p
-                  id="grid-countdown"
+                  class="js-grid-countdown"
                   data-seconds={secondsUntilNext}
                   class="text-[10px] font-bold uppercase tracking-wider text-accent mt-0.5 tabular-nums"
                 >
@@ -242,18 +242,38 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
 {/* Live countdown ticker */}
 {nextPrayer && secondsUntilNext > 0 && (
   <script>
-    import { startCountdownTicker } from '../../lib/countdown-ticker';
-    import { firePrayerAlert } from '../../lib/prayer-alert';
+    import { formatCountdownCompact } from '../../lib/countdown-ticker';
+    import { firePrayerAlert, warmUpAudioOnInteraction } from '../../lib/prayer-alert';
 
-    const cleanup = startCountdownTicker({
-      elementId: 'grid-countdown',
-      format: 'compact',
-      intervalMs: 60000,
-      zeroText: 'Nu',
-      onZero: firePrayerAlert,
-    });
+    // Warm up audio context on first user touch (mobile fix)
+    warmUpAudioOnInteraction();
 
-    document.addEventListener('astro:before-preparation', cleanup);
+    // Update ALL grid countdown elements (multiple views: fullscreen, desktop, compact)
+    const countdownEls = document.querySelectorAll('.js-grid-countdown');
+    if (countdownEls.length > 0) {
+      const firstEl = countdownEls[0] as HTMLElement;
+      let remaining = parseInt(firstEl.dataset.seconds || '0', 10);
+
+      // Update all elements
+      const updateAll = (text: string) => {
+        countdownEls.forEach(el => { el.textContent = text; });
+      };
+
+      updateAll(formatCountdownCompact(remaining));
+
+      const interval = setInterval(() => {
+        remaining -= 60;
+        if (remaining <= 0) {
+          updateAll('Nu');
+          clearInterval(interval);
+          firePrayerAlert();
+          return;
+        }
+        updateAll(formatCountdownCompact(remaining));
+      }, 60000);
+
+      document.addEventListener('astro:before-preparation', () => clearInterval(interval));
+    }
   </script>
 )}
 

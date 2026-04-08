@@ -9,6 +9,33 @@
 
 const STORAGE_KEY = 'prayer-sound-enabled';
 
+// ── Pre-warmed AudioContext for mobile ──
+// Mobile browsers require AudioContext to be created/resumed during a user gesture.
+// We create it on first touch/click, so it's ready when the countdown hits zero.
+let _sharedCtx: AudioContext | null = null;
+
+function getOrCreateAudioContext(): AudioContext {
+  if (!_sharedCtx || _sharedCtx.state === 'closed') {
+    _sharedCtx = new AudioContext();
+  }
+  return _sharedCtx;
+}
+
+/** Call this once on page load to warm up audio on first user interaction */
+export function warmUpAudioOnInteraction(): void {
+  const handler = () => {
+    try {
+      const ctx = getOrCreateAudioContext();
+      if (ctx.state === 'suspended') ctx.resume();
+    } catch { /* ignore */ }
+    // Remove after first interaction — we only need one warm-up
+    document.removeEventListener('touchstart', handler);
+    document.removeEventListener('click', handler);
+  };
+  document.addEventListener('touchstart', handler, { once: true, passive: true });
+  document.addEventListener('click', handler, { once: true });
+}
+
 // ── Sound preference ──
 
 export function isPrayerSoundEnabled(): boolean {
@@ -46,7 +73,7 @@ export async function playTickAlert(): Promise<void> {
   if (!isPrayerSoundEnabled()) return;
 
   try {
-    const ctx = new AudioContext();
+    const ctx = getOrCreateAudioContext();
 
     // Resume indien suspended (browser autoplay policy)
     if (ctx.state === 'suspended') {
@@ -60,8 +87,7 @@ export async function playTickAlert(): Promise<void> {
     playTick(ctx, now + 0.25);
     playTick(ctx, now + 0.50);
 
-    // Sluit AudioContext na afloop
-    setTimeout(() => ctx.close(), 1000);
+    // Don't close shared context — keep it warm for next alert
   } catch {
     // Geen audio support of autoplay geblokkeerd — stille fallback
   }

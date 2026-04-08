@@ -73,7 +73,9 @@ const nextTime = times.adhan[nextPrayer];
 
 <script>
   import { startCountdownTicker } from '../../lib/countdown-ticker';
-  import { firePrayerAlert } from '../../lib/prayer-alert';
+  import { firePrayerAlert, warmUpAudioOnInteraction } from '../../lib/prayer-alert';
+
+  warmUpAudioOnInteraction();
 
   const cleanup = startCountdownTicker({
     elementId: 'prayer-countdown',

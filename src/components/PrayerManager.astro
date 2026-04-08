@@ -116,7 +116,9 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
 
       // Countdown
       import { startCountdownTicker } from '../lib/countdown-ticker';
-      import { firePrayerAlert } from '../lib/prayer-alert';
+      import { firePrayerAlert, warmUpAudioOnInteraction } from '../lib/prayer-alert';
+
+      warmUpAudioOnInteraction();
 
       const countdownCleanup = startCountdownTicker({
         elementId: 'mawaqit-countdown-bar',

@@ -264,6 +264,9 @@ export function getPrayerStatus(
   const tz = computedTimes.timezone;
   const nowMinutes = parseHHmm(formatTime(now, tz));
 
+  // Get current seconds within the minute for precise countdown
+  const nowSeconds = now.getSeconds();
+
   // Build sorted list of prayer minutes
   const prayerMinutes: { name: PrayerName; minutes: number }[] = PRAYER_NAMES.map(name => ({
     name,
@@ -285,12 +288,12 @@ export function getPrayerStatus(
         currentPrayer = thisPrayer.name;
         if (nextInList) {
           nextPrayer = nextInList.name;
-          secondsUntilNext = (nextInList.minutes - nowMinutes) * 60;
+          secondsUntilNext = (nextInList.minutes - nowMinutes) * 60 - nowSeconds;
         } else {
           // After Isha — next is Fajr (tomorrow)
           nextPrayer = 'fajr';
           const fajrMinutes = prayerMinutes[0].minutes;
-          secondsUntilNext = ((1440 - nowMinutes) + fajrMinutes) * 60;
+          secondsUntilNext = ((1440 - nowMinutes) + fajrMinutes) * 60 - nowSeconds;
         }
         break;
       }
@@ -300,8 +303,11 @@ export function getPrayerStatus(
   // Before Fajr — no current prayer, next is Fajr
   if (currentPrayer === null && nowMinutes < prayerMinutes[0].minutes) {
     nextPrayer = 'fajr';
-    secondsUntilNext = (prayerMinutes[0].minutes - nowMinutes) * 60;
+    secondsUntilNext = (prayerMinutes[0].minutes - nowMinutes) * 60 - nowSeconds;
   }
+
+  // Ensure non-negative
+  if (secondsUntilNext < 0) secondsUntilNext = 0;
 
   return { currentPrayer, nextPrayer, secondsUntilNext };
 }
