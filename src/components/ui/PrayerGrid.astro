@@ -51,9 +51,9 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
             )}
             {isNext && secondsUntilNext > 0 && (
               <p
-                class="js-grid-countdown"
+                class="js-grid-countdown text-[10px] font-bold uppercase tracking-wider text-primary/60 tabular-nums"
                 data-seconds={secondsUntilNext}
-                class="text-[10px] font-bold uppercase tracking-wider text-primary/60 tabular-nums"
+                data-computed-at={new Date().toISOString()}
               >
                 In {formatCountdownCompact(secondsUntilNext)}
               </p>
@@ -97,8 +97,8 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
       id="sound-toggle"
       class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center text-sm text-neutral-400 hover:text-primary transition-colors"
       aria-label="Geluid aan/uit"
-    >
-    </button>
+      aria-pressed="true"
+    >🔔</button>
 
     {/* Desktop/Tablet: 5-kolom grid */}
     <div class="hidden sm:grid sm:grid-cols-5 gap-0">
@@ -147,9 +147,9 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
 
             {isNext && secondsUntilNext > 0 && (
               <p
-                class="js-grid-countdown"
+                class="js-grid-countdown text-[10px] font-bold uppercase tracking-wider text-primary mt-1 tabular-nums"
                 data-seconds={secondsUntilNext}
-                class="text-[10px] font-bold uppercase tracking-wider text-primary mt-1 tabular-nums"
+                data-computed-at={new Date().toISOString()}
               >
                 In {formatCountdownCompact(secondsUntilNext)}
               </p>
@@ -187,9 +187,9 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
               )}
               {isNext && secondsUntilNext > 0 && (
                 <p
-                  class="js-grid-countdown"
+                  class="js-grid-countdown text-[10px] font-bold uppercase tracking-wider text-accent mt-0.5 tabular-nums"
                   data-seconds={secondsUntilNext}
-                  class="text-[10px] font-bold uppercase tracking-wider text-accent mt-0.5 tabular-nums"
+                  data-computed-at={new Date().toISOString()}
                 >
                   In {formatCountdownCompact(secondsUntilNext)}
                 </p>
@@ -248,29 +248,49 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
     // Warm up audio context on first user touch (mobile fix)
     warmUpAudioOnInteraction();
 
-    // Update ALL grid countdown elements (multiple views: fullscreen, desktop, compact)
+    // Drift-free countdown for ALL grid elements (fullscreen, desktop, compact)
     const countdownEls = document.querySelectorAll('.js-grid-countdown');
     if (countdownEls.length > 0) {
       const firstEl = countdownEls[0] as HTMLElement;
-      let remaining = parseInt(firstEl.dataset.seconds || '0', 10);
+      const serverSeconds = parseInt(firstEl.dataset.seconds || '0', 10);
 
-      // Update all elements
+      // Correct for CDN cache age
+      let cacheAge = 0;
+      const computedAt = firstEl.dataset.computedAt;
+      if (computedAt) {
+        const t = new Date(computedAt).getTime();
+        if (!isNaN(t)) cacheAge = Math.max(0, (Date.now() - t) / 1000);
+      }
+
+      const initialRemaining = Math.max(0, serverSeconds - cacheAge);
+      const startTime = Date.now();
+      let hasFired = false;
+
+      const getRemaining = () => Math.max(0, initialRemaining - (Date.now() - startTime) / 1000);
+
       const updateAll = (text: string) => {
         countdownEls.forEach(el => { el.textContent = text; });
       };
 
-      updateAll(formatCountdownCompact(remaining));
-
-      const interval = setInterval(() => {
-        remaining -= 60;
-        if (remaining <= 0) {
+      const render = () => {
+        const r = getRemaining();
+        if (r <= 0 && !hasFired) {
+          hasFired = true;
           updateAll('Nu');
           clearInterval(interval);
           firePrayerAlert();
           return;
         }
-        updateAll(formatCountdownCompact(remaining));
-      }, 60000);
+        if (!hasFired) updateAll(formatCountdownCompact(r));
+      };
+
+      render();
+      const interval = setInterval(render, 60000);
+
+      // Resync on tab visibility change
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !hasFired) render();
+      });
 
       document.addEventListener('astro:before-preparation', () => clearInterval(interval));
     }
@@ -286,6 +306,7 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
     const update = () => {
       const on = isPrayerSoundEnabled();
       btn.setAttribute('aria-label', on ? 'Geluid uitzetten' : 'Geluid aanzetten');
+      btn.setAttribute('aria-pressed', String(on));
       btn.textContent = on ? '\u{1F514}' : '\u{1F515}';
     };
     update();

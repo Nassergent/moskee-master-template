@@ -61,6 +61,7 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
         class="bg-accent text-white px-5 py-2.5 flex items-center justify-center gap-3"
         id="mawaqit-countdown-bar"
         data-seconds={prayerStatus.secondsUntilNext}
+        data-computed-at={new Date().toISOString()}
         data-next-label={prayerStatus.nextPrayer ? ({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[prayerStatus.nextPrayer]) : ''}
       >
         <span class="font-bold font-heading text-sm">

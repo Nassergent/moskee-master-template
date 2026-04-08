@@ -15,10 +15,20 @@ const STORAGE_KEY = 'prayer-sound-enabled';
 let _sharedCtx: AudioContext | null = null;
 
 function getOrCreateAudioContext(): AudioContext {
-  if (!_sharedCtx || _sharedCtx.state === 'closed') {
+  if (!_sharedCtx || _sharedCtx.state === 'closed' || (_sharedCtx as any).state === 'interrupted') {
     _sharedCtx = new AudioContext();
   }
   return _sharedCtx;
+}
+
+// Clean up shared context on page unload to prevent memory leaks
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => {
+    if (_sharedCtx) {
+      _sharedCtx.close().catch(() => {});
+      _sharedCtx = null;
+    }
+  });
 }
 
 /** Call this once on page load to warm up audio on first user interaction */
