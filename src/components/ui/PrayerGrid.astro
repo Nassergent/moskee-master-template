@@ -37,6 +37,8 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
             'flex-1 flex items-center px-5 transition-colors',
             isCurrent ? 'bg-accent' : 'bg-white',
           ]}
+          data-prayer-active={isCurrent ? 'true' : undefined}
+          data-next-prayer={isNext ? PRAYER_LABELS[name] : undefined}
         >
           {/* Links: gebedsnaam */}
           <div class="w-24 shrink-0">
@@ -166,6 +168,8 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
               'flex items-center px-5 py-3.5 transition-colors',
               isCurrent ? 'bg-primary' : 'bg-white',
             ]}
+            data-prayer-active={isCurrent ? 'true' : undefined}
+            data-next-prayer={isNext ? PRAYER_LABELS[name] : undefined}
           >
             <div class="w-20 shrink-0">
               <p class:list={[

@@ -95,9 +95,20 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
       <div class="bg-primary-dark text-white px-5 py-3 flex items-center justify-between">
         <div class="text-center flex-1">
           <p class="text-[10px] uppercase tracking-wider text-white/50 font-bold">Djoemoe'ah</p>
-          <p class="text-xl font-bold font-heading tabular-nums">
-            {computedTimes.jumuah?.[0]?.time || computedTimes.adhan.dhuhr}
-          </p>
+          {computedTimes.jumuah?.length > 1 ? (
+            <div class="flex items-center justify-center gap-2">
+              {computedTimes.jumuah.map((shift: any) => (
+                <div>
+                  <p class="text-lg font-bold font-heading tabular-nums">{shift.time}</p>
+                  {shift.label && <p class="text-[9px] text-white/40">{shift.label}</p>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p class="text-xl font-bold font-heading tabular-nums">
+              {computedTimes.jumuah?.[0]?.time || computedTimes.adhan.dhuhr}
+            </p>
+          )}
         </div>
         <div class="w-px h-8 bg-white/20" />
         <div class="text-center flex-1">
@@ -162,9 +173,20 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
       <div class="bg-primary-dark text-white flex items-center justify-between overflow-hidden">
         <div class="text-center flex-1 py-4 px-5">
           <p class="text-[10px] uppercase tracking-wider text-white/50 font-bold mb-1">Djoemoe'ah</p>
-          <p class="text-xl font-bold font-heading tabular-nums">
-            {computedTimes.jumuah?.[0]?.time || computedTimes.adhan.dhuhr}
-          </p>
+          {computedTimes.jumuah?.length > 1 ? (
+            <div class="flex items-center justify-center gap-4">
+              {computedTimes.jumuah.map((shift: any) => (
+                <div>
+                  <p class="text-xl font-bold font-heading tabular-nums">{shift.time}</p>
+                  {shift.label && <p class="text-[9px] text-white/40">{shift.label}</p>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p class="text-xl font-bold font-heading tabular-nums">
+              {computedTimes.jumuah?.[0]?.time || computedTimes.adhan.dhuhr}
+            </p>
+          )}
         </div>
         <div class="w-px h-10 bg-white/20" />
         <div class="text-center flex-1 py-4 px-5">
