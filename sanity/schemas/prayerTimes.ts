@@ -213,10 +213,17 @@ export const prayerTimes = defineType({
           type: 'object',
           fields: [
             defineField({
+              name: 'active',
+              title: 'Actief',
+              type: 'boolean',
+              description: 'Zet uit om deze dienst te verbergen op de website (zonder te verwijderen).',
+              initialValue: true,
+            }),
+            defineField({
               name: 'label',
               title: 'Label',
               type: 'string',
-              description: 'Bijv. "Eerste Khutbah", "Tweede Khutbah"',
+              description: 'Bijv. "Wintertijd", "Zomertijd", "Eerste Khutbah"',
               validation: (rule) => rule.required(),
             }),
             defineField({
@@ -234,9 +241,11 @@ export const prayerTimes = defineType({
             }),
           ],
           preview: {
-            select: { title: 'label', subtitle: 'time' },
-            prepare({ title, subtitle }) {
-              return { title: `${title} — ${subtitle}` };
+            select: { title: 'label', subtitle: 'time', active: 'active' },
+            prepare({ title, subtitle, active }) {
+              return {
+                title: `${active === false ? '🔴' : '🟢'} ${title} — ${subtitle}`,
+              };
             },
           },
         },
