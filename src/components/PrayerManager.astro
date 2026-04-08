@@ -56,20 +56,28 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
         <p class="text-white/40 text-xs mt-0.5 capitalize">{gregorianToday}</p>
       </div>
 
-      {/* Countdown balk */}
+      {/* Countdown balk + sound toggle */}
       <div
-        class="bg-accent text-white px-5 py-2.5 flex items-center justify-center gap-3"
+        class="bg-accent text-white px-5 py-2.5 flex items-center justify-between"
         id="mawaqit-countdown-bar"
         data-seconds={prayerStatus.secondsUntilNext}
         data-computed-at={new Date().toISOString()}
         data-next-label={prayerStatus.nextPrayer ? ({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[prayerStatus.nextPrayer]) : ''}
       >
-        <span class="font-bold font-heading text-sm">
-          {prayerStatus.nextPrayer ? ({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[prayerStatus.nextPrayer]) : ''} in
-        </span>
-        <span id="mawaqit-countdown" class="text-lg font-bold font-heading tabular-nums">
-          {formatCountdownHMS(prayerStatus.secondsUntilNext)}
-        </span>
+        <div class="flex items-center gap-3">
+          <span class="font-bold font-heading text-sm">
+            {prayerStatus.nextPrayer ? ({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[prayerStatus.nextPrayer]) : ''} in
+          </span>
+          <span id="mawaqit-countdown" class="text-lg font-bold font-heading tabular-nums">
+            {formatCountdownHMS(prayerStatus.secondsUntilNext)}
+          </span>
+        </div>
+        <button
+          id="sound-toggle-mobile"
+          class="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white active:text-white transition-colors"
+          aria-label="Geluid aan/uit"
+          aria-pressed="true"
+        >🔔</button>
       </div>
 
       {/* Gebedstijden rijen */}
@@ -149,6 +157,33 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
         secondsUntilNext={prayerStatus.secondsUntilNext}
         compact={compact}
       />
+
+      {/* Jumu'ah + Shurooq balk — desktop + compact */}
+      <div class="bg-primary-dark text-white flex items-center justify-between overflow-hidden">
+        <div class="text-center flex-1 py-4 px-5">
+          <p class="text-[10px] uppercase tracking-wider text-white/50 font-bold mb-1">Djoemoe'ah</p>
+          <p class="text-xl font-bold font-heading tabular-nums">
+            {computedTimes.jumuah?.[0]?.time || computedTimes.adhan.dhuhr}
+          </p>
+        </div>
+        <div class="w-px h-10 bg-white/20" />
+        <div class="text-center flex-1 py-4 px-5">
+          <p class="text-[10px] uppercase tracking-wider text-white/50 font-bold mb-1">Shurooq</p>
+          <p class="text-xl font-bold font-heading tabular-nums">{computedTimes.sunrise}</p>
+        </div>
+        <div class="w-px h-10 bg-white/20" />
+        <div class="text-center py-4 px-5">
+          <button
+            id="sound-toggle-desktop"
+            class="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+            aria-label="Geluid aan/uit"
+            aria-pressed="true"
+          >
+            <span class="sound-icon text-lg">🔔</span>
+            <span class="sound-label text-[10px] uppercase tracking-wider font-bold">Geluid</span>
+          </button>
+        </div>
+      </div>
     </div>
   )
 ) : (
@@ -161,3 +196,50 @@ const gregorianToday = formatFullDate(new Date().toISOString().split('T')[0], lo
     </p>
   </div>
 )}
+
+{/* Unified sound toggle for all PrayerManager buttons */}
+<script>
+  import { isPrayerSoundEnabled, togglePrayerSound } from '../lib/prayer-alert';
+
+  function initSoundToggle(btnId: string) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    const iconEl = btn.querySelector('.sound-icon');
+    const labelEl = btn.querySelector('.sound-label');
+
+    const update = () => {
+      const on = isPrayerSoundEnabled();
+      btn.setAttribute('aria-pressed', String(on));
+      btn.setAttribute('aria-label', on ? 'Geluid uitzetten' : 'Geluid aanzetten');
+      // Update icon (either child or button text)
+      if (iconEl) {
+        iconEl.textContent = on ? '\u{1F514}' : '\u{1F515}';
+      } else {
+        btn.textContent = on ? '\u{1F514}' : '\u{1F515}';
+      }
+      if (labelEl) {
+        labelEl.textContent = on ? 'Geluid' : 'Stil';
+      }
+    };
+
+    update();
+    btn.addEventListener('click', () => {
+      const newState = togglePrayerSound();
+      update();
+      // Sync other toggle buttons on the page
+      document.querySelectorAll('[id^="sound-toggle"]').forEach(other => {
+        if (other.id !== btnId) {
+          const otherIcon = other.querySelector('.sound-icon');
+          if (otherIcon) otherIcon.textContent = newState ? '\u{1F514}' : '\u{1F515}';
+          else other.textContent = newState ? '\u{1F514}' : '\u{1F515}';
+          other.setAttribute('aria-pressed', String(newState));
+          const otherLabel = other.querySelector('.sound-label');
+          if (otherLabel) otherLabel.textContent = newState ? 'Geluid' : 'Stil';
+        }
+      });
+    });
+  }
+
+  initSoundToggle('sound-toggle-mobile');
+  initSoundToggle('sound-toggle-desktop');
+</script>

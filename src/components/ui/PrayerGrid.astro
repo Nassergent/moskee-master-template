@@ -92,14 +92,6 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
 {/* ── Niet-fullscreen: desktop grid + compact mobiel ── */}
 {!fullscreen && (
   <div class="relative border border-neutral-200 overflow-hidden">
-    {/* Geluid toggle */}
-    <button
-      id="sound-toggle"
-      class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center text-sm text-neutral-400 hover:text-primary transition-colors"
-      aria-label="Geluid aan/uit"
-      aria-pressed="true"
-    >🔔</button>
-
     {/* Desktop/Tablet: 5-kolom grid */}
     <div class="hidden sm:grid sm:grid-cols-5 gap-0">
       {PRAYER_NAMES.map((name) => {
@@ -297,19 +289,4 @@ const { times, currentPrayer = null, nextPrayer = null, secondsUntilNext = 0, co
   </script>
 )}
 
-{/* Geluid toggle */}
-<script>
-  import { isPrayerSoundEnabled, togglePrayerSound } from '../../lib/prayer-alert';
-
-  const btn = document.getElementById('sound-toggle');
-  if (btn) {
-    const update = () => {
-      const on = isPrayerSoundEnabled();
-      btn.setAttribute('aria-label', on ? 'Geluid uitzetten' : 'Geluid aanzetten');
-      btn.setAttribute('aria-pressed', String(on));
-      btn.textContent = on ? '\u{1F514}' : '\u{1F515}';
-    };
-    update();
-    btn.addEventListener('click', () => { togglePrayerSound(); update(); });
-  }
-</script>
+{/* Sound toggle is now managed by PrayerManager.astro */}
