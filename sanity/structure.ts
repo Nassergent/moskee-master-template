@@ -384,6 +384,15 @@ function agendaManagement(S: StructureBuilder) {
                 .defaultOrdering([{ field: 'volgorde', direction: 'asc' }])
             ),
 
+          S.listItem()
+            .title('Terugkerende reeksen')
+            .icon(() => '🔁')
+            .child(
+              S.documentTypeList('eventSeries')
+                .title('Terugkerende reeksen')
+                .defaultOrdering([{ field: 'titel', direction: 'asc' }])
+            ),
+
           S.divider(),
 
           S.listItem()
