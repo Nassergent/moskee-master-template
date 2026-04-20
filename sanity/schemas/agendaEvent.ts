@@ -6,6 +6,7 @@ export const agendaEvent = defineType({
   type: 'document',
   groups: [
     { name: 'basis', title: 'Basis', default: true },
+    { name: 'herhaling', title: 'Herhaling' },
     { name: 'uitgelicht', title: 'Uitgelicht' },
     { name: 'media', title: 'Media' },
     { name: 'koppelingen', title: 'Koppelingen' },
@@ -100,6 +101,62 @@ export const agendaEvent = defineType({
       description: 'AAN = zichtbaar op de website.',
       initialValue: false,
       group: 'basis',
+    }),
+
+    // ── Herhaling groep ──
+    defineField({
+      name: 'isHerhalend',
+      title: 'Terugkerende activiteit',
+      type: 'boolean',
+      description: 'AAN = deze activiteit herhaalt zich. Publiceer eerst, klik daarna onderaan op "🔁 Genereer volgende datums" om alle herhalingen aan te maken.',
+      initialValue: false,
+      group: 'herhaling',
+    }),
+    defineField({
+      name: 'frequentie',
+      title: 'Frequentie',
+      type: 'string',
+      description: 'Hoe vaak herhaalt deze activiteit? De dag wordt automatisch afgeleid uit de startdatum.',
+      options: {
+        list: [
+          { title: 'Wekelijks', value: 'weekly' },
+          { title: 'Tweewekelijks (om de 2 weken)', value: 'biweekly' },
+          { title: 'Maandelijks (zelfde dag van de maand)', value: 'monthly' },
+        ],
+        layout: 'radio',
+      },
+      hidden: ({ parent }) => !parent?.isHerhalend,
+      validation: (Rule) => Rule.custom((frequentie, context) => {
+        const parent = context.parent as { isHerhalend?: boolean };
+        if (parent?.isHerhalend && !frequentie) return 'Kies een frequentie.';
+        return true;
+      }),
+      group: 'herhaling',
+    }),
+    defineField({
+      name: 'eindDatumReeks',
+      title: 'Laatste datum van de reeks',
+      type: 'date',
+      description: 'Tot wanneer herhaalt deze activiteit? Alle tussenliggende datums worden aangemaakt.',
+      hidden: ({ parent }) => !parent?.isHerhalend,
+      validation: (Rule) => Rule.custom((eindDatumReeks, context) => {
+        const parent = context.parent as { isHerhalend?: boolean; startDatum?: string };
+        if (!parent?.isHerhalend) return true;
+        if (!eindDatumReeks) return 'Kies een einddatum voor de reeks.';
+        if (parent.startDatum && new Date(eindDatumReeks) <= new Date(parent.startDatum)) {
+          return 'Einddatum reeks moet na de startdatum liggen.';
+        }
+        return true;
+      }),
+      group: 'herhaling',
+    }),
+    defineField({
+      name: 'cancelled',
+      title: 'Afgelast',
+      type: 'boolean',
+      description: 'AAN = deze specifieke activiteit gaat niet door (bv. Ramadan-pauze). Wordt onzichtbaar op de website.',
+      initialValue: false,
+      group: 'herhaling',
     }),
 
     // ── Uitgelicht groep ──
@@ -272,9 +329,11 @@ export const agendaEvent = defineType({
       gepubliceerd: 'gepubliceerd',
       featured: 'featured',
       doelgroep: 'doelgroep',
+      isHerhalend: 'isHerhalend',
+      cancelled: 'cancelled',
       media: 'afbeelding',
     },
-    prepare({ title, datum, categorieRefTitel, categorie, gepubliceerd, featured, doelgroep, media }) {
+    prepare({ title, datum, categorieRefTitel, categorie, gepubliceerd, featured, doelgroep, isHerhalend, cancelled, media }) {
       const datumStr = datum
         ? new Date(datum).toLocaleDateString('nl-BE', {
             weekday: 'short',
@@ -282,12 +341,14 @@ export const agendaEvent = defineType({
             month: 'long',
           })
         : '';
+      const cancelPrefix = cancelled ? '[AFGELAST] ' : '';
       const prefix = gepubliceerd === false ? '[UIT] ' : '';
       const star = featured ? '⭐ ' : '';
+      const repeat = isHerhalend ? '🔁 ' : '';
       const cat = categorieRefTitel || categorie || '';
       const doel = doelgroep && doelgroep !== 'Iedereen' ? ` · ${doelgroep}` : '';
       return {
-        title: `${star}${prefix}${title || 'Zonder titel'}`,
+        title: `${repeat}${star}${cancelPrefix}${prefix}${title || 'Zonder titel'}`,
         subtitle: `${cat}${doel} — ${datumStr}`,
         media,
       };

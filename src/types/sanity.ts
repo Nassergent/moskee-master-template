@@ -124,6 +124,8 @@ export interface Service {
 
 // ── AgendaEvent ──
 
+export type RecurrenceFrequency = 'weekly' | 'biweekly' | 'monthly';
+
 export interface AgendaEvent {
   _id: string;
   titel: string;
@@ -143,6 +145,10 @@ export interface AgendaEvent {
   registrationDeadline?: string;
   externalRegistrationUrl?: string;
   occupancy?: number;
+  isHerhalend?: boolean;
+  frequentie?: RecurrenceFrequency;
+  eindDatumReeks?: string;
+  cancelled?: boolean;
 }
 
 // ── NewsPost ──

@@ -160,7 +160,7 @@ export async function fetchTopicHubRelated(hubId: string) {
       sanityClient.fetch(`*[_type == "post" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(datum desc) {
         _id, titel, "slug": slug.current, datum, samenvatting, afbeelding, postType
       }`, { hubId }),
-      sanityClient.fetch(`*[_type == "agendaEvent" && onderwerpHub._ref == $hubId && gepubliceerd == true] | order(startDatum asc) {
+      sanityClient.fetch(`*[_type == "agendaEvent" && onderwerpHub._ref == $hubId && gepubliceerd == true && cancelled != true] | order(startDatum asc) {
         _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
         "categorie": coalesce(categorieRef->titel, categorie),
         "categorieKleur": categorieRef->kleur,
@@ -203,21 +203,21 @@ export async function fetchEventCategories(): Promise<EventCategory[]> {
 // ── Agenda Evenementen ──
 
 export async function fetchAgendaEvents(): Promise<AgendaEvent[]> {
-  return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
+  return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && cancelled != true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc) {
     _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
     "categorie": coalesce(categorieRef->titel, categorie),
     "categorieKleur": categorieRef->kleur,
-    featured, prioriteit, doelgroep,
+    featured, prioriteit, doelgroep, cancelled,
     beschrijving, afbeelding
   }`, undefined, { fallback: [] as any[], label: 'fetchAgendaEvents' });
 }
 
 export async function fetchUpcomingAgendaEvents(limit = 3): Promise<AgendaEvent[]> {
-  return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
+  return safeFetch(sanityClient, `*[_type == "agendaEvent" && gepubliceerd == true && cancelled != true && coalesce(eindDatum, startDatum) >= now()] | order(featured desc, prioriteit asc, startDatum asc)[0...$limit] {
     _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
     "categorie": coalesce(categorieRef->titel, categorie),
     "categorieKleur": categorieRef->kleur,
-    featured, prioriteit, doelgroep,
+    featured, prioriteit, doelgroep, cancelled,
     beschrijving, afbeelding
   }`, { limit }, { fallback: [] as any[], label: 'fetchUpcomingAgendaEvents' });
 }
@@ -237,11 +237,11 @@ export async function fetchActiveJanazahAlert() {
 }
 
 export async function fetchAgendaEvent(slug: string) {
-  return safeFetch(sanityClient, `*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true][0] {
+  return safeFetch(sanityClient, `*[_type == "agendaEvent" && slug.current == $slug && gepubliceerd == true && cancelled != true][0] {
     _id, titel, "slug": slug.current, startDatum, eindDatum, "locatie": select(locatie == "anders" => locatieAnders, locatie),
     "categorie": coalesce(categorieRef->titel, categorie),
     "categorieKleur": categorieRef->kleur,
-    featured, doelgroep,
+    featured, doelgroep, cancelled,
     beschrijving, afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current },
     registrationOpen, registrationMax, registrationDeadline, externalRegistrationUrl,
     "occupancy": math::sum(*[_type == "eventRegistration" && eventRef._ref == ^._id && status != "cancelled"].partySize)
