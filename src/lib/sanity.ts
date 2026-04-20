@@ -208,6 +208,7 @@ export async function fetchAgendaEvents(): Promise<AgendaEvent[]> {
     "categorie": coalesce(categorieRef->titel, categorie),
     "categorieKleur": categorieRef->kleur,
     featured, prioriteit, doelgroep, cancelled,
+    isHerhalend, frequentie,
     beschrijving, afbeelding
   }`, undefined, { fallback: [] as any[], label: 'fetchAgendaEvents' });
 }
@@ -218,6 +219,7 @@ export async function fetchUpcomingAgendaEvents(limit = 3): Promise<AgendaEvent[
     "categorie": coalesce(categorieRef->titel, categorie),
     "categorieKleur": categorieRef->kleur,
     featured, prioriteit, doelgroep, cancelled,
+    isHerhalend, frequentie,
     beschrijving, afbeelding
   }`, { limit }, { fallback: [] as any[], label: 'fetchUpcomingAgendaEvents' });
 }
@@ -242,6 +244,7 @@ export async function fetchAgendaEvent(slug: string) {
     "categorie": coalesce(categorieRef->titel, categorie),
     "categorieKleur": categorieRef->kleur,
     featured, doelgroep, cancelled,
+    isHerhalend, frequentie,
     beschrijving, afbeelding, onderwerpHub->{ _id, titel, "slug": slug.current },
     registrationOpen, registrationMax, registrationDeadline, externalRegistrationUrl,
     "occupancy": math::sum(*[_type == "eventRegistration" && eventRef._ref == ^._id && status != "cancelled"].partySize)

@@ -146,8 +146,11 @@ export const generateRecurringInstancesAction: DocumentActionComponent = (props:
             slug: { _type: 'slug', current: instanceSlug },
             startDatum: newStart.toISOString(),
             gepubliceerd: doc.gepubliceerd ?? false,
-            // Copies are NOT recurring templates themselves
+            // Copies are NOT recurring templates themselves (no Generate-button),
+            // but we DO carry the frequency forward so the website can show
+            // "Elke woensdag" / "Om de 2 weken" / etc. on every instance.
             isHerhalend: false,
+            frequentie: doc.frequentie,
             cancelled: false,
           };
           if (newEnd) instance.eindDatum = newEnd.toISOString();

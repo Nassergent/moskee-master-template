@@ -6,7 +6,7 @@ import EventRegistrationForm from '../../components/ui/EventRegistrationForm.ast
 import PortableText from '../../components/PortableText.astro';
 import { fetchAgendaEvent, fetchSettings, urlFor } from '../../lib/sanity';
 import { formatHijriDate } from '../../lib/hijri';
-import { formatDatum, formatTijd } from '../../lib/logic/agenda-utils';
+import { formatDatum, formatTijd, formatRecurrence } from '../../lib/logic/agenda-utils';
 import { sanitizeAlt } from '../../lib/logic/seo-utils';
 import { buildSiteConfig } from '../../lib/logic/config';
 
@@ -114,6 +114,12 @@ const eventSchema = JSON.stringify({
               {fmtTijd(event.startDatum) && (
                 <p class="text-sm text-accent font-semibold">
                   {fmtTijd(event.startDatum)}{event.eindDatum && fmtTijd(event.eindDatum) ? ` – ${fmtTijd(event.eindDatum)}` : ''}
+                </p>
+              )}
+              {formatRecurrence(event, { tz }) && (
+                <p class="text-xs text-primary font-semibold mt-1 flex items-center gap-1">
+                  <span aria-hidden="true">🔁</span>
+                  <span>{formatRecurrence(event, { tz })}</span>
                 </p>
               )}
             </div>
