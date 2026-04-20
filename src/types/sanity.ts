@@ -143,33 +143,6 @@ export interface AgendaEvent {
   registrationDeadline?: string;
   externalRegistrationUrl?: string;
   occupancy?: number;
-  parentSeries?: { _id: string; titel: string } | null;
-  cancelled?: boolean;
-}
-
-// ── EventSeries (terugkerende events) ──
-
-export type SeriesFrequency = 'weekly' | 'biweekly' | 'monthly';
-export type SeriesWeekday = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
-
-export interface EventSeries {
-  _id: string;
-  titel: string;
-  slug: string;
-  actief?: boolean;
-  frequentie: SeriesFrequency;
-  dagVanDeWeek?: SeriesWeekday;
-  dagVanDeMaand?: number;
-  startTijd: string;
-  eindTijd?: string;
-  startDatum: string;
-  eindDatum: string;
-  locatie?: string;
-  categorie?: string;
-  doelgroep?: string;
-  gepubliceerd?: boolean;
-  beschrijving?: PortableTextBlock[];
-  afbeelding?: SanityImage;
 }
 
 // ── NewsPost ──

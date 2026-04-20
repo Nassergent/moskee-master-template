@@ -3,7 +3,6 @@ import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { schema } from './sanity/schema';
 import { structure, newDocumentOptions } from './sanity/structure';
-import { generateEventInstancesAction } from './sanity/actions/generateEventInstances';
 
 // Types die een automatische slug hebben (hidden veld, gegenereerd uit titel)
 const SLUG_TYPES = ['post', 'agendaEvent', 'service', 'lessonProgram'];
@@ -53,16 +52,10 @@ export default defineConfig({
   document: {
     newDocumentOptions,
     actions: (prev, context) => {
-      let actions = prev;
-      if (context.schemaType === 'eventSeries') {
-        actions = [...actions, generateEventInstancesAction];
-      }
-      if (SLUG_TYPES.includes(context.schemaType)) {
-        actions = actions.map((action) =>
-          action.action === 'publish' ? autoSlugPublishAction(action) : action
-        );
-      }
-      return actions;
+      if (!SLUG_TYPES.includes(context.schemaType)) return prev;
+      return prev.map((action) =>
+        action.action === 'publish' ? autoSlugPublishAction(action) : action
+      );
     },
   },
 });

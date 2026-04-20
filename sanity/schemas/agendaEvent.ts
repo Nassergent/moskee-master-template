@@ -9,7 +9,6 @@ export const agendaEvent = defineType({
     { name: 'uitgelicht', title: 'Uitgelicht' },
     { name: 'media', title: 'Media' },
     { name: 'koppelingen', title: 'Koppelingen' },
-    { name: 'reeks', title: 'Reeks' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
@@ -210,26 +209,6 @@ export const agendaEvent = defineType({
       group: 'koppelingen',
     }),
 
-    // ── Reeks (terugkerende events) ──
-    defineField({
-      name: 'parentSeries',
-      title: 'Onderdeel van reeks',
-      type: 'reference',
-      to: [{ type: 'eventSeries' }],
-      description: 'Automatisch ingevuld als dit event gegenereerd is vanuit een terugkerende reeks.',
-      readOnly: true,
-      hidden: ({ parent }) => !parent?.parentSeries,
-      group: 'reeks',
-    }),
-    defineField({
-      name: 'cancelled',
-      title: 'Afgelast',
-      type: 'boolean',
-      description: 'AAN = dit specifieke event gaat niet door (bijv. Ramadan-pauze). Blijft onzichtbaar op de website.',
-      initialValue: false,
-      group: 'reeks',
-    }),
-
     // ── Oud categorie veld (migratie — verborgen) ──
     defineField({
       name: 'categorie',
@@ -293,11 +272,9 @@ export const agendaEvent = defineType({
       gepubliceerd: 'gepubliceerd',
       featured: 'featured',
       doelgroep: 'doelgroep',
-      cancelled: 'cancelled',
-      parentSeries: 'parentSeries',
       media: 'afbeelding',
     },
-    prepare({ title, datum, categorieRefTitel, categorie, gepubliceerd, featured, doelgroep, cancelled, parentSeries, media }) {
+    prepare({ title, datum, categorieRefTitel, categorie, gepubliceerd, featured, doelgroep, media }) {
       const datumStr = datum
         ? new Date(datum).toLocaleDateString('nl-BE', {
             weekday: 'short',
@@ -305,14 +282,12 @@ export const agendaEvent = defineType({
             month: 'long',
           })
         : '';
-      const cancelPrefix = cancelled ? '[AFGELAST] ' : '';
       const prefix = gepubliceerd === false ? '[UIT] ' : '';
       const star = featured ? '⭐ ' : '';
-      const series = parentSeries ? '🔁 ' : '';
       const cat = categorieRefTitel || categorie || '';
       const doel = doelgroep && doelgroep !== 'Iedereen' ? ` · ${doelgroep}` : '';
       return {
-        title: `${series}${star}${cancelPrefix}${prefix}${title || 'Zonder titel'}`,
+        title: `${star}${prefix}${title || 'Zonder titel'}`,
         subtitle: `${cat}${doel} — ${datumStr}`,
         media,
       };

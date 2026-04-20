@@ -13,7 +13,6 @@ import { volunteer } from './schemas/volunteer';
 import { eventRegistration } from './schemas/eventRegistration';
 import { eventCategorie } from './schemas/eventCategorie';
 import { agendaEvent } from './schemas/agendaEvent';
-import { eventSeries } from './schemas/eventSeries';
 import { lessonProgram } from './schemas/lessonProgram';
 import { ramadanOverride } from './schemas/ramadanOverride';
 import { janazahProcedure } from './schemas/janazahProcedure';
@@ -30,7 +29,6 @@ export const schema = {
     post,
     eventCategorie,
     agendaEvent,
-    eventSeries,
     lessonProgram,
     ramadanOverride,
     janazahProcedure,
