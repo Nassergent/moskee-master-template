@@ -96,9 +96,10 @@ Astro.response.headers.set('Vercel-Cache-Tag', 'agenda');
                 )}
               </div>
               {formatRecurrence(event) && (
-                <p class="text-xs text-accent font-semibold mb-2 flex items-center gap-1.5">
-                  <span aria-hidden="true">🔁</span>
-                  <span>{formatRecurrence(event)}</span>
+                <p class="text-xs text-neutral-500 mb-2">
+                  <span class="uppercase tracking-wider font-semibold">Herhaalt zich</span>
+                  <span class="text-neutral-400 mx-1">·</span>
+                  <span class="text-neutral-700 font-medium">{formatRecurrence(event)}</span>
                 </p>
               )}
               {event.locatie && (
@@ -201,9 +202,10 @@ Astro.response.headers.set('Vercel-Cache-Tag', 'agenda');
                 )}
               </div>
               {formatRecurrence(event) && (
-                <p class="text-xs text-accent font-semibold mb-2 flex items-center gap-1.5">
-                  <span aria-hidden="true">🔁</span>
-                  <span>{formatRecurrence(event)}</span>
+                <p class="text-xs text-neutral-500 mb-2">
+                  <span class="uppercase tracking-wider font-semibold">Herhaalt zich</span>
+                  <span class="text-neutral-400 mx-1">·</span>
+                  <span class="text-neutral-700 font-medium">{formatRecurrence(event)}</span>
                 </p>
               )}
               {event.locatie && (
